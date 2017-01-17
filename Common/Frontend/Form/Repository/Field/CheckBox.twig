@@ -1,0 +1,43 @@
+{% if( ElementIcon is not empty ) %}
+<div class="form-group {{ ElementGroup }}">
+    {% endif %}
+    <div class="checkbox checkbox-primary">
+        <input id="{{ ElementHash }}" type="checkbox" name="{{ ElementName }}"
+               value="{{ ElementValue }}" {{ ElementChecked }} {% if( Disabled is not empty ) %}disabled{% endif %} {% if( TabIndex is not empty ) %}tabindex="{{ TabIndex }}"{% endif %}/>
+        {% if( ElementLabel is not empty ) %}
+            <label class="sphere-label" for="{{ ElementHash }}">{{ ElementLabel }}</label>
+        {% endif %}
+        {{ ElementFeedbackIcon }}
+    </div>
+    {% if( ElementIcon is not empty ) %}
+    {{ ElementFeedbackMessage }}
+</div>
+{% endif %}
+
+{% if( ElementToggleTarget is not empty ) %}
+    <script type="text/javascript">
+        //noinspection JSUnresolvedFunction
+        executeScript(function()
+        {
+            Client.Use('ModCheckBox', function()
+            {
+                var toggleTargets = function()
+                {
+                    {% for ToggleTarget in ElementToggleTarget %}
+                    jQuery('[name="{{ ToggleTarget }}"]:eq(0)').prop('disabled', function(i, v)
+                    {
+                        return !v;
+                    });
+                    {% endfor %}
+                };
+                if (jQuery('#{{ ElementHash }}').prop('checked')) {
+                    toggleTargets();
+                }
+                jQuery('#{{ ElementHash }}').on('click', function()
+                {
+                    toggleTargets();
+                });
+            });
+        });
+    </script>
+{% endif %}

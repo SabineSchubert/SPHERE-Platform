@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <title>Schulsoftware Professional{{ SeoTitle }}</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Schulsoftware Professional"/>
+    <link hreflang="de">
+    {{ ManagerStyle }}
+    <link rel="apple-touch-icon" sizes="57x57"
+          href="{{ PathBase }}/Common/Style/Resource/Logo/Favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60"
+          href="{{ PathBase }}/Common/Style/Resource/Logo/Favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72"
+          href="{{ PathBase }}/Common/Style/Resource/Logo/Favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76"
+          href="{{ PathBase }}/Common/Style/Resource/Logo/Favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114"
+          href="{{ PathBase }}/Common/Style/Resource/Logo/Favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120"
+          href="{{ PathBase }}/Common/Style/Resource/Logo/Favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144"
+          href="{{ PathBase }}/Common/Style/Resource/Logo/Favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152"
+          href="{{ PathBase }}/Common/Style/Resource/Logo/Favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180"
+          href="{{ PathBase }}/Common/Style/Resource/Logo/Favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"
+          href="{{ PathBase }}/Common/Style/Resource/Logo/Favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32"
+          href="{{ PathBase }}/Common/Style/Resource/Logo/Favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96"
+          href="{{ PathBase }}/Common/Style/Resource/Logo/Favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16"
+          href="{{ PathBase }}/Common/Style/Resource/Logo/Favicon/favicon-16x16.png">
+    <link rel="manifest" href="{{ PathBase }}/Common/Style/Resource/Logo/Favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage"
+          content="{{ PathBase }}/Common/Style/Resource/Logo/Favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <script type="text/javascript">
+        var executeScript = function (Callback)
+        {
+
+            var Event = window.onload;
+            if (typeof window.onload != 'function') {
+                window.onload = Callback;
+            } else {
+                window.onload = function () {
+                    if (Event) {
+                        Event();
+                    }
+                    Callback();
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+
+<!-- Navigation (Level:Cluster/Service) -->
+<nav class="navbar navbar-inverse" role="navigation"
+     style="border-radius: inherit;">
+    <div class="container-fluid">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                data-target="#LevelClient"
+                aria-expanded="false" aria-controls="navbar">
+                <span class="pull-left">
+                    <a>{{ BreadcrumbCluster }}</a>{% if( BreadcrumbCluster is not empty ) %}&nbsp;{% endif %}
+                </span>
+                <span class="pull-right">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </span>
+        </button>
+        <div class="navbar-header">
+            {{ BrandSwitch }}
+        </div>
+        <div class="navbar-collapse collapse" id="LevelClient" style="border-color: transparent;">
+            <ul class="nav navbar-nav navbar-left">
+                {{ NavigationCluster }}
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {{ NavigationService }}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+{% if( NavigationApplication is not empty ) %}
+    <!-- Navigation (Level:Application) -->
+    <nav class="navbar navbar-default" role="navigation"
+         style="border-radius: inherit;border-width: 0; border-bottom-width: 1px;">
+        <div class="container-fluid">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#LevelApplication"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="pull-left">
+                    <a>{{ BreadcrumbApplication }}</a>{% if( BreadcrumbApplication is not empty ) %}&nbsp;{% endif %}
+                </span>
+                <span class="pull-right">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </span>
+            </button>
+            <div class="navbar-collapse collapse" id="LevelApplication" style="border-color: transparent;">
+                <ul class="nav navbar-nav navbar-left">
+                    {{ NavigationApplication }}
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endif %}
+
+{% if( NavigationModule is not empty ) %}
+    <!-- Navigation (Level:Module) -->
+    <nav class="navbar navbar-default" role="navigation"
+         style="border-radius: inherit; border-width: 0; border-bottom-width: 1px;">
+        <div class="container-fluid">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#LevelModule"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="pull-left">
+                    <a>{{ BreadcrumbModule }}</a>{% if( BreadcrumbModule is not empty ) %}&nbsp;{% endif %}
+                </span>
+                <span class="pull-right">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </span>
+            </button>
+            <div class="navbar-collapse collapse" id="LevelModule" style="border-color: transparent;">
+                <ul class="nav navbar-nav navbar-left">
+                    {{ NavigationModule }}
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endif %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-offset-1 col-lg-10 col-xs-12">
+            {#<div class="col-xs-12">#}
+            <span class="loading-indicator">
+                <span class="text-muted">Zusätzliche Komponenten werden geladen</span>
+                <span class="loading-indicator-animate"></span>
+            </span>
+            <span class="loading-error">
+                <span class="glyphicon glyphicon-alert text-danger"></span> Einige zusätzliche Komponenten konnten nicht geladen werden
+            </span>
+            {{ Content }}
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid hidden-print footer">
+    <div class="row">
+        <div class="col-xs-12 small" style="border-top: 1px solid #E7E7E7;">
+            <div class="text-center small" style="padding: 5px;">
+
+                <span class="glyphicons glyphicons-paragraph-alt"></span> {{ Consumer }}
+
+                <br/>
+
+                <span class="glyphicons glyphicons-clock"></span> {{ DebuggerRuntime }}
+                |
+                <span class="glyphicons glyphicons-globe"></span> {{ DebuggerHost }} {{ CpuLoad }}
+                |
+                <span class="glyphicons glyphicons-person-running"></span> {{ DebuggerSessionCount }}
+                |
+                <span class="glyphicons glyphicons-cluster"></span> {{ CacheSlot }} {{ MemoryPeak }}
+
+                <br/>
+
+                <a href="/Roadmap/Current"><span class="glyphicons glyphicons-bookmark"></span> {{ RoadmapVersion }}</a>
+                |
+                <a href="http://www.beyondsecurity.com/vulnerability-scanner-verification/www.kreda.schule"
+                   class="text-success" rel="external">
+                    <span class="glyphicons glyphicons-shield"></span> Secure Website
+                </a>
+                |
+                <a href="/Document/License" class="text-warning">
+                    <span class="halflings halflings-copyright-mark"></span> 2014 - {{ "now"|date("Y") }}
+                </a>
+                |
+                <a href="/Document/LegalNotice" class="text-warning">
+                    <span class="glyphicons glyphicons-quote"></span> Impressum
+                </a>
+
+                <div class="text-left" style="font-size: 1.1em;">
+                    {{ DebuggerProtocol }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ PathBase }}/Common/Script/Loader.js"></script>
+{{ ManagerScript }}
+<script>
+    var _paq = _paq || [];
+    _paq.push(["setDoNotTrack", true]);
+    _paq.push(["disableCookies"]);
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+
+    executeScript(function()
+    {
+        Client.Use('ModAlways', function()
+        {
+            jQuery().ModAlways();
+
+        });
+
+        (function()
+        {
+            var u = "/Library/Piwik/";
+            _paq.push(['setTrackerUrl', u + 'piwik.php']);
+            _paq.push(['setSiteId', 1]);
+            var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+            g.type = 'text/javascript';
+            g.async = true;
+            g.defer = true;
+            g.src = u + 'piwik.js';
+            s.parentNode.insertBefore(g, s);
+        })();
+    });
+</script>
+</body>
+</html>
+
+
