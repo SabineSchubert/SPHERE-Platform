@@ -2,7 +2,6 @@
 namespace SPHERE\Application\Platform\Assistance\Error;
 
 use SPHERE\Common\Frontend\IFrontendInterface;
-use SPHERE\Common\Frontend\Link\Repository\Primary;
 use SPHERE\Common\Frontend\Message\Repository\Danger;
 use SPHERE\Common\Frontend\Message\Repository\Info;
 use SPHERE\Common\Frontend\Message\Repository\Success;
@@ -95,18 +94,6 @@ class Frontend extends Extension implements IFrontendInterface
             .new Info('Versuchen Sie die Anwendung zu einem späteren Zeitpunkt erneut aufzurufen')
             .new Success('Bitte wenden Sie sich an den Support damit das Problem schnellstmöglich behoben werden kann')
         );
-
-        if ($this->getRequest()->getPathInfo() != '/Platform/Assistance/Error') {
-            $Stage->addButton(
-                new Primary('Fehlerbericht senden', '/Platform/Assistance/Support/Ticket', null,
-                    array(
-                        'TicketSubject' => urlencode('Fehler in der Anwendung'),
-                        'TicketMessage' => urlencode($this->getRequest()->getPathInfo().': '.$Error['message'].'<br/>'.$Error['file'].':'.$Error['line'])
-                    )
-                )
-            );
-
-        }
 
         return $Stage;
     }

@@ -2,15 +2,17 @@
 namespace SPHERE\Application\Platform\System;
 
 use SPHERE\Application\IApplicationInterface;
-use SPHERE\Application\Platform\System\Archive\Archive;
 use SPHERE\Application\Platform\System\Cache\Cache;
 use SPHERE\Application\Platform\System\Database\Database;
 use SPHERE\Application\Platform\System\Protocol\Protocol;
 use SPHERE\Application\Platform\System\Session\Session;
-use SPHERE\Application\Platform\System\Test\Test;
 use SPHERE\Common\Frontend\Icon\Repository\Cog;
 use SPHERE\Common\Frontend\Layout\Repository\Panel;
 use SPHERE\Common\Frontend\Layout\Repository\ProgressBar;
+use SPHERE\Common\Frontend\Layout\Structure\Layout;
+use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
+use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
+use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
 use SPHERE\Common\Main;
 use SPHERE\Common\Window\Navigation\Link;
 use SPHERE\Common\Window\Stage;
@@ -124,7 +126,23 @@ class System implements IApplicationInterface
 
         $Stage = new Stage('Dashboard', 'System');
 
-        $Stage->setContent(Main::getDispatcher()->fetchDashboard('System'));
+        $Stage->setContent(
+            new Layout(
+                new LayoutGroup(
+                    new LayoutRow(array(
+                        new LayoutColumn(
+                            self::widgetDrive()
+                            , 4),
+                        new LayoutColumn(
+                            self::widgetMemory()
+                            , 4),
+                        new LayoutColumn(
+                            self::widgetLoad()
+                            , 4),
+                    ))
+                )
+            )
+        );
 
         return $Stage;
     }

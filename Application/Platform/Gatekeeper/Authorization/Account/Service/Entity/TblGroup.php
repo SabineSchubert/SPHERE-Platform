@@ -18,7 +18,6 @@ class TblGroup extends Element
 {
 
     const ATTR_NAME = 'Name';
-    const SERVICE_TBL_CONSUMER = 'serviceTblConsumer';
 
     /**
      * @Column(type="string")
@@ -28,10 +27,6 @@ class TblGroup extends Element
      * @Column(type="text")
      */
     protected $Description;
-    /**
-     * @Column(type="bigint")
-     */
-    protected $serviceTblConsumer;
 
     /**
      * @return string
@@ -67,27 +62,5 @@ class TblGroup extends Element
     {
         $this->Description = $Description;
         return $this;
-    }
-
-    /**
-     * @return bool|TblConsumer
-     */
-    public function getServiceTblConsumer()
-    {
-
-        if (null === $this->serviceTblConsumer) {
-            return false;
-        } else {
-            return Consumer::useService()->getConsumerById($this->serviceTblConsumer);
-        }
-    }
-
-    /**
-     * @param null|TblConsumer $tblConsumer
-     */
-    public function setServiceTblConsumer(TblConsumer $tblConsumer = null)
-    {
-
-        $this->serviceTblConsumer = ( null === $tblConsumer ? null : $tblConsumer->getId() );
     }
 }

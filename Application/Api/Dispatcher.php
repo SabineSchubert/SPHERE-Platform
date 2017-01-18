@@ -2,10 +2,6 @@
 namespace SPHERE\Application\Api;
 
 use SPHERE\Common\Frontend\ITemplateInterface;
-use SPHERE\Common\Frontend\Layout\Repository\Title;
-use SPHERE\Common\Frontend\Layout\Repository\Well;
-use SPHERE\Common\Frontend\Message\Repository\Danger;
-use SPHERE\Common\Frontend\Message\Repository\Warning;
 use SPHERE\Common\Window\Error;
 use SPHERE\System\Extension\Extension;
 

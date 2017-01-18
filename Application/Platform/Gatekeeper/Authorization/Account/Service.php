@@ -1,8 +1,6 @@
 <?php
 namespace SPHERE\Application\Platform\Gatekeeper\Authorization\Account;
 
-use SPHERE\Application\Api\Platform\Gatekeeper\ApiUserGroup;
-use SPHERE\Application\People\Person\Service\Entity\TblPerson;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblRole;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Data;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\TblAccount;
@@ -19,8 +17,6 @@ use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Service\Entity
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Token\Service\Entity\TblToken;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Token\Token;
 use SPHERE\Common\Frontend\Ajax\Pipeline;
-use SPHERE\Common\Frontend\Ajax\Receiver\BlockReceiver;
-use SPHERE\Common\Frontend\Ajax\Template\CloseModal;
 use SPHERE\Common\Frontend\Ajax\Template\Notify;
 use SPHERE\Common\Frontend\Form\IFormInterface;
 use SPHERE\Common\Frontend\Message\Repository\Success;
@@ -210,7 +206,7 @@ class Service extends AbstractService
      * @return IFormInterface|Redirect
      */
     public function createSessionCredential(
-        IFormInterface &$Form,
+        IFormInterface $Form,
         $CredentialName,
         $CredentialLock,
         TblIdentification $tblIdentification
@@ -334,7 +330,7 @@ class Service extends AbstractService
      * @return IFormInterface|Redirect
      */
     public function createSessionCredentialToken(
-        IFormInterface &$Form,
+        IFormInterface $Form,
         $CredentialName,
         $CredentialLock,
         $CredentialKey,

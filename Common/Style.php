@@ -2,8 +2,6 @@
 namespace SPHERE\Common;
 
 use MOC\V\Core\HttpKernel\Vendor\Universal\Request;
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
-use SPHERE\Application\Setting\MyAccount\MyAccount;
 use SPHERE\Library\Script as ScriptLibrary;
 use SPHERE\Library\Style as StyleLibrary;
 use SPHERE\Library\Style\Library;
@@ -33,17 +31,7 @@ class Style extends Extension
     private function __construct()
     {
 
-        $SettingSurface = 1;
-        switch ($SettingSurface) {
-            case 1:
-                $this->setSource('/Common/Style/Bootstrap.css');
-                break;
-            case 2:
-                $this->setSource('/Common/Style/Application.css');
-                break;
-            default:
-                $this->setSource('/Common/Style/Bootstrap.css');
-        }
+        $this->setSource('/Common/Style/Bootstrap.css');
 
         try {
             $this->setLibrary((new StyleLibrary('Bootstrap.Glyphicons.Glyphicons', '1.9.2'))->getLibrary());
@@ -98,19 +86,8 @@ class Style extends Extension
         $this->setSource('/Library/jQuery.FlowPlayer/6.0.3/skin/functional.css', false, true);
         $this->setSource('/Library/Highlight.js/8.8.0/styles/docco.css', false, true);
 
-        switch ($SettingSurface) {
-            case 1:
-                $this->setSource('/Common/Style/Correction.css', false, true);
-                $this->setSource('/Common/Style/DataTable.Correction.css', false, true);
-                break;
-            case 2:
-                $this->setSource('/Common/Style/Application.Correction.css', false, true);
-                $this->setSource('/Common/Style/Application.DataTable.Correction.css', false, true);
-                break;
-            default:
-                $this->setSource('/Common/Style/Correction.css', false, true);
-                $this->setSource('/Common/Style/DataTable.Correction.css', false, true);
-        }
+        $this->setSource('/Common/Style/Correction.css', false, true);
+        $this->setSource('/Common/Style/DataTable.Correction.css', false, true);
 
         $this->setSource('/Common/Style/CleanSlate/0.10.1/cleanslate.css',false,true);
         $this->setSource('/Common/Style/PhpInfo.css', false, true);
