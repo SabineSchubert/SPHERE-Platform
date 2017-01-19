@@ -35,14 +35,12 @@ class Authentication implements IModuleInterface
         )
             ->setParameterDefault('CredentialName', null)
             ->setParameterDefault('CredentialLock', null)
-            ->setParameterDefault('CredentialKey', null)
         );
         Main::getDispatcher()->registerRoute(Main::getDispatcher()->createRoute(
             __NAMESPACE__.'/Offline', __NAMESPACE__.'\Frontend::frontendDestroySession'
         )
             ->setParameterDefault('CredentialName', null)
             ->setParameterDefault('CredentialLock', null)
-            ->setParameterDefault('CredentialKey', null)
         );
 
         if (Account::useService()->getAccountBySession()) {

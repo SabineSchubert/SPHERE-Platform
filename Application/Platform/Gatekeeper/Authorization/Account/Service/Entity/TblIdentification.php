@@ -16,10 +16,9 @@ class TblIdentification extends Element
 {
 
     const NAME_CREDENTIAL = 'Credential';
-    const NAME_TOKEN = 'Token';
-    const NAME_SYSTEM = 'System';
 
     const ATTR_NAME = 'Name';
+    const ATTR_SESSION_TIMEOUT = 'SessionTimeout';
 
     /**
      * @Column(type="string")
@@ -33,14 +32,25 @@ class TblIdentification extends Element
      * @Column(type="boolean")
      */
     protected $IsActive;
+    /**
+     * @Column(type="integer")
+     */
+    protected $SessionTimeout = 3600;
 
     /**
-     * @param string $Name
+     * @return int
      */
-    public function __construct($Name)
+    public function getSessionTimeout()
     {
+        return $this->SessionTimeout;
+    }
 
-        $this->Name = $Name;
+    /**
+     * @param int $SessionTimeout
+     */
+    public function setSessionTimeout($SessionTimeout)
+    {
+        $this->SessionTimeout = (int)$SessionTimeout;
     }
 
     /**

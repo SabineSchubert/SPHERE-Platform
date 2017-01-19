@@ -8,8 +8,6 @@ use Doctrine\ORM\Mapping\Table;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Consumer;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Service\Entity\TblConsumer;
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Token\Service\Entity\TblToken;
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Token\Token;
 use SPHERE\System\Database\Fitting\Element;
 
 /**
@@ -23,7 +21,6 @@ class TblAccount extends Element
     const ATTR_USERNAME = 'Username';
     const ATTR_PASSWORD = 'Password';
     const SERVICE_TBL_CONSUMER = 'serviceTblConsumer';
-    const SERVICE_TBL_TOKEN = 'serviceTblToken';
     /**
      * @Column(type="string")
      */
@@ -35,20 +32,7 @@ class TblAccount extends Element
     /**
      * @Column(type="bigint")
      */
-    protected $serviceTblToken;
-    /**
-     * @Column(type="bigint")
-     */
     protected $serviceTblConsumer;
-
-    /**
-     * @param string $Username
-     */
-    public function __construct($Username)
-    {
-
-        $this->Username = $Username;
-    }
 
     /**
      * @return string
@@ -106,28 +90,6 @@ class TblAccount extends Element
     {
 
         $this->serviceTblConsumer = ( null === $tblConsumer ? null : $tblConsumer->getId() );
-    }
-
-    /**
-     * @return bool|TblToken
-     */
-    public function getServiceTblToken()
-    {
-
-        if (null === $this->serviceTblToken) {
-            return false;
-        } else {
-            return Token::useService()->getTokenById($this->serviceTblToken);
-        }
-    }
-
-    /**
-     * @param null|TblToken $tblToken
-     */
-    public function setServiceTblToken(TblToken $tblToken = null)
-    {
-
-        $this->serviceTblToken = ( null === $tblToken ? null : $tblToken->getId() );
     }
 
     /**

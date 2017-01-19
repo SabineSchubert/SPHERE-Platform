@@ -26,19 +26,6 @@ class TblRole extends Element
      * @Column(type="boolean")
      */
     protected $IsInternal;
-    /**
-     * @Column(type="boolean")
-     */
-    protected $IsSecure;
-    
-    /**
-     * @param string $Name
-     */
-    public function __construct($Name)
-    {
-
-        $this->Name = $Name;
-    }
 
     /**
      * @return string
@@ -83,23 +70,5 @@ class TblRole extends Element
     {
 
         $this->IsInternal = (bool)$IsInternal;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isSecure()
-    {
-
-        return (bool)$this->IsSecure;
-    }
-
-    /**
-     * @param bool $IsSecure
-     */
-    public function setSecure($IsSecure)
-    {
-
-        $this->IsSecure = (bool)$IsSecure;
     }
 }

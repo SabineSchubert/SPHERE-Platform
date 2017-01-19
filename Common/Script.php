@@ -119,7 +119,8 @@ class Script extends Extension
          */
 
         $this->setModule(
-            'ModAlways', array(/*'Highlight.js',*/
+            'ModAlways', array(
+                'Highlight.js',
                 'Bootbox.js',
                 'List.Js',
                 'Bootstrap.Notify',

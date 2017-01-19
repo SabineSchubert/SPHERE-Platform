@@ -21,17 +21,11 @@ class Setup extends AbstractSetup
     public function setupDatabaseSchema($Simulate = true)
     {
 
-        /**
-         * Table
-         */
-        $Schema = clone $this->getConnection()->getSchema();
+        $Schema = $this->loadSchema();
+
         $this->setTableProtocol($Schema);
-        /**
-         * Migration & Protocol
-         */
-        $this->getConnection()->addProtocol(__CLASS__);
-        $this->getConnection()->setMigration($Schema, $Simulate);
-        return $this->getConnection()->getProtocol($Simulate);
+
+        return $this->saveSchema( $Schema, $Simulate );
     }
 
     /**
@@ -42,10 +36,7 @@ class Setup extends AbstractSetup
     private function setTableProtocol(Schema &$Schema)
     {
 
-        /**
-         * Install
-         */
-        $Table = $this->getConnection()->createTable($Schema, 'tblProtocol');
+        $Table = $this->createTable($Schema, 'tblProtocol');
         /**
          * Upgrade
          */

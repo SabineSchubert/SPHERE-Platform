@@ -1,11 +1,13 @@
 <?php
-namespace SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity;
+namespace SPHERE\Application\Platform\Gatekeeper\Authorization\Group\Service\Entity;
 
 use Doctrine\ORM\Mapping\Cache;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
+use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\TblAccount;
+use SPHERE\Application\Platform\Gatekeeper\Authorization\Group\Group;
 use SPHERE\System\Database\Fitting\Element;
 
 /**
@@ -23,18 +25,18 @@ class TblGroupAccount extends Element
     /**
      * @Column(type="bigint")
      */
-    protected $tblAccount;
+    protected $serviceTblAccount;
 
     /**
-     * @return bool|TblGroup
+     * @return null|TblGroup
      */
     public function getTblGroup()
     {
 
         if (null === $this->tblGroup) {
-            return false;
+            return null;
         } else {
-            return Account::useService()->getGroupById($this->tblGroup);
+            return Group::useService()->getGroupById($this->tblGroup);
         }
     }
 
@@ -48,15 +50,15 @@ class TblGroupAccount extends Element
     }
 
     /**
-     * @return bool|TblAccount
+     * @return null|TblAccount
      */
-    public function getTblAccount()
+    public function getServiceTblAccount()
     {
 
-        if (null === $this->tblAccount) {
-            return false;
+        if (null === $this->serviceTblAccount) {
+            return null;
         } else {
-            return Account::useService()->getAccountById($this->tblAccount);
+            return Account::useService()->getAccountById($this->serviceTblAccount);
         }
     }
 
@@ -66,6 +68,6 @@ class TblGroupAccount extends Element
     public function setTblAccount(TblAccount $tblAccount = null)
     {
 
-        $this->tblAccount = ( null === $tblAccount ? null : $tblAccount->getId() );
+        $this->serviceTblAccount = ( null === $tblAccount ? null : $tblAccount->getId() );
     }
 }

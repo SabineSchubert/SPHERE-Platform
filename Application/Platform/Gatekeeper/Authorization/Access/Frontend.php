@@ -342,7 +342,6 @@ class Frontend
                             new FormColumn(
                                 new Panel('Rolle anlegen', array(
                                     new TextField('Name', 'Name', 'Name'),
-                                    new CheckBox('IsSecure', 'Nur mit Hardware-Token', 1)
                                 ), Panel::PANEL_TYPE_INFO)
                             )
                         ), new \SPHERE\Common\Frontend\Form\Repository\Title('Neue Rolle anlegen'))

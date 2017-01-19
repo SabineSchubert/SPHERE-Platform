@@ -1,12 +1,10 @@
 <?php
-namespace SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity;
+namespace SPHERE\Application\Platform\Gatekeeper\Authorization\Group\Service\Entity;
 
 use Doctrine\ORM\Mapping\Cache;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Consumer;
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Service\Entity\TblConsumer;
 use SPHERE\System\Database\Fitting\Element;
 
 /**

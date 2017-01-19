@@ -32,7 +32,7 @@ abstract class Cacheable extends Extension
      * @param string  $EntityName
      * @param int     $Id
      *
-     * @return false|Element
+     * @return Element|null
      * @throws \Exception
      */
     final protected function getCachedEntityById($__METHOD__, Manager $EntityManager, $EntityName, $Id)
@@ -60,9 +60,9 @@ abstract class Cacheable extends Extension
                 $this->debugCache($__METHOD__, $Entity, $Parameter);
             }
             $Memory->setValue($Key, $Entity, 0, $__METHOD__);
-            return ( null === $Entity || false === $Entity ? false : $Entity );
+            return ( null === $Entity || false === $Entity ? null : $Entity );
         }
-        return ( null === $Entity || false === $Entity ? false : $Entity );
+        return ( null === $Entity || false === $Entity ? null : $Entity );
     }
 
     /**
@@ -147,7 +147,7 @@ abstract class Cacheable extends Extension
      * @param string  $EntityName
      * @param array   $Parameter  Initiator Parameter-Array
      *
-     * @return false|Element
+     * @return null|Element
      * @throws \Exception
      */
     final protected function getCachedEntityBy($__METHOD__, Manager $EntityManager, $EntityName, $Parameter)
@@ -173,9 +173,9 @@ abstract class Cacheable extends Extension
                 $this->debugCache($__METHOD__, $Entity, $Parameter);
             }
             $Memory->setValue($Key, $Entity, 0, $__METHOD__);
-            return ( null === $Entity || false === $Entity ? false : $Entity );
+            return ( null === $Entity || false === $Entity ? null : $Entity );
         }
-        return ( null === $Entity || false === $Entity ? false : $Entity );
+        return ( null === $Entity || false === $Entity ? null : $Entity );
     }
 
     /**
@@ -185,7 +185,7 @@ abstract class Cacheable extends Extension
      * @param array   $Parameter  Initiator Parameter-Array
      * @param array   $OrderBy array( 'Column' => ORDER_{ASC|DESC}, ... )
      *
-     * @return false|Element[]
+     * @return null|Element[]
      */
     final protected function getCachedEntityListBy($__METHOD__, Manager $EntityManager, $EntityName, $Parameter, $OrderBy = array( 'EntityCreate' => self::ORDER_DESC ))
     {
@@ -207,9 +207,9 @@ abstract class Cacheable extends Extension
                 $this->debugCache($__METHOD__, $EntityList, $Parameter);
             }
             $Memory->setValue($Key, $EntityList, 0, $__METHOD__);
-            return ( empty( $EntityList ) ? false : $EntityList );
+            return ( empty( $EntityList ) ? null : $EntityList );
         }
-        return ( empty( $EntityList ) ? false : $EntityList );
+        return ( empty( $EntityList ) ? null : $EntityList );
     }
 
     /**
@@ -218,7 +218,7 @@ abstract class Cacheable extends Extension
      * @param string  $EntityName
      * @param array   $OrderBy array( 'Column' => ORDER_{ASC|DESC}, ... )
      *
-     * @return false|Element[]
+     * @return null|Element[]
      */
     final protected function getCachedEntityList($__METHOD__, Manager $EntityManager, $EntityName, $OrderBy = array( 'EntityCreate' => self::ORDER_DESC ))
     {
@@ -240,9 +240,9 @@ abstract class Cacheable extends Extension
                 $this->debugCache($__METHOD__, $EntityList, 'All');
             }
             $Memory->setValue($Key, $EntityList, 0, $__METHOD__);
-            return ( empty( $EntityList ) ? false : $EntityList );
+            return ( empty( $EntityList ) ? null : $EntityList );
         }
-        return ( empty( $EntityList ) ? false : $EntityList );
+        return ( empty( $EntityList ) ? null : $EntityList );
     }
 
     /**
@@ -251,7 +251,7 @@ abstract class Cacheable extends Extension
      * @param string  $EntityName
      * @param array   $Parameter  Initiator Parameter-Array
      *
-     * @return false|Element
+     * @return null|Element
      * @throws \Exception
      */
     final protected function getCachedCountBy($__METHOD__, Manager $EntityManager, $EntityName, $Parameter)
@@ -277,9 +277,9 @@ abstract class Cacheable extends Extension
                 $this->debugCache($__METHOD__, $Entity, $Parameter);
             }
             $Memory->setValue($Key, $Entity, 0, $__METHOD__);
-            return ( null === $Entity || false === $Entity ? false : $Entity );
+            return ( null === $Entity || false === $Entity ? null : $Entity );
         }
-        return ( null === $Entity || false === $Entity ? false : $Entity );
+        return ( null === $Entity || false === $Entity ? null : $Entity );
     }
 
     /** @var null|MemoryHandler $MemoryCacheHandler */

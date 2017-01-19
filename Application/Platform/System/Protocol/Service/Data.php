@@ -63,7 +63,7 @@ class Data extends AbstractData
      */
     public function getProtocolDatabaseNameList()
     {
-        $Builder = $this->getConnection()->getEntityManager()->getQueryBuilder();
+        $Builder = $this->getEntityManager()->getQueryBuilder();
 
         $Query = $Builder
             ->select('P.ProtocolDatabase')
@@ -88,7 +88,7 @@ class Data extends AbstractData
     public function getProtocolAll()
     {
 
-        $Manager = $this->getConnection()->getEntityManager();
+        $Manager = $this->getEntityManager();
 
         $Query = $Manager->getQueryBuilder()
             ->select('P')
@@ -145,10 +145,10 @@ class Data extends AbstractData
             if (self::$BulkManager) {
                 $Manager = self::$BulkManager;
             } else {
-                $Manager = self::$BulkManager = $this->getConnection()->getEntityManager();
+                $Manager = self::$BulkManager = $this->getEntityManager();
             }
         } else {
-            $Manager = $this->getConnection()->getEntityManager();
+            $Manager = $this->getEntityManager();
         }
 
         $Entity = new TblProtocol();
@@ -181,7 +181,7 @@ class Data extends AbstractData
     public function getProtocolAllCreateSession()
     {
 
-        $Manager = $this->getConnection()->getEntityManager();
+        $Manager = $this->getEntityManager();
 
         $Builder = $Manager->getQueryBuilder();
 
@@ -229,7 +229,7 @@ class Data extends AbstractData
     public function getProtocolLastActivity(TblAccount $tblAccount)
     {
 
-        $Manager = $this->getConnection()->getEntityManager();
+        $Manager = $this->getEntityManager();
 
         $Builder = $Manager->getQueryBuilder();
 

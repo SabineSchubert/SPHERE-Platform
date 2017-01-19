@@ -53,7 +53,7 @@ class TblAuthorization extends Element
     }
 
     /**
-     * @return bool|\SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblRole
+     * @return bool|TblRole
      */
     public function getServiceTblRole()
     {
@@ -66,7 +66,7 @@ class TblAuthorization extends Element
     }
 
     /**
-     * @param null|\SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblRole $tblRole
+     * @param null|TblRole $tblRole
      */
     public function setServiceTblRole(TblRole $tblRole = null)
     {

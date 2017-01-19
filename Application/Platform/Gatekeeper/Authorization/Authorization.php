@@ -6,7 +6,7 @@ use SPHERE\Application\IServiceInterface;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Access;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Consumer;
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Token\Token;
+use SPHERE\Application\Platform\Gatekeeper\Authorization\Group\Group;
 use SPHERE\Common\Frontend\IFrontendInterface;
 
 /**
@@ -21,9 +21,9 @@ class Authorization implements IModuleInterface
     {
 
         Consumer::registerModule();
-        Token::registerModule();
         Access::registerModule();
         Account::registerModule();
+        Group::registerModule();
     }
 
     /**

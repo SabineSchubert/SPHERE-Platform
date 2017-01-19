@@ -6,8 +6,6 @@ use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\T
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\TblAccount;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\TblIdentification;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Consumer;
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Token\Service\Entity\TblToken;
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Token\Token;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Field\CheckBox;
 use SPHERE\Common\Frontend\Form\Repository\Field\PasswordField;
@@ -53,28 +51,6 @@ class Frontend
             $isSystem = false;
         }
         $tblConsumer = Consumer::useService()->getConsumerBySession();
-        // Token
-        $tblTokenAll = Token::useService()->getTokenAll();
-        if ($tblTokenAll) {
-            array_walk($tblTokenAll, function (TblToken &$tblToken) {
-
-                if (Account::useService()->getAccountAllByToken($tblToken)) {
-                    $tblToken = false;
-                } else {
-                    $tblToken = new RadioBox('Account[Token]',
-                        implode(' ', str_split($tblToken->getSerial(), 4)), $tblToken->getId());
-                }
-            });
-            $tblTokenAll = array_filter($tblTokenAll);
-        } else {
-            $tblTokenAll = array();
-        }
-        array_unshift($tblTokenAll,
-            new RadioBox('Account[Token]',
-                new \SPHERE\Common\Frontend\Text\Repository\Danger('KEIN Hardware-Schlüssel'),
-                null
-            )
-        );
 
         // Identification
         $tblIdentificationAll = Account::useService()->getIdentificationAll();
@@ -159,9 +135,6 @@ class Frontend
                         ), 4),
                         new FormColumn(array(
                             new Panel('Berechtigungsstufe', $tblRoleAll)
-                        ), 4),
-                        new FormColumn(array(
-                            new Panel('Hardware-Schlüssel', $tblTokenAll)
                         ), 4),
                     ))
 

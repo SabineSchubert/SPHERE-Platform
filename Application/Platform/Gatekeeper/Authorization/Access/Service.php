@@ -3,10 +3,12 @@ namespace SPHERE\Application\Platform\Gatekeeper\Authorization\Access;
 
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Data;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblLevel;
+use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblLevelPrivilege;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblPrivilege;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblPrivilegeRight;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblRight;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblRole;
+use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblRoleLevel;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Setup;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
 use SPHERE\Common\Frontend\Form\IFormInterface;
@@ -26,12 +28,6 @@ class Service extends AbstractService
     private static $AuthorizationRequest = array();
     /** @var array $AuthorizationCache */
     private static $AuthorizationCache = array();
-    /** @var TblRole[] $RoleByIdCache */
-    private static $RoleByIdCache = array();
-    /** @var \SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblLevel[] $LevelByIdCache */
-    private static $LevelByIdCache = array();
-    /** @var TblPrivilege[] $PrivilegeByIdCache */
-    private static $PrivilegeByIdCache = array();
 
     /**
      * @param bool $doSimulation
@@ -58,7 +54,7 @@ class Service extends AbstractService
     {
 
         // Sanitize Route
-        $Route = '/'.trim($Route, '/');
+        $Route = '/' . trim($Route, '/');
 
         // Cache
         $this->hydrateAuthorization();
@@ -78,16 +74,16 @@ class Service extends AbstractService
     private function hydrateAuthorization()
     {
 
-        if (empty( self::$AuthorizationCache )) {
-            if (false !== ( $tblAccount = Account::useService()->getAccountBySession() )) {
+        if (empty(self::$AuthorizationCache)) {
+            if (($tblAccount = Account::useService()->getAccountBySession())) {
                 $Cache = $this->getCache(new MemcachedHandler());
-                if (!( $AuthorizationCache = $Cache->getValue($tblAccount->getId(), __METHOD__) )) {
-                    if (false !== ( $tblAuthorizationAll = Account::useService()->getAuthorizationAllByAccount($tblAccount) )) {
+                if (!($AuthorizationCache = $Cache->getValue($tblAccount->getId(), __METHOD__))) {
+                    if (($tblAuthorizationAll = Account::useService()->getAuthorizationAllByAccount($tblAccount))) {
                         /** @var \SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\TblAuthorization $tblAuthorization */
                         foreach ($tblAuthorizationAll as $tblAuthorization) {
                             $tblRole = $tblAuthorization->getServiceTblRole();
-                            if ($tblRole && (false !== ( $tblLevelAll = $tblRole->getTblLevelAll() ))) {
-                                /** @var \SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblLevel $tblLevel */
+                            if ($tblRole && (false !== ($tblLevelAll = $tblRole->getTblLevelAll()))) {
+                                /** @var TblLevel $tblLevel */
                                 foreach ($tblLevelAll as $tblLevel) {
                                     $tblPrivilegeAll = $tblLevel->getTblPrivilegeAll();
                                     if ($tblPrivilegeAll) {
@@ -130,7 +126,7 @@ class Service extends AbstractService
     /**
      * @param string $Name
      *
-     * @return bool|TblRight
+     * @return null|TblRight
      */
     public function getRightByName($Name)
     {
@@ -141,7 +137,7 @@ class Service extends AbstractService
     /**
      * @param integer $Id
      *
-     * @return bool|TblRight
+     * @return null|TblRight
      */
     public function getRightById($Id)
     {
@@ -150,7 +146,7 @@ class Service extends AbstractService
     }
 
     /**
-     * @return bool|TblRight[]
+     * @return null|TblRight[]
      */
     public function getRightAll()
     {
@@ -160,17 +156,17 @@ class Service extends AbstractService
 
     /**
      * @param IFormInterface $Form
-     * @param null|string    $Name
+     * @param null|string $Name
      *
      * @return IFormInterface|Redirect
      */
     public function createRight(IFormInterface $Form, $Name)
     {
 
-        if (null !== $Name && empty( $Name )) {
+        if (null !== $Name && empty($Name)) {
             $Form->setError('Name', 'Bitte geben Sie einen Namen ein');
         }
-        if (!empty( $Name )) {
+        if (!empty($Name)) {
             $Form->setSuccess('Name', 'Das Recht wurde hinzugefügt');
             (new Data($this->getBinding()))->createRight($Name);
             return new Redirect('/Platform/Gatekeeper/Authorization/Access/Right', 0);
@@ -180,17 +176,17 @@ class Service extends AbstractService
 
     /**
      * @param IFormInterface $Form
-     * @param null|string    $Name
+     * @param null|string $Name
      *
      * @return IFormInterface|Redirect
      */
     public function createPrivilege(IFormInterface $Form, $Name)
     {
 
-        if (null !== $Name && empty( $Name )) {
+        if (null !== $Name && empty($Name)) {
             $Form->setError('Name', 'Bitte geben Sie einen Namen ein');
         }
-        if (!empty( $Name )) {
+        if (!empty($Name)) {
             $Form->setSuccess('Name', 'Das Privileg wurde hinzugefügt');
             (new Data($this->getBinding()))->createPrivilege($Name);
             return new Redirect('/Platform/Gatekeeper/Authorization/Access/Privilege', 0);
@@ -201,22 +197,18 @@ class Service extends AbstractService
     /**
      * @param integer $Id
      *
-     * @return bool|TblPrivilege
+     * @return null|TblPrivilege
      */
     public function getPrivilegeById($Id)
     {
 
-        if (array_key_exists($Id, self::$PrivilegeByIdCache)) {
-            return self::$PrivilegeByIdCache[$Id];
-        }
-        self::$PrivilegeByIdCache[$Id] = (new Data($this->getBinding()))->getPrivilegeById($Id);
-        return self::$PrivilegeByIdCache[$Id];
+        return (new Data($this->getBinding()))->getPrivilegeById($Id);
     }
 
     /**
      * @param string $Name
      *
-     * @return bool|TblPrivilege
+     * @return null|TblPrivilege
      */
     public function getPrivilegeByName($Name)
     {
@@ -225,7 +217,7 @@ class Service extends AbstractService
     }
 
     /**
-     * @return bool|TblPrivilege[]
+     * @return null|TblPrivilege[]
      */
     public function getPrivilegeAll()
     {
@@ -235,17 +227,17 @@ class Service extends AbstractService
 
     /**
      * @param IFormInterface $Form
-     * @param null|string    $Name
+     * @param null|string $Name
      *
      * @return IFormInterface|Redirect
      */
     public function createLevel(IFormInterface $Form, $Name)
     {
 
-        if (null !== $Name && empty( $Name )) {
+        if (null !== $Name && empty($Name)) {
             $Form->setError('Name', 'Bitte geben Sie einen Namen ein');
         }
-        if (!empty( $Name )) {
+        if (!empty($Name)) {
             $Form->setSuccess('Name', 'Das Zugriffslevel wurde hinzugefügt');
             (new Data($this->getBinding()))->createLevel($Name);
             return new Redirect('/Platform/Gatekeeper/Authorization/Access/Level', 0);
@@ -256,22 +248,18 @@ class Service extends AbstractService
     /**
      * @param integer $Id
      *
-     * @return bool|\SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblLevel
+     * @return null|TblLevel
      */
     public function getLevelById($Id)
     {
 
-        if (array_key_exists($Id, self::$LevelByIdCache)) {
-            return self::$LevelByIdCache[$Id];
-        }
-        self::$LevelByIdCache[$Id] = (new Data($this->getBinding()))->getLevelById($Id);
-        return self::$LevelByIdCache[$Id];
+        return (new Data($this->getBinding()))->getLevelById($Id);
     }
 
     /**
      * @param string $Name
      *
-     * @return bool|\SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblLevel
+     * @return null|TblLevel
      */
     public function getLevelByName($Name)
     {
@@ -280,7 +268,7 @@ class Service extends AbstractService
     }
 
     /**
-     * @return bool|\SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblLevel[]
+     * @return null|TblLevel[]
      */
     public function getLevelAll()
     {
@@ -290,21 +278,21 @@ class Service extends AbstractService
 
     /**
      * @param IFormInterface $Form
-     * @param null|string    $Name
+     * @param null|string $Name
      *
-     * @param bool           $IsSecure
+     * @param bool $IsSecure
      *
      * @return IFormInterface|Redirect
      */
     public function createRole(IFormInterface $Form, $Name, $IsSecure = false)
     {
 
-        if (null !== $Name && empty( $Name )) {
+        if (null !== $Name && empty($Name)) {
             $Form->setError('Name', 'Bitte geben Sie einen Namen ein');
         }
-        if (!empty( $Name )) {
+        if (!empty($Name)) {
             $Form->setSuccess('Name', 'Die Rolle wurde hinzugefügt');
-            (new Data($this->getBinding()))->createRole($Name, $IsSecure);
+            (new Data($this->getBinding()))->createRole($Name);
             return new Redirect('/Platform/Gatekeeper/Authorization/Access/Role', Redirect::TIMEOUT_SUCCESS);
         }
         return $Form;
@@ -313,22 +301,18 @@ class Service extends AbstractService
     /**
      * @param integer $Id
      *
-     * @return bool|TblRole
+     * @return null|TblRole
      */
     public function getRoleById($Id)
     {
 
-        if (array_key_exists($Id, self::$RoleByIdCache)) {
-            return self::$RoleByIdCache[$Id];
-        }
-        self::$RoleByIdCache[$Id] = (new Data($this->getBinding()))->getRoleById($Id);
-        return self::$RoleByIdCache[$Id];
+        return (new Data($this->getBinding()))->getRoleById($Id);
     }
 
     /**
      * @param string $Name
      *
-     * @return bool|\SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblRole
+     * @return null|TblRole
      */
     public function getRoleByName($Name)
     {
@@ -337,7 +321,7 @@ class Service extends AbstractService
     }
 
     /**
-     * @return bool|\SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblRole[]
+     * @return null|TblRole[]
      */
     public function getRoleAll()
     {
@@ -347,9 +331,9 @@ class Service extends AbstractService
 
     /**
      *
-     * @param \SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblRole $tblRole
+     * @param TblRole $tblRole
      *
-     * @return bool|\SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblLevel[]
+     * @return null|TblLevel[]
      */
     public function getLevelAllByRole(TblRole $tblRole)
     {
@@ -359,9 +343,9 @@ class Service extends AbstractService
 
     /**
      *
-     * @param \SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblPrivilege $tblPrivilege
+     * @param TblPrivilege $tblPrivilege
      *
-     * @return bool|TblRight[]
+     * @return null|TblRight[]
      */
     public function getRightAllByPrivilege(TblPrivilege $tblPrivilege)
     {
@@ -371,9 +355,9 @@ class Service extends AbstractService
 
     /**
      *
-     * @param \SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblLevel $tblLevel
+     * @param TblLevel $tblLevel
      *
-     * @return bool|\SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblPrivilege[]
+     * @return null|TblPrivilege[]
      */
     public function getPrivilegeAllByLevel(TblLevel $tblLevel)
     {
@@ -382,10 +366,10 @@ class Service extends AbstractService
     }
 
     /**
-     * @param \SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblRole  $tblRole
-     * @param \SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblLevel $tblLevel
+     * @param TblRole $tblRole
+     * @param TblLevel $tblLevel
      *
-     * @return \SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblRoleLevel
+     * @return TblRoleLevel
      */
     public function addRoleLevel(TblRole $tblRole, TblLevel $tblLevel)
     {
@@ -394,10 +378,10 @@ class Service extends AbstractService
     }
 
     /**
-     * @param TblRole                                                                              $tblRole
-     * @param \SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblLevel $tblLevel
+     * @param TblRole $tblRole
+     * @param TblLevel $tblLevel
      *
-     * @return \SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblRoleLevel
+     * @return bool
      */
     public function removeRoleLevel(TblRole $tblRole, TblLevel $tblLevel)
     {
@@ -406,7 +390,7 @@ class Service extends AbstractService
     }
 
     /**
-     * @param TblLevel     $tblLevel
+     * @param TblLevel $tblLevel
      * @param TblPrivilege $tblPrivilege
      *
      * @return bool
@@ -419,7 +403,7 @@ class Service extends AbstractService
 
     /**
      * @param TblPrivilege $tblPrivilege
-     * @param TblRight     $tblRight
+     * @param TblRight $tblRight
      *
      * @return bool
      */
@@ -431,7 +415,7 @@ class Service extends AbstractService
 
     /**
      * @param TblPrivilege $tblPrivilege
-     * @param TblRight     $tblRight
+     * @param TblRight $tblRight
      *
      * @return TblPrivilegeRight
      */
@@ -442,10 +426,10 @@ class Service extends AbstractService
     }
 
     /**
-     * @param TblLevel     $tblLevel
+     * @param TblLevel $tblLevel
      * @param TblPrivilege $tblPrivilege
      *
-     * @return \SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblLevelPrivilege
+     * @return TblLevelPrivilege
      */
     public function addLevelPrivilege(TblLevel $tblLevel, TblPrivilege $tblPrivilege)
     {

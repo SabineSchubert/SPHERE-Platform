@@ -14,7 +14,9 @@ use SPHERE\System\Database\Binding\AbstractData;
  */
 class Data extends AbstractData
 {
-
+    /**
+     * @return void
+     */
     public function setupDatabaseContent()
     {
 
@@ -30,7 +32,7 @@ class Data extends AbstractData
     public function createConsumer($Acronym, $Name)
     {
 
-        $Manager = $this->getConnection()->getEntityManager();
+        $Manager = $this->getEntityManager();
         $Entity = $Manager->getEntity('TblConsumer')
             ->findOneBy(array(TblConsumer::ATTR_ACRONYM => $Acronym));
         if (null === $Entity) {
@@ -45,47 +47,47 @@ class Data extends AbstractData
     /**
      * @param string $Name
      *
-     * @return bool|TblConsumer
+     * @return null|TblConsumer
      */
     public function getConsumerByName($Name)
     {
 
-        $Entity = $this->getConnection()->getEntityManager()->getEntity('TblConsumer')
-            ->findOneBy(array(TblConsumer::ATTR_NAME => $Name));
-        return ( null === $Entity ? false : $Entity );
+        return $this->getCachedEntityBy(__METHOD__, $this->getEntityManager(), 'TblConsumer', array(
+            TblConsumer::ATTR_NAME => $Name
+        ));
     }
 
     /**
      * @param string $Acronym
      *
-     * @return bool|TblConsumer
+     * @return null|TblConsumer
      */
     public function getConsumerByAcronym($Acronym)
     {
 
-        $Entity = $this->getConnection()->getEntityManager()->getEntity('TblConsumer')
-            ->findOneBy(array(TblConsumer::ATTR_ACRONYM => $Acronym));
-        return ( null === $Entity ? false : $Entity );
+        return $this->getCachedEntityBy(__METHOD__, $this->getEntityManager(), 'TblConsumer', array(
+            TblConsumer::ATTR_ACRONYM => $Acronym
+        ));
     }
 
     /**
      * @param integer $Id
      *
-     * @return bool|TblConsumer
+     * @return null|TblConsumer
      */
     public function getConsumerById($Id)
     {
 
-        return $this->getCachedEntityById(__METHOD__, $this->getConnection()->getEntityManager(), 'TblConsumer', $Id);
+        return $this->getCachedEntityById(__METHOD__, $this->getEntityManager(), 'TblConsumer', $Id);
     }
 
     /**
-     * @return TblConsumer[]|bool
+     * @return TblConsumer[]|null
      */
     public function getConsumerAll()
     {
 
-        return $this->getCachedEntityList(__METHOD__, $this->getConnection()->getEntityManager(), 'TblConsumer');
+        return $this->getCachedEntityList(__METHOD__, $this->getEntityManager(), 'TblConsumer');
     }
 
     /**
@@ -98,9 +100,9 @@ class Data extends AbstractData
 
         // 1. Level Cache
         $Memory = $this->getCache(new MemoryHandler());
-        if (null === ( $Entity = $Memory->getValue($Session, __METHOD__) )) {
+        if (null === ($Entity = $Memory->getValue($Session, __METHOD__))) {
 
-            if (false !== ( $tblAccount = Account::useService()->getAccountBySession($Session) )) {
+            if (($tblAccount = Account::useService()->getAccountBySession($Session))) {
                 $Entity = $tblAccount->getServiceTblConsumer();
             } else {
                 $Entity = false;

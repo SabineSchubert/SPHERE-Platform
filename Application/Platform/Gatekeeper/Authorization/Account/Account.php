@@ -4,6 +4,7 @@ namespace SPHERE\Application\Platform\Gatekeeper\Authorization\Account;
 use SPHERE\Application\IModuleInterface;
 use SPHERE\Application\Platform\System\Database\Database;
 use SPHERE\Common\Main;
+use SPHERE\Common\Window\Navigation\Link;
 use SPHERE\System\Database\Link\Identifier;
 
 /**
@@ -19,10 +20,10 @@ class Account implements IModuleInterface
 
         Database::registerService(__CLASS__);
 
-//        Main::getDisplay()->addModuleNavigation(new Link(new Link\Route(__NAMESPACE__),
-//            new Link\Name('Benutzerkonten')),
-//            new Link\Route('/Platform/Gatekeeper/Authorization')
-//        );
+        Main::getDisplay()->addModuleNavigation(new Link(new Link\Route(__NAMESPACE__),
+            new Link\Name('Benutzerkonten')),
+            new Link\Route('/Platform/Gatekeeper/Authorization')
+        );
         Main::getDispatcher()->registerRoute(Main::getDispatcher()->createRoute(
             __NAMESPACE__, 'Frontend::frontendAccount'
         )

@@ -22,17 +22,11 @@ class Setup extends AbstractSetup
     public function setupDatabaseSchema($Simulate = true)
     {
 
-        /**
-         * Table
-         */
-        $Schema = clone $this->getConnection()->getSchema();
+        $Schema = $this->loadSchema();
+
         $this->setTableConsumer($Schema);
-        /**
-         * Migration & Protocol
-         */
-        $this->getConnection()->addProtocol(__CLASS__);
-        $this->getConnection()->setMigration($Schema, $Simulate);
-        return $this->getConnection()->getProtocol($Simulate);
+
+        return $this->saveSchema($Schema, $Simulate);
     }
 
     /**
@@ -43,18 +37,11 @@ class Setup extends AbstractSetup
     private function setTableConsumer(Schema &$Schema)
     {
 
-        $Table = $this->getConnection()->createTable($Schema, 'tblConsumer');
-        if (!$this->getConnection()->hasColumn('tblConsumer', 'Acronym')) {
-            $Table->addColumn('Acronym', 'string');
-        }
-        $this->getConnection()->removeIndex($Table, array('Acronym'));
-        if (!$this->getConnection()->hasIndex($Table, array('Acronym', Element::ENTITY_REMOVE))) {
-            $Table->addUniqueIndex(array('Acronym', Element::ENTITY_REMOVE));
-        }
-        if (!$this->getConnection()->hasColumn('tblConsumer', 'Name')) {
-            $Table->addColumn('Name', 'string');
-        }
+        $Table = $this->createTable($Schema, 'tblConsumer');
+        $this->createColumn($Table, 'Acronym', self::FIELD_TYPE_STRING);
+        $this->createIndex($Table, array('Acronym', Element::ENTITY_REMOVE));
 
+        $this->createColumn($Table, 'Name', self::FIELD_TYPE_STRING);
         return $Table;
     }
 }

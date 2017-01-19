@@ -28,14 +28,14 @@ class Data extends AbstractData
          * CLOUD
          * Administrator (Setup Role)
          */
-        $tblRoleCloud = $this->createRole('Administrator', true, true);
+        $tblRoleCloud = $this->createRole('Administrator', true);
 
-        // Level: Cloud - Platform
-        $tblLevel = $this->createLevel('Cloud - Platform');
+        // Level: Sphere-Platform
+        $tblLevel = $this->createLevel('Sphere-Platform');
         $this->addRoleLevel($tblRoleCloud, $tblLevel);
 
-        // Privilege: Cloud - System
-        $tblPrivilege = $this->createPrivilege('Cloud - System');
+        // Privilege: Sphere-System
+        $tblPrivilege = $this->createPrivilege('Sphere-System');
         $this->addLevelPrivilege($tblLevel, $tblPrivilege);
         $tblRight = $this->createRight('/Platform');
         $this->addPrivilegeRight($tblPrivilege, $tblRight);
@@ -72,8 +72,8 @@ class Data extends AbstractData
         $tblRight = $this->createRight('/Platform/System/Test/Upload/Delete/Check');
         $this->addPrivilegeRight($tblPrivilege, $tblRight);
 
-        // Privilege: Cloud - Gatekeeper
-        $tblPrivilege = $this->createPrivilege('Cloud - Gatekeeper');
+        // Privilege: Sphere-Gatekeeper
+        $tblPrivilege = $this->createPrivilege('Sphere-Gatekeeper');
         $this->addLevelPrivilege($tblLevel, $tblPrivilege);
         $tblRight = $this->createRight('/Platform');
         $this->addPrivilegeRight($tblPrivilege, $tblRight);
@@ -104,18 +104,15 @@ class Data extends AbstractData
         $tblRight = $this->createRight('/Platform/Gatekeeper/Authorization/Consumer');
         $this->addPrivilegeRight($tblPrivilege, $tblRight);
 
-        $tblRight = $this->createRight('/Platform/Gatekeeper/Authorization/Token');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-
         $tblRight = $this->createRight('/Platform/Gatekeeper/Authorization/Account');
         $this->addPrivilegeRight($tblPrivilege, $tblRight);
 
-        // Level: Cloud - Setting
-        $tblLevel = $this->createLevel('Cloud - Setting');
+        // Level: Sphere-Setting
+        $tblLevel = $this->createLevel('Sphere-Setting');
         $this->addRoleLevel($tblRoleCloud, $tblLevel);
 
-        // Privilege: Cloud - MyAccount
-        $tblPrivilege = $this->createPrivilege('Cloud - MyAccount');
+        // Privilege: Sphere-MyAccount
+        $tblPrivilege = $this->createPrivilege('Sphere-MyAccount');
         $this->addLevelPrivilege($tblLevel, $tblPrivilege);
         $tblRight = $this->createRight('/Setting');
         $this->addPrivilegeRight($tblPrivilege, $tblRight);
@@ -175,39 +172,12 @@ class Data extends AbstractData
         $tblRight = $this->createRight('/Setting/Authorization');
         $this->addPrivilegeRight($tblPrivilege, $tblRight);
 
-        $tblRight = $this->createRight('/Setting/Authorization/Token');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Setting/Authorization/Token/Destroy');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-
         $tblRight = $this->createRight('/Setting/Authorization/Account');
         $this->addPrivilegeRight($tblPrivilege, $tblRight);
         $tblRight = $this->createRight('/Setting/Authorization/Account/Create');
         $this->addPrivilegeRight($tblPrivilege, $tblRight);
         $this->createRight('/Setting/Authorization/Account/Edit');
         $tblRight = $this->createRight('/Setting/Authorization/Account/Destroy');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-
-        /**
-         * SERVER
-         * Schulstiftung (Setup Role)
-         */
-        $tblRole = $this->createRole('Schulstiftung', true, true);
-
-        // Level: Cloud - Roadmap
-        $tblLevel = $this->createLevel('Cloud - Roadmap');
-        $this->addRoleLevel($tblRole, $tblLevel);
-        // !!! Add To CLOUD Administrator
-        $this->addRoleLevel($tblRoleCloud, $tblLevel);
-
-        // Privilege: Cloud - Roadmap
-        $tblPrivilege = $this->createPrivilege('Cloud - Roadmap');
-        $this->addLevelPrivilege($tblLevel, $tblPrivilege);
-        $tblRight = $this->createRight('/Roadmap');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Roadmap/Current');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Roadmap/Download');
         $this->addPrivilegeRight($tblPrivilege, $tblRight);
 
         /**
@@ -226,19 +196,20 @@ class Data extends AbstractData
 
     /**
      * @param string $Name
-     * @param bool   $IsSecure
-     * @param bool   $IsInternal
-     *
+     * @param bool $IsInternal
      * @return TblRole
+     * @internal param bool $IsSecure
      */
-    public function createRole($Name, $IsSecure = false, $IsInternal = false)
+    public function createRole($Name, $IsInternal = false)
     {
 
-        $Manager = $this->getConnection()->getEntityManager();
-        $Entity = $Manager->getEntity('TblRole')->findOneBy(array(TblRole::ATTR_NAME => $Name));
+        $Manager = $this->getEntityManager();
+        $Entity = $this->getForceEntityBy(__METHOD__, $Manager, 'TblRole', array(
+            TblRole::ATTR_NAME => $Name
+        ));
         if (null === $Entity) {
-            $Entity = new TblRole($Name);
-            $Entity->setSecure($IsSecure);
+            $Entity = new TblRole();
+            $Entity->setName($Name);
             $Entity->setInternal($IsInternal);
             $Manager->saveEntity($Entity);
             Protocol::useService()->createInsertEntry($this->getConnection()->getDatabase(), $Entity);
@@ -254,8 +225,10 @@ class Data extends AbstractData
     public function createLevel($Name)
     {
 
-        $Manager = $this->getConnection()->getEntityManager();
-        $Entity = $Manager->getEntity('TblLevel')->findOneBy(array(TblLevel::ATTR_NAME => $Name));
+        $Manager = $this->getEntityManager();
+        $Entity = $this->getForceEntityBy(__METHOD__, $Manager, 'TblLevel', array(
+            TblLevel::ATTR_NAME => $Name
+        ));
         if (null === $Entity) {
             $Entity = new TblLevel($Name);
             $Manager->saveEntity($Entity);
@@ -265,7 +238,7 @@ class Data extends AbstractData
     }
 
     /**
-     * @param TblRole  $tblRole
+     * @param TblRole $tblRole
      * @param TblLevel $tblLevel
      *
      * @return TblRoleLevel
@@ -273,12 +246,11 @@ class Data extends AbstractData
     public function addRoleLevel(TblRole $tblRole, TblLevel $tblLevel)
     {
 
-        $Manager = $this->getConnection()->getEntityManager();
-        $Entity = $Manager->getEntity('TblRoleLevel')
-            ->findOneBy(array(
-                TblRoleLevel::ATTR_TBL_ROLE  => $tblRole->getId(),
-                TblRoleLevel::ATTR_TBL_LEVEL => $tblLevel->getId()
-            ));
+        $Manager = $this->getEntityManager();
+        $Entity = $this->getForceEntityBy(__METHOD__, $Manager, 'TblRoleLevel', array(
+            TblRoleLevel::ATTR_TBL_ROLE => $tblRole->getId(),
+            TblRoleLevel::ATTR_TBL_LEVEL => $tblLevel->getId()
+        ));
         if (null === $Entity) {
             $Entity = new TblRoleLevel();
             $Entity->setTblRole($tblRole);
@@ -297,8 +269,10 @@ class Data extends AbstractData
     public function createPrivilege($Name)
     {
 
-        $Manager = $this->getConnection()->getEntityManager();
-        $Entity = $Manager->getEntity('TblPrivilege')->findOneBy(array(TblPrivilege::ATTR_NAME => $Name));
+        $Manager = $this->getEntityManager();
+        $Entity = $this->getForceEntityBy(__METHOD__, $Manager, 'TblPrivilege', array(
+            TblPrivilege::ATTR_NAME => $Name
+        ));
         if (null === $Entity) {
             $Entity = new TblPrivilege($Name);
             $Manager->saveEntity($Entity);
@@ -308,7 +282,7 @@ class Data extends AbstractData
     }
 
     /**
-     * @param TblLevel     $tblLevel
+     * @param TblLevel $tblLevel
      * @param TblPrivilege $tblPrivilege
      *
      * @return TblLevelPrivilege
@@ -316,12 +290,11 @@ class Data extends AbstractData
     public function addLevelPrivilege(TblLevel $tblLevel, TblPrivilege $tblPrivilege)
     {
 
-        $Manager = $this->getConnection()->getEntityManager();
-        $Entity = $Manager->getEntity('TblLevelPrivilege')
-            ->findOneBy(array(
-                TblLevelPrivilege::ATTR_TBL_LEVEL     => $tblLevel->getId(),
-                TblLevelPrivilege::ATTR_TBL_PRIVILEGE => $tblPrivilege->getId()
-            ));
+        $Manager = $this->getEntityManager();
+        $Entity = $this->getForceEntityBy(__METHOD__, $Manager, 'TblLevelPrivilege', array(
+            TblLevelPrivilege::ATTR_TBL_LEVEL => $tblLevel->getId(),
+            TblLevelPrivilege::ATTR_TBL_PRIVILEGE => $tblPrivilege->getId()
+        ));
         if (null === $Entity) {
             $Entity = new TblLevelPrivilege();
             $Entity->setTblLevel($tblLevel);
@@ -340,8 +313,10 @@ class Data extends AbstractData
     public function createRight($Route)
     {
 
-        $Manager = $this->getConnection()->getEntityManager();
-        $Entity = $Manager->getEntity('TblRight')->findOneBy(array(TblRight::ATTR_ROUTE => $Route));
+        $Manager = $this->getEntityManager();
+        $Entity = $this->getForceEntityBy(__METHOD__, $Manager, 'TblRight', array(
+            TblRight::ATTR_ROUTE => $Route
+        ));
         if (null === $Entity) {
             $Entity = new TblRight($Route);
             $Manager->saveEntity($Entity);
@@ -352,19 +327,18 @@ class Data extends AbstractData
 
     /**
      * @param TblPrivilege $tblPrivilege
-     * @param TblRight     $tblRight
+     * @param TblRight $tblRight
      *
      * @return TblPrivilegeRight
      */
     public function addPrivilegeRight(TblPrivilege $tblPrivilege, TblRight $tblRight)
     {
 
-        $Manager = $this->getConnection()->getEntityManager();
-        $Entity = $Manager->getEntity('TblPrivilegeRight')
-            ->findOneBy(array(
-                TblPrivilegeRight::ATTR_TBL_PRIVILEGE => $tblPrivilege->getId(),
-                TblPrivilegeRight::ATTR_TBL_RIGHT     => $tblRight->getId()
-            ));
+        $Manager = $this->getEntityManager();
+        $Entity = $this->getForceEntityBy(__METHOD__, $Manager, 'TblPrivilegeRight', array(
+            TblPrivilegeRight::ATTR_TBL_PRIVILEGE => $tblPrivilege->getId(),
+            TblPrivilegeRight::ATTR_TBL_RIGHT => $tblRight->getId()
+        ));
         if (null === $Entity) {
             $Entity = new TblPrivilegeRight();
             $Entity->setTblPrivilege($tblPrivilege);
@@ -376,7 +350,7 @@ class Data extends AbstractData
     }
 
     /**
-     * @param TblRole  $tblRole
+     * @param TblRole $tblRole
      * @param TblLevel $tblLevel
      *
      * @return bool
@@ -384,13 +358,12 @@ class Data extends AbstractData
     public function removeRoleLevel(TblRole $tblRole, TblLevel $tblLevel)
     {
 
-        $Manager = $this->getConnection()->getEntityManager();
+        $Manager = $this->getEntityManager();
         /** @var TblRoleLevel $Entity */
-        $Entity = $Manager->getEntity('TblRoleLevel')
-            ->findOneBy(array(
-                TblRoleLevel::ATTR_TBL_ROLE  => $tblRole->getId(),
-                TblRoleLevel::ATTR_TBL_LEVEL => $tblLevel->getId()
-            ));
+        $Entity = $this->getForceEntityBy(__METHOD__, $Manager, 'TblRoleLevel', array(
+            TblRoleLevel::ATTR_TBL_ROLE => $tblRole->getId(),
+            TblRoleLevel::ATTR_TBL_LEVEL => $tblLevel->getId()
+        ));
         if (null !== $Entity) {
             Protocol::useService()->createDeleteEntry($this->getConnection()->getDatabase(), $Entity);
             $Manager->killEntity($Entity);
@@ -401,20 +374,19 @@ class Data extends AbstractData
 
     /**
      * @param TblPrivilege $tblPrivilege
-     * @param TblRight     $tblRight
+     * @param TblRight $tblRight
      *
      * @return bool
      */
     public function removePrivilegeRight(TblPrivilege $tblPrivilege, TblRight $tblRight)
     {
 
-        $Manager = $this->getConnection()->getEntityManager();
+        $Manager = $this->getEntityManager();
         /** @var TblPrivilegeRight $Entity */
-        $Entity = $Manager->getEntity('TblPrivilegeRight')
-            ->findOneBy(array(
-                TblPrivilegeRight::ATTR_TBL_PRIVILEGE => $tblPrivilege->getId(),
-                TblPrivilegeRight::ATTR_TBL_RIGHT     => $tblRight->getId()
-            ));
+        $Entity = $this->getForceEntityBy(__METHOD__, $Manager, 'TblPrivilegeRight', array(
+            TblPrivilegeRight::ATTR_TBL_PRIVILEGE => $tblPrivilege->getId(),
+            TblPrivilegeRight::ATTR_TBL_RIGHT => $tblRight->getId()
+        ));
         if (null !== $Entity) {
             Protocol::useService()->createDeleteEntry($this->getConnection()->getDatabase(), $Entity);
             $Manager->killEntity($Entity);
@@ -424,7 +396,7 @@ class Data extends AbstractData
     }
 
     /**
-     * @param TblLevel     $tblLevel
+     * @param TblLevel $tblLevel
      * @param TblPrivilege $tblPrivilege
      *
      * @return bool
@@ -432,13 +404,12 @@ class Data extends AbstractData
     public function removeLevelPrivilege(TblLevel $tblLevel, TblPrivilege $tblPrivilege)
     {
 
-        $Manager = $this->getConnection()->getEntityManager();
+        $Manager = $this->getEntityManager();
         /** @var TblLevelPrivilege $Entity */
-        $Entity = $Manager->getEntity('TblLevelPrivilege')
-            ->findOneBy(array(
-                TblLevelPrivilege::ATTR_TBL_LEVEL     => $tblLevel->getId(),
-                TblLevelPrivilege::ATTR_TBL_PRIVILEGE => $tblPrivilege->getId()
-            ));
+        $Entity = $this->getForceEntityBy(__METHOD__, $Manager, 'TblLevelPrivilege', array(
+            TblLevelPrivilege::ATTR_TBL_LEVEL => $tblLevel->getId(),
+            TblLevelPrivilege::ATTR_TBL_PRIVILEGE => $tblPrivilege->getId()
+        ));
         if (null !== $Entity) {
             Protocol::useService()->createDeleteEntry($this->getConnection()->getDatabase(), $Entity);
             $Manager->killEntity($Entity);
@@ -450,23 +421,23 @@ class Data extends AbstractData
     /**
      * @param integer $Id
      *
-     * @return bool|TblRight
+     * @return null|TblRight
      */
     public function getRightById($Id)
     {
 
-        return $this->getCachedEntityById(__METHOD__, $this->getConnection()->getEntityManager(), 'TblRight', $Id);
+        return $this->getCachedEntityById(__METHOD__, $this->getEntityManager(), 'TblRight', $Id);
     }
 
     /**
      * @param string $Name
      *
-     * @return bool|TblRight
+     * @return null|TblRight
      */
     public function getRightByName($Name)
     {
 
-        return $this->getCachedEntityBy(__METHOD__, $this->getConnection()->getEntityManager(), 'TblRight', array(
+        return $this->getCachedEntityBy(__METHOD__, $this->getEntityManager(), 'TblRight', array(
             TblRight::ATTR_ROUTE => $Name
         ));
     }
@@ -481,13 +452,13 @@ class Data extends AbstractData
 
         // 1. Level Cache
         $Memory = $this->getCache(new MemoryHandler());
-        if (null === ( $RouteList = $Memory->getValue(__METHOD__, __METHOD__) )) {
+        if (null === ($RouteList = $Memory->getValue(__METHOD__, __METHOD__))) {
             // 2. Level Cache
             $Cache = $this->getCache(new MemcachedHandler());
-            if (null === ( $RouteList = $Cache->getValue(__METHOD__, __METHOD__) )) {
-                $RouteList = $this->getConnection()->getEntityManager()->getQueryBuilder()
+            if (null === ($RouteList = $Cache->getValue(__METHOD__, __METHOD__))) {
+                $RouteList = $this->getEntityManager()->getQueryBuilder()
                     ->select('R.Route')
-                    ->from(__NAMESPACE__.'\Entity\TblRight', 'R')
+                    ->from(__NAMESPACE__ . '\Entity\TblRight', 'R')
                     ->distinct()
                     ->getQuery()
                     ->getResult("COLUMN_HYDRATOR");
@@ -499,34 +470,34 @@ class Data extends AbstractData
     }
 
     /**
-     * @return bool|TblRight[]
+     * @return null|TblRight[]
      */
     public function getRightAll()
     {
 
-        return $this->getCachedEntityList(__METHOD__, $this->getConnection()->getEntityManager(), 'TblRight');
+        return $this->getCachedEntityList(__METHOD__, $this->getEntityManager(), 'TblRight');
     }
 
     /**
      * @param integer $Id
      *
-     * @return bool|TblLevel
+     * @return null|TblLevel
      */
     public function getLevelById($Id)
     {
 
-        return $this->getCachedEntityById(__METHOD__, $this->getConnection()->getEntityManager(), 'TblLevel', $Id);
+        return $this->getCachedEntityById(__METHOD__, $this->getEntityManager(), 'TblLevel', $Id);
     }
 
     /**
      * @param string $Name
      *
-     * @return bool|TblLevel
+     * @return null|TblLevel
      */
     public function getLevelByName($Name)
     {
 
-        return $this->getCachedEntityBy( __METHOD__,$this->getConnection()->getEntityManager(), 'TblLevel',array(
+        return $this->getCachedEntityBy(__METHOD__, $this->getEntityManager(), 'TblLevel', array(
             TblLevel::ATTR_NAME => $Name
         ));
     }
@@ -534,23 +505,23 @@ class Data extends AbstractData
     /**
      * @param integer $Id
      *
-     * @return bool|TblPrivilege
+     * @return null|TblPrivilege
      */
     public function getPrivilegeById($Id)
     {
 
-        return $this->getCachedEntityById(__METHOD__, $this->getConnection()->getEntityManager(), 'TblPrivilege', $Id);
+        return $this->getCachedEntityById(__METHOD__, $this->getEntityManager(), 'TblPrivilege', $Id);
     }
 
     /**
      * @param string $Name
      *
-     * @return bool|TblPrivilege
+     * @return null|TblPrivilege
      */
     public function getPrivilegeByName($Name)
     {
 
-        return $this->getCachedEntityBy( __METHOD__,$this->getConnection()->getEntityManager(), 'TblPrivilege',array(
+        return $this->getCachedEntityBy(__METHOD__, $this->getEntityManager(), 'TblPrivilege', array(
             TblPrivilege::ATTR_NAME => $Name
         ));
     }
@@ -559,12 +530,12 @@ class Data extends AbstractData
      *
      * @param TblLevel $tblLevel
      *
-     * @return bool|TblLevelPrivilege[]
+     * @return null|TblPrivilege[]
      */
     public function getPrivilegeAllByLevel(TblLevel $tblLevel)
     {
         /** @var TblLevelPrivilege[] $EntityList */
-        $EntityList = $this->getCachedEntityListBy( __METHOD__,$this->getConnection()->getEntityManager(), 'TblLevelPrivilege',array(
+        $EntityList = $this->getCachedEntityListBy(__METHOD__, $this->getEntityManager(), 'TblLevelPrivilege', array(
             TblLevelPrivilege::ATTR_TBL_LEVEL => $tblLevel->getId()
         ));
         if ($EntityList) {
@@ -572,21 +543,23 @@ class Data extends AbstractData
 
                 $V = $V->getTblPrivilege();
             });
+            $EntityList = array_filter($EntityList);
         }
-        return ( null === $EntityList ? false : $EntityList );
+        /** @var TblPrivilege[] $EntityList */
+        return (empty($EntityList) ? null : $EntityList);
     }
 
     /**
      *
      * @param TblPrivilege $tblPrivilege
      *
-     * @return bool|TblRight[]
+     * @return null|TblRight[]
      */
     public function getRightAllByPrivilege(TblPrivilege $tblPrivilege)
     {
 
         /** @var TblPrivilegeRight[] $EntityList */
-        $EntityList = $this->getCachedEntityListBy( __METHOD__,$this->getConnection()->getEntityManager(), 'TblPrivilegeRight',array(
+        $EntityList = $this->getCachedEntityListBy(__METHOD__, $this->getEntityManager(), 'TblPrivilegeRight', array(
             TblPrivilegeRight::ATTR_TBL_PRIVILEGE => $tblPrivilege->getId()
         ));
         if ($EntityList) {
@@ -594,71 +567,73 @@ class Data extends AbstractData
 
                 $V = $V->getTblRight();
             });
+            $EntityList = array_filter($EntityList);
         }
-        return ( null === $EntityList ? false : $EntityList );
+        /** @var TblRight[] $EntityList */
+        return (empty($EntityList) ? null : $EntityList);
     }
 
     /**
-     * @return bool|TblPrivilege[]
+     * @return null|TblPrivilege[]
      */
     public function getPrivilegeAll()
     {
 
-        return $this->getCachedEntityList(__METHOD__, $this->getConnection()->getEntityManager(), 'TblPrivilege');
+        return $this->getCachedEntityList(__METHOD__, $this->getEntityManager(), 'TblPrivilege');
     }
 
     /**
-     * @return bool|TblLevel[]
+     * @return null|TblLevel[]
      */
     public function getLevelAll()
     {
 
-        return $this->getCachedEntityList(__METHOD__, $this->getConnection()->getEntityManager(), 'TblLevel');
+        return $this->getCachedEntityList(__METHOD__, $this->getEntityManager(), 'TblLevel');
     }
 
     /**
      * @param integer $Id
      *
-     * @return bool|TblRole
+     * @return null|TblRole
      */
     public function getRoleById($Id)
     {
 
-        return $this->getCachedEntityById(__METHOD__, $this->getConnection()->getEntityManager(), 'TblRole', $Id);
+        return $this->getCachedEntityById(__METHOD__, $this->getEntityManager(), 'TblRole', $Id);
     }
 
     /**
      * @param string $Name
      *
-     * @return bool|TblRole
+     * @return null|TblRole
      */
     public function getRoleByName($Name)
     {
 
-        return $this->getCachedEntityBy( __METHOD__,$this->getConnection()->getEntityManager(), 'TblRole',array(
+        return $this->getCachedEntityBy(__METHOD__, $this->getEntityManager(), 'TblRole', array(
             TblRole::ATTR_NAME => $Name
         ));
     }
 
     /**
-     * @return bool|TblRole[]
+     * @return null|TblRole[]
      */
     public function getRoleAll()
     {
 
-        return $this->getCachedEntityList(__METHOD__, $this->getConnection()->getEntityManager(), 'TblRole');
+        return $this->getCachedEntityList(__METHOD__, $this->getEntityManager(), 'TblRole');
     }
 
     /**
      *
      * @param TblRole $tblRole
      *
-     * @return bool|TblRoleLevel[]
+     * @return null|TblLevel[]
      */
     public function getLevelAllByRole(TblRole $tblRole)
     {
 
-        $EntityList = $this->getCachedEntityListBy(__METHOD__, $this->getConnection()->getEntityManager(),
+        $EntityList = $this->getCachedEntityListBy(__METHOD__, $this->getEntityManager(),
             'TblRoleLevel',
             array(
                 TblRoleLevel::ATTR_TBL_ROLE => $tblRole->getId()
@@ -669,7 +644,9 @@ class Data extends AbstractData
 
                 $V = $V->getTblLevel();
             });
+            $EntityList = array_filter($EntityList);
         }
-        return $EntityList;
+        /** @var TblLevel[] $EntityList */
+        return (empty($EntityList) ? null : $EntityList);
     }
 }

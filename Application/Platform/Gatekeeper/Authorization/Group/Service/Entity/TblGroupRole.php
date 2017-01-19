@@ -1,5 +1,5 @@
 <?php
-namespace SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity;
+namespace SPHERE\Application\Platform\Gatekeeper\Authorization\Group\Service\Entity;
 
 use Doctrine\ORM\Mapping\Cache;
 use Doctrine\ORM\Mapping\Column;
@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Access;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblRole;
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
+use SPHERE\Application\Platform\Gatekeeper\Authorization\Group\Group;
 use SPHERE\System\Database\Fitting\Element;
 
 /**
@@ -39,7 +39,7 @@ class TblGroupRole extends Element
         if (null === $this->tblGroup) {
             return false;
         } else {
-            return Account::useService()->getGroupById($this->tblGroup);
+            return Group::useService()->getGroupById($this->tblGroup);
         }
     }
 

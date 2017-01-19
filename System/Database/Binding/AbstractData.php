@@ -44,7 +44,7 @@ abstract class AbstractData extends Cacheable
     protected function getEntityAllByLogic(Element $Entity, AbstractLogic $Logic)
     {
 
-        $Manager = $this->getConnection()->getEntityManager();
+        $Manager = $this->getEntityManager();
         $Builder = $Manager->getQueryBuilder();
 
         $Builder->select('E')->from($Entity->getEntityFullName(), 'E');
@@ -64,9 +64,6 @@ abstract class AbstractData extends Cacheable
             }
             return $Result;
         }
-
-        // TODO: Remove
-//        $this->getDebugger()->screenDump( $Query->getSQL() );
 
         return $Query->getResult();
     }
@@ -92,16 +89,13 @@ abstract class AbstractData extends Cacheable
     protected function getColumnAllByLogic(Element $Entity, AbstractLogic $Logic, $Column = 'Id')
     {
 
-        $Manager = $this->getConnection()->getEntityManager();
+        $Manager = $this->getEntityManager();
         $Builder = $Manager->getQueryBuilder();
 
         $Builder->select('E.'.$Column)->from($Entity->getEntityFullName(), 'E');
         $Builder->andWhere($Logic->getExpression());
         $Query = $Builder->getQuery();
         $Query->useQueryCache(true);
-
-        // TODO: Remove
-        // $this->getDebugger()->screenDump($Query->getSQL());
 
         return $Query->getResult(ColumnHydrator::HYDRATION_MODE);
     }
@@ -112,7 +106,7 @@ abstract class AbstractData extends Cacheable
      * @param string  $EntityName
      * @param int     $Id
      *
-     * @return false|Element
+     * @return null|Element
      * @throws \Exception
      */
     final protected function getForceEntityById($__METHOD__, Manager $EntityManager, $EntityName, $Id)
@@ -121,9 +115,6 @@ abstract class AbstractData extends Cacheable
         $Parameter['Id'] = $Id;
 
         $Entity = $EntityManager->getEntity($EntityName)->findOneBy($Parameter);
-        if (null === $Entity) {
-            $Entity = false;
-        }
         $this->debugFactory($__METHOD__, $Entity, $Parameter);
         return $Entity;
     }
@@ -134,16 +125,13 @@ abstract class AbstractData extends Cacheable
      * @param string  $EntityName
      * @param array   $Parameter  Initiator Parameter-Array
      *
-     * @return false|Element
+     * @return null|Element
      * @throws \Exception
      */
     final protected function getForceEntityBy($__METHOD__, Manager $EntityManager, $EntityName, $Parameter)
     {
 
         $Entity = $EntityManager->getEntity($EntityName)->findOneBy($Parameter);
-        if (null === $Entity) {
-            $Entity = false;
-        }
         $this->debugFactory($__METHOD__, $Entity, $Parameter);
         return $Entity;
     }
@@ -154,7 +142,7 @@ abstract class AbstractData extends Cacheable
      * @param string  $EntityName
      * @param array   $Parameter  Initiator Parameter-Array
      *
-     * @return false|Element[]
+     * @return null|Element[]
      * @throws \Exception
      */
     final protected function getForceEntityListBy($__METHOD__, Manager $EntityManager, $EntityName, $Parameter)
@@ -162,7 +150,7 @@ abstract class AbstractData extends Cacheable
 
         $EntityList = $EntityManager->getEntity($EntityName)->findBy($Parameter);
         $this->debugFactory($__METHOD__, $EntityList, $Parameter);
-        return ( empty( $EntityList ) ? false : $EntityList );
+        return ( empty( $EntityList ) ? null : $EntityList );
     }
 
     /**
@@ -170,7 +158,7 @@ abstract class AbstractData extends Cacheable
      * @param Manager $EntityManager
      * @param string  $EntityName
      *
-     * @return false|Element[]
+     * @return null|Element[]
      * @throws \Exception
      */
     final protected function getForceEntityList($__METHOD__, Manager $EntityManager, $EntityName)
@@ -178,7 +166,7 @@ abstract class AbstractData extends Cacheable
 
         $EntityList = $EntityManager->getEntity($EntityName)->findAll();
         $this->debugFactory($__METHOD__, $EntityList, 'All');
-        return ( empty( $EntityList ) ? false : $EntityList );
+        return ( empty( $EntityList ) ? null : $EntityList );
     }
 
     /**
@@ -187,17 +175,25 @@ abstract class AbstractData extends Cacheable
      * @param string  $EntityName
      * @param array   $Parameter  Initiator Parameter-Array
      *
-     * @return false|Element
+     * @return int
      * @throws \Exception
      */
     final protected function getForceEntityCountBy($__METHOD__, Manager $EntityManager, $EntityName, $Parameter)
     {
 
-        $Entity = $EntityManager->getEntity($EntityName)->countBy($Parameter);
-        if (null === $Entity) {
-            $Entity = false;
-        }
-        $this->debugFactory($__METHOD__, $Entity, $Parameter);
-        return $Entity;
+        $Result = $EntityManager->getEntity($EntityName)->countBy($Parameter);
+        $this->debugFactory($__METHOD__, $Result, $Parameter);
+        return $Result;
+    }
+
+    /**
+     * @param bool $useCache true
+     *
+     * @return Manager
+     */
+    final protected function getEntityManager( $useCache = true )
+    {
+
+        return $this->getConnection()->getEntityManager( $useCache );
     }
 }

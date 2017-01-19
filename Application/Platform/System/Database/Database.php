@@ -5,16 +5,18 @@ use SPHERE\Application\IModuleInterface;
 use SPHERE\Application\IServiceInterface;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Consumer;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Service\Entity\TblConsumer;
+use SPHERE\Common\Frontend\Icon\Repository\Flash;
 use SPHERE\Common\Frontend\Icon\Repository\Ok;
+use SPHERE\Common\Frontend\Icon\Repository\Question;
 use SPHERE\Common\Frontend\Icon\Repository\Repeat;
+use SPHERE\Common\Frontend\Icon\Repository\Search;
 use SPHERE\Common\Frontend\Icon\Repository\Warning;
 use SPHERE\Common\Frontend\IFrontendInterface;
 use SPHERE\Common\Frontend\Layout\Repository\Listing;
 use SPHERE\Common\Frontend\Layout\Repository\PullClear;
 use SPHERE\Common\Frontend\Layout\Repository\PullLeft;
 use SPHERE\Common\Frontend\Layout\Repository\Title;
-use SPHERE\Common\Frontend\Link\Repository\External;
-use SPHERE\Common\Frontend\Link\Repository\Standard;
+use SPHERE\Common\Frontend\Link\Repository\Primary;
 use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Frontend\Table\Structure\TableBody;
 use SPHERE\Common\Frontend\Table\Structure\TableColumn;
@@ -62,18 +64,18 @@ class Database extends Extension implements IModuleInterface
             )
         );
         Main::getDispatcher()->registerRoute(
-            Main::getDispatcher()->createRoute(__NAMESPACE__.'/Setup/Simulation',
-                __CLASS__.'::frontendSetup'
+            Main::getDispatcher()->createRoute(__NAMESPACE__ . '/Setup/Simulation',
+                __CLASS__ . '::frontendSetup'
             )->setParameterDefault('Simulation', true)
         );
         Main::getDispatcher()->registerRoute(
-            Main::getDispatcher()->createRoute(__NAMESPACE__.'/Setup/Execution',
-                __CLASS__.'::frontendSetup'
+            Main::getDispatcher()->createRoute(__NAMESPACE__ . '/Setup/Execution',
+                __CLASS__ . '::frontendSetup'
             )->setParameterDefault('Simulation', false)
         );
         Main::getDispatcher()->registerRoute(
-            Main::getDispatcher()->createRoute(__NAMESPACE__.'/Setup/Upgrade',
-                __CLASS__.'::frontendSetupUpgrade'
+            Main::getDispatcher()->createRoute(__NAMESPACE__ . '/Setup/Upgrade',
+                __CLASS__ . '::frontendSetupUpgrade'
             )
         );
     }
@@ -114,14 +116,15 @@ class Database extends Extension implements IModuleInterface
     {
 
         $Stage = new Stage('Database', 'Status');
+        $Stage->setMessage('Konfigurierte Datenbank-Verbindungen');
         $this->menuButton($Stage);
-        $Configuration = parse_ini_file(__DIR__.'/../../../../System/Database/Configuration.ini', true);
+        $Configuration = parse_ini_file(__DIR__ . '/../../../../System/Database/Configuration.ini', true);
         $Result = array();
         foreach ((array)$Configuration as $Service => $Parameter) {
             $Service = explode(':', $Service);
 
             // Force Consumer ?
-            if (!isset( $Service[4] ) && ( !isset( $Parameter['Consumer'] ) || $Parameter['Consumer'] )) {
+            if (!isset($Service[4]) && (!isset($Parameter['Consumer']) || $Parameter['Consumer'])) {
                 $tblConsumerAll = Consumer::useService()->getConsumerAll();
                 /** @var TblConsumer $tblConsumer */
                 foreach ((array)$tblConsumerAll as $tblConsumer) {
@@ -132,9 +135,9 @@ class Database extends Extension implements IModuleInterface
                             new Identifier(
                                 $Service[0],
                                 $Service[1],
-                                ( isset( $Service[2] ) ? $Service[2] : null ),
-                                ( isset( $Service[3] ) ? $Service[3] : null ),
-                                ( isset( $Service[4] ) ? $Service[4] : null )
+                                (isset($Service[2]) ? $Service[2] : null),
+                                (isset($Service[3]) ? $Service[3] : null),
+                                (isset($Service[4]) ? $Service[4] : null)
                             )
                         );
                         $Status = new Success('Verbunden', new Ok());
@@ -150,9 +153,9 @@ class Database extends Extension implements IModuleInterface
                         new Identifier(
                             $Service[0],
                             $Service[1],
-                            ( isset( $Service[2] ) ? $Service[2] : null ),
-                            ( isset( $Service[3] ) ? $Service[3] : null ),
-                            ( isset( $Service[4] ) ? $Service[4] : null )
+                            (isset($Service[2]) ? $Service[2] : null),
+                            (isset($Service[3]) ? $Service[3] : null),
+                            (isset($Service[4]) ? $Service[4] : null)
                         )
                     );
                     $Status = new Success('Verbunden', new Ok());
@@ -194,27 +197,25 @@ class Database extends Extension implements IModuleInterface
     private function menuButton(Stage $Stage)
     {
 
-        $Stage->addButton(new Standard('Status', new Link\Route(__NAMESPACE__), null,
+        $Stage->addButton(new Primary('Status', new Link\Route(__NAMESPACE__), new Question(),
             array(), 'Datenbankverbindungen'
         ));
-        $Stage->addButton(new Standard('Simulation', new Link\Route(__NAMESPACE__.'/Setup/Simulation'), null,
+        $Stage->addButton(new \SPHERE\Common\Frontend\Link\Repository\Success('Simulation', new Link\Route(__NAMESPACE__ . '/Setup/Simulation'), new Search(),
             array(), 'Anzeige von Strukturänderungen'
         ));
-        $Stage->addButton(new Standard('Durchführung', new Link\Route(__NAMESPACE__.'/Setup/Execution'), null,
+        $Stage->addButton(new \SPHERE\Common\Frontend\Link\Repository\Warning('Durchführung', new Link\Route(__NAMESPACE__ . '/Setup/Execution'), new Flash(),
             array(), 'Durchführen von Strukturänderungen und einspielen zugehöriger Daten'
         ));
-        $Stage->addButton(new Standard('Alle Mandanten aktualisieren', new Link\Route(__NAMESPACE__.'/Setup/Upgrade'),
-            new Warning(),
-            array(), 'Durchführen von Strukturänderungen und einspielen zugehöriger Daten'
-        ));
-        $Stage->addButton(new External('phpMyAdmin',
-            $this->getRequest()->getPathBase().'/UnitTest/Console/phpMyAdmin-4.6.1'));
+//        $Stage->addButton(new \SPHERE\Common\Frontend\Link\Repository\Danger('Durchführung: Alle Mandanten', new Link\Route(__NAMESPACE__ . '/Setup/Upgrade'),
+//            new Flash(),
+//            array(), 'Durchführen von Strukturänderungen und einspielen zugehöriger Daten'
+//        ));
     }
 
     /**
-     * @param ITextInterface                        $Status
-     * @param array                                 $Service
-     * @param array                                 $Parameter
+     * @param ITextInterface $Status
+     * @param array $Service
+     * @param array $Parameter
      * @param \SPHERE\System\Database\Database|null $Connection
      *
      * @return TableRow
@@ -224,19 +225,20 @@ class Database extends Extension implements IModuleInterface
         $Service,
         $Parameter,
         \SPHERE\System\Database\Database $Connection = null
-    ) {
+    )
+    {
 
         return new TableRow(array(
             new TableColumn($Status),
             new TableColumn($Service[0]),
             new TableColumn($Service[1]),
-            new TableColumn(( isset( $Service[2] ) ? $Service[2] : null )),
-            new TableColumn(( isset( $Service[3] ) ? $Service[3] : null )),
-            new TableColumn(( isset( $Service[4] ) ? $Service[4] : null )),
+            new TableColumn((isset($Service[2]) ? $Service[2] : null)),
+            new TableColumn((isset($Service[3]) ? $Service[3] : null)),
+            new TableColumn((isset($Service[4]) ? $Service[4] : null)),
             new TableColumn($Parameter['Driver']),
             new TableColumn($Parameter['Host']),
-            new TableColumn(( isset( $Parameter['Port'] ) ? $Parameter['Port'] : 'Default' )),
-            new TableColumn(isset( $Connection ) ? $Connection->getDatabase() : '-NA-')
+            new TableColumn((isset($Parameter['Port']) ? $Parameter['Port'] : 'Default')),
+            new TableColumn(isset($Connection) ? $Connection->getDatabase() : '-NA-')
         ));
     }
 
@@ -258,9 +260,9 @@ class Database extends Extension implements IModuleInterface
                 function (TblConsumer $tblConsumer) use (&$ConsumerRequestList, $Authenticator) {
 
                     $ConsumerRequestList[$tblConsumer->getAcronym()] =
-                        'https://'.$this->getRequest()->getHost()
-                        .'/Api/Platform/Database/Upgrade'
-                        .'?'.http_build_query($Authenticator->createSignature(array(
+                        'https://' . $this->getRequest()->getHost()
+                        . '/Api/Platform/Database/Upgrade'
+                        . '?' . http_build_query($Authenticator->createSignature(array(
                             'Consumer' => $tblConsumer->getAcronym()
                         ), '/Api/Platform/Database/Upgrade'));
 
@@ -269,19 +271,19 @@ class Database extends Extension implements IModuleInterface
             ksort($ConsumerRequestList);
 
             $Api = $ConsumerRequestList['DEMO'];
-            unset( $ConsumerRequestList['DEMO'] );
+            unset($ConsumerRequestList['DEMO']);
             $ConsumerRequestList['DEMO'] = $Api;
         }
 
         $Stage->setContent(
             new Title('Mandanten werden aktualisiert...')
-            .'<div id="ConsumerProgress" class="progress" style="height: 15px; margin: 0;">
+            . '<div id="ConsumerProgress" class="progress" style="height: 15px; margin: 0;">
                 <div class="progress-bar progress-bar-success" style="width: 0%;"></div>
                 <div class="progress-bar progress-bar-info progress-bar-striped active" style="width: 0%;"></div>
                 <div class="progress-bar progress-bar-warning" style="width: 100%;"></div>
             </div>'
-            .'<div id="ConsumerProtocol" class="small"></div>'
-            .'<script language=javascript>
+            . '<div id="ConsumerProtocol" class="small"></div>'
+            . '<script language=javascript>
             //noinspection JSUnresolvedFunction
             executeScript(function()
             {
@@ -365,7 +367,7 @@ class Database extends Extension implements IModuleInterface
 
                     }(jQuery));
 
-                    jQuery().ModDatabaseUpgrade({consumer:'.json_encode($ConsumerRequestList).' });
+                    jQuery().ModDatabaseUpgrade({consumer:' . json_encode($ConsumerRequestList) . ' });
                 });
             });
         </script>'
@@ -388,9 +390,10 @@ class Database extends Extension implements IModuleInterface
             self::$ServiceRegister, array_diff($ClassList, self::$ServiceRegister)
         );
 
+        // Strict Dependencies (Foreign-Constrains)
+        array_unshift(self::$ServiceRegister, 'SPHERE\Application\Platform\Gatekeeper\Authorization\Group\Group');
         array_unshift(self::$ServiceRegister, 'SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account');
         array_unshift(self::$ServiceRegister, 'SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Access');
-        array_unshift(self::$ServiceRegister, 'SPHERE\Application\Platform\Gatekeeper\Authorization\Token\Token');
         array_unshift(self::$ServiceRegister, 'SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Consumer');
 
         self::$ServiceRegister = array_unique(self::$ServiceRegister);
@@ -400,6 +403,7 @@ class Database extends Extension implements IModuleInterface
             $this->menuButton($Stage);
         }
         if ($Simulation) {
+            $Stage->setMessage('Simulation');
             self::$SetupRegister = array();
             $ClassList = self::$ServiceRegister;
             array_walk($ClassList, function (&$Class) {
@@ -421,7 +425,7 @@ class Database extends Extension implements IModuleInterface
                                 self::$SetupRegister[get_class($Class)] = $Result;
                                 $Class = $Result;
                             } else {
-                                $Class = new PullClear(new PullLeft(new Repeat()).self::$SetupRegister[get_class($Class)]);
+                                $Class = new PullClear(new PullLeft(new Repeat()) . self::$SetupRegister[get_class($Class)]);
                             }
                         } else {
                             $Class = false;
@@ -434,6 +438,7 @@ class Database extends Extension implements IModuleInterface
             $ClassList = array_filter($ClassList);
 
         } else {
+            $Stage->setMessage('Durchführung');
             self::$SetupRegister = array();
             $ClassList = self::$ServiceRegister;
             array_walk($ClassList, function (&$Class) {
@@ -455,7 +460,7 @@ class Database extends Extension implements IModuleInterface
                                 self::$SetupRegister[get_class($Class)] = $Result;
                                 $Class = $Result;
                             } else {
-                                $Class = new PullClear(new PullLeft(new Repeat()).self::$SetupRegister[get_class($Class)]);
+                                $Class = new PullClear(new PullLeft(new Repeat()) . self::$SetupRegister[get_class($Class)]);
                             }
                         } else {
                             $Class = false;
@@ -488,7 +493,7 @@ class Database extends Extension implements IModuleInterface
                                 self::$SetupRegister[get_class($Class)] = $Result;
                                 $Class = $Result;
                             } else {
-                                $Class = new PullClear(new PullLeft(new Repeat()).self::$SetupRegister[get_class($Class)]);
+                                $Class = new PullClear(new PullLeft(new Repeat()) . self::$SetupRegister[get_class($Class)]);
                             }
                         } else {
                             $Class = false;
@@ -500,7 +505,9 @@ class Database extends Extension implements IModuleInterface
             });
         }
 
-        $Stage->setContent(new Listing($ClassList));
+        $Stage->setContent(
+            new Listing($ClassList)
+        );
         return $Stage;
     }
 }

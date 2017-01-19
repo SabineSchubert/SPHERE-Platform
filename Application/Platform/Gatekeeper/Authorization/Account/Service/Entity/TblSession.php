@@ -34,15 +34,6 @@ class TblSession extends Element
     protected $tblAccount;
 
     /**
-     * @param string $Session
-     */
-    public function __construct($Session)
-    {
-
-        $this->Session = $Session;
-    }
-
-    /**
      * @return bool|TblAccount
      */
     public function getTblAccount()

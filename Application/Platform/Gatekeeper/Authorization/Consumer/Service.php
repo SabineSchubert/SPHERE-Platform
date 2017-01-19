@@ -17,11 +17,6 @@ use SPHERE\System\Database\Binding\AbstractService;
 class Service extends AbstractService
 {
 
-    /** @var TblConsumer[] $ConsumerByIdCache */
-    private static $ConsumerByIdCache = array();
-    /** @var TblConsumer[] $ConsumerByAcronymCache */
-    private static $ConsumerByAcronymCache = array();
-
     /**
      * @param bool $doSimulation
      * @param bool $withData
@@ -41,20 +36,12 @@ class Service extends AbstractService
     /**
      * @param integer $Id
      *
-     * @return bool|TblConsumer
+     * @return null|TblConsumer
      */
     public function getConsumerById($Id)
     {
 
-        if (is_numeric($Id)) {
-            if (array_key_exists($Id, self::$ConsumerByIdCache)) {
-                return self::$ConsumerByIdCache[$Id];
-            }
-            self::$ConsumerByIdCache[$Id] = (new Data($this->getBinding()))->getConsumerById($Id);
-            return self::$ConsumerByIdCache[$Id];
-        } else {
-            return false;
-        }
+        return (new Data($this->getBinding()))->getConsumerById($Id);
     }
 
     /**
@@ -144,15 +131,11 @@ class Service extends AbstractService
     /**
      * @param string $Acronym
      *
-     * @return bool|TblConsumer
+     * @return null|TblConsumer
      */
     public function getConsumerByAcronym($Acronym)
     {
 
-        if (array_key_exists($Acronym, self::$ConsumerByAcronymCache)) {
-            return self::$ConsumerByAcronymCache[$Acronym];
-        }
-        self::$ConsumerByAcronymCache[$Acronym] = (new Data($this->getBinding()))->getConsumerByAcronym($Acronym);
-        return self::$ConsumerByAcronymCache[$Acronym];
+        return (new Data($this->getBinding()))->getConsumerByAcronym($Acronym);
     }
 }
