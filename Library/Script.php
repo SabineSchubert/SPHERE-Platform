@@ -66,6 +66,11 @@ class Script
 
         $Location = '/Library';
 
+        $this->addLibrary(new Library('jQuery.deparam', '1.3pre',
+            $Location . '/jQuery.BBQ/1.3pre/jQuery.deparam.js',
+            "'undefined' !== typeof jQuery.deparam"
+        ));
+
         $this->addLibrary(new Library('jQuery-Ui', '1.11.4',
             $Location . '/jQuery.Ui/1.11.4/jquery-ui.min.js',
             "'undefined' !== typeof jQuery.ui"

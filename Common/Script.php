@@ -55,6 +55,7 @@ class Script extends Extension
             $this->setLibrary((new ScriptLibrary('jQuery.Carousel', '0.3.3'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('jQuery.FlowPlayer', '6.0.3'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('jQuery.iCheck', '1.0.2'))->getLibrary());
+            $this->setLibrary((new ScriptLibrary('jQuery.deparam', '1.3pre'))->getLibrary());
 
             $this->setLibrary((new ScriptLibrary('Bootstrap', '3.3.5'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Bootstrap.DatetimePicker', '4.14.30'))->getLibrary());
@@ -125,6 +126,7 @@ class Script extends Extension
                 'List.Js',
                 'Bootstrap.Notify',
                 'Bootstrap',
+                'jQuery.deparam',
                 'jQuery-Ui',
                 'jQuery'
             )
