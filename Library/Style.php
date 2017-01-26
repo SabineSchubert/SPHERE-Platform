@@ -59,6 +59,21 @@ class Style
     {
         $Location = '/Library';
 
+        $this->addLibrary(new Library('Bootstrap.Reboot', '4.0.0-Alpha-6',
+            $Location . '/Bootstrap/4.0.0-a6/dist/css/bootstrap-reboot.css'
+        ));
+        $this->addLibrary(new Library('Bootstrap.Grid', '4.0.0-Alpha-6',
+            $Location . '/Bootstrap/4.0.0-a6/dist/css/bootstrap-grid.css'
+        ));
+        $this->addLibrary(new Library('Bootstrap', '4.0.0-Alpha-6',
+            $Location . '/Bootstrap/4.0.0-a6/dist/css/bootstrap.css'
+        ));
+        $this->addLibrary(new Library('Bootstrap.Theme', '3.3.5',
+            $Location . '/Bootstrap/3.3.5/dist/css/bootstrap-theme.css'
+        ));
+        $this->addLibrary(new Library('Bootstrap', '3.3.5',
+            $Location . '/Bootstrap/3.3.5/dist/css/bootstrap.css'
+        ));
         $this->addLibrary(new Library('Bootstrap.Glyphicons.Glyphicons', '1.9.2',
             $Location.'/Bootstrap.Glyphicons/1.9.2/glyphicons/web/html_css/css/glyphicons.css'
         ));

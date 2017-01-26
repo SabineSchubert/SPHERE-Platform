@@ -6,6 +6,7 @@ use SPHERE\Application\IServiceInterface;
 use SPHERE\Application\Platform\System\Cache\Frontend\Status;
 use SPHERE\Common\Frontend\Icon\Repository\Disable;
 use SPHERE\Common\Frontend\Icon\Repository\Enable;
+use SPHERE\Common\Frontend\Icon\Repository\Flash;
 use SPHERE\Common\Frontend\IFrontendInterface;
 use SPHERE\Common\Frontend\Layout\Repository\Title;
 use SPHERE\Common\Frontend\Layout\Structure\Layout;
@@ -44,7 +45,7 @@ class Cache extends Extension implements IModuleInterface
          * Register Navigation
          */
         Main::getDisplay()->addModuleNavigation(
-            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Cache'))
+            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Cache'), new Link\Icon( new Flash() ))
         );
         /**
          * Register Route

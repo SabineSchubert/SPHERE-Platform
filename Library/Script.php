@@ -91,6 +91,14 @@ class Script
             $Location . '/Bootstrap/3.3.5/dist/js/bootstrap.min.js',
             "'function' === typeof jQuery().emulateTransitionEnd"
         ));
+        $this->addLibrary(new Library('Tether', '1.4.0',
+            $Location . '/Tether/1.4.0/dist/js/tether.min.js',
+            "'function' === typeof Tether"
+        ));
+        $this->addLibrary(new Library('Bootstrap', '4.0.0-Alpha-6',
+            $Location . '/Bootstrap/4.0.0-a6/dist/js/bootstrap.min.js',
+            "'function' === typeof jQuery().emulateTransitionEnd"
+        ));
         $this->addLibrary(new Library('jQuery.Selecter', '3.2.4',
             $Location . '/jQuery.Selecter/3.2.4/jquery.fs.selecter.min.js',
             "'undefined' !== typeof jQuery.fn.selecter"

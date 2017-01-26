@@ -53,7 +53,7 @@ class Database extends Extension implements IModuleInterface
          * Register Navigation
          */
         Main::getDisplay()->addModuleNavigation(
-            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Datenbank'))
+            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Datenbank'), new Link\Icon( new \SPHERE\Common\Frontend\Icon\Repository\Database()))
         );
         /**
          * Register Route

@@ -7,6 +7,7 @@ use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\TblSession;
 use SPHERE\Application\Platform\System\Protocol\Protocol;
 use SPHERE\Application\Platform\System\Protocol\Service\Entity\TblProtocol;
+use SPHERE\Common\Frontend\Icon\Repository\Group;
 use SPHERE\Common\Frontend\IFrontendInterface;
 use SPHERE\Common\Frontend\Layout\Repository\Title;
 use SPHERE\Common\Frontend\Layout\Structure\Layout;
@@ -33,7 +34,7 @@ class Session extends Extension implements IModuleInterface
     {
 
         Main::getDisplay()->addModuleNavigation(
-            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Aktive Sessions'))
+            new Link(new Link\Route(__NAMESPACE__), new Link\Name(' Aktive Sessions'), new Link\Icon(new Group()))
         );
         Main::getDispatcher()->registerRoute(
             Main::getDispatcher()->createRoute(__NAMESPACE__,

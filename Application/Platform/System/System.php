@@ -6,6 +6,7 @@ use SPHERE\Application\Platform\System\Cache\Cache;
 use SPHERE\Application\Platform\System\Database\Database;
 use SPHERE\Application\Platform\System\Protocol\Protocol;
 use SPHERE\Application\Platform\System\Session\Session;
+use SPHERE\Application\Platform\System\Test\Test;
 use SPHERE\Common\Frontend\Icon\Repository\Cog;
 use SPHERE\Common\Frontend\Layout\Repository\Panel;
 use SPHERE\Common\Frontend\Layout\Repository\ProgressBar;
@@ -31,10 +32,11 @@ class System implements IApplicationInterface
         /**
          * Register Module
          */
-        Protocol::registerModule();
-        Database::registerModule();
-        Cache::registerModule();
         Session::registerModule();
+        Cache::registerModule();
+        Database::registerModule();
+        Protocol::registerModule();
+        Test::registerModule();
         /**
          * Register Navigation
          */

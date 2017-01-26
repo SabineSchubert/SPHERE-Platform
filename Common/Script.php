@@ -58,6 +58,8 @@ class Script extends Extension
             $this->setLibrary((new ScriptLibrary('jQuery.deparam', '1.3pre'))->getLibrary());
 
             $this->setLibrary((new ScriptLibrary('Bootstrap', '3.3.5'))->getLibrary());
+            $this->setLibrary((new ScriptLibrary('Tether', '1.4.0'))->getLibrary());
+
             $this->setLibrary((new ScriptLibrary('Bootstrap.DatetimePicker', '4.14.30'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Bootstrap.FileInput', '4.1.6'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Bootstrap.Select', '1.6.4'))->getLibrary());
@@ -126,6 +128,7 @@ class Script extends Extension
                 'List.Js',
                 'Bootstrap.Notify',
                 'Bootstrap',
+                'Tether',
                 'jQuery.deparam',
                 'jQuery-Ui',
                 'jQuery'
@@ -137,6 +140,7 @@ class Script extends Extension
                 'List.Js',
                 'Bootstrap.Notify',
                 'Bootstrap',
+                'Tether',
                 'jQuery.Ui',
                 'jQuery'
             )
@@ -174,16 +178,16 @@ class Script extends Extension
             'ModVideo', array('jQuery.FlowPlayer', 'jQuery')
         );
         $this->setModule(
-            'ModSelect', array('Bootstrap.Select', 'Bootstrap', 'jQuery')
+            'ModSelect', array('Bootstrap.Select', 'Bootstrap', 'Tether', 'jQuery')
         );
         $this->setModule(
-            'ModCountDown', array('jQuery.CountDown', 'Bootstrap', 'Moment.Js', 'jQuery')
+            'ModCountDown', array('jQuery.CountDown', 'Bootstrap', 'Tether', 'Moment.Js', 'jQuery')
         );
         $this->setModule(
-            'ModCompleter', array('Twitter.Typeahead', 'Bootstrap', 'jQuery')
+            'ModCompleter', array('Twitter.Typeahead', 'Bootstrap', 'Tether', 'jQuery')
         );
         $this->setModule(
-            'ModUpload', array('Bootstrap.FileInput', 'Bootstrap', 'jQuery')
+            'ModUpload', array('Bootstrap.FileInput', 'Bootstrap', 'Tether', 'jQuery')
         );
         $this->setModule(
             'ModCheckBox', array('jQuery.CheckBox', 'jQuery')

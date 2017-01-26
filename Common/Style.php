@@ -34,6 +34,11 @@ class Style extends Extension
         $this->setSource('/Common/Style/Bootstrap.css');
 
         try {
+//            $this->setLibrary((new StyleLibrary('Bootstrap.Reboot', '4.0.0-Alpha-6'))->getLibrary());
+//            $this->setLibrary((new StyleLibrary('Bootstrap.Grid', '4.0.0-Alpha-6'))->getLibrary());
+//            $this->setLibrary((new StyleLibrary('Bootstrap', '4.0.0-Alpha-6'))->getLibrary());
+            $this->setLibrary((new StyleLibrary('Bootstrap', '3.3.5'))->getLibrary());
+            $this->setLibrary((new StyleLibrary('Bootstrap.Theme', '3.3.5'))->getLibrary());
             $this->setLibrary((new StyleLibrary('Bootstrap.Glyphicons.Glyphicons', '1.9.2'))->getLibrary());
             $this->setLibrary((new StyleLibrary('Bootstrap.Glyphicons.Halflings', '1.9.2'))->getLibrary());
             $this->setLibrary((new StyleLibrary('Bootstrap.Glyphicons.Filetypes', '1.9.2'))->getLibrary());
@@ -44,10 +49,10 @@ class Style extends Extension
             $this->setLibrary((new StyleLibrary('jQuery.Formstone.Selecter', '3.2.4'))->getLibrary(), false, true);
             $this->setLibrary((new StyleLibrary('jQuery.Formstone.Stepper', '3.0.8'))->getLibrary(), false, true);
 
-        $this->setSource((new ScriptLibrary('jQuery.Gridster', '0.6.10'))->getLibrary()->getLocation().'/dist/jquery.gridster.min.css', false, true);
-        $this->setSource((new StyleLibrary('Bootstrap.Checkbox', '0.3.3'))->getLibrary()->getLocation().'/awesome-bootstrap-checkbox.css', false, true);
-        } catch ( \Exception $Exception ) {
-            Main::getDisplay()->setException( $Exception, 'Style Library' );
+            $this->setSource((new ScriptLibrary('jQuery.Gridster', '0.6.10'))->getLibrary()->getLocation() . '/dist/jquery.gridster.min.css', false, true);
+            $this->setSource((new StyleLibrary('Bootstrap.Checkbox', '0.3.3'))->getLibrary()->getLocation() . '/awesome-bootstrap-checkbox.css', false, true);
+        } catch (\Exception $Exception) {
+            Main::getDisplay()->setException($Exception, 'Style Library');
         }
 
         //        <link rel="stylesheet" type="text/css" href="Bootstrap-3.3.6/css/bootstrap.css"/>
@@ -64,17 +69,14 @@ class Style extends Extension
         //        <link rel="stylesheet" type="text/css" href="Select-1.2.0/css/select.bootstrap.css"/>
         //
 
-        $this->setSource('/Library/DataTables/Responsive-2.1.0/css/responsive.bootstrap.min.css', false,
-            true);
-        $this->setSource('/Library/DataTables/RowReorder-1.1.2/css/rowReorder.bootstrap.min.css', false,
-            true);
+        $this->setSource('/Library/DataTables/Responsive-2.1.0/css/responsive.bootstrap.min.css', false, true);
+        $this->setSource('/Library/DataTables/RowReorder-1.1.2/css/rowReorder.bootstrap.min.css', false, true);
 
 ////        $this->setSource( '/Library/jQuery.DataTables/1.10.7/media/css/jquery.dataTables.min.css' );
 //        $this->setSource('/Library/jQuery.DataTables/1.10.7/extensions/Responsive/css/dataTables.responsive.css', false,
 //            true);
 //        $this->setSource('/Library/jQuery.DataTables.Plugins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css',
 //            false, true);
-
 
         $this->setSource('/Library/Bootstrap.DateTimePicker/4.14.30/build/css/bootstrap-datetimepicker.min.css', false,
             true);
@@ -85,11 +87,13 @@ class Style extends Extension
         $this->setSource('/Library/jQuery.jCarousel/0.3.3/examples/responsive/jcarousel.responsive.css', false, true);
         $this->setSource('/Library/jQuery.FlowPlayer/6.0.3/skin/functional.css', false, true);
         $this->setSource('/Library/Highlight.js/8.8.0/styles/docco.css', false, true);
+// 3.3.5
 
         $this->setSource('/Common/Style/Correction.css', false, true);
         $this->setSource('/Common/Style/DataTable.Correction.css', false, true);
 
-        $this->setSource('/Common/Style/CleanSlate/0.10.1/cleanslate.css',false,true);
+        $this->setSource('/Common/Style/CleanSlate/0.10.1/cleanslate.css', false, true);
+
         $this->setSource('/Common/Style/PhpInfo.css', false, true);
         $this->setSource('/Common/Style/Addition.css');
         $this->setSource('/Common/Style/Animate.css');
@@ -100,14 +104,15 @@ class Style extends Extension
      * @param bool $Combined
      * @param bool $Additional
      */
-    public function setLibrary( Library $Library, $Combined = false, $Additional = false ) {
-        $this->setSource( $Library->getSource(), $Combined, $Additional );
+    public function setLibrary(Library $Library, $Combined = false, $Additional = false)
+    {
+        $this->setSource($Library->getSource(), $Combined, $Additional);
     }
 
     /**
      * @param string $Location
-     * @param bool   $Combined
-     * @param bool   $Additional
+     * @param bool $Combined
+     * @param bool $Additional
      */
     public function setSource($Location, $Combined = false, $Additional = false)
     {
@@ -168,10 +173,10 @@ class Style extends Extension
     private function getCombinedStyleTag($Content)
     {
 
-        if (empty( $Content )) {
+        if (empty($Content)) {
             return '';
         } else {
-            return '<style type="text/css">'.$Content.'</style>';
+            return '<style type="text/css">' . $Content . '</style>';
         }
     }
 
@@ -186,11 +191,11 @@ class Style extends Extension
         $Result = '';
         array_walk($FileList, function ($Location) use (&$Result) {
 
-            $Path = realpath(__DIR__.DIRECTORY_SEPARATOR.'..'.$Location);
+            $Path = realpath(__DIR__ . DIRECTORY_SEPARATOR . '..' . $Location);
             if ($Path) {
                 $Content = $this->compactStyle(file_get_contents($Path));
                 preg_match_all('!url\(([^\)]*?)\)!is', $Content, $Match);
-                if (!empty( $Match[0] )) {
+                if (!empty($Match[0])) {
                     array_walk($Match[0], function ($Item, $Index) use ($Match, $Path, &$Content) {
 
                         $Match[1][$Index] = trim($Match[1][$Index], ' \'"');
@@ -202,32 +207,32 @@ class Style extends Extension
                             $File = $Match[1][$Index];
                             if (false !== strpos($File, '?')) {
                                 $Parts = explode('?', $Match[1][$Index]);
-                                $Location = realpath($Directory.DIRECTORY_SEPARATOR.array_shift($Parts));
-                                if (!empty( $Parts )) {
-                                    $Parts = '?'.implode('?', $Parts);
+                                $Location = realpath($Directory . DIRECTORY_SEPARATOR . array_shift($Parts));
+                                if (!empty($Parts)) {
+                                    $Parts = '?' . implode('?', $Parts);
                                 }
                             } elseif (false !== strpos($File, '#')) {
                                 $Parts = explode('#', $Match[1][$Index]);
-                                $Location = realpath($Directory.DIRECTORY_SEPARATOR.array_shift($Parts));
-                                if (!empty( $Parts )) {
-                                    $Parts = '#'.implode('#', $Parts);
+                                $Location = realpath($Directory . DIRECTORY_SEPARATOR . array_shift($Parts));
+                                if (!empty($Parts)) {
+                                    $Parts = '#' . implode('#', $Parts);
                                 }
                             } else {
-                                $Location = realpath($Directory.DIRECTORY_SEPARATOR.$File);
+                                $Location = realpath($Directory . DIRECTORY_SEPARATOR . $File);
                                 $Parts = '';
                             }
                             if ($Location) {
-                                $Target = preg_replace('!'.preg_quote($_SERVER['DOCUMENT_ROOT'], '!').'!is', '',
-                                        $Location).$Parts;
+                                $Target = preg_replace('!' . preg_quote($_SERVER['DOCUMENT_ROOT'], '!') . '!is', '',
+                                        $Location) . $Parts;
                                 $Request = new Request();
                                 $Replacement = $Request->getSymfonyRequest()->getUriForPath($Target);
-                                $Content = str_replace($Match[0][$Index], "url('".$Replacement."')", $Match[0][$Index],
+                                $Content = str_replace($Match[0][$Index], "url('" . $Replacement . "')", $Match[0][$Index],
                                     $Content);
                             }
                         }
                     });
                 }
-                $Result .= "\n\n".$Content;
+                $Result .= "\n\n" . $Content;
             } else {
                 $this->getLogger(new ErrorLogger())->addLog('Style not found ' . $Location);
             }
@@ -263,7 +268,7 @@ class Style extends Extension
 
         array_walk($StyleList, function (&$Location) {
 
-            $Location = '<link rel="stylesheet" href="'.$Location.'">';
+            $Location = '<link rel="stylesheet" href="' . $Location . '">';
         });
         array_unshift($StyleList, $this->getCombinedStyleTag($Content));
         return implode("\n", $StyleList);
