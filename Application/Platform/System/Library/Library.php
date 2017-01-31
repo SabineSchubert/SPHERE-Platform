@@ -52,6 +52,10 @@ class Library implements IModuleInterface
         // TODO: Implement useFrontend() method.
     }
 
+    /**
+     * @param int $Lib
+     * @return Stage
+     */
     public function frontendLibrary($Lib = 1)
     {
         $Stage = new Stage('Bibliotheken', 'Style / Javascript');

@@ -280,11 +280,9 @@ class Service extends AbstractService
      * @param IFormInterface $Form
      * @param null|string $Name
      *
-     * @param bool $IsSecure
-     *
      * @return IFormInterface|Redirect
      */
-    public function createRole(IFormInterface $Form, $Name, $IsSecure = false)
+    public function createRole(IFormInterface $Form, $Name)
     {
 
         if (null !== $Name && empty($Name)) {

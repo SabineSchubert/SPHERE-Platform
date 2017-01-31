@@ -3,8 +3,6 @@ namespace SPHERE\Application\Platform\System\Protocol;
 
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\TblAccount;
-use SPHERE\Application\Platform\System\Archive\Archive;
-use SPHERE\Application\Platform\System\Archive\Service\Entity\TblArchive;
 use SPHERE\Application\Platform\System\Protocol\Service\Data;
 use SPHERE\Application\Platform\System\Protocol\Service\Entity\LoginAttemptHistory;
 use SPHERE\Application\Platform\System\Protocol\Service\Entity\TblProtocol;

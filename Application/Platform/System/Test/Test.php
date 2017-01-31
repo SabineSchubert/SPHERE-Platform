@@ -2,6 +2,7 @@
 namespace SPHERE\Application\Platform\System\Test;
 
 use SPHERE\Application\IModuleInterface;
+use SPHERE\Application\IServiceInterface;
 use SPHERE\Common\Frontend\Icon\Repository\TextSize;
 use SPHERE\Common\Main;
 use SPHERE\Common\Window\Navigation\Link;
@@ -31,7 +32,7 @@ class Test implements IModuleInterface
     }
 
     /**
-     * @return Service
+     * @return IServiceInterface
      */
     public static function useService()
     {
