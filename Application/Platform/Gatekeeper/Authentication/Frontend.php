@@ -25,10 +25,14 @@ use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
 use SPHERE\Common\Frontend\Link\Repository\Backward;
 use SPHERE\Common\Frontend\Message\Repository\Info;
+use SPHERE\Common\Frontend\Message\Repository\Success;
 use SPHERE\Common\Frontend\Text\Repository\Danger;
+use SPHERE\Common\Window\Error;
 use SPHERE\Common\Window\Redirect;
 use SPHERE\Common\Window\Stage;
 use SPHERE\System\Extension\Extension;
+use SPHERE\System\Saml\Saml;
+use SPHERE\System\Saml\Type\SamlEnvironment;
 
 /**
  * Class Frontend
@@ -72,9 +76,52 @@ class Frontend extends Extension implements IFrontendInterface
     }
 
     /**
-     * @param string $CredentialName
-     * @param string $CredentialLock
-     * @param string $CredentialKey
+     * @return Stage
+     */
+    public function frontendIdentificationSaml()
+    {
+        $Stage = new Stage('Anmeldung', 'SAML');
+
+        ob_start();
+        $SamlAuth = (new Saml(new SamlEnvironment()))->getSaml()->getEnvironment();
+
+        $Global = $this->getGlobal();
+
+        if( isset($Global->POST['SAMLResponse'] ) ) {
+            $SamlAuth->processResponse();
+            if (!$SamlAuth->isAuthenticated()) {
+                $Stage->setContent( new Error(1,'SSO-Validation fails. SAMLResponse available but not valid.',false));
+                return $Stage;
+            }
+        }
+
+        if (!$SamlAuth->isAuthenticated()) {
+            // redirect to daimler
+            $SamlAuth->login();
+        } else {
+            $SamlAccountName = $SamlAuth->getNameId();
+            $tblAccount = Account::useService()->getAccountByUsername( $SamlAccountName );
+            if (!$tblAccount) {
+                $Stage->setContent( new Error(2,'SSO-Validation fails. SAMLResponse available but not valid.',false));
+                return $Stage;
+            } else {
+                // Login/Create session
+                Account::useService()->createSession($tblAccount);
+                $Stage->setContent(
+                    new Success('Anmeldung erfolgreich', new \SPHERE\Common\Frontend\Icon\Repository\Success())
+                    .new Redirect('/', Redirect::TIMEOUT_SUCCESS)
+                );
+                return $Stage;
+            }
+        }
+
+        return $Stage;
+    }
+
+    /**
+     * @param null|string $CredentialName
+     * @param null|string $CredentialLock
+     * @param null|string $CredentialKey
      *
      * @return Stage
      */
