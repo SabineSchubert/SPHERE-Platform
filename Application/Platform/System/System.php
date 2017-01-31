@@ -4,6 +4,7 @@ namespace SPHERE\Application\Platform\System;
 use SPHERE\Application\IApplicationInterface;
 use SPHERE\Application\Platform\System\Cache\Cache;
 use SPHERE\Application\Platform\System\Database\Database;
+use SPHERE\Application\Platform\System\Library\Library;
 use SPHERE\Application\Platform\System\Protocol\Protocol;
 use SPHERE\Application\Platform\System\Session\Session;
 use SPHERE\Application\Platform\System\Test\Test;
@@ -36,7 +37,9 @@ class System implements IApplicationInterface
         Cache::registerModule();
         Database::registerModule();
         Protocol::registerModule();
+        Library::registerModule();
         Test::registerModule();
+
         /**
          * Register Navigation
          */

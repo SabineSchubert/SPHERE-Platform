@@ -206,12 +206,13 @@ class Style
              * @var string $Version
              * @var Library $Library
              */
+            $LibraryListContent = array();
             foreach ($VersionList as $Version => $Library) {
-                $LibraryList .= new Listing(array(
-                    new Info(new Tag() . ' ' . $Library->getVersion()),
-                    new Small(new Muted(new FolderClosed() . ' ' . $Library->getSource()))
-                ));
+                $LibraryListContent[] = new Info(new Tag() . ' ' . $Library->getVersion());
+                $LibraryListContent[] = new Small(new Muted(new FolderClosed() . ' ' . $Library->getSource()));
             }
+            $LibraryList .= new Listing( $LibraryListContent );
+
             $Name = explode('.', $Name);
             foreach ($Name as $Index => $Part) {
                 switch ($Index) {

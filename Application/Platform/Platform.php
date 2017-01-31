@@ -8,16 +8,10 @@ use SPHERE\Application\Platform\Gatekeeper\Gatekeeper;
 use SPHERE\Application\Platform\System\System;
 use SPHERE\Common\Frontend\Icon\Repository\CogWheels;
 use SPHERE\Common\Frontend\Layout\Repository\Label;
-use SPHERE\Common\Frontend\Layout\Structure\Layout;
-use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
-use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
-use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
 use SPHERE\Common\Frontend\Text\Repository\Bold;
 use SPHERE\Common\Main;
 use SPHERE\Common\Window\Navigation\Link;
 use SPHERE\Common\Window\Stage;
-use SPHERE\Library\Script;
-use SPHERE\Library\Style;
 
 /**
  * Class System
@@ -82,19 +76,7 @@ class Platform implements IClusterInterface
         $PhpInfo = ob_get_clean();
 
         $Stage->setContent(
-            new Layout(
-                new LayoutGroup(
-                    new LayoutRow(array(
-                        new LayoutColumn(
-                            (new Style(null))->getShow()
-                        , 6),
-                        new LayoutColumn(
-                            (new Script(null))->getShow()
-                        , 6),
-                    ))
-                )
-            )
-            .'<div id="phpinfo">'
+            '<div id="phpinfo">'
             .preg_replace('!,!', ', ',
                 preg_replace('!<th>(enabled)\s*</th>!i',
                     '<th><span class="badge badge-success">$1</span></th>',
