@@ -9,7 +9,7 @@ use SPHERE\System\Database\Fitting\Element;
 
 /**
  * @Entity
- * @Table(name="tblIdentification")
+ * @Table(name="TblIdentification")
  * @Cache(usage="READ_ONLY")
  */
 class TblIdentification extends Element

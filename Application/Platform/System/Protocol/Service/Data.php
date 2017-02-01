@@ -2,7 +2,7 @@
 namespace SPHERE\Application\Platform\System\Protocol\Service;
 
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\TblAccount;
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Service\Entity\TblConsumer;
+use SPHERE\Application\Platform\Gatekeeper\Consumer\Service\Entity\TblConsumer;
 use SPHERE\Application\Platform\System\Protocol\Service\Entity\TblProtocol;
 use SPHERE\Common\Frontend\Message\Repository\Danger;
 use SPHERE\System\Database\Binding\AbstractData;
@@ -47,7 +47,7 @@ class Data extends AbstractData
             $dump = preg_replace_callback('/:\d+:"\0.*?\0([^"]+)"/', $fix_key, $dump);
             // 4. Unserialize the modified object again.
             $dump = unserialize($dump);
-            $dump->ERROR = new Danger("Structure mismatch!<br/>".$match[0]."<br/>Please delete this Item");
+            $dump->ERROR = new Danger("Structure mismatch!<br/>" . $match[0] . "<br/>Please delete this Item");
             return $dump;
         } else {
             return $object;
@@ -98,7 +98,7 @@ class Data extends AbstractData
             ->getQuery();
 
         $EntityList = $Query->getResult();
-        return ( empty( $EntityList ) ? false : $EntityList );
+        return (empty($EntityList) ? false : $EntityList);
     }
 
     /**
@@ -113,8 +113,8 @@ class Data extends AbstractData
 
     /**
      * @param string $DatabaseName
-     * @param null|TblAccount $tblAccount
-     * @param null|TblConsumer $tblConsumer
+     * @param null|TblAccount $TblAccount
+     * @param null|TblConsumer $TblConsumer
      * @param null|Element $FromEntity
      * @param null|Element $ToEntity
      * @param bool $useBulkSave
@@ -123,8 +123,8 @@ class Data extends AbstractData
      */
     public function createProtocolEntry(
         $DatabaseName,
-        TblAccount $tblAccount = null,
-        TblConsumer $tblConsumer = null,
+        TblAccount $TblAccount = null,
+        TblConsumer $TblConsumer = null,
         Element $FromEntity = null,
         Element $ToEntity = null,
         $useBulkSave = false
@@ -154,19 +154,19 @@ class Data extends AbstractData
         $Entity = new TblProtocol();
         $Entity->setProtocolDatabase($DatabaseName);
         $Entity->setProtocolTimestamp(time());
-        if ($tblAccount) {
-            $Entity->setServiceTblAccount($tblAccount);
-            $Entity->setAccountUsername($tblAccount->getUsername());
+        if ($TblAccount) {
+            $Entity->setServiceTblAccount($TblAccount);
+            $Entity->setAccountUsername($TblAccount->getUsername());
         }
-        if ($tblConsumer) {
-            $Entity->setServiceTblConsumer($tblConsumer);
-            $Entity->setConsumerName($tblConsumer->getName());
-            $Entity->setConsumerAcronym($tblConsumer->getAcronym());
+        if ($TblConsumer) {
+            $Entity->setServiceTblConsumer($TblConsumer);
+            $Entity->setConsumerName($TblConsumer->getName());
+            $Entity->setConsumerAcronym($TblConsumer->getAcronym());
         }
-        $Entity->setEntityFrom(( $FromEntity ? serialize($FromEntity) : null ));
-        $Entity->setEntityTo(( $ToEntity ? serialize($ToEntity) : null ));
+        $Entity->setEntityFrom(($FromEntity ? serialize($FromEntity) : null));
+        $Entity->setEntityTo(($ToEntity ? serialize($ToEntity) : null));
 
-        if( $useBulkSave ) {
+        if ($useBulkSave) {
             $Manager->bulkSaveEntity($Entity);
         } else {
             $Manager->saveEntity($Entity);
@@ -186,19 +186,19 @@ class Data extends AbstractData
         $Builder = $Manager->getQueryBuilder();
 
         $OneMonthAgo = new \DateTime(date("Ymd"));
-        $OneMonthAgo->sub(new \DateInterval('P'.abs(( 7 - date("N") - 31 )).'D'));
+        $OneMonthAgo->sub(new \DateInterval('P' . abs((7 - date("N") - 31)) . 'D'));
         $FourWeeksAgo = new \DateTime(date("Ymd"));
-        $FourWeeksAgo->sub(new \DateInterval('P'.abs(( 7 - date("N") - 28 )).'D'));
+        $FourWeeksAgo->sub(new \DateInterval('P' . abs((7 - date("N") - 28)) . 'D'));
         $TwoWeeksAgo = new \DateTime(date("Ymd"));
-        $TwoWeeksAgo->sub(new \DateInterval('P'.abs(( 7 - date("N") - 14 )).'D'));
+        $TwoWeeksAgo->sub(new \DateInterval('P' . abs((7 - date("N") - 14)) . 'D'));
         $LastWeek = new \DateTime(date("Ymd"));
-        $LastWeek->sub(new \DateInterval('P'.abs(( 7 - date("N") - 7 )).'D'));
+        $LastWeek->sub(new \DateInterval('P' . abs((7 - date("N") - 7)) . 'D'));
         $ThisWeek = new \DateTime(date("Ymd"));
-        $ThisWeek->add(new \DateInterval('P'.abs(( 7 - date("N") )).'D'));
+        $ThisWeek->add(new \DateInterval('P' . abs((7 - date("N"))) . 'D'));
 
         $Query = $Builder
             ->select('P')
-            ->from(__NAMESPACE__.'\Entity\TblProtocol', 'P')
+            ->from(__NAMESPACE__ . '\Entity\TblProtocol', 'P')
             ->where(
                 $Builder->expr()->eq('P.ProtocolDatabase', '?1')
             )->andWhere(
@@ -218,37 +218,7 @@ class Data extends AbstractData
         $Query->useQueryCache(false);
         $Query->useResultCache(false);
         $EntityList = $Query->getResult();
-        return ( empty( $EntityList ) ? false : $EntityList );
-    }
-
-    /**
-     * @param TblAccount $tblAccount
-     *
-     * @return bool|TblProtocol[]
-     */
-    public function getProtocolLastActivity(TblAccount $tblAccount)
-    {
-
-        $Manager = $this->getEntityManager();
-
-        $Builder = $Manager->getQueryBuilder();
-
-        $Query = $Builder
-            ->select('P')
-            ->from(__NAMESPACE__.'\Entity\TblProtocol', 'P')
-            ->andWhere(
-                $Builder->expr()->like('P.serviceTblAccount', '?1')
-            )->andWhere(
-                $Builder->expr()->gte('P.EntityCreate', '?2')
-            )
-            ->setParameter(1, $tblAccount->getId())
-            ->setParameter(2, $this->getProtocolTimestamp())
-            ->orderBy('P.EntityCreate', 'DESC')
-            ->setMaxResults(1)
-            ->getQuery();
-
-        $EntityList = $Query->getResult();
-        return ( empty( $EntityList ) ? false : $EntityList );
+        return (empty($EntityList) ? false : $EntityList);
     }
 
     /**
@@ -258,16 +228,46 @@ class Data extends AbstractData
     {
 
         $OneMonthAgo = new \DateTime(date("Ymd"));
-        $OneMonthAgo->sub(new \DateInterval('P'.abs(( 7 - date("N") - 31 )).'D'));
+        $OneMonthAgo->sub(new \DateInterval('P' . abs((7 - date("N") - 31)) . 'D'));
         $FourWeeksAgo = new \DateTime(date("Ymd"));
-        $FourWeeksAgo->sub(new \DateInterval('P'.abs(( 7 - date("N") - 28 )).'D'));
+        $FourWeeksAgo->sub(new \DateInterval('P' . abs((7 - date("N") - 28)) . 'D'));
         $TwoWeeksAgo = new \DateTime(date("Ymd"));
-        $TwoWeeksAgo->sub(new \DateInterval('P'.abs(( 7 - date("N") - 14 )).'D'));
+        $TwoWeeksAgo->sub(new \DateInterval('P' . abs((7 - date("N") - 14)) . 'D'));
         $LastWeek = new \DateTime(date("Ymd"));
-        $LastWeek->sub(new \DateInterval('P'.abs(( 7 - date("N") - 7 )).'D'));
+        $LastWeek->sub(new \DateInterval('P' . abs((7 - date("N") - 7)) . 'D'));
         $ThisWeek = new \DateTime(date("Ymd"));
-        $ThisWeek->add(new \DateInterval('P'.abs(( 7 - date("N") )).'D'));
+        $ThisWeek->add(new \DateInterval('P' . abs((7 - date("N"))) . 'D'));
 
         return $OneMonthAgo;
-    } 
+    }
+
+    /**
+     * @param TblAccount $TblAccount
+     *
+     * @return bool|TblProtocol[]
+     */
+    public function getProtocolLastActivity(TblAccount $TblAccount)
+    {
+
+        $Manager = $this->getEntityManager();
+
+        $Builder = $Manager->getQueryBuilder();
+
+        $Query = $Builder
+            ->select('P')
+            ->from(__NAMESPACE__ . '\Entity\TblProtocol', 'P')
+            ->andWhere(
+                $Builder->expr()->like('P.serviceTblAccount', '?1')
+            )->andWhere(
+                $Builder->expr()->gte('P.EntityCreate', '?2')
+            )
+            ->setParameter(1, $TblAccount->getId())
+            ->setParameter(2, $this->getProtocolTimestamp())
+            ->orderBy('P.EntityCreate', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery();
+
+        $EntityList = $Query->getResult();
+        return (empty($EntityList) ? false : $EntityList);
+    }
 }

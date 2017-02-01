@@ -1,5 +1,5 @@
 <?php
-namespace SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Service\Entity;
+namespace SPHERE\Application\Platform\Gatekeeper\Consumer\Service\Entity;
 
 use Doctrine\ORM\Mapping\Cache;
 use Doctrine\ORM\Mapping\Column;
@@ -9,7 +9,7 @@ use SPHERE\System\Database\Fitting\Element;
 
 /**
  * @Entity
- * @Table(name="tblConsumer")
+ * @Table(name="TblConsumer")
  * @Cache(usage="READ_ONLY")
  */
 class TblConsumer extends Element
@@ -28,15 +28,6 @@ class TblConsumer extends Element
     protected $Name;
 
     /**
-     * @param string $Acronym
-     */
-    public function __construct($Acronym)
-    {
-
-        $this->Acronym = $Acronym;
-    }
-
-    /**
      * @return string
      */
     public function getAcronym()
@@ -51,7 +42,7 @@ class TblConsumer extends Element
     public function setAcronym($Acronym)
     {
 
-        $this->Acronym = $Acronym;
+        $this->Acronym = strtoupper($Acronym);
     }
 
     /**

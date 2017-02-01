@@ -87,10 +87,10 @@ class Frontend extends Extension implements IFrontendInterface
 
         $Global = $this->getGlobal();
 
-        if( isset($Global->POST['SAMLResponse'] ) ) {
+        if (isset($Global->POST['SAMLResponse'])) {
             $SamlAuth->processResponse();
             if (!$SamlAuth->isAuthenticated()) {
-                $Stage->setContent( new Error(1,'SSO-Validation fails. SAMLResponse available but not valid.',false));
+                $Stage->setContent(new Error(1, 'SSO-Validation fails. SAMLResponse available but not valid.', false));
                 return $Stage;
             }
         }
@@ -100,16 +100,16 @@ class Frontend extends Extension implements IFrontendInterface
             $SamlAuth->login();
         } else {
             $SamlAccountName = $SamlAuth->getNameId();
-            $tblAccount = Account::useService()->getAccountByUsername( $SamlAccountName );
-            if (!$tblAccount) {
-                $Stage->setContent( new Error(2,'SSO-Validation fails. SAMLResponse available but not valid.',false));
+            $TblAccount = Account::useService()->getAccountByUsername($SamlAccountName);
+            if (!$TblAccount) {
+                $Stage->setContent(new Error(2, 'SSO-Validation fails. SAMLResponse available but not valid.', false));
                 return $Stage;
             } else {
                 // Login/Create session
-                Account::useService()->createSession($tblAccount);
+                Account::useService()->createSession($TblAccount);
                 $Stage->setContent(
                     new Success('Anmeldung erfolgreich', new \SPHERE\Common\Frontend\Icon\Repository\Success())
-                    .new Redirect('/', Redirect::TIMEOUT_SUCCESS)
+                    . new Redirect('/', Redirect::TIMEOUT_SUCCESS)
                 );
                 return $Stage;
             }

@@ -12,19 +12,19 @@ use SPHERE\System\Database\Fitting\Element;
 
 /**
  * @Entity
- * @Table(name="tblAuthorization")
+ * @Table(name="TblAuthorization")
  * @Cache(usage="READ_ONLY")
  */
 class TblAuthorization extends Element
 {
 
-    const ATTR_TBL_ACCOUNT = 'tblAccount';
+    const ATTR_TBL_ACCOUNT = 'TblAccount';
     const SERVICE_TBL_ROLE = 'serviceTblRole';
 
     /**
      * @Column(type="bigint")
      */
-    protected $tblAccount;
+    protected $TblAccount;
     /**
      * @Column(type="bigint")
      */
@@ -36,20 +36,20 @@ class TblAuthorization extends Element
     public function getTblAccount()
     {
 
-        if (null === $this->tblAccount) {
+        if (null === $this->TblAccount) {
             return false;
         } else {
-            return Account::useService()->getAccountById($this->tblAccount);
+            return Account::useService()->getAccountById($this->TblAccount);
         }
     }
 
     /**
-     * @param null|TblAccount $tblAccount
+     * @param null|TblAccount $TblAccount
      */
-    public function setTblAccount(TblAccount $tblAccount = null)
+    public function setTblAccount(TblAccount $TblAccount = null)
     {
 
-        $this->tblAccount = ( null === $tblAccount ? null : $tblAccount->getId() );
+        $this->TblAccount = (null === $TblAccount ? null : $TblAccount->getId());
     }
 
     /**
@@ -66,11 +66,11 @@ class TblAuthorization extends Element
     }
 
     /**
-     * @param null|TblRole $tblRole
+     * @param null|TblRole $TblRole
      */
-    public function setServiceTblRole(TblRole $tblRole = null)
+    public function setServiceTblRole(TblRole $TblRole = null)
     {
 
-        $this->serviceTblRole = ( null === $tblRole ? null : $tblRole->getId() );
+        $this->serviceTblRole = (null === $TblRole ? null : $TblRole->getId());
     }
 }

@@ -9,7 +9,7 @@ use SPHERE\System\Database\Fitting\Element;
 
 /**
  * @Entity
- * @Table(name="tblRight")
+ * @Table(name="TblRight")
  * @Cache(usage="READ_ONLY")
  */
 class TblRight extends Element

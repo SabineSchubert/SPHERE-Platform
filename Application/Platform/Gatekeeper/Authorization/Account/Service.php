@@ -10,7 +10,7 @@ use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\TblSession;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\TblSetting;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Setup;
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Service\Entity\TblConsumer;
+use SPHERE\Application\Platform\Gatekeeper\Consumer\Service\Entity\TblConsumer;
 use SPHERE\Common\Frontend\Form\IFormInterface;
 use SPHERE\Common\Frontend\Message\Repository\Warning;
 use SPHERE\Common\Window\Redirect;
@@ -136,7 +136,7 @@ class Service extends AbstractService
      * @param IFormInterface $Form
      * @param string $CredentialName
      * @param string $CredentialLock
-     * @param TblIdentification $tblIdentification
+     * @param TblIdentification $TblIdentification
      *
      * @return IFormInterface|Redirect
      */
@@ -144,12 +144,11 @@ class Service extends AbstractService
         IFormInterface $Form,
         $CredentialName,
         $CredentialLock,
-        TblIdentification $tblIdentification
-    )
-    {
+        TblIdentification $TblIdentification
+    ) {
 
-        if ($tblIdentification->isActive()) {
-            switch ($this->isCredentialValid($CredentialName, $CredentialLock, $tblIdentification)) {
+        if ($TblIdentification->isActive()) {
+            switch ($this->isCredentialValid($CredentialName, $CredentialLock, $TblIdentification)) {
                 case false: {
                     if (null !== $CredentialName && empty($CredentialName)) {
                         $Form->setError('CredentialName', 'Bitte geben Sie einen gültigen Benutzernamen ein');
@@ -182,19 +181,19 @@ class Service extends AbstractService
     /**
      * @param string $Username
      * @param string $Password
-     * @param TblIdentification $tblIdentification
+     * @param TblIdentification $TblIdentification
      * @return bool|null
      */
-    private function isCredentialValid($Username, $Password, TblIdentification $tblIdentification)
+    private function isCredentialValid($Username, $Password, TblIdentification $TblIdentification)
     {
 
-        if (!($tblAccount = $this->getAccountByCredential($Username, $Password, $tblIdentification))) {
+        if (!($TblAccount = $this->getAccountByCredential($Username, $Password, $TblIdentification))) {
             return false;
         } else {
             if (session_status() == PHP_SESSION_ACTIVE) {
                 session_regenerate_id();
             }
-            $this->createSession($tblAccount, session_id());
+            $this->createSession($TblAccount, session_id());
             return true;
         }
     }
@@ -202,27 +201,27 @@ class Service extends AbstractService
     /**
      * @param string $Username
      * @param string $Password
-     * @param TblIdentification $tblIdentification
+     * @param TblIdentification $TblIdentification
      *
      * @return bool|TblAccount
      */
-    public function getAccountByCredential($Username, $Password, TblIdentification $tblIdentification = null)
+    public function getAccountByCredential($Username, $Password, TblIdentification $TblIdentification = null)
     {
 
-        return (new Data($this->getBinding()))->getAccountByCredential($Username, $Password, $tblIdentification);
+        return (new Data($this->getBinding()))->getAccountByCredential($Username, $Password, $TblIdentification);
     }
 
     /**
-     * @param TblAccount $tblAccount
+     * @param TblAccount $TblAccount
      * @param null|string $Session
      * @param integer $Timeout
      *
      * @return Service\Entity\TblSession
      */
-    public function createSession(TblAccount $tblAccount, $Session = null, $Timeout = 1800)
+    public function createSession(TblAccount $TblAccount, $Session = null, $Timeout = 1800)
     {
 
-        return (new Data($this->getBinding()))->createSession($tblAccount, $Session, $Timeout);
+        return (new Data($this->getBinding()))->createSession($TblAccount, $Session, $Timeout);
     }
 
     /**
@@ -244,194 +243,194 @@ class Service extends AbstractService
     }
 
     /**
-     * @param TblAccount $tblAccount
-     * @param TblRole $tblRole
+     * @param TblAccount $TblAccount
+     * @param TblRole $TblRole
      *
      * @return bool
      */
-    public function hasAuthorization(TblAccount $tblAccount, TblRole $tblRole)
+    public function hasAuthorization(TblAccount $TblAccount, TblRole $TblRole)
     {
 
-        $tblAuthorization = $this->getAuthorizationAllByAccount($tblAccount);
+        $TblAuthorization = $this->getAuthorizationAllByAccount($TblAccount);
         /** @noinspection PhpUnusedParameterInspection */
-        array_walk($tblAuthorization, function (TblAuthorization &$tblAuthorization) use ($tblRole) {
+        array_walk($TblAuthorization, function (TblAuthorization &$TblAuthorization) use ($TblRole) {
 
-            if ($tblAuthorization->getServiceTblRole()
-                && $tblAuthorization->getServiceTblRole()->getId() != $tblRole->getId()
+            if ($TblAuthorization->getServiceTblRole()
+                && $TblAuthorization->getServiceTblRole()->getId() != $TblRole->getId()
             ) {
-                $tblAuthorization = false;
+                $TblAuthorization = false;
             }
         });
-        $tblAuthorization = array_filter($tblAuthorization);
-        if (!empty($tblAuthorization)) {
+        $TblAuthorization = array_filter($TblAuthorization);
+        if (!empty($TblAuthorization)) {
             return true;
         }
         return false;
     }
 
     /**
-     * @param TblAccount $tblAccount
+     * @param TblAccount $TblAccount
      *
      * @return bool|TblAuthorization[]
      */
-    public function getAuthorizationAllByAccount(TblAccount $tblAccount)
+    public function getAuthorizationAllByAccount(TblAccount $TblAccount)
     {
 
-        return (new Data($this->getBinding()))->getAuthorizationAllByAccount($tblAccount);
+        return (new Data($this->getBinding()))->getAuthorizationAllByAccount($TblAccount);
     }
 
     /**
-     * @param TblAccount $tblAccount
+     * @param TblAccount $TblAccount
      *
      * @return bool|TblAuthentication
      */
-    public function getAuthenticationByAccount(TblAccount $tblAccount)
+    public function getAuthenticationByAccount(TblAccount $TblAccount)
     {
 
-        return (new Data($this->getBinding()))->getAuthenticationByAccount($tblAccount);
+        return (new Data($this->getBinding()))->getAuthenticationByAccount($TblAccount);
 
     }
 
 
     /**
-     * @param TblAccount $tblAccount
-     * @param TblIdentification $tblIdentification
+     * @param TblAccount $TblAccount
+     * @param TblIdentification $TblIdentification
      *
      * @return TblAuthentication
      */
-    public function addAccountAuthentication(TblAccount $tblAccount, TblIdentification $tblIdentification)
+    public function addAccountAuthentication(TblAccount $TblAccount, TblIdentification $TblIdentification)
     {
 
-        return (new Data($this->getBinding()))->addAccountAuthentication($tblAccount, $tblIdentification);
+        return (new Data($this->getBinding()))->addAccountAuthentication($TblAccount, $TblIdentification);
     }
 
     /**
-     * @param TblAccount $tblAccount
-     * @param TblRole $tblRole
+     * @param TblAccount $TblAccount
+     * @param TblRole $TblRole
      *
      * @return TblAuthorization
      */
-    public function addAccountAuthorization(TblAccount $tblAccount, TblRole $tblRole)
+    public function addAccountAuthorization(TblAccount $TblAccount, TblRole $TblRole)
     {
 
-        return (new Data($this->getBinding()))->addAccountAuthorization($tblAccount, $tblRole);
+        return (new Data($this->getBinding()))->addAccountAuthorization($TblAccount, $TblRole);
     }
 
     /**
-     * @param TblAccount $tblAccount
+     * @param TblAccount $TblAccount
      *
      * @return bool|TblSession[]
      */
-    public function getSessionAllByAccount(TblAccount $tblAccount)
+    public function getSessionAllByAccount(TblAccount $TblAccount)
     {
 
-        return (new Data($this->getBinding()))->getSessionAllByAccount($tblAccount);
+        return (new Data($this->getBinding()))->getSessionAllByAccount($TblAccount);
     }
 
     /**
-     * @param TblAccount $tblAccount
-     * @param TblRole $tblRole
+     * @param TblAccount $TblAccount
+     * @param TblRole $TblRole
      *
      * @return bool
      */
-    public function removeAccountAuthorization(TblAccount $tblAccount, TblRole $tblRole)
+    public function removeAccountAuthorization(TblAccount $TblAccount, TblRole $TblRole)
     {
 
-        return (new Data($this->getBinding()))->removeAccountAuthorization($tblAccount, $tblRole);
+        return (new Data($this->getBinding()))->removeAccountAuthorization($TblAccount, $TblRole);
     }
 
     /**
-     * @param TblAccount $tblAccount
-     * @param TblIdentification $tblIdentification
+     * @param TblAccount $TblAccount
+     * @param TblIdentification $TblIdentification
      *
      * @return bool
      */
-    public function removeAccountAuthentication(TblAccount $tblAccount, TblIdentification $tblIdentification)
+    public function removeAccountAuthentication(TblAccount $TblAccount, TblIdentification $TblIdentification)
     {
 
-        return (new Data($this->getBinding()))->removeAccountAuthentication($tblAccount, $tblIdentification);
+        return (new Data($this->getBinding()))->removeAccountAuthentication($TblAccount, $TblIdentification);
     }
 
     /**
-     * @param TblAccount $tblAccount
+     * @param TblAccount $TblAccount
      *
      * @return bool
      */
-    public function destroyAccount(TblAccount $tblAccount)
+    public function destroyAccount(TblAccount $TblAccount)
     {
 
-        return (new Data($this->getBinding()))->destroyAccount($tblAccount);
+        return (new Data($this->getBinding()))->destroyAccount($TblAccount);
     }
 
     /**
      * @param string $Password
-     * @param TblAccount $tblAccount
+     * @param TblAccount $TblAccount
      *
      * @return bool
      */
-    public function changePassword($Password, TblAccount $tblAccount = null)
+    public function changePassword($Password, TblAccount $TblAccount = null)
     {
 
-        return (new Data($this->getBinding()))->changePassword($Password, $tblAccount);
+        return (new Data($this->getBinding()))->changePassword($Password, $TblAccount);
     }
 
     /**
-     * @param TblConsumer $tblConsumer
-     * @param TblAccount $tblAccount
+     * @param TblConsumer $TblConsumer
+     * @param TblAccount $TblAccount
      *
      * @return bool
      */
-    public function changeConsumer(TblConsumer $tblConsumer, TblAccount $tblAccount = null)
+    public function changeConsumer(TblConsumer $TblConsumer, TblAccount $TblAccount = null)
     {
 
-        return (new Data($this->getBinding()))->changeConsumer($tblConsumer, $tblAccount);
+        return (new Data($this->getBinding()))->changeConsumer($TblConsumer, $TblAccount);
     }
 
     /**
-     * @param TblAccount $tblAccount
+     * @param TblAccount $TblAccount
      * @param string $Identifier
      *
      * @return bool|TblSetting
      */
-    public function getSettingByAccount(TblAccount $tblAccount, $Identifier)
+    public function getSettingByAccount(TblAccount $TblAccount, $Identifier)
     {
 
-        return (new Data($this->getBinding()))->getSettingByAccount($tblAccount, $Identifier);
+        return (new Data($this->getBinding()))->getSettingByAccount($TblAccount, $Identifier);
     }
 
     /**
-     * @param TblAccount $tblAccount
+     * @param TblAccount $TblAccount
      * @param string $Identifier
      * @param string $Value
      *
      * @return bool|TblSetting
      */
-    public function setSettingByAccount(TblAccount $tblAccount, $Identifier, $Value)
+    public function setSettingByAccount(TblAccount $TblAccount, $Identifier, $Value)
     {
 
-        return (new Data($this->getBinding()))->setSettingByAccount($tblAccount, $Identifier, $Value);
+        return (new Data($this->getBinding()))->setSettingByAccount($TblAccount, $Identifier, $Value);
     }
 
     /**
-     * @param TblSetting $tblSetting
+     * @param TblSetting $TblSetting
      *
      * @return bool
      */
-    public function destroySetting(TblSetting $tblSetting)
+    public function destroySetting(TblSetting $TblSetting)
     {
 
-        return (new Data($this->getBinding()))->destroySetting($tblSetting);
+        return (new Data($this->getBinding()))->destroySetting($TblSetting);
     }
 
     /**
-     * @param TblAccount $tblAccount
+     * @param TblAccount $TblAccount
      *
      * @return bool|TblSetting[]
      */
-    public function getSettingAllByAccount(TblAccount $tblAccount)
+    public function getSettingAllByAccount(TblAccount $TblAccount)
     {
 
-        return (new Data($this->getBinding()))->getSettingAllByAccount($tblAccount);
+        return (new Data($this->getBinding()))->getSettingAllByAccount($TblAccount);
     }
 
     /**

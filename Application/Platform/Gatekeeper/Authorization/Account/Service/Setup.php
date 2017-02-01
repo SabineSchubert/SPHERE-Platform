@@ -24,14 +24,14 @@ class Setup extends AbstractSetup
 
         $Schema = $this->loadSchema();
 
-        $tblAccount = $this->setTableAccount($Schema);
-        $tblIdentification = $this->setTableIdentification($Schema);
-        $this->setTableSession($Schema, $tblAccount);
-        $this->setTableAuthorization($Schema, $tblAccount);
-        $this->setTableAuthentication($Schema, $tblAccount, $tblIdentification);
-        $this->setTableSetting($Schema, $tblAccount);
+        $TblAccount = $this->setTableAccount($Schema);
+        $TblIdentification = $this->setTableIdentification($Schema);
+        $this->setTableSession($Schema, $TblAccount);
+        $this->setTableAuthorization($Schema, $TblAccount);
+        $this->setTableAuthentication($Schema, $TblAccount, $TblIdentification);
+        $this->setTableSetting($Schema, $TblAccount);
 
-        return $this->saveSchema( $Schema, $Simulate );
+        return $this->saveSchema($Schema, $Simulate);
     }
 
     /**
@@ -42,7 +42,7 @@ class Setup extends AbstractSetup
     private function setTableAccount(Schema &$Schema)
     {
 
-        $Table = $this->createTable($Schema, 'tblAccount');
+        $Table = $this->createTable($Schema, 'TblAccount');
         $this->createColumn($Table, 'Username', self::FIELD_TYPE_STRING);
 
         $this->removeIndex($Table, array('Username'));
@@ -52,7 +52,7 @@ class Setup extends AbstractSetup
         $this->createColumn($Table, 'Password', self::FIELD_TYPE_STRING);
         $this->createIndex($Table, array('Username', 'Password'));
 
-        $this->createServiceKey( $Table, 'TblConsumer' );
+        $this->createServiceKey($Table, 'TblConsumer');
         return $Table;
     }
 
@@ -64,7 +64,7 @@ class Setup extends AbstractSetup
     private function setTableIdentification(Schema &$Schema)
     {
 
-        $Table = $this->createTable($Schema, 'tblIdentification');
+        $Table = $this->createTable($Schema, 'TblIdentification');
         $this->createColumn($Table, 'Name', self::FIELD_TYPE_STRING);
         $this->createIndex($Table, array('Name'), true);
         $this->createColumn($Table, 'Description', self::FIELD_TYPE_STRING);
@@ -75,67 +75,67 @@ class Setup extends AbstractSetup
 
     /**
      * @param Schema $Schema
-     * @param Table $tblAccount
+     * @param Table $TblAccount
      *
      * @return Table
      */
-    private function setTableSession(Schema &$Schema, Table $tblAccount)
+    private function setTableSession(Schema &$Schema, Table $TblAccount)
     {
 
-        $Table = $this->createTable($Schema, 'tblSession');
+        $Table = $this->createTable($Schema, 'TblSession');
         $this->createColumn($Table, 'Session', self::FIELD_TYPE_STRING);
-        $this->createIndex($Table,array('Session'),false);
+        $this->createIndex($Table, array('Session'), false);
         $this->createColumn($Table, 'Timeout', self::FIELD_TYPE_INTEGER);
-        $this->createForeignKey($Table, $tblAccount);
+        $this->createForeignKey($Table, $TblAccount);
         return $Table;
     }
 
     /**
      * @param Schema $Schema
      *
-     * @param Table $tblAccount
+     * @param Table $TblAccount
      *
      * @return Table
      */
-    private function setTableAuthorization(Schema &$Schema, Table $tblAccount)
+    private function setTableAuthorization(Schema &$Schema, Table $TblAccount)
     {
 
-        $Table = $this->createTable($Schema, 'tblAuthorization');
+        $Table = $this->createTable($Schema, 'TblAuthorization');
         $this->createServiceKey($Table, 'TblRole');
-        $this->createForeignKey($Table, $tblAccount);
+        $this->createForeignKey($Table, $TblAccount);
         return $Table;
     }
 
     /**
      * @param Schema $Schema
      *
-     * @param Table $tblAccount
-     * @param Table $tblIdentification
+     * @param Table $TblAccount
+     * @param Table $TblIdentification
      *
      * @return Table
      */
-    private function setTableAuthentication(Schema &$Schema, Table $tblAccount, Table $tblIdentification)
+    private function setTableAuthentication(Schema &$Schema, Table $TblAccount, Table $TblIdentification)
     {
 
-        $Table = $this->createTable($Schema, 'tblAuthentication');
-        $this->createForeignKey($Table, $tblAccount);
-        $this->createForeignKey($Table, $tblIdentification);
+        $Table = $this->createTable($Schema, 'TblAuthentication');
+        $this->createForeignKey($Table, $TblAccount);
+        $this->createForeignKey($Table, $TblIdentification);
         return $Table;
     }
 
     /**
      * @param Schema $Schema
-     * @param Table $tblAccount
+     * @param Table $TblAccount
      *
      * @return Table
      */
-    private function setTableSetting(Schema &$Schema, Table $tblAccount)
+    private function setTableSetting(Schema &$Schema, Table $TblAccount)
     {
 
-        $Table = $this->createTable($Schema, 'tblSetting');
-        $this->createColumn($Table,'Identifier',self::FIELD_TYPE_STRING);
-        $this->createColumn($Table,'Value',self::FIELD_TYPE_STRING);
-        $this->createForeignKey($Table, $tblAccount);
+        $Table = $this->createTable($Schema, 'TblSetting');
+        $this->createColumn($Table, 'Identifier', self::FIELD_TYPE_STRING);
+        $this->createColumn($Table, 'Value', self::FIELD_TYPE_STRING);
+        $this->createForeignKey($Table, $TblAccount);
         return $Table;
     }
 }

@@ -17,18 +17,18 @@ class Error implements IModuleInterface
     {
 
         Main::getDispatcher()->registerRoute(
-            Main::getDispatcher()->createRoute(__NAMESPACE__.'/Authenticator',
-                __NAMESPACE__.'\Frontend::frontendAuthenticator'
+            Main::getDispatcher()->createRoute(__NAMESPACE__ . '/Authenticator',
+                __NAMESPACE__ . '\Frontend::frontendAuthenticator'
             )
         );
         Main::getDispatcher()->registerRoute(
-            Main::getDispatcher()->createRoute(__NAMESPACE__.'/Authorization',
-                __NAMESPACE__.'\Frontend::frontendRoute'
+            Main::getDispatcher()->createRoute(__NAMESPACE__ . '/Authorization',
+                __NAMESPACE__ . '\Frontend::frontendRoute'
             )
         );
         Main::getDispatcher()->registerRoute(
-            Main::getDispatcher()->createRoute(__NAMESPACE__.'/Shutdown',
-                __NAMESPACE__.'\Frontend::frontendShutdown'
+            Main::getDispatcher()->createRoute(__NAMESPACE__ . '/Shutdown',
+                __NAMESPACE__ . '\Frontend::frontendShutdown'
             )
         );
     }
@@ -38,7 +38,7 @@ class Error implements IModuleInterface
      */
     public static function useService()
     {
-
+        // TODO: Implement useService() method.
     }
 
     /**

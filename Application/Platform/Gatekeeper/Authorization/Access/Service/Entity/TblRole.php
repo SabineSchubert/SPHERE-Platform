@@ -10,7 +10,7 @@ use SPHERE\System\Database\Fitting\Element;
 
 /**
  * @Entity
- * @Table(name="tblRole")
+ * @Table(name="TblRole")
  * @Cache(usage="READ_ONLY")
  */
 class TblRole extends Element

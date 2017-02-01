@@ -5,7 +5,7 @@ use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Access;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblRole;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\TblAccount;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\TblIdentification;
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Consumer;
+use SPHERE\Application\Platform\Gatekeeper\Consumer\Consumer;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Field\CheckBox;
 use SPHERE\Common\Frontend\Form\Repository\Field\PasswordField;
@@ -42,80 +42,80 @@ class Frontend
 
         $Stage = new Stage('Benutzerkonnten');
 
-        $tblAccount = Account::useService()->getAccountBySession();
-        if ($tblAccount) {
+        $TblAccount = Account::useService()->getAccountBySession();
+        if ($TblAccount) {
             $isSystem = Account::useService()->hasAuthorization(
-                $tblAccount, Access::useService()->getRoleByName('Administrator')
+                $TblAccount, Access::useService()->getRoleByName('Administrator')
             );
         } else {
             $isSystem = false;
         }
-        $tblConsumer = Consumer::useService()->getConsumerBySession();
+        $TblConsumer = Consumer::useService()->getConsumerBySession();
 
         // Identification
-        $tblIdentificationAll = Account::useService()->getIdentificationAll();
-        if ($tblIdentificationAll) {
+        $TblIdentificationAll = Account::useService()->getIdentificationAll();
+        if ($TblIdentificationAll) {
             /** @noinspection PhpUnusedParameterInspection */
-            array_walk($tblIdentificationAll, function (TblIdentification &$tblIdentification, $Index, $isSystem) {
+            array_walk($TblIdentificationAll, function (TblIdentification &$TblIdentification, $Index, $isSystem) {
 
-                if ($tblIdentification->getName() == 'System' && !$isSystem) {
-                    $tblIdentification = false;
+                if ($TblIdentification->getName() == 'System' && !$isSystem) {
+                    $TblIdentification = false;
                 } else {
-                    $tblIdentification = new RadioBox(
-                        'Account[Identification]', $tblIdentification->getDescription(), $tblIdentification->getId()
+                    $TblIdentification = new RadioBox(
+                        'Account[Identification]', $TblIdentification->getDescription(), $TblIdentification->getId()
                     );
                 }
             }, $isSystem);
-            $tblIdentificationAll = array_filter($tblIdentificationAll);
+            $TblIdentificationAll = array_filter($TblIdentificationAll);
         } else {
-            $tblIdentificationAll = array();
+            $TblIdentificationAll = array();
         }
 
         // Role
-        $tblRoleAll = Access::useService()->getRoleAll();
-        if ($tblRoleAll) {
+        $TblRoleAll = Access::useService()->getRoleAll();
+        if ($TblRoleAll) {
             /** @noinspection PhpUnusedParameterInspection */
-            array_walk($tblRoleAll, function (TblRole &$tblRole, $Index, $isSystem) {
+            array_walk($TblRoleAll, function (TblRole &$TblRole, $Index, $isSystem) {
 
-                if ($tblRole->getName() == 'Administrator' && !$isSystem) {
-                    $tblRole = false;
+                if ($TblRole->getName() == 'Administrator' && !$isSystem) {
+                    $TblRole = false;
                 } else {
-                    $tblRole = new CheckBox('Account[Role]['.$tblRole->getId().']', $tblRole->getName(),
-                        $tblRole->getId());
+                    $TblRole = new CheckBox('Account[Role][' . $TblRole->getId() . ']', $TblRole->getName(),
+                        $TblRole->getId());
                 }
             }, $isSystem);
-            $tblRoleAll = array_filter($tblRoleAll);
+            $TblRoleAll = array_filter($TblRoleAll);
         } else {
-            $tblRoleAll = array();
+            $TblRoleAll = array();
         }
         // Account
-        $tblAccountAll = Account::useService()->getAccountAll();
-        if ($tblAccountAll) {
-            array_walk($tblAccountAll, function (TblAccount &$tblAccount) {
+        $TblAccountAll = Account::useService()->getAccountAll();
+        if ($TblAccountAll) {
+            array_walk($TblAccountAll, function (TblAccount &$TblAccount) {
 
                 /** @noinspection PhpUndefinedFieldInspection */
-                $tblAccount->Option = new Danger('Löschen',
+                $TblAccount->Option = new Danger('Löschen',
                     '/Platform/Gatekeeper/Authorization/Account/Destroy',
-                    new Remove(), array('Id' => $tblAccount->getId()), 'Löschen'
+                    new Remove(), array('Id' => $TblAccount->getId()), 'Löschen'
                 );
             });
         }
 
         $Stage->setContent(
-            ( $tblAccountAll
-                ? new TableData($tblAccountAll, new Title('Bestehende Benutzerkonnten'), array(
+            ($TblAccountAll
+                ? new TableData($TblAccountAll, new Title('Bestehende Benutzerkonnten'), array(
                     'Username' => 'Benutzername',
 //                    'Option' => 'Optionen'
                 ))
                 : new Warning('Keine Benutzerkonnten vorhanden')
             )
             //.Account::useService()->createAccount(
-            .new Form(array(
+            . new Form(array(
                 new FormGroup(array(
                     new FormRow(array(
                         new FormColumn(
                             (new TextField('Account[Name]', 'Benutzername', 'Benutzername', new Person()))
-                                ->setPrefixValue($tblConsumer->getAcronym())
+                                ->setPrefixValue($TblConsumer->getAcronym())
                             , 4),
                         new FormColumn(
                             new PasswordField(
@@ -131,10 +131,10 @@ class Frontend
                 new FormGroup(array(
                     new FormRow(array(
                         new FormColumn(array(
-                            new Panel('Authentifizierungstyp', $tblIdentificationAll)
+                            new Panel('Authentifizierungstyp', $TblIdentificationAll)
                         ), 4),
                         new FormColumn(array(
-                            new Panel('Berechtigungsstufe', $tblRoleAll)
+                            new Panel('Berechtigungsstufe', $TblRoleAll)
                         ), 4),
                     ))
 

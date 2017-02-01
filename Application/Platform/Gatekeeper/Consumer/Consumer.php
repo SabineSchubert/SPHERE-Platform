@@ -1,19 +1,19 @@
 <?php
-namespace SPHERE\Application\Platform\Gatekeeper\Authorization\Account;
+namespace SPHERE\Application\Platform\Gatekeeper\Consumer;
 
 use SPHERE\Application\IModuleInterface;
 use SPHERE\Application\Platform\System\Database\Database;
-use SPHERE\Common\Frontend\Icon\Repository\Lock;
+use SPHERE\Common\Frontend\Icon\Repository\Cluster;
 use SPHERE\Common\Main;
 use SPHERE\Common\Window\Navigation\Link;
 use SPHERE\System\Database\Link\Identifier;
 
 /**
- * Class Account
+ * Class Consumer
  *
- * @package SPHERE\Application\System\Gatekeeper\Authorization\Account
+ * @package SPHERE\Application\System\Gatekeeper\Consumer
  */
-class Account implements IModuleInterface
+class Consumer implements IModuleInterface
 {
 
     public static function registerModule()
@@ -22,10 +22,10 @@ class Account implements IModuleInterface
         Database::registerService(__CLASS__);
 
         Main::getDisplay()->addModuleNavigation(
-            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Benutzerkonten'), new Link\Icon(new Lock()))
+            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Mandanten'), new Link\Icon(new Cluster()))
         );
         Main::getDispatcher()->registerRoute(
-            Main::getDispatcher()->createRoute(__NAMESPACE__, 'Frontend::frontendAccount')
+            Main::getDispatcher()->createRoute(__NAMESPACE__, 'Frontend::frontendConsumer')
         );
     }
 
@@ -44,8 +44,10 @@ class Account implements IModuleInterface
     public static function useService()
     {
 
-        return new Service(new Identifier('Platform', 'Gatekeeper', 'Authorization', 'Account'),
+        return new Service(new Identifier('Platform', 'Gatekeeper', 'Consumer'),
             __DIR__ . '/Service/Entity', __NAMESPACE__ . '\Service\Entity'
         );
     }
+
+
 }

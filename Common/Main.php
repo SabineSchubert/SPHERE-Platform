@@ -8,7 +8,7 @@ use MOC\V\Component\Router\Component\Bridge\Repository\UniversalRouter;
 use SPHERE\Application\Api\Api;
 use SPHERE\Application\Dispatcher;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Access;
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Consumer;
+use SPHERE\Application\Platform\Gatekeeper\Consumer\Consumer;
 use SPHERE\Application\Platform\Platform;
 use SPHERE\Application\Platform\System;
 use SPHERE\Common\Frontend\Icon\Repository\HazardSign;

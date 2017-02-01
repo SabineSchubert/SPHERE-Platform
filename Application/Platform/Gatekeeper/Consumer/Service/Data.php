@@ -1,8 +1,8 @@
 <?php
-namespace SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Service;
+namespace SPHERE\Application\Platform\Gatekeeper\Consumer\Service;
 
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Service\Entity\TblConsumer;
+use SPHERE\Application\Platform\Gatekeeper\Consumer\Service\Entity\TblConsumer;
 use SPHERE\Application\Platform\System\Protocol\Protocol;
 use SPHERE\System\Cache\Handler\MemoryHandler;
 use SPHERE\System\Database\Binding\AbstractData;
@@ -36,7 +36,8 @@ class Data extends AbstractData
         $Entity = $Manager->getEntity('TblConsumer')
             ->findOneBy(array(TblConsumer::ATTR_ACRONYM => $Acronym));
         if (null === $Entity) {
-            $Entity = new TblConsumer($Acronym);
+            $Entity = new TblConsumer();
+            $Entity->setAcronym($Acronym);
             $Entity->setName($Name);
             $Manager->saveEntity($Entity);
             Protocol::useService()->createInsertEntry($this->getConnection()->getDatabase(), $Entity);
@@ -102,8 +103,8 @@ class Data extends AbstractData
         $Memory = $this->getCache(new MemoryHandler());
         if (null === ($Entity = $Memory->getValue($Session, __METHOD__))) {
 
-            if (($tblAccount = Account::useService()->getAccountBySession($Session))) {
-                $Entity = $tblAccount->getServiceTblConsumer();
+            if (($TblAccount = Account::useService()->getAccountBySession($Session))) {
+                $Entity = $TblAccount->getServiceTblConsumer();
             } else {
                 $Entity = false;
             }

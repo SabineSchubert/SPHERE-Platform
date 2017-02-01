@@ -38,7 +38,7 @@ class Session extends Extension implements IModuleInterface
         );
         Main::getDispatcher()->registerRoute(
             Main::getDispatcher()->createRoute(__NAMESPACE__,
-                __CLASS__.'::frontendSession'
+                __CLASS__ . '::frontendSession'
             )
         );
     }
@@ -69,42 +69,42 @@ class Session extends Extension implements IModuleInterface
 
         $Result = array();
 
-        $tblSessionAll = Account::useService()->getSessionAll();
-        if ($tblSessionAll) {
-            array_walk($tblSessionAll, function (TblSession $tblSession) use (&$Result) {
+        $TblSessionAll = Account::useService()->getSessionAll();
+        if ($TblSessionAll) {
+            array_walk($TblSessionAll, function (TblSession $TblSession) use (&$Result) {
 
-                $tblAccount = $tblSession->getTblAccount();
+                $TblAccount = $TblSession->getTblAccount();
 
-                if ($tblSession->getEntityUpdate() && $tblSession->getEntityCreate()) {
-                    $Interval = $tblSession->getEntityUpdate()->getTimestamp() - $tblSession->getEntityCreate()->getTimestamp();
+                if ($TblSession->getEntityUpdate() && $TblSession->getEntityCreate()) {
+                    $Interval = $TblSession->getEntityUpdate()->getTimestamp() - $TblSession->getEntityCreate()->getTimestamp();
                 } else {
-                    if (!$tblSession->getEntityUpdate() && $tblSession->getEntityCreate()) {
-                        $Interval = time() - $tblSession->getEntityCreate()->getTimestamp();
+                    if (!$TblSession->getEntityUpdate() && $TblSession->getEntityCreate()) {
+                        $Interval = time() - $TblSession->getEntityCreate()->getTimestamp();
                     } else {
                         $Interval = 0;
                     }
                 }
 
-                if (( $Activity = Protocol::useService()->getProtocolLastActivity($tblAccount) )) {
+                if (($Activity = Protocol::useService()->getProtocolLastActivity($TblAccount))) {
                     $Activity = current($Activity)->getEntityCreate();
                 } else {
                     $Activity = '-NA-';
                 }
-                
+
 
                 array_push($Result, array(
-                    'Id'         => $tblSession->getId(),
-                    'Consumer'   => ( $tblAccount->getServiceTblConsumer() ?
-                        $tblAccount->getServiceTblConsumer()->getAcronym()
-                        .'&nbsp;'.new Muted($tblAccount->getServiceTblConsumer()->getName())
+                    'Id' => $TblSession->getId(),
+                    'Consumer' => ($TblAccount->getServiceTblConsumer() ?
+                        $TblAccount->getServiceTblConsumer()->getAcronym()
+                        . '&nbsp;' . new Muted($TblAccount->getServiceTblConsumer()->getName())
                         : '-NA-'
                     ),
-                    'Account'    => ( $tblAccount ? $tblAccount->getUsername() : '-NA-' ),
-                    'TTL'        => gmdate("H:i:s", $tblSession->getTimeout() - time()),
+                    'Account' => ($TblAccount ? $TblAccount->getUsername() : '-NA-'),
+                    'TTL' => gmdate("H:i:s", $TblSession->getTimeout() - time()),
                     'ActiveTime' => gmdate('H:i:s', $Interval),
-                    'LoginTime'  => $tblSession->getEntityCreate(),
+                    'LoginTime' => $TblSession->getEntityCreate(),
                     'LastAction' => $Activity,
-                    'Identifier' => strtoupper($tblSession->getSession())
+                    'Identifier' => strtoupper($TblSession->getSession())
                 ));
 
             });
@@ -112,15 +112,15 @@ class Session extends Extension implements IModuleInterface
 
         $History = array();
 
-        $tblProtocolAll = Protocol::useService()->getProtocolAllCreateSession();
-        if ($tblProtocolAll) {
-            array_walk($tblProtocolAll, function (TblProtocol $tblProtocol) use (&$History) {
+        $TblProtocolAll = Protocol::useService()->getProtocolAllCreateSession();
+        if ($TblProtocolAll) {
+            array_walk($TblProtocolAll, function (TblProtocol $TblProtocol) use (&$History) {
 
                 array_push($History, array(
-                    'Consumer'  => $tblProtocol->getConsumerAcronym().'&nbsp;'.new Muted($tblProtocol->getConsumerName()),
-                    'LoginTime' => $tblProtocol->getEntityCreate(),
-                    'Account'   => $tblProtocol->getAccountUsername(),
-                    'AccountId' => ( $tblProtocol->getServiceTblAccount() ? $tblProtocol->getServiceTblAccount()->getId() : '-NA-' )
+                    'Consumer' => $TblProtocol->getConsumerAcronym() . '&nbsp;' . new Muted($TblProtocol->getConsumerName()),
+                    'LoginTime' => $TblProtocol->getEntityCreate(),
+                    'Account' => $TblProtocol->getAccountUsername(),
+                    'AccountId' => ($TblProtocol->getServiceTblAccount() ? $TblProtocol->getServiceTblAccount()->getId() : '-NA-')
                 ));
 
             });
@@ -132,13 +132,13 @@ class Session extends Extension implements IModuleInterface
                     new LayoutRow(
                         new LayoutColumn(array(
                             new TableData($Result, null, array(
-                                'Id'         => '#',
-                                'Consumer'   => 'Mandant',
-                                'Account'    => 'Benutzer',
-                                'LoginTime'  => 'Anmeldung',
+                                'Id' => '#',
+                                'Consumer' => 'Mandant',
+                                'Account' => 'Benutzer',
+                                'LoginTime' => 'Anmeldung',
                                 'LastAction' => 'Aktivität',
                                 'ActiveTime' => 'Dauer',
-                                'TTL'        => 'Timeout',
+                                'TTL' => 'Timeout',
                                 'Identifier' => 'Session'
                             )),
                         ))
@@ -150,10 +150,10 @@ class Session extends Extension implements IModuleInterface
                             new TableData($History, null, array(
                                 'LoginTime' => 'Zeitpunkt',
                                 'AccountId' => 'Account',
-                                'Account'   => 'Benutzer',
-                                'Consumer'  => 'Mandant',
+                                'Account' => 'Benutzer',
+                                'Consumer' => 'Mandant',
                             ), array(
-                                'order'      => array(array(0, 'desc')),
+                                'order' => array(array(0, 'desc')),
                                 'columnDefs' => array(
                                     array('type' => 'de_datetime', 'width' => '10%', 'targets' => 0),
                                     array('width' => '45%', 'targets' => 2),

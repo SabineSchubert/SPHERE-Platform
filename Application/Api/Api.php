@@ -1,6 +1,7 @@
 <?php
 namespace SPHERE\Application\Api;
 
+use SPHERE\Application\Api\Platform\Platform;
 use SPHERE\Application\IClusterInterface;
 
 /**
@@ -13,6 +14,6 @@ class Api implements IClusterInterface
 
     public static function registerCluster()
     {
-
+        Platform::registerApplication();
     }
 }

@@ -15,8 +15,8 @@ interface IServiceInterface
      * Define Database Connection
      *
      * @param Identifier $Identifier
-     * @param string     $EntityPath
-     * @param string     $EntityNamespace
+     * @param string $EntityPath
+     * @param string $EntityNamespace
      */
     public function __construct(Identifier $Identifier, $EntityPath, $EntityNamespace);
 

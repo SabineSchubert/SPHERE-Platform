@@ -75,26 +75,26 @@ class Service extends AbstractService
     {
 
         if (empty(self::$AuthorizationCache)) {
-            if (($tblAccount = Account::useService()->getAccountBySession())) {
+            if (($TblAccount = Account::useService()->getAccountBySession())) {
                 $Cache = $this->getCache(new MemcachedHandler());
-                if (!($AuthorizationCache = $Cache->getValue($tblAccount->getId(), __METHOD__))) {
-                    if (($tblAuthorizationAll = Account::useService()->getAuthorizationAllByAccount($tblAccount))) {
-                        /** @var \SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\TblAuthorization $tblAuthorization */
-                        foreach ($tblAuthorizationAll as $tblAuthorization) {
-                            $tblRole = $tblAuthorization->getServiceTblRole();
-                            if ($tblRole && (false !== ($tblLevelAll = $tblRole->getTblLevelAll()))) {
-                                /** @var TblLevel $tblLevel */
-                                foreach ($tblLevelAll as $tblLevel) {
-                                    $tblPrivilegeAll = $tblLevel->getTblPrivilegeAll();
-                                    if ($tblPrivilegeAll) {
-                                        /** @var TblPrivilege $tblPrivilege */
-                                        foreach ($tblPrivilegeAll as $tblPrivilege) {
-                                            $tblRightAll = $tblPrivilege->getTblRightAll();
-                                            if ($tblRightAll) {
-                                                /** @var TblRight $tblRight */
-                                                foreach ($tblRightAll as $tblRight) {
-                                                    if (!in_array($tblRight->getRoute(), self::$AuthorizationCache)) {
-                                                        array_push(self::$AuthorizationCache, $tblRight->getRoute());
+                if (!($AuthorizationCache = $Cache->getValue($TblAccount->getId(), __METHOD__))) {
+                    if (($TblAuthorizationAll = Account::useService()->getAuthorizationAllByAccount($TblAccount))) {
+                        /** @var \SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\TblAuthorization $TblAuthorization */
+                        foreach ($TblAuthorizationAll as $TblAuthorization) {
+                            $TblRole = $TblAuthorization->getServiceTblRole();
+                            if ($TblRole && (false !== ($TblLevelAll = $TblRole->getTblLevelAll()))) {
+                                /** @var TblLevel $TblLevel */
+                                foreach ($TblLevelAll as $TblLevel) {
+                                    $TblPrivilegeAll = $TblLevel->getTblPrivilegeAll();
+                                    if ($TblPrivilegeAll) {
+                                        /** @var TblPrivilege $TblPrivilege */
+                                        foreach ($TblPrivilegeAll as $TblPrivilege) {
+                                            $TblRightAll = $TblPrivilege->getTblRightAll();
+                                            if ($TblRightAll) {
+                                                /** @var TblRight $TblRight */
+                                                foreach ($TblRightAll as $TblRight) {
+                                                    if (!in_array($TblRight->getRoute(), self::$AuthorizationCache)) {
+                                                        array_push(self::$AuthorizationCache, $TblRight->getRoute());
                                                     }
                                                 }
                                             }
@@ -104,7 +104,7 @@ class Service extends AbstractService
                             }
                         }
                     }
-                    $Cache->setValue($tblAccount->getId(), self::$AuthorizationCache, 0, __METHOD__);
+                    $Cache->setValue($TblAccount->getId(), self::$AuthorizationCache, 0, __METHOD__);
                 } else {
                     self::$AuthorizationCache = $AuthorizationCache;
                 }
@@ -329,109 +329,109 @@ class Service extends AbstractService
 
     /**
      *
-     * @param TblRole $tblRole
+     * @param TblRole $TblRole
      *
      * @return null|TblLevel[]
      */
-    public function getLevelAllByRole(TblRole $tblRole)
+    public function getLevelAllByRole(TblRole $TblRole)
     {
 
-        return (new Data($this->getBinding()))->getLevelAllByRole($tblRole);
+        return (new Data($this->getBinding()))->getLevelAllByRole($TblRole);
     }
 
     /**
      *
-     * @param TblPrivilege $tblPrivilege
+     * @param TblPrivilege $TblPrivilege
      *
      * @return null|TblRight[]
      */
-    public function getRightAllByPrivilege(TblPrivilege $tblPrivilege)
+    public function getRightAllByPrivilege(TblPrivilege $TblPrivilege)
     {
 
-        return (new Data($this->getBinding()))->getRightAllByPrivilege($tblPrivilege);
+        return (new Data($this->getBinding()))->getRightAllByPrivilege($TblPrivilege);
     }
 
     /**
      *
-     * @param TblLevel $tblLevel
+     * @param TblLevel $TblLevel
      *
      * @return null|TblPrivilege[]
      */
-    public function getPrivilegeAllByLevel(TblLevel $tblLevel)
+    public function getPrivilegeAllByLevel(TblLevel $TblLevel)
     {
 
-        return (new Data($this->getBinding()))->getPrivilegeAllByLevel($tblLevel);
+        return (new Data($this->getBinding()))->getPrivilegeAllByLevel($TblLevel);
     }
 
     /**
-     * @param TblRole $tblRole
-     * @param TblLevel $tblLevel
+     * @param TblRole $TblRole
+     * @param TblLevel $TblLevel
      *
      * @return TblRoleLevel
      */
-    public function addRoleLevel(TblRole $tblRole, TblLevel $tblLevel)
+    public function addRoleLevel(TblRole $TblRole, TblLevel $TblLevel)
     {
 
-        return (new Data($this->getBinding()))->addRoleLevel($tblRole, $tblLevel);
+        return (new Data($this->getBinding()))->addRoleLevel($TblRole, $TblLevel);
     }
 
     /**
-     * @param TblRole $tblRole
-     * @param TblLevel $tblLevel
+     * @param TblRole $TblRole
+     * @param TblLevel $TblLevel
      *
      * @return bool
      */
-    public function removeRoleLevel(TblRole $tblRole, TblLevel $tblLevel)
+    public function removeRoleLevel(TblRole $TblRole, TblLevel $TblLevel)
     {
 
-        return (new Data($this->getBinding()))->removeRoleLevel($tblRole, $tblLevel);
+        return (new Data($this->getBinding()))->removeRoleLevel($TblRole, $TblLevel);
     }
 
     /**
-     * @param TblLevel $tblLevel
-     * @param TblPrivilege $tblPrivilege
+     * @param TblLevel $TblLevel
+     * @param TblPrivilege $TblPrivilege
      *
      * @return bool
      */
-    public function removeLevelPrivilege(TblLevel $tblLevel, TblPrivilege $tblPrivilege)
+    public function removeLevelPrivilege(TblLevel $TblLevel, TblPrivilege $TblPrivilege)
     {
 
-        return (new Data($this->getBinding()))->removeLevelPrivilege($tblLevel, $tblPrivilege);
+        return (new Data($this->getBinding()))->removeLevelPrivilege($TblLevel, $TblPrivilege);
     }
 
     /**
-     * @param TblPrivilege $tblPrivilege
-     * @param TblRight $tblRight
+     * @param TblPrivilege $TblPrivilege
+     * @param TblRight $TblRight
      *
      * @return bool
      */
-    public function removePrivilegeRight(TblPrivilege $tblPrivilege, TblRight $tblRight)
+    public function removePrivilegeRight(TblPrivilege $TblPrivilege, TblRight $TblRight)
     {
 
-        return (new Data($this->getBinding()))->removePrivilegeRight($tblPrivilege, $tblRight);
+        return (new Data($this->getBinding()))->removePrivilegeRight($TblPrivilege, $TblRight);
     }
 
     /**
-     * @param TblPrivilege $tblPrivilege
-     * @param TblRight $tblRight
+     * @param TblPrivilege $TblPrivilege
+     * @param TblRight $TblRight
      *
      * @return TblPrivilegeRight
      */
-    public function addPrivilegeRight(TblPrivilege $tblPrivilege, TblRight $tblRight)
+    public function addPrivilegeRight(TblPrivilege $TblPrivilege, TblRight $TblRight)
     {
 
-        return (new Data($this->getBinding()))->addPrivilegeRight($tblPrivilege, $tblRight);
+        return (new Data($this->getBinding()))->addPrivilegeRight($TblPrivilege, $TblRight);
     }
 
     /**
-     * @param TblLevel $tblLevel
-     * @param TblPrivilege $tblPrivilege
+     * @param TblLevel $TblLevel
+     * @param TblPrivilege $TblPrivilege
      *
      * @return TblLevelPrivilege
      */
-    public function addLevelPrivilege(TblLevel $tblLevel, TblPrivilege $tblPrivilege)
+    public function addLevelPrivilege(TblLevel $TblLevel, TblPrivilege $TblPrivilege)
     {
 
-        return (new Data($this->getBinding()))->addLevelPrivilege($tblLevel, $tblPrivilege);
+        return (new Data($this->getBinding()))->addLevelPrivilege($TblLevel, $TblPrivilege);
     }
 }

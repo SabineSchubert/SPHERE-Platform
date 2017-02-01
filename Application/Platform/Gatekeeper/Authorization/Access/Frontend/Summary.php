@@ -25,7 +25,7 @@ class Summary extends Extension implements ITemplateInterface
     function __construct($AccountRoleList)
     {
 
-        $this->Template = $this->getTemplate(__DIR__.'/Summary.twig');
+        $this->Template = $this->getTemplate(__DIR__ . '/Summary.twig');
 
         $this->Template->setVariable('AccountRoleList', $AccountRoleList);
     }

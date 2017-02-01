@@ -10,23 +10,23 @@ use SPHERE\System\Database\Fitting\Element;
 
 /**
  * @Entity
- * @Table(name="tblPrivilegeRight")
+ * @Table(name="TblPrivilegeRight")
  * @Cache(usage="READ_ONLY")
  */
 class TblPrivilegeRight extends Element
 {
 
-    const ATTR_TBL_PRIVILEGE = 'tblPrivilege';
-    const ATTR_TBL_RIGHT = 'tblRight';
+    const ATTR_TBL_PRIVILEGE = 'TblPrivilege';
+    const ATTR_TBL_RIGHT = 'TblRight';
 
     /**
      * @Column(type="bigint")
      */
-    protected $tblPrivilege;
+    protected $TblPrivilege;
     /**
      * @Column(type="bigint")
      */
-    protected $tblRight;
+    protected $TblRight;
 
     /**
      * @return bool|TblPrivilege
@@ -34,20 +34,20 @@ class TblPrivilegeRight extends Element
     public function getTblPrivilege()
     {
 
-        if (null === $this->tblPrivilege) {
+        if (null === $this->TblPrivilege) {
             return false;
         } else {
-            return Access::useService()->getPrivilegeById($this->tblPrivilege);
+            return Access::useService()->getPrivilegeById($this->TblPrivilege);
         }
     }
 
     /**
-     * @param null|TblPrivilege $tblPrivilege
+     * @param null|TblPrivilege $TblPrivilege
      */
-    public function setTblPrivilege(TblPrivilege $tblPrivilege = null)
+    public function setTblPrivilege(TblPrivilege $TblPrivilege = null)
     {
 
-        $this->tblPrivilege = ( null === $tblPrivilege ? null : $tblPrivilege->getId() );
+        $this->TblPrivilege = (null === $TblPrivilege ? null : $TblPrivilege->getId());
     }
 
     /**
@@ -56,19 +56,19 @@ class TblPrivilegeRight extends Element
     public function getTblRight()
     {
 
-        if (null === $this->tblRight) {
+        if (null === $this->TblRight) {
             return false;
         } else {
-            return Access::useService()->getRightById($this->tblRight);
+            return Access::useService()->getRightById($this->TblRight);
         }
     }
 
     /**
-     * @param null|TblRight $tblRight
+     * @param null|TblRight $TblRight
      */
-    public function setTblRight(TblRight $tblRight = null)
+    public function setTblRight(TblRight $TblRight = null)
     {
 
-        $this->tblRight = ( null === $tblRight ? null : $tblRight->getId() );
+        $this->TblRight = (null === $TblRight ? null : $TblRight->getId());
     }
 }

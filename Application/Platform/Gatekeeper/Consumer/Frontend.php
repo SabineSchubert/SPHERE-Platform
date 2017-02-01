@@ -1,5 +1,5 @@
 <?php
-namespace SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer;
+namespace SPHERE\Application\Platform\Gatekeeper\Consumer;
 
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Field\TextField;
@@ -14,7 +14,7 @@ use SPHERE\Common\Window\Stage;
 /**
  * Class Frontend
  *
- * @package SPHERE\Application\System\Gatekeeper\Authorization\Consumer
+ * @package SPHERE\Application\System\Gatekeeper\Consumer
  */
 class Frontend
 {
@@ -25,17 +25,17 @@ class Frontend
      *
      * @return Stage
      */
-    public static function frontendConsumer($ConsumerAcronym, $ConsumerName)
+    public static function frontendConsumer($ConsumerAcronym = null, $ConsumerName = null)
     {
 
         $Stage = new Stage('Mandanten');
-        $tblConsumerAll = Consumer::useService()->getConsumerAll();
+        $TblConsumerAll = Consumer::useService()->getConsumerAll();
         $Stage->setContent(
-            new TableData($tblConsumerAll, new Title('Bestehende Mandanten'), array(
+            new TableData($TblConsumerAll, new Title('Bestehende Mandanten'), array(
                 'Acronym' => 'Mandanten-Kürzel',
-                'Name'    => 'Mandanten-Name'
+                'Name' => 'Mandanten-Name'
             ))
-            .Consumer::useService()->createConsumer(
+            . Consumer::useService()->createConsumer(
                 new Form(new FormGroup(
                         new FormRow(array(
                             new FormColumn(

@@ -10,23 +10,23 @@ use SPHERE\System\Database\Fitting\Element;
 
 /**
  * @Entity
- * @Table(name="tblLevelPrivilege")
+ * @Table(name="TblLevelPrivilege")
  * @Cache(usage="READ_ONLY")
  */
 class TblLevelPrivilege extends Element
 {
 
-    const ATTR_TBL_LEVEL = 'tblLevel';
-    const ATTR_TBL_PRIVILEGE = 'tblPrivilege';
+    const ATTR_TBL_LEVEL = 'TblLevel';
+    const ATTR_TBL_PRIVILEGE = 'TblPrivilege';
 
     /**
      * @Column(type="bigint")
      */
-    protected $tblLevel;
+    protected $TblLevel;
     /**
      * @Column(type="bigint")
      */
-    protected $tblPrivilege;
+    protected $TblPrivilege;
 
     /**
      * @return bool|TblPrivilege
@@ -34,20 +34,20 @@ class TblLevelPrivilege extends Element
     public function getTblPrivilege()
     {
 
-        if (null === $this->tblPrivilege) {
+        if (null === $this->TblPrivilege) {
             return false;
         } else {
-            return Access::useService()->getPrivilegeById($this->tblPrivilege);
+            return Access::useService()->getPrivilegeById($this->TblPrivilege);
         }
     }
 
     /**
-     * @param null|TblPrivilege $tblPrivilege
+     * @param null|TblPrivilege $TblPrivilege
      */
-    public function setTblPrivilege(TblPrivilege $tblPrivilege = null)
+    public function setTblPrivilege(TblPrivilege $TblPrivilege = null)
     {
 
-        $this->tblPrivilege = ( null === $tblPrivilege ? null : $tblPrivilege->getId() );
+        $this->TblPrivilege = (null === $TblPrivilege ? null : $TblPrivilege->getId());
     }
 
     /**
@@ -56,19 +56,19 @@ class TblLevelPrivilege extends Element
     public function getTblLevel()
     {
 
-        if (null === $this->tblLevel) {
+        if (null === $this->TblLevel) {
             return false;
         } else {
-            return Access::useService()->getLevelById($this->tblLevel);
+            return Access::useService()->getLevelById($this->TblLevel);
         }
     }
 
     /**
-     * @param null|TblLevel $tblLevel
+     * @param null|TblLevel $TblLevel
      */
-    public function setTblLevel(TblLevel $tblLevel = null)
+    public function setTblLevel(TblLevel $TblLevel = null)
     {
 
-        $this->tblLevel = ( null === $tblLevel ? null : $tblLevel->getId() );
+        $this->TblLevel = (null === $TblLevel ? null : $TblLevel->getId());
     }
 }

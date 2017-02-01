@@ -10,23 +10,23 @@ use SPHERE\System\Database\Fitting\Element;
 
 /**
  * @Entity
- * @Table(name="tblAuthentication")
+ * @Table(name="TblAuthentication")
  * @Cache(usage="READ_ONLY")
  */
 class TblAuthentication extends Element
 {
 
-    const ATTR_TBL_ACCOUNT = 'tblAccount';
-    const ATTR_TBL_IDENTIFICATION = 'tblIdentification';
+    const ATTR_TBL_ACCOUNT = 'TblAccount';
+    const ATTR_TBL_IDENTIFICATION = 'TblIdentification';
 
     /**
      * @Column(type="bigint")
      */
-    protected $tblAccount;
+    protected $TblAccount;
     /**
      * @Column(type="bigint")
      */
-    protected $tblIdentification;
+    protected $TblIdentification;
 
     /**
      * @return bool|TblAccount
@@ -34,20 +34,20 @@ class TblAuthentication extends Element
     public function getTblAccount()
     {
 
-        if (null === $this->tblAccount) {
+        if (null === $this->TblAccount) {
             return false;
         } else {
-            return Account::useService()->getAccountById($this->tblAccount);
+            return Account::useService()->getAccountById($this->TblAccount);
         }
     }
 
     /**
-     * @param null|TblAccount $tblAccount
+     * @param null|TblAccount $TblAccount
      */
-    public function setTblAccount(TblAccount $tblAccount = null)
+    public function setTblAccount(TblAccount $TblAccount = null)
     {
 
-        $this->tblAccount = ( null === $tblAccount ? null : $tblAccount->getId() );
+        $this->TblAccount = (null === $TblAccount ? null : $TblAccount->getId());
     }
 
     /**
@@ -56,19 +56,19 @@ class TblAuthentication extends Element
     public function getTblIdentification()
     {
 
-        if (null === $this->tblIdentification) {
+        if (null === $this->TblIdentification) {
             return false;
         } else {
-            return Account::useService()->getIdentificationById($this->tblIdentification);
+            return Account::useService()->getIdentificationById($this->TblIdentification);
         }
     }
 
     /**
-     * @param null|TblIdentification $tblIdentification
+     * @param null|TblIdentification $TblIdentification
      */
-    public function setTblIdentification(TblIdentification $tblIdentification = null)
+    public function setTblIdentification(TblIdentification $TblIdentification = null)
     {
 
-        $this->tblIdentification = ( null === $tblIdentification ? null : $tblIdentification->getId() );
+        $this->TblIdentification = (null === $TblIdentification ? null : $TblIdentification->getId());
     }
 }

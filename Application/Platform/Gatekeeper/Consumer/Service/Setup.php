@@ -1,5 +1,5 @@
 <?php
-namespace SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Service;
+namespace SPHERE\Application\Platform\Gatekeeper\Consumer\Service;
 
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\Table;
@@ -37,7 +37,7 @@ class Setup extends AbstractSetup
     private function setTableConsumer(Schema &$Schema)
     {
 
-        $Table = $this->createTable($Schema, 'tblConsumer');
+        $Table = $this->createTable($Schema, 'TblConsumer');
         $this->createColumn($Table, 'Acronym', self::FIELD_TYPE_STRING);
         $this->createIndex($Table, array('Acronym', Element::ENTITY_REMOVE));
 

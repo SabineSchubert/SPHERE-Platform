@@ -10,23 +10,23 @@ use SPHERE\System\Database\Fitting\Element;
 
 /**
  * @Entity
- * @Table(name="tblRoleLevel")
+ * @Table(name="TblRoleLevel")
  * @Cache(usage="READ_ONLY")
  */
 class TblRoleLevel extends Element
 {
 
-    const ATTR_TBL_ROLE = 'tblRole';
-    const ATTR_TBL_LEVEL = 'tblLevel';
+    const ATTR_TBL_ROLE = 'TblRole';
+    const ATTR_TBL_LEVEL = 'TblLevel';
 
     /**
      * @Column(type="bigint")
      */
-    protected $tblRole;
+    protected $TblRole;
     /**
      * @Column(type="bigint")
      */
-    protected $tblLevel;
+    protected $TblLevel;
 
     /**
      * @return bool|TblRole
@@ -34,20 +34,20 @@ class TblRoleLevel extends Element
     public function getTblRole()
     {
 
-        if (null === $this->tblRole) {
+        if (null === $this->TblRole) {
             return false;
         } else {
-            return Access::useService()->getRoleById($this->tblRole);
+            return Access::useService()->getRoleById($this->TblRole);
         }
     }
 
     /**
-     * @param null|TblRole $tblRole
+     * @param null|TblRole $TblRole
      */
-    public function setTblRole(TblRole $tblRole = null)
+    public function setTblRole(TblRole $TblRole = null)
     {
 
-        $this->tblRole = ( null === $tblRole ? null : $tblRole->getId() );
+        $this->TblRole = (null === $TblRole ? null : $TblRole->getId());
     }
 
     /**
@@ -56,19 +56,19 @@ class TblRoleLevel extends Element
     public function getTblLevel()
     {
 
-        if (null === $this->tblLevel) {
+        if (null === $this->TblLevel) {
             return false;
         } else {
-            return Access::useService()->getLevelById($this->tblLevel);
+            return Access::useService()->getLevelById($this->TblLevel);
         }
     }
 
     /**
-     * @param null|TblLevel $tblLevel
+     * @param null|TblLevel $TblLevel
      */
-    public function setTblLevel(TblLevel $tblLevel = null)
+    public function setTblLevel(TblLevel $TblLevel = null)
     {
 
-        $this->tblLevel = ( null === $tblLevel ? null : $tblLevel->getId() );
+        $this->TblLevel = (null === $TblLevel ? null : $TblLevel->getId());
     }
 }

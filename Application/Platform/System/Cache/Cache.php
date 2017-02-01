@@ -45,7 +45,7 @@ class Cache extends Extension implements IModuleInterface
          * Register Navigation
          */
         Main::getDisplay()->addModuleNavigation(
-            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Cache'), new Link\Icon( new Flash() ))
+            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Cache'), new Link\Icon(new Flash()))
         );
         /**
          * Register Route
@@ -86,16 +86,16 @@ class Cache extends Extension implements IModuleInterface
         $Stage->addButton(new Standard('Cache löschen', '/Platform/System/Cache', null, array('Clear' => true),
             'Cache leeren'));
         $Stage->addButton(new External('phpMemcachedAdmin',
-            $this->getRequest()->getPathBase().'/UnitTest/Console/phpMemcachedAdmin-1.2.2'));
+            $this->getRequest()->getPathBase() . '/UnitTest/Console/phpMemcachedAdmin-1.2.2'));
 
         $CacheStack = array(
-            'Cookie'    => $this->getCache(new CookieHandler()),
+            'Cookie' => $this->getCache(new CookieHandler()),
             'Memcached' => $this->getCache(new MemcachedHandler()),
-            'APCu'      => $this->getCache(new APCuHandler()),
-            'Memory'    => $this->getCache(new MemoryHandler()),
-            'OpCache'   => $this->getCache(new OpCacheHandler()),
-            'Twig'      => $this->getCache(new TwigHandler()),
-            'Smarty'    => $this->getCache(new SmartyHandler()),
+            'APCu' => $this->getCache(new APCuHandler()),
+            'Memory' => $this->getCache(new MemoryHandler()),
+            'OpCache' => $this->getCache(new OpCacheHandler()),
+            'Twig' => $this->getCache(new TwigHandler()),
+            'Smarty' => $this->getCache(new SmartyHandler()),
         );
 
         if ($Clear) {
@@ -112,10 +112,10 @@ class Cache extends Extension implements IModuleInterface
                 new LayoutColumn(new Status(
                     $Cache->getStatus()
                 ))
-            ), ( false === strpos(get_class($Cache), $Name.'Handler')
-                ? new Title(new Danger(new Disable()).' '.$Name,
-                    new Danger('Not available (Fallback: '.substr(strrchr(get_class($Cache), '\\'), 1).')'))
-                : new Title(new Success(new Enable()).' '.$Name, new Success('Active'))
+            ), (false === strpos(get_class($Cache), $Name . 'Handler')
+                ? new Title(new Danger(new Disable()) . ' ' . $Name,
+                    new Danger('Not available (Fallback: ' . substr(strrchr(get_class($Cache), '\\'), 1) . ')'))
+                : new Title(new Success(new Enable()) . ' ' . $Name, new Success('Active'))
             ));
         }
 

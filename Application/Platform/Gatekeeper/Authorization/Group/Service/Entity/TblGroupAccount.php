@@ -12,7 +12,7 @@ use SPHERE\System\Database\Fitting\Element;
 
 /**
  * @Entity
- * @Table(name="tblGroupAccount")
+ * @Table(name="TblGroupAccount")
  * @Cache(usage="READ_ONLY")
  */
 class TblGroupAccount extends Element
@@ -21,7 +21,7 @@ class TblGroupAccount extends Element
     /**
      * @Column(type="bigint")
      */
-    protected $tblGroup;
+    protected $TblGroup;
     /**
      * @Column(type="bigint")
      */
@@ -33,20 +33,20 @@ class TblGroupAccount extends Element
     public function getTblGroup()
     {
 
-        if (null === $this->tblGroup) {
+        if (null === $this->TblGroup) {
             return null;
         } else {
-            return Group::useService()->getGroupById($this->tblGroup);
+            return Group::useService()->getGroupById($this->TblGroup);
         }
     }
 
     /**
-     * @param null|TblGroup $tblGroup
+     * @param null|TblGroup $TblGroup
      */
-    public function setTblGroup(TblGroup $tblGroup = null)
+    public function setTblGroup(TblGroup $TblGroup = null)
     {
 
-        $this->tblGroup = ( null === $tblGroup ? null : $tblGroup->getId() );
+        $this->TblGroup = (null === $TblGroup ? null : $TblGroup->getId());
     }
 
     /**
@@ -63,11 +63,11 @@ class TblGroupAccount extends Element
     }
 
     /**
-     * @param null|TblAccount $tblAccount
+     * @param null|TblAccount $TblAccount
      */
-    public function setTblAccount(TblAccount $tblAccount = null)
+    public function setTblAccount(TblAccount $TblAccount = null)
     {
 
-        $this->serviceTblAccount = ( null === $tblAccount ? null : $tblAccount->getId() );
+        $this->serviceTblAccount = (null === $TblAccount ? null : $TblAccount->getId());
     }
 }

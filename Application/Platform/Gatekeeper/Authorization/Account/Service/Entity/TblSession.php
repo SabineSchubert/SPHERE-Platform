@@ -10,7 +10,7 @@ use SPHERE\System\Database\Fitting\Element;
 
 /**
  * @Entity
- * @Table(name="tblSession")
+ * @Table(name="TblSession")
  * @Cache(usage="READ_ONLY")
  */
 class TblSession extends Element
@@ -18,7 +18,7 @@ class TblSession extends Element
 
     const ATTR_SESSION = 'Session';
     const ATTR_TIMEOUT = 'Timeout';
-    const ATTR_TBL_ACCOUNT = 'tblAccount';
+    const ATTR_TBL_ACCOUNT = 'TblAccount';
 
     /**
      * @Column(type="string")
@@ -31,7 +31,7 @@ class TblSession extends Element
     /**
      * @Column(type="bigint")
      */
-    protected $tblAccount;
+    protected $TblAccount;
 
     /**
      * @return bool|TblAccount
@@ -39,20 +39,20 @@ class TblSession extends Element
     public function getTblAccount()
     {
 
-        if (null === $this->tblAccount) {
+        if (null === $this->TblAccount) {
             return false;
         } else {
-            return Account::useService()->getAccountById($this->tblAccount);
+            return Account::useService()->getAccountById($this->TblAccount);
         }
     }
 
     /**
-     * @param null|TblAccount $tblAccount
+     * @param null|TblAccount $TblAccount
      */
-    public function setTblAccount(TblAccount $tblAccount = null)
+    public function setTblAccount(TblAccount $TblAccount = null)
     {
 
-        $this->tblAccount = ( null === $tblAccount ? null : $tblAccount->getId() );
+        $this->TblAccount = (null === $TblAccount ? null : $TblAccount->getId());
     }
 
     /**

@@ -26,12 +26,12 @@ class Status extends Extension implements ITemplateInterface
     {
 
         if (
-            ( $Cache->getHitCount() != -1 || $Cache->getMissCount() != -1 )
-            && ( $Cache->getHitCount() + $Cache->getMissCount() > 0 )
+            ($Cache->getHitCount() != -1 || $Cache->getMissCount() != -1)
+            && ($Cache->getHitCount() + $Cache->getMissCount() > 0)
         ) {
-            $HitCount = 100 / ( $Cache->getHitCount() + $Cache->getMissCount() ) * $Cache->getHitCount();
-            $MissCount = 100 / ( $Cache->getHitCount() + $Cache->getMissCount() ) * $Cache->getMissCount();
-            $Quality = new Header('Hits: '.number_format($HitCount, 2, ',', '.').'%')
+            $HitCount = 100 / ($Cache->getHitCount() + $Cache->getMissCount()) * $Cache->getHitCount();
+            $MissCount = 100 / ($Cache->getHitCount() + $Cache->getMissCount()) * $Cache->getMissCount();
+            $Quality = new Header('Hits: ' . number_format($HitCount, 2, ',', '.') . '%')
                 . (new ProgressBar($HitCount, $MissCount, 0, 3))
                     ->setColor(ProgressBar::BAR_COLOR_SUCCESS, ProgressBar::BAR_COLOR_DANGER)
                     ->getContent();
@@ -44,13 +44,13 @@ class Status extends Extension implements ITemplateInterface
         $Wasted = 100 / $Cache->getAvailableSize() * $Cache->getWastedSize();
 
         if ($Cache->getAvailableSize() != -1) {
-            $Size = new Header('Memory: '.
+            $Size = new Header('Memory: ' .
                     $this->formatBytes($Cache->getUsedSize())
-                    .' / '
-                    .$this->formatBytes($Cache->getAvailableSize() - $Cache->getWastedSize())
-                    .' ~ '
-                    .$this->formatBytes($Cache->getWastedSize())
-                    , number_format($Used, 2, ',', '.').'%').
+                    . ' / '
+                    . $this->formatBytes($Cache->getAvailableSize() - $Cache->getWastedSize())
+                    . ' ~ '
+                    . $this->formatBytes($Cache->getWastedSize())
+                    , number_format($Used, 2, ',', '.') . '%') .
                 (new ProgressBar($Used, $Free, $Wasted, 5))
                     ->setColor(
                         ProgressBar::BAR_COLOR_WARNING, ProgressBar::BAR_COLOR_SUCCESS, ProgressBar::BAR_COLOR_STRIPED
@@ -58,10 +58,10 @@ class Status extends Extension implements ITemplateInterface
                     ->getContent();
         } else {
             $Size = new Header(new Danger('Not available'))
-                .(new ProgressBar(0, 0, 100))
+                . (new ProgressBar(0, 0, 100))
                     ->getContent();
         }
-        $this->Stage = $Quality.$Size;
+        $this->Stage = $Quality . $Size;
     }
 
     /**
@@ -75,7 +75,7 @@ class Status extends Extension implements ITemplateInterface
         $UnitList = array('B', 'KB', 'MB', 'GB', 'TB');
 
         $Bytes = max($Bytes, 0);
-        $Power = floor(( $Bytes ? log($Bytes) : 0 ) / log(1024));
+        $Power = floor(($Bytes ? log($Bytes) : 0) / log(1024));
         $Power = min($Power, count($UnitList) - 1);
 
         // Uncomment one of the following alternatives
@@ -85,7 +85,7 @@ class Status extends Extension implements ITemplateInterface
         if ($Power < 0) {
             $Power = 0;
         }
-        return round($Bytes, $usePrecision).' '.$UnitList[$Power];
+        return round($Bytes, $usePrecision) . ' ' . $UnitList[$Power];
     }
 
     /**

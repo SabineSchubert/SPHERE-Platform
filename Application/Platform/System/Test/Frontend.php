@@ -3,8 +3,8 @@ namespace SPHERE\Application\Platform\System\Test;
 
 use MOC\V\Core\FileSystem\FileSystem;
 use SPHERE\Application\Platform\System\Protocol\Service\Entity\TblProtocol;
-use SPHERE\Common\Frontend\Ajax\Emitter\ServerEmitter;
 use SPHERE\Common\Frontend\Ajax\Emitter\ClientEmitter;
+use SPHERE\Common\Frontend\Ajax\Emitter\ServerEmitter;
 use SPHERE\Common\Frontend\Ajax\Pipeline;
 use SPHERE\Common\Frontend\Ajax\Receiver\BlockReceiver;
 use SPHERE\Common\Frontend\Ajax\Receiver\FieldValueReceiver;
@@ -88,7 +88,7 @@ class Frontend extends Extension implements IFrontendInterface
         $Check = array($D1, $D2);
 
         $IconList = array();
-        if (false !== ( $Path = realpath(__DIR__.'/../../../../Common/Frontend/Icon/Repository') )) {
+        if (false !== ($Path = realpath(__DIR__ . '/../../../../Common/Frontend/Icon/Repository'))) {
             $Iterator = new \RecursiveIteratorIterator(
                 new \RecursiveDirectoryIterator($Path, \RecursiveDirectoryIterator::SKIP_DOTS),
                 \RecursiveIteratorIterator::CHILD_FIRST
@@ -97,13 +97,13 @@ class Frontend extends Extension implements IFrontendInterface
             foreach ($Iterator as $FileInfo) {
                 $Namespace = '\SPHERE\Common\Frontend\Icon\Repository';
                 $Class = $FileInfo->getBasename('.php');
-                $Loader = $Namespace.'\\'.$Class;
+                $Loader = $Namespace . '\\' . $Class;
 
                 $IconList[$Class] = new PullLeft(
                     '<div style="margin: 5px; border: 1px solid silver; width: 100px;">'
-                    .'<div style="font-size: large; border-bottom: 1px dotted silver;" class="text-center">'.new $Loader().'</div>'
-                    .'<div class="text-center">'.$Class.'</div>'
-                    .'</div>'
+                    . '<div style="font-size: large; border-bottom: 1px dotted silver;" class="text-center">' . new $Loader() . '</div>'
+                    . '<div class="text-center">' . $Class . '</div>'
+                    . '</div>'
                 );
             }
             ksort($IconList);
@@ -179,7 +179,7 @@ class Frontend extends Extension implements IFrontendInterface
                     new Reset('Reset')
                 )
             ))->setConfirm('Wirklich?')
-            .new Layout(array(
+            . new Layout(array(
                 new LayoutGroup(array(
                     new LayoutRow(array(
 //                        new LayoutColumn( array(
@@ -246,14 +246,14 @@ class Frontend extends Extension implements IFrontendInterface
                         )), 3),
                         new LayoutColumn(
                             (new LayoutSocial())
-                                ->addMediaItem('Head1', new Paragraph('Content').new Paragraph('Content'), new Time())
+                                ->addMediaItem('Head1', new Paragraph('Content') . new Paragraph('Content'), new Time())
                                 ->addMediaItem('Head2', 'Content',
                                     '<img src="/Common/Style/Resource/loading.gif" class="image-responsive" style="width:20px;"/>',
                                     '', LayoutSocial::ALIGN_BOTTOM)
                                 ->addMediaList(
                                     (new LayoutSocial())
                                         ->addMediaItem('Head2.1',
-                                            new Well(new Paragraph('Content').new Paragraph('Content')),
+                                            new Well(new Paragraph('Content') . new Paragraph('Content')),
                                             '<img src="/Common/Style/Resource/loading.gif" class="image-responsive" style="width:20px;"/>',
                                             '', LayoutSocial::ALIGN_TOP)
                                         ->addMediaItem('', new Well('Content'),
@@ -284,25 +284,26 @@ class Frontend extends Extension implements IFrontendInterface
 //        $Stage->setContent( $this->getTemplate( __DIR__.'/Test.twig' ) );
 
         $R1 = new ModalReceiver();
-        $R2 = new FieldValueReceiver( (new NumberField( 'NUFF' ))->setDefaultValue(9));
-        $R3 = new BlockReceiver( new Warning( ':/' ));
-        $R4 = new InlineReceiver( new Warning( ':P' ));
+        $R2 = new FieldValueReceiver((new NumberField('NUFF'))->setDefaultValue(9));
+        $R3 = new BlockReceiver(new Warning(':/'));
+        $R4 = new InlineReceiver(new Warning(':P'));
 
         $P = new Pipeline();
         $P->setLoadingMessage('Bitte warten', 'Interface wird geladen..');
         $P->setSuccessMessage('Erfolgreich', 'Daten wurden geladen');
 
-        $P->addEmitter( $E2 = new ClientEmitter($R2, 0 ) );
-        $P->addEmitter( $E4 = new ClientEmitter(array($R1,$R4), new Info( ':)' ) ) );
+        $P->addEmitter($E2 = new ClientEmitter($R2, 0));
+        $P->addEmitter($E4 = new ClientEmitter(array($R1, $R4), new Info(':)')));
 
-        $P->addEmitter( $E3 = new ServerEmitter(array($R4,$R3), new Route('SPHERE\Application\Api\Corporation/Similar')) );
+        $P->addEmitter($E3 = new ServerEmitter(array($R4, $R3),
+            new Route('SPHERE\Application\Api\Corporation/Similar')));
         $E3->setGetPayload(array(
             'MethodName' => 'ajaxContent'
         ));
         $E3->setLoadingMessage('Bitte warten', 'Interface wird geladen..');
         $E3->setSuccessMessage('Erfolgreich', 'Daten wurden geladen');
 
-        $P->addEmitter( $E1 = new ServerEmitter($R1, new Route('SPHERE\Application\Api\Corporation/Similar')) );
+        $P->addEmitter($E1 = new ServerEmitter($R1, new Route('SPHERE\Application\Api\Corporation/Similar')));
         $E1->setGetPayload(array(
             'MethodName' => 'ajaxLayoutSimilarPerson'
 //            'MethodName' => 'ajaxFormDingens'
@@ -318,7 +319,7 @@ class Frontend extends Extension implements IFrontendInterface
         $P2->setLoadingMessage('Bitte warten', 'Interface wird geladen..');
         $P2->setSuccessMessage('Erfolgreich', 'Daten wurden geladen');
 
-        $P2->addEmitter( $E1 = new ServerEmitter($R1, new Route('SPHERE\Application\Api\Corporation/Similar')) );
+        $P2->addEmitter($E1 = new ServerEmitter($R1, new Route('SPHERE\Application\Api\Corporation/Similar')));
         $E1->setGetPayload(array(
             'MethodName' => 'ajaxFormDingens'
         ));
@@ -329,7 +330,7 @@ class Frontend extends Extension implements IFrontendInterface
                 new LayoutGroup(
                     new LayoutRow(
                         new LayoutColumn(array(
-                            (new Standard( 'Call', '#' ))->ajaxPipelineOnClick( $P ),
+                            (new Standard('Call', '#'))->ajaxPipelineOnClick($P),
                             (new Form(
                                 new FormGroup(
                                     new FormRow(
@@ -338,7 +339,7 @@ class Frontend extends Extension implements IFrontendInterface
                                         ))
                                     )
                                 )
-                            , new Primary('Ajax-Form?')))->ajaxPipelineOnSubmit( $P2 )->setConfirm('Test with Ajax')
+                                , new Primary('Ajax-Form?')))->ajaxPipelineOnSubmit($P2)->setConfirm('Test with Ajax')
                         ))
                     )
                 ),
@@ -347,13 +348,13 @@ class Frontend extends Extension implements IFrontendInterface
                         new LayoutColumn(array(
                             $R1,
                             $R4
-                        ),4),
+                        ), 4),
                         new LayoutColumn(
                             $R2
-                        ,4),
+                            , 4),
                         new LayoutColumn(
                             $R3
-                        ,4)
+                            , 4)
                     ))
                 )
             ))

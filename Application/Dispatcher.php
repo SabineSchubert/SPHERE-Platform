@@ -60,12 +60,12 @@ class Dispatcher extends Extension
         try {
             if (Access::useService()->hasAuthorization($Route->getPath())) {
                 if (in_array($Route->getPath(), self::$Router->getRouteList())) {
-                    throw new \Exception(__CLASS__.' > Route already available! ('.$Route->getPath().')');
+                    throw new \Exception(__CLASS__ . ' > Route already available! (' . $Route->getPath() . ')');
                 } else {
                     if (!preg_match('!^/?Api/!is', $Route->getPath())) {
                         self::$Router->addRoute($Route);
                     } else {
-                        if (Access::useService()->existsRightByName('/'.$Route->getPath())) {
+                        if (Access::useService()->existsRightByName('/' . $Route->getPath())) {
                             self::$Router->addRoute($Route);
                         } else {
                             $Route = Main::getDispatcher()->createRoute(
@@ -77,9 +77,9 @@ class Dispatcher extends Extension
                     }
                 }
             }
-            if (!Access::useService()->existsRightByName('/'.$Route->getPath())) {
+            if (!Access::useService()->existsRightByName('/' . $Route->getPath())) {
                 if (!in_array($Route->getPath(), self::$PublicRoutes)) {
-                    array_push(self::$PublicRoutes, '/'.$Route->getPath());
+                    array_push(self::$PublicRoutes, '/' . $Route->getPath());
                 }
             }
         } catch (\Exception $Exception) {
@@ -98,7 +98,7 @@ class Dispatcher extends Extension
 
         // Map Controller Class to FQN
         if (false === strpos($Controller, 'SPHERE')) {
-            $Controller = '\\'.$Path.'\\'.$Controller;
+            $Controller = '\\' . $Path . '\\' . $Controller;
         }
         // Map Controller to Syntax
         $Controller = str_replace(array('/', '//', '\\', '\\\\'), '\\', $Controller);
@@ -139,10 +139,10 @@ class Dispatcher extends Extension
                 $Stage->setMessage('<strong>Problem:</strong> Die Anwendung darf die Anfrage nicht verarbeiten');
                 $Stage->setContent(
                     '<h2><small>Mögliche Ursachen</small></h2>'
-                    .new Danger('Sie sind nicht angemeldet')
+                    . new Danger('Sie sind nicht angemeldet')
                     . new Warning('Sie waren zu lang inaktiv und wurden automatisch vom System abgemeldet')
-                    .'<h2><small>Mögliche Lösungen</small></h2>'
-                    .new Success('Bitte melden Sie sich an der Plattform an')
+                    . '<h2><small>Mögliche Lösungen</small></h2>'
+                    . new Success('Bitte melden Sie sich an der Plattform an')
                     . new Redirect('Platform/Gatekeeper/Authentication', 10)
                 );
                 return $Stage;
@@ -153,8 +153,8 @@ class Dispatcher extends Extension
     /**
      * @param string $Location
      * @param string $Content
-     * @param int    $Width
-     * @param int    $Height
+     * @param int $Width
+     * @param int $Height
      */
     public static function registerWidget($Location, $Content, $Width = 2, $Height = 2)
     {
@@ -170,8 +170,8 @@ class Dispatcher extends Extension
     public static function fetchDashboard($Location)
     {
 
-        $Dashboard = '<div class="Location-'.$Location.' gridster"><ul style="list-style: none; display: none;">';
-        if (isset( self::$Widget[$Location] )) {
+        $Dashboard = '<div class="Location-' . $Location . ' gridster"><ul style="list-style: none; display: none;">';
+        if (isset(self::$Widget[$Location])) {
             $Row = 1;
             $Column = 1;
             foreach ((array)self::$Widget[$Location] as $Index => $Widget) {
@@ -180,12 +180,12 @@ class Dispatcher extends Extension
                     $Widget[0] = call_user_func($Widget[0]);
                 }
 
-                $Dashboard .= '<li id="Widget-'.$Location.'-'.$Index.'" '
-                    .'data-row="'.$Row.'" '
-                    .'data-col="'.$Column.'" '
-                    .'data-sizex="'.$Widget[1].'" '
-                    .'data-sizey="'.$Widget[2].'" '
-                    .'class="Widget"><div class="Widget-Payload">'.$Widget[0].'</div></li>';
+                $Dashboard .= '<li id="Widget-' . $Location . '-' . $Index . '" '
+                    . 'data-row="' . $Row . '" '
+                    . 'data-col="' . $Column . '" '
+                    . 'data-sizex="' . $Widget[1] . '" '
+                    . 'data-sizey="' . $Widget[2] . '" '
+                    . 'class="Widget"><div class="Widget-Payload">' . $Widget[0] . '</div></li>';
                 if ($Column >= 8) {
                     $Column = 1;
                     $Row++;
@@ -193,7 +193,7 @@ class Dispatcher extends Extension
                 $Column++;
             }
         }
-        return $Dashboard.'</div>'
-        .'<script>executeScript(function(){Client.Use( "ModGrid", function() { jQuery( "div.Location-'.$Location.'.gridster ul" ).ModGrid({ storage: "Widget-'.$Location.'" }); } );});</script>';
+        return $Dashboard . '</div>'
+            . '<script>executeScript(function(){Client.Use( "ModGrid", function() { jQuery( "div.Location-' . $Location . '.gridster ul" ).ModGrid({ storage: "Widget-' . $Location . '" }); } );});</script>';
     }
 }

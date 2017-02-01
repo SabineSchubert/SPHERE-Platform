@@ -1,5 +1,6 @@
 <?php
 namespace SPHERE\Application;
+
 /**
  * Interface IApiInterface
  *

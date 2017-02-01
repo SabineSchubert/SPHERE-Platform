@@ -21,9 +21,9 @@ class Setup extends AbstractSetup
     {
         $Schema = $this->loadSchema();
 
-        $tblGroup = $this->setTableGroup($Schema);
-        $this->setTableGroupRole($Schema, $tblGroup);
-        $this->setTableGroupAccount($Schema, $tblGroup);
+        $TblGroup = $this->setTableGroup($Schema);
+        $this->setTableGroupRole($Schema, $TblGroup);
+        $this->setTableGroupAccount($Schema, $TblGroup);
 
         return $this->saveSchema($Schema, $Simulate);
     }
@@ -35,7 +35,7 @@ class Setup extends AbstractSetup
      */
     private function setTableGroup(Schema $Schema)
     {
-        $Table = $this->createTable($Schema, 'tblGroup');
+        $Table = $this->createTable($Schema, 'TblGroup');
         $this->createColumn($Table, 'Name', self::FIELD_TYPE_STRING);
         $this->createColumn($Table, 'Description', self::FIELD_TYPE_TEXT);
         $this->createServiceKey($Table, 'TblConsumer');
@@ -44,30 +44,30 @@ class Setup extends AbstractSetup
 
     /**
      * @param Schema $Schema
-     * @param Table $tblGroup
+     * @param Table $TblGroup
      *
      * @return Table
      */
-    private function setTableGroupRole(Schema &$Schema, Table $tblGroup)
+    private function setTableGroupRole(Schema &$Schema, Table $TblGroup)
     {
 
-        $Table = $this->createTable($Schema, 'tblGroupRole');
-        $this->createForeignKey($Table, $tblGroup);
+        $Table = $this->createTable($Schema, 'TblGroupRole');
+        $this->createForeignKey($Table, $TblGroup);
         $this->createServiceKey($Table, 'TblRole');
         return $Table;
     }
 
     /**
      * @param Schema $Schema
-     * @param Table $tblGroup
+     * @param Table $TblGroup
      *
      * @return Table
      */
-    private function setTableGroupAccount(Schema &$Schema, Table $tblGroup)
+    private function setTableGroupAccount(Schema &$Schema, Table $TblGroup)
     {
 
-        $Table = $this->createTable($Schema, 'tblGroupAccount');
-        $this->createForeignKey($Table, $tblGroup);
+        $Table = $this->createTable($Schema, 'TblGroupAccount');
+        $this->createForeignKey($Table, $TblGroup);
         $this->createServiceKey($Table, 'TblAccount');
         return $Table;
     }

@@ -1,12 +1,11 @@
 <?php
 namespace SPHERE\Application\Platform\Gatekeeper\Authorization\Group;
 
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Consumer;
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Service\Entity\TblConsumer;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Group\Service\Data;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Group\Service\Entity\TblGroup;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Group\Service\Setup;
+use SPHERE\Application\Platform\Gatekeeper\Consumer\Consumer;
+use SPHERE\Application\Platform\Gatekeeper\Consumer\Service\Entity\TblConsumer;
 use SPHERE\Common\Frontend\Ajax\Pipeline;
 use SPHERE\Common\Frontend\Ajax\Template\Notify;
 use SPHERE\Common\Frontend\Form\IFormInterface;
@@ -36,13 +35,13 @@ class Service extends AbstractService
 
 
     /**
-     * @param TblConsumer $tblConsumer
+     * @param TblConsumer $TblConsumer
      * @return bool|TblGroup[]
      */
-    public function getGroupAll(TblConsumer $tblConsumer = null)
+    public function getGroupAll(TblConsumer $TblConsumer = null)
     {
 
-        return (new Data($this->getBinding()))->getGroupAll($tblConsumer);
+        return (new Data($this->getBinding()))->getGroupAll($TblConsumer);
     }
 
     /**
@@ -57,24 +56,14 @@ class Service extends AbstractService
     }
 
     /**
-     * @param string $Name
-     *
-     * @return bool|TblGroup
-     */
-    public function getGroupByName($Name)
-    {
-        return (new Data($this->getBinding()))->getGroupByName($Name);
-    }
-
-    /**
-     * @param TblGroup $tblGroup
+     * @param TblGroup $TblGroup
      *
      * @return bool
      */
-    public function destroyGroup(TblGroup $tblGroup)
+    public function destroyGroup(TblGroup $TblGroup)
     {
 
-        return (new Data($this->getBinding()))->destroyGroup($tblGroup);
+        return (new Data($this->getBinding()))->destroyGroup($TblGroup);
     }
 
     /**
@@ -87,8 +76,7 @@ class Service extends AbstractService
         IFormInterface $Form,
         $Group,
         Pipeline $pipelineSuccess = null
-    )
-    {
+    ) {
 
         /**
          * Service
@@ -122,14 +110,14 @@ class Service extends AbstractService
                 );
         } else {
 
-            $tblConsumer = Consumer::useService()->getConsumerBySession();
-            if ($tblConsumer) {
-                if ($this->insertGroup($Group['Name'], $Group['Description'], $tblConsumer)) {
-                    return $Form. new Notify(
+            $TblConsumer = Consumer::useService()->getConsumerBySession();
+            if ($TblConsumer) {
+                if ($this->insertGroup($Group['Name'], $Group['Description'], $TblConsumer)) {
+                    return $Form . new Notify(
                             'Benutzergruppe ' . $Group['Name'],
                             'Erfolgreich angelegt',
                             Notify::TYPE_SUCCESS
-                        ).($pipelineSuccess ? $pipelineSuccess : '');
+                        ) . ($pipelineSuccess ? $pipelineSuccess : '');
                 }
             }
             return $Form . new Notify(
@@ -142,19 +130,41 @@ class Service extends AbstractService
     }
 
     /**
+     * @param string $Name
+     *
+     * @return bool|TblGroup
+     */
+    public function getGroupByName($Name)
+    {
+        return (new Data($this->getBinding()))->getGroupByName($Name);
+    }
+
+    /**
+     * @param string $Name
+     * @param string $Description
+     * @param null|TblConsumer $TblConsumer
+     *
+     * @return TblGroup
+     */
+    public function insertGroup($Name, $Description, TblConsumer $TblConsumer = null)
+    {
+
+        return (new Data($this->getBinding()))->createGroup($Name, $Description, $TblConsumer);
+    }
+
+    /**
      * @param IFormInterface $Form
-     * @param TblGroup $tblGroup
+     * @param TblGroup $TblGroup
      * @param array $Group
      * @param Pipeline|null $pipelineSuccess
      * @return IFormInterface|string
      */
     public function editGroup(
         IFormInterface $Form,
-        TblGroup $tblGroup,
+        TblGroup $TblGroup,
         $Group,
         Pipeline $pipelineSuccess = null
-    )
-    {
+    ) {
 
         /**
          * Service
@@ -170,8 +180,8 @@ class Service extends AbstractService
             $Error = true;
         } else {
             if (
-                ($tblGroupExists = $this->getGroupByName($Group['Name']))
-                && $tblGroupExists->getId() != $tblGroup->getId()
+                ($TblGroupExists = $this->getGroupByName($Group['Name']))
+                && $TblGroupExists->getId() != $TblGroup->getId()
             ) {
                 $Form->setError('Group[Name]', 'Der angegebene Name wird bereits verwendet');
                 $Error = true;
@@ -190,14 +200,14 @@ class Service extends AbstractService
                     5000
                 );
         } else {
-            $tblConsumer = Consumer::useService()->getConsumerBySession();
-            if ($tblConsumer) {
-                if ($this->changeGroup( $tblGroup, $Group['Name'], $Group['Description'], $tblConsumer)) {
+            $TblConsumer = Consumer::useService()->getConsumerBySession();
+            if ($TblConsumer) {
+                if ($this->changeGroup($TblGroup, $Group['Name'], $Group['Description'], $TblConsumer)) {
                     return new Notify(
                             'Benutzergruppe ' . $Group['Name'],
                             'Erfolgreich geändert',
                             Notify::TYPE_SUCCESS
-                        ).($pipelineSuccess ? $pipelineSuccess : '');
+                        ) . ($pipelineSuccess ? $pipelineSuccess : '');
                 }
             }
             return $Form . new Notify(
@@ -210,29 +220,16 @@ class Service extends AbstractService
     }
 
     /**
+     * @param TblGroup $TblGroup
      * @param string $Name
      * @param string $Description
-     * @param null|TblConsumer $tblConsumer
-     *
-     * @return TblGroup
-     */
-    public function insertGroup($Name, $Description, TblConsumer $tblConsumer = null)
-    {
-
-        return (new Data($this->getBinding()))->createGroup($Name, $Description, $tblConsumer);
-    }
-
-    /**
-     * @param TblGroup $tblGroup
-     * @param string $Name
-     * @param string $Description
-     * @param null|TblConsumer $tblConsumer
+     * @param null|TblConsumer $TblConsumer
      *
      * @return false|TblGroup
      */
-    public function changeGroup( TblGroup $tblGroup, $Name, $Description, TblConsumer $tblConsumer = null)
+    public function changeGroup(TblGroup $TblGroup, $Name, $Description, TblConsumer $TblConsumer = null)
     {
 
-        return (new Data($this->getBinding()))->changeGroup( $tblGroup, $Name, $Description, $tblConsumer);
+        return (new Data($this->getBinding()))->changeGroup($TblGroup, $Name, $Description, $TblConsumer);
     }
 }

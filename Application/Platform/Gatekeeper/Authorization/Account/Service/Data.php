@@ -9,8 +9,8 @@ use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\TblIdentification;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\TblSession;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\TblSetting;
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Consumer;
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Service\Entity\TblConsumer;
+use SPHERE\Application\Platform\Gatekeeper\Consumer\Consumer;
+use SPHERE\Application\Platform\Gatekeeper\Consumer\Service\Entity\TblConsumer;
 use SPHERE\Application\Platform\System\Protocol\Protocol;
 use SPHERE\System\Cache\Handler\MemcachedHandler;
 use SPHERE\System\Cache\Handler\MemoryHandler;
@@ -31,19 +31,19 @@ class Data extends AbstractData
     {
 
         // Identification
-        $this->createIdentification( TblIdentification::NAME_CREDENTIAL, 'Benutzername / Passwort', true);
+        $this->createIdentification(TblIdentification::NAME_CREDENTIAL, 'Benutzername / Passwort', true);
 
-        $tblConsumer = Consumer::useService()->getConsumerById(1);
+        $TblConsumer = Consumer::useService()->getConsumerById(1);
         // Choose the right Identification for Authentication
-        $tblIdentification = $this->getIdentificationByName(TblIdentification::NAME_CREDENTIAL);
-        $tblRole = Access::useService()->getRoleByName('Administrator');
+        $TblIdentification = $this->getIdentificationByName(TblIdentification::NAME_CREDENTIAL);
+        $TblRole = Access::useService()->getRoleByName('Administrator');
 
         // Install Administrator
-        $tblAccount = $this->createAccount('root', 'sphere', $tblConsumer);
-        $this->addAccountAuthentication($tblAccount, $tblIdentification);
-        $this->addAccountAuthorization($tblAccount, $tblRole);
-        if (!$this->getSettingByAccount($tblAccount, 'Surface')) {
-            $this->setSettingByAccount($tblAccount, 'Surface', 1);
+        $TblAccount = $this->createAccount('root', 'sphere', $TblConsumer);
+        $this->addAccountAuthentication($TblAccount, $TblIdentification);
+        $this->addAccountAuthorization($TblAccount, $TblRole);
+        if (!$this->getSettingByAccount($TblAccount, 'Surface')) {
+            $this->setSettingByAccount($TblAccount, 'Surface', 1);
         }
     }
 
@@ -88,11 +88,11 @@ class Data extends AbstractData
     /**
      * @param string $Username
      * @param string $Password
-     * @param null|TblConsumer $tblConsumer
+     * @param null|TblConsumer $TblConsumer
      *
      * @return TblAccount
      */
-    public function createAccount($Username, $Password, TblConsumer $tblConsumer = null)
+    public function createAccount($Username, $Password, TblConsumer $TblConsumer = null)
     {
 
         $Manager = $this->getEntityManager();
@@ -103,7 +103,7 @@ class Data extends AbstractData
             $Entity = new TblAccount();
             $Entity->setUsername($Username);
             $Entity->setPassword(hash('sha256', $Password));
-            $Entity->setServiceTblConsumer($tblConsumer);
+            $Entity->setServiceTblConsumer($TblConsumer);
             $Manager->saveEntity($Entity);
             Protocol::useService()->createInsertEntry($this->getConnection()->getDatabase(), $Entity);
         }
@@ -111,23 +111,23 @@ class Data extends AbstractData
     }
 
     /**
-     * @param TblAccount $tblAccount
-     * @param TblIdentification $tblIdentification
+     * @param TblAccount $TblAccount
+     * @param TblIdentification $TblIdentification
      *
      * @return TblAuthentication
      */
-    public function addAccountAuthentication(TblAccount $tblAccount, TblIdentification $tblIdentification)
+    public function addAccountAuthentication(TblAccount $TblAccount, TblIdentification $TblIdentification)
     {
 
         $Manager = $this->getEntityManager();
         $Entity = $this->getForceEntityBy(__METHOD__, $Manager, 'TblAuthentication', array(
-            TblAuthentication::ATTR_TBL_ACCOUNT => $tblAccount->getId(),
-            TblAuthentication::ATTR_TBL_IDENTIFICATION => $tblIdentification->getId()
+            TblAuthentication::ATTR_TBL_ACCOUNT => $TblAccount->getId(),
+            TblAuthentication::ATTR_TBL_IDENTIFICATION => $TblIdentification->getId()
         ));
         if (null === $Entity) {
             $Entity = new TblAuthentication();
-            $Entity->setTblAccount($tblAccount);
-            $Entity->setTblIdentification($tblIdentification);
+            $Entity->setTblAccount($TblAccount);
+            $Entity->setTblIdentification($TblIdentification);
             $Manager->saveEntity($Entity);
             Protocol::useService()->createInsertEntry($this->getConnection()->getDatabase(), $Entity);
         }
@@ -135,23 +135,23 @@ class Data extends AbstractData
     }
 
     /**
-     * @param TblAccount $tblAccount
-     * @param TblRole $tblRole
+     * @param TblAccount $TblAccount
+     * @param TblRole $TblRole
      *
      * @return TblAuthorization
      */
-    public function addAccountAuthorization(TblAccount $tblAccount, TblRole $tblRole)
+    public function addAccountAuthorization(TblAccount $TblAccount, TblRole $TblRole)
     {
 
         $Manager = $this->getEntityManager();
         $Entity = $this->getForceEntityBy(__METHOD__, $Manager, 'TblAuthorization', array(
-            TblAuthorization::ATTR_TBL_ACCOUNT => $tblAccount->getId(),
-            TblAuthorization::SERVICE_TBL_ROLE => $tblRole->getId()
+            TblAuthorization::ATTR_TBL_ACCOUNT => $TblAccount->getId(),
+            TblAuthorization::SERVICE_TBL_ROLE => $TblRole->getId()
         ));
         if (null === $Entity) {
             $Entity = new TblAuthorization();
-            $Entity->setTblAccount($tblAccount);
-            $Entity->setServiceTblRole($tblRole);
+            $Entity->setTblAccount($TblAccount);
+            $Entity->setServiceTblRole($TblRole);
             $Manager->saveEntity($Entity);
             Protocol::useService()->createInsertEntry($this->getConnection()->getDatabase(), $Entity);
         }
@@ -159,38 +159,38 @@ class Data extends AbstractData
     }
 
     /**
-     * @param TblAccount $tblAccount
+     * @param TblAccount $TblAccount
      * @param string $Identifier
      *
      * @return bool|TblSetting
      */
-    public function getSettingByAccount(TblAccount $tblAccount, $Identifier)
+    public function getSettingByAccount(TblAccount $TblAccount, $Identifier)
     {
 
         return $this->getCachedEntityBy(__METHOD__, $this->getEntityManager(), 'TblSetting', array(
-            TblSetting::ATTR_TBL_ACCOUNT => $tblAccount->getId(),
+            TblSetting::ATTR_TBL_ACCOUNT => $TblAccount->getId(),
             TblSetting::ATTR_IDENTIFIER => $Identifier
         ));
     }
 
     /**
-     * @param TblAccount $tblAccount
+     * @param TblAccount $TblAccount
      * @param string $Identifier
      * @param string $Value
      *
      * @return bool|TblSetting
      */
-    public function setSettingByAccount(TblAccount $tblAccount, $Identifier, $Value)
+    public function setSettingByAccount(TblAccount $TblAccount, $Identifier, $Value)
     {
 
         $Manager = $this->getEntityManager();
         $Entity = $this->getForceEntityBy(__METHOD__, $Manager, 'TblSetting', array(
-            TblSetting::ATTR_TBL_ACCOUNT => $tblAccount->getId(),
+            TblSetting::ATTR_TBL_ACCOUNT => $TblAccount->getId(),
             TblSetting::ATTR_IDENTIFIER => $Identifier
         ));
         if (null === $Entity) {
             $Entity = new TblSetting();
-            $Entity->setTblAccount($tblAccount);
+            $Entity->setTblAccount($TblAccount);
             $Entity->setIdentifier($Identifier);
             $Entity->setValue($Value);
             $Manager->saveEntity($Entity);
@@ -283,15 +283,15 @@ class Data extends AbstractData
     }
 
     /**
-     * @param TblConsumer $tblConsumer
+     * @param TblConsumer $TblConsumer
      *
      * @return bool|TblAccount[]
      */
-    public function getAccountAllByConsumer(TblConsumer $tblConsumer)
+    public function getAccountAllByConsumer(TblConsumer $TblConsumer)
     {
 
         $EntityList = $this->getEntityManager()->getEntity('TblAccount')->findBy(array(
-            TblAccount::SERVICE_TBL_CONSUMER => $tblConsumer->getId()
+            TblAccount::SERVICE_TBL_CONSUMER => $TblConsumer->getId()
         ));
         return (empty($EntityList) ? false : $EntityList);
     }
@@ -299,44 +299,44 @@ class Data extends AbstractData
     /**
      * @param string $Username
      * @param string $Password
-     * @param TblIdentification $tblIdentification
+     * @param TblIdentification $TblIdentification
      *
      * @return bool|TblAccount
      */
-    public function getAccountByCredential($Username, $Password, TblIdentification $tblIdentification = null)
+    public function getAccountByCredential($Username, $Password, TblIdentification $TblIdentification = null)
     {
 
         $Manager = $this->getEntityManager();
 
-        $tblAccount = $this->getForceEntityBy(__METHOD__, $Manager, 'TblAccount', array(
+        $TblAccount = $this->getForceEntityBy(__METHOD__, $Manager, 'TblAccount', array(
             TblAccount::ATTR_USERNAME => $Username,
             TblAccount::ATTR_PASSWORD => hash('sha256', $Password)
         ));
         // Account not available
-        if (null === $tblAccount) {
+        if (null === $TblAccount) {
             return false;
         }
 
-        $tblAuthentication = $this->getForceEntityBy(__METHOD__, $Manager, 'TblAuthentication', array(
-            TblAuthentication::ATTR_TBL_ACCOUNT => $tblAccount->getId(),
-            TblAuthentication::ATTR_TBL_IDENTIFICATION => $tblIdentification->getId()
+        $TblAuthentication = $this->getForceEntityBy(__METHOD__, $Manager, 'TblAuthentication', array(
+            TblAuthentication::ATTR_TBL_ACCOUNT => $TblAccount->getId(),
+            TblAuthentication::ATTR_TBL_IDENTIFICATION => $TblIdentification->getId()
         ));
         // Identification not valid
-        if (null === $tblAuthentication) {
+        if (null === $TblAuthentication) {
             return false;
         }
 
-        return $tblAccount;
+        return $TblAccount;
     }
 
     /**
-     * @param TblAccount $tblAccount
+     * @param TblAccount $TblAccount
      * @param null|string $Session
      * @param integer $Timeout
      *
      * @return TblSession
      */
-    public function createSession(TblAccount $tblAccount, $Session = null, $Timeout = 1800)
+    public function createSession(TblAccount $TblAccount, $Session = null, $Timeout = 1800)
     {
 
         if (null === $Session) {
@@ -351,7 +351,7 @@ class Data extends AbstractData
         }
         $Entity = new TblSession();
         $Entity->setSession($Session);
-        $Entity->setTblAccount($tblAccount);
+        $Entity->setTblAccount($TblAccount);
         $Entity->setTimeout(time() + $Timeout);
         $Manager->saveEntity($Entity);
         Protocol::useService()->createInsertEntry($this->getConnection()->getDatabase(), $Entity);
@@ -359,52 +359,52 @@ class Data extends AbstractData
     }
 
     /**
-     * @param TblAccount $tblAccount
+     * @param TblAccount $TblAccount
      *
      * @return bool
      */
-    public function destroyAccount(TblAccount $tblAccount)
+    public function destroyAccount(TblAccount $TblAccount)
     {
 
         $Manager = $this->getEntityManager();
         /** @var TblAccount $Entity */
-        $Entity = $Manager->getEntityById('TblAccount', $tblAccount->getId());
+        $Entity = $Manager->getEntityById('TblAccount', $TblAccount->getId());
         if (null !== $Entity) {
             // Remove Identification
-            $tblAuthentication = $this->getAuthenticationByAccount($Entity);
-            if ($tblAuthentication) {
-                if ($tblAuthentication->getTblAccount() && $tblAuthentication->getTblIdentification()) {
+            $TblAuthentication = $this->getAuthenticationByAccount($Entity);
+            if ($TblAuthentication) {
+                if ($TblAuthentication->getTblAccount() && $TblAuthentication->getTblIdentification()) {
                     $this->removeAccountAuthentication(
-                        $tblAuthentication->getTblAccount(), $tblAuthentication->getTblIdentification()
+                        $TblAuthentication->getTblAccount(), $TblAuthentication->getTblIdentification()
                     );
                 }
             }
             // Remove Role
-            $tblAuthorizationList = $this->getAuthorizationAllByAccount($Entity);
-            if ($tblAuthorizationList) {
-                /** @var TblAuthorization $tblAuthorization */
-                foreach ($tblAuthorizationList as $tblAuthorization) {
-                    if ($tblAuthorization->getTblAccount() && $tblAuthorization->getServiceTblRole()) {
+            $TblAuthorizationList = $this->getAuthorizationAllByAccount($Entity);
+            if ($TblAuthorizationList) {
+                /** @var TblAuthorization $TblAuthorization */
+                foreach ($TblAuthorizationList as $TblAuthorization) {
+                    if ($TblAuthorization->getTblAccount() && $TblAuthorization->getServiceTblRole()) {
                         $this->removeAccountAuthorization(
-                            $tblAuthorization->getTblAccount(), $tblAuthorization->getServiceTblRole()
+                            $TblAuthorization->getTblAccount(), $TblAuthorization->getServiceTblRole()
                         );
                     }
                 }
             }
             // Remove Setting
-            $tblSettingList = $this->getSettingAllByAccount($Entity);
-            if ($tblSettingList) {
-                /** @var TblSetting $tblSetting */
-                foreach ($tblSettingList as $tblSetting) {
-                    $this->destroySetting($tblSetting);
+            $TblSettingList = $this->getSettingAllByAccount($Entity);
+            if ($TblSettingList) {
+                /** @var TblSetting $TblSetting */
+                foreach ($TblSettingList as $TblSetting) {
+                    $this->destroySetting($TblSetting);
                 }
             }
             // Remove Session
-            $tblSessionList = $this->getSessionAllByAccount($Entity);
-            if ($tblSessionList) {
-                /** @var TblSession $tblSession */
-                foreach ($tblSessionList as $tblSession) {
-                    $this->destroySession($tblSession->getSession());
+            $TblSessionList = $this->getSessionAllByAccount($Entity);
+            if ($TblSessionList) {
+                /** @var TblSession $TblSession */
+                foreach ($TblSessionList as $TblSession) {
+                    $this->destroySession($TblSession->getSession());
                 }
             }
             Protocol::useService()->createDeleteEntry($this->getConnection()->getDatabase(), $Entity);
@@ -415,32 +415,32 @@ class Data extends AbstractData
     }
 
     /**
-     * @param TblAccount $tblAccount
+     * @param TblAccount $TblAccount
      *
      * @return null|TblAuthentication
      */
-    public function getAuthenticationByAccount(TblAccount $tblAccount)
+    public function getAuthenticationByAccount(TblAccount $TblAccount)
     {
 
         return $this->getCachedEntityBy(__METHOD__, $this->getEntityManager(), 'TblAuthentication', array(
-            TblAuthentication::ATTR_TBL_ACCOUNT => $tblAccount->getId()
+            TblAuthentication::ATTR_TBL_ACCOUNT => $TblAccount->getId()
         ));
     }
 
     /**
-     * @param TblAccount $tblAccount
-     * @param TblIdentification $tblIdentification
+     * @param TblAccount $TblAccount
+     * @param TblIdentification $TblIdentification
      *
      * @return bool
      */
-    public function removeAccountAuthentication(TblAccount $tblAccount, TblIdentification $tblIdentification)
+    public function removeAccountAuthentication(TblAccount $TblAccount, TblIdentification $TblIdentification)
     {
 
         $Manager = $this->getEntityManager();
         /** @var TblAuthentication $Entity */
         $Entity = $this->getForceEntityBy(__METHOD__, $Manager, 'TblAuthentication', array(
-            TblAuthentication::ATTR_TBL_ACCOUNT => $tblAccount->getId(),
-            TblAuthentication::ATTR_TBL_IDENTIFICATION => $tblIdentification->getId()
+            TblAuthentication::ATTR_TBL_ACCOUNT => $TblAccount->getId(),
+            TblAuthentication::ATTR_TBL_IDENTIFICATION => $TblIdentification->getId()
         ));
         if (null !== $Entity) {
             Protocol::useService()->createDeleteEntry($this->getConnection()->getDatabase(), $Entity);
@@ -451,33 +451,33 @@ class Data extends AbstractData
     }
 
     /**
-     * @param TblAccount $tblAccount
+     * @param TblAccount $TblAccount
      *
      * @return bool|TblAuthorization[]
      */
-    public function getAuthorizationAllByAccount(TblAccount $tblAccount)
+    public function getAuthorizationAllByAccount(TblAccount $TblAccount)
     {
 
         return $this->getCachedEntityListBy(__METHOD__, $this->getEntityManager(), 'TblAuthorization',
             array(
-                TblAuthorization::ATTR_TBL_ACCOUNT => $tblAccount->getId()
+                TblAuthorization::ATTR_TBL_ACCOUNT => $TblAccount->getId()
             ));
     }
 
     /**
-     * @param TblAccount $tblAccount
-     * @param TblRole $tblRole
+     * @param TblAccount $TblAccount
+     * @param TblRole $TblRole
      *
      * @return bool
      */
-    public function removeAccountAuthorization(TblAccount $tblAccount, TblRole $tblRole)
+    public function removeAccountAuthorization(TblAccount $TblAccount, TblRole $TblRole)
     {
 
         $Manager = $this->getEntityManager();
         /** @var TblAuthorization $Entity */
         $Entity = $this->getForceEntityBy(__METHOD__, $Manager, 'TblAuthorization', array(
-            TblAuthorization::ATTR_TBL_ACCOUNT => $tblAccount->getId(),
-            TblAuthorization::SERVICE_TBL_ROLE => $tblRole->getId()
+            TblAuthorization::ATTR_TBL_ACCOUNT => $TblAccount->getId(),
+            TblAuthorization::SERVICE_TBL_ROLE => $TblRole->getId()
         ));
         if (null !== $Entity) {
             Protocol::useService()->createDeleteEntry($this->getConnection()->getDatabase(), $Entity);
@@ -488,29 +488,29 @@ class Data extends AbstractData
     }
 
     /**
-     * @param TblAccount $tblAccount
+     * @param TblAccount $TblAccount
      *
      * @return null|TblSetting[]
      */
-    public function getSettingAllByAccount(TblAccount $tblAccount)
+    public function getSettingAllByAccount(TblAccount $TblAccount)
     {
 
         return $this->getCachedEntityListBy(__METHOD__, $this->getEntityManager(), 'TblSetting', array(
-            TblSetting::ATTR_TBL_ACCOUNT => $tblAccount->getId()
+            TblSetting::ATTR_TBL_ACCOUNT => $TblAccount->getId()
         ));
     }
 
     /**
-     * @param TblSetting $tblSetting
+     * @param TblSetting $TblSetting
      *
      * @return bool
      */
-    public function destroySetting(TblSetting $tblSetting)
+    public function destroySetting(TblSetting $TblSetting)
     {
 
         $Manager = $this->getEntityManager();
         /** @var TblSetting $Entity */
-        $Entity = $this->getForceEntityById(__METHOD__, $Manager, 'TblSetting', $tblSetting->getId());
+        $Entity = $this->getForceEntityById(__METHOD__, $Manager, 'TblSetting', $TblSetting->getId());
         if (null !== $Entity) {
             Protocol::useService()->createDeleteEntry($this->getConnection()->getDatabase(), $Entity);
             $Manager->killEntity($Entity);
@@ -520,15 +520,15 @@ class Data extends AbstractData
     }
 
     /**
-     * @param TblAccount $tblAccount
+     * @param TblAccount $TblAccount
      *
      * @return bool|TblSession[]
      */
-    public function getSessionAllByAccount(TblAccount $tblAccount)
+    public function getSessionAllByAccount(TblAccount $TblAccount)
     {
 
         return $this->getForceEntityListBy(__METHOD__, $this->getEntityManager(), 'TblSession', array(
-            TblSession::ATTR_TBL_ACCOUNT => $tblAccount->getId()
+            TblSession::ATTR_TBL_ACCOUNT => $TblAccount->getId()
         ));
     }
 
@@ -556,23 +556,23 @@ class Data extends AbstractData
     }
 
     /**
-     * @param TblAccount $tblAccount
+     * @param TblAccount $TblAccount
      * @param string $Password
      *
      * @return bool
      */
-    public function changePassword($Password, TblAccount $tblAccount = null)
+    public function changePassword($Password, TblAccount $TblAccount = null)
     {
 
-        if (null === $tblAccount) {
-            $tblAccount = $this->getAccountBySession();
+        if (null === $TblAccount) {
+            $TblAccount = $this->getAccountBySession();
         }
         $Manager = $this->getEntityManager();
         /**
          * @var TblAccount $Protocol
          * @var TblAccount $Entity
          */
-        $Entity = $Manager->getEntityById('TblAccount', $tblAccount->getId());
+        $Entity = $Manager->getEntityById('TblAccount', $TblAccount->getId());
         $Protocol = clone $Entity;
         if (null !== $Entity) {
             $Entity->setPassword(hash('sha256', $Password));
@@ -653,19 +653,19 @@ class Data extends AbstractData
     }
 
     /**
-     * @param TblSession $tblSession
+     * @param TblSession $TblSession
      * @param int $Timeout
      *
      * @return bool
      */
-    private function changeTimeout(TblSession $tblSession, $Timeout)
+    private function changeTimeout(TblSession $TblSession, $Timeout)
     {
 
         $Manager = $this->getEntityManager();
         /**
          * @var TblSession $Entity
          */
-        $Entity = $this->getForceEntityById(__METHOD__, $Manager, 'TblSession', $tblSession->getId());
+        $Entity = $this->getForceEntityById(__METHOD__, $Manager, 'TblSession', $TblSession->getId());
 
         if ($Entity) {
             // Skip permanent Timeout
@@ -683,23 +683,23 @@ class Data extends AbstractData
     }
 
     /**
-     * @param TblConsumer $tblConsumer
-     * @param TblAccount $tblAccount
+     * @param TblConsumer $TblConsumer
+     * @param TblAccount $TblAccount
      *
      * @return bool
      */
-    public function changeConsumer(TblConsumer $tblConsumer, TblAccount $tblAccount = null)
+    public function changeConsumer(TblConsumer $TblConsumer, TblAccount $TblAccount = null)
     {
 
-        if (null === $tblAccount) {
-            $tblAccount = $this->getAccountBySession();
+        if (null === $TblAccount) {
+            $TblAccount = $this->getAccountBySession();
         }
         $Manager = $this->getEntityManager();
         /** @var TblAccount $Entity */
-        $Entity = $Manager->getEntityById('TblAccount', $tblAccount->getId());
+        $Entity = $Manager->getEntityById('TblAccount', $TblAccount->getId());
         $Protocol = clone $Entity;
         if (null !== $Entity) {
-            $Entity->setServiceTblConsumer($tblConsumer);
+            $Entity->setServiceTblConsumer($TblConsumer);
             $Manager->saveEntity($Entity);
             Protocol::useService()->createUpdateEntry($this->getConnection()->getDatabase(), $Protocol, $Entity);
             return true;

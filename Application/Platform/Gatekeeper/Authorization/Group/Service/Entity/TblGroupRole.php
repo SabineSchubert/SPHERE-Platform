@@ -12,19 +12,19 @@ use SPHERE\System\Database\Fitting\Element;
 
 /**
  * @Entity
- * @Table(name="tblGroupRole")
+ * @Table(name="TblGroupRole")
  * @Cache(usage="READ_ONLY")
  */
 class TblGroupRole extends Element
 {
 
-    const ATTR_TBL_GROUP = 'tblGroup';
+    const ATTR_TBL_GROUP = 'TblGroup';
     const SERVICE_TBL_ROLE = 'serviceTblRole';
 
     /**
      * @Column(type="bigint")
      */
-    protected $tblGroup;
+    protected $TblGroup;
     /**
      * @Column(type="bigint")
      */
@@ -36,20 +36,20 @@ class TblGroupRole extends Element
     public function getTblGroup()
     {
 
-        if (null === $this->tblGroup) {
+        if (null === $this->TblGroup) {
             return false;
         } else {
-            return Group::useService()->getGroupById($this->tblGroup);
+            return Group::useService()->getGroupById($this->TblGroup);
         }
     }
 
     /**
-     * @param null|TblGroup $tblGroup
+     * @param null|TblGroup $TblGroup
      */
-    public function setTblGroup(TblGroup $tblGroup = null)
+    public function setTblGroup(TblGroup $TblGroup = null)
     {
 
-        $this->tblGroup = ( null === $tblGroup ? null : $tblGroup->getId() );
+        $this->TblGroup = (null === $TblGroup ? null : $TblGroup->getId());
     }
 
     /**
@@ -66,11 +66,11 @@ class TblGroupRole extends Element
     }
 
     /**
-     * @param null|TblRole $tblRole
+     * @param null|TblRole $TblRole
      */
-    public function setServiceTblRole(TblRole $tblRole = null)
+    public function setServiceTblRole(TblRole $TblRole = null)
     {
 
-        $this->serviceTblRole = ( null === $tblRole ? null : $tblRole->getId() );
+        $this->serviceTblRole = (null === $TblRole ? null : $TblRole->getId());
     }
 }

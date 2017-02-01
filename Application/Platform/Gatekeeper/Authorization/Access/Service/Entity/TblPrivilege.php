@@ -10,7 +10,7 @@ use SPHERE\System\Database\Fitting\Element;
 
 /**
  * @Entity
- * @Table(name="tblPrivilege")
+ * @Table(name="TblPrivilege")
  * @Cache(usage="READ_ONLY")
  */
 class TblPrivilege extends Element

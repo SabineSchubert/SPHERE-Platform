@@ -6,13 +6,13 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Consumer;
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Service\Entity\TblConsumer;
+use SPHERE\Application\Platform\Gatekeeper\Consumer\Consumer;
+use SPHERE\Application\Platform\Gatekeeper\Consumer\Service\Entity\TblConsumer;
 use SPHERE\System\Database\Fitting\Element;
 
 /**
  * @Entity
- * @Table(name="tblAccount")
+ * @Table(name="TblAccount")
  * @Cache(usage="READ_ONLY")
  */
 class TblAccount extends Element
@@ -84,12 +84,12 @@ class TblAccount extends Element
     }
 
     /**
-     * @param null|TblConsumer $tblConsumer
+     * @param null|TblConsumer $TblConsumer
      */
-    public function setServiceTblConsumer(TblConsumer $tblConsumer = null)
+    public function setServiceTblConsumer(TblConsumer $TblConsumer = null)
     {
 
-        $this->serviceTblConsumer = ( null === $tblConsumer ? null : $tblConsumer->getId() );
+        $this->serviceTblConsumer = (null === $TblConsumer ? null : $TblConsumer->getId());
     }
 
     /**

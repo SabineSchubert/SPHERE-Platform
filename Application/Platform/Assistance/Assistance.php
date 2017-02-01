@@ -15,9 +15,6 @@ class Assistance implements IApplicationInterface
     public static function registerApplication()
     {
 
-        /**
-         * Register Module
-         */
         Error::registerModule();
     }
 }

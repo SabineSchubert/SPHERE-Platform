@@ -3,8 +3,8 @@ namespace SPHERE\Application\Platform\System\Database;
 
 use SPHERE\Application\IModuleInterface;
 use SPHERE\Application\IServiceInterface;
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Consumer;
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Service\Entity\TblConsumer;
+use SPHERE\Application\Platform\Gatekeeper\Consumer\Consumer;
+use SPHERE\Application\Platform\Gatekeeper\Consumer\Service\Entity\TblConsumer;
 use SPHERE\Common\Frontend\Icon\Repository\Flash;
 use SPHERE\Common\Frontend\Icon\Repository\Ok;
 use SPHERE\Common\Frontend\Icon\Repository\Question;
@@ -53,7 +53,8 @@ class Database extends Extension implements IModuleInterface
          * Register Navigation
          */
         Main::getDisplay()->addModuleNavigation(
-            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Datenbank'), new Link\Icon( new \SPHERE\Common\Frontend\Icon\Repository\Database()))
+            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Datenbank'),
+                new Link\Icon(new \SPHERE\Common\Frontend\Icon\Repository\Database()))
         );
         /**
          * Register Route
@@ -125,11 +126,11 @@ class Database extends Extension implements IModuleInterface
 
             // Force Consumer ?
             if (!isset($Service[4]) && (!isset($Parameter['Consumer']) || $Parameter['Consumer'])) {
-                $tblConsumerAll = Consumer::useService()->getConsumerAll();
-                /** @var TblConsumer $tblConsumer */
-                foreach ((array)$tblConsumerAll as $tblConsumer) {
+                $TblConsumerAll = Consumer::useService()->getConsumerAll();
+                /** @var TblConsumer $TblConsumer */
+                foreach ((array)$TblConsumerAll as $TblConsumer) {
                     $Connection = null;
-                    $Service[4] = $tblConsumer->getAcronym();
+                    $Service[4] = $TblConsumer->getAcronym();
                     try {
                         $Connection = new \SPHERE\System\Database\Database(
                             new Identifier(
@@ -200,10 +201,12 @@ class Database extends Extension implements IModuleInterface
         $Stage->addButton(new Primary('Status', new Link\Route(__NAMESPACE__), new Question(),
             array(), 'Datenbankverbindungen'
         ));
-        $Stage->addButton(new \SPHERE\Common\Frontend\Link\Repository\Success('Simulation', new Link\Route(__NAMESPACE__ . '/Setup/Simulation'), new Search(),
+        $Stage->addButton(new \SPHERE\Common\Frontend\Link\Repository\Success('Simulation',
+            new Link\Route(__NAMESPACE__ . '/Setup/Simulation'), new Search(),
             array(), 'Anzeige von Strukturänderungen'
         ));
-        $Stage->addButton(new \SPHERE\Common\Frontend\Link\Repository\Warning('Durchführung', new Link\Route(__NAMESPACE__ . '/Setup/Execution'), new Flash(),
+        $Stage->addButton(new \SPHERE\Common\Frontend\Link\Repository\Warning('Durchführung',
+            new Link\Route(__NAMESPACE__ . '/Setup/Execution'), new Flash(),
             array(), 'Durchführen von Strukturänderungen und einspielen zugehöriger Daten'
         ));
 //        $Stage->addButton(new \SPHERE\Common\Frontend\Link\Repository\Danger('Durchführung: Alle Mandanten', new Link\Route(__NAMESPACE__ . '/Setup/Upgrade'),
@@ -225,8 +228,7 @@ class Database extends Extension implements IModuleInterface
         $Service,
         $Parameter,
         \SPHERE\System\Database\Database $Connection = null
-    )
-    {
+    ) {
 
         return new TableRow(array(
             new TableColumn($Status),
@@ -251,19 +253,19 @@ class Database extends Extension implements IModuleInterface
         $Stage = new Stage('Database', 'Setup aller Mandanten');
         $this->menuButton($Stage);
 
-        $tblConsumerAll = Consumer::useService()->getConsumerAll();
+        $TblConsumerAll = Consumer::useService()->getConsumerAll();
         $ConsumerRequestList = array();
-        if ($tblConsumerAll) {
+        if ($TblConsumerAll) {
             $Authenticator = (new Authenticator(new Get()))->getAuthenticator();
 
-            array_walk($tblConsumerAll,
-                function (TblConsumer $tblConsumer) use (&$ConsumerRequestList, $Authenticator) {
+            array_walk($TblConsumerAll,
+                function (TblConsumer $TblConsumer) use (&$ConsumerRequestList, $Authenticator) {
 
-                    $ConsumerRequestList[$tblConsumer->getAcronym()] =
+                    $ConsumerRequestList[$TblConsumer->getAcronym()] =
                         'https://' . $this->getRequest()->getHost()
                         . '/Api/Platform/Database/Upgrade'
                         . '?' . http_build_query($Authenticator->createSignature(array(
-                            'Consumer' => $tblConsumer->getAcronym()
+                            'Consumer' => $TblConsumer->getAcronym()
                         ), '/Api/Platform/Database/Upgrade'));
 
                 });
@@ -394,7 +396,7 @@ class Database extends Extension implements IModuleInterface
         array_unshift(self::$ServiceRegister, 'SPHERE\Application\Platform\Gatekeeper\Authorization\Group\Group');
         array_unshift(self::$ServiceRegister, 'SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account');
         array_unshift(self::$ServiceRegister, 'SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Access');
-        array_unshift(self::$ServiceRegister, 'SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Consumer');
+        array_unshift(self::$ServiceRegister, 'SPHERE\Application\Platform\Gatekeeper\Consumer\Consumer');
 
         self::$ServiceRegister = array_unique(self::$ServiceRegister);
 

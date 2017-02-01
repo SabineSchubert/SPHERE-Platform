@@ -1,7 +1,7 @@
 <?php
 namespace SPHERE\System\Database\Link;
 
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Service\Entity\TblConsumer;
+use SPHERE\Application\Platform\Gatekeeper\Consumer\Service\Entity\TblConsumer;
 
 /**
  * Class Identifier

@@ -24,14 +24,14 @@ class Setup extends AbstractSetup
 
         $Schema = $this->loadSchema();
 
-        $tblRight = $this->setTableRight($Schema);
-        $tblPrivilege = $this->setTablePrivilege($Schema);
-        $tblLevel = $this->setTableLevel($Schema);
-        $tblRole = $this->setTableRole($Schema);
+        $TblRight = $this->setTableRight($Schema);
+        $TblPrivilege = $this->setTablePrivilege($Schema);
+        $TblLevel = $this->setTableLevel($Schema);
+        $TblRole = $this->setTableRole($Schema);
 
-        $this->setTablePrivilegeRight($Schema, $tblPrivilege, $tblRight);
-        $this->setTableLevelPrivilege($Schema, $tblLevel, $tblPrivilege);
-        $this->setTableRoleLevel($Schema, $tblRole, $tblLevel);
+        $this->setTablePrivilegeRight($Schema, $TblPrivilege, $TblRight);
+        $this->setTableLevelPrivilege($Schema, $TblLevel, $TblPrivilege);
+        $this->setTableRoleLevel($Schema, $TblRole, $TblLevel);
 
         return $this->saveSchema($Schema, $Simulate);
     }
@@ -45,7 +45,7 @@ class Setup extends AbstractSetup
     private function setTableRight(Schema &$Schema)
     {
 
-        $Table = $this->createTable($Schema, 'tblRight');
+        $Table = $this->createTable($Schema, 'TblRight');
         $this->createColumn($Table, 'Route', self::FIELD_TYPE_STRING);
         $this->createIndex($Table, array('Route', Element::ENTITY_REMOVE));
         return $Table;
@@ -59,7 +59,7 @@ class Setup extends AbstractSetup
     private function setTablePrivilege(Schema &$Schema)
     {
 
-        $Table = $this->createTable($Schema, 'tblPrivilege');
+        $Table = $this->createTable($Schema, 'TblPrivilege');
         $this->createColumn($Table, 'Name', self::FIELD_TYPE_STRING);
         $this->createIndex($Table, array('Name', Element::ENTITY_REMOVE));
         return $Table;
@@ -73,7 +73,7 @@ class Setup extends AbstractSetup
     private function setTableLevel(Schema &$Schema)
     {
 
-        $Table = $this->createTable($Schema, 'tblLevel');
+        $Table = $this->createTable($Schema, 'TblLevel');
         $this->createColumn($Table, 'Name', self::FIELD_TYPE_STRING);
         $this->createIndex($Table, array('Name', Element::ENTITY_REMOVE));
         return $Table;
@@ -87,7 +87,7 @@ class Setup extends AbstractSetup
     private function setTableRole(Schema &$Schema)
     {
 
-        $Table = $this->createTable($Schema, 'tblRole');
+        $Table = $this->createTable($Schema, 'TblRole');
         $this->createColumn($Table, 'Name', self::FIELD_TYPE_STRING);
         $this->createIndex($Table, array('Name', Element::ENTITY_REMOVE));
 
@@ -97,61 +97,58 @@ class Setup extends AbstractSetup
 
     /**
      * @param Schema $Schema
-     * @param Table $tblPrivilege
-     * @param Table $tblRight
+     * @param Table $TblPrivilege
+     * @param Table $TblRight
      *
      * @return Table
      */
     private function setTablePrivilegeRight(
         Schema &$Schema,
-        Table $tblPrivilege,
-        Table $tblRight
-    )
-    {
+        Table $TblPrivilege,
+        Table $TblRight
+    ) {
 
-        $Table = $this->createTable($Schema, 'tblPrivilegeRight');
-        $this->createForeignKey($Table, $tblPrivilege);
-        $this->createForeignKey($Table, $tblRight);
+        $Table = $this->createTable($Schema, 'TblPrivilegeRight');
+        $this->createForeignKey($Table, $TblPrivilege);
+        $this->createForeignKey($Table, $TblRight);
         return $Table;
     }
 
     /**
      * @param Schema $Schema
-     * @param Table $tblLevel
-     * @param Table $tblPrivilege
+     * @param Table $TblLevel
+     * @param Table $TblPrivilege
      *
      * @return Table
      */
     private function setTableLevelPrivilege(
         Schema &$Schema,
-        Table $tblLevel,
-        Table $tblPrivilege
-    )
-    {
+        Table $TblLevel,
+        Table $TblPrivilege
+    ) {
 
-        $Table = $this->createTable($Schema, 'tblLevelPrivilege');
-        $this->createForeignKey($Table, $tblLevel);
-        $this->createForeignKey($Table, $tblPrivilege);
+        $Table = $this->createTable($Schema, 'TblLevelPrivilege');
+        $this->createForeignKey($Table, $TblLevel);
+        $this->createForeignKey($Table, $TblPrivilege);
         return $Table;
     }
 
     /**
      * @param Schema $Schema
-     * @param Table $tblRole
-     * @param Table $tblLevel
+     * @param Table $TblRole
+     * @param Table $TblLevel
      *
      * @return Table
      */
     private function setTableRoleLevel(
         Schema &$Schema,
-        Table $tblRole,
-        Table $tblLevel
-    )
-    {
+        Table $TblRole,
+        Table $TblLevel
+    ) {
 
-        $Table = $this->createTable($Schema, 'tblRoleLevel');
-        $this->createForeignKey($Table, $tblRole);
-        $this->createForeignKey($Table, $tblLevel);
+        $Table = $this->createTable($Schema, 'TblRoleLevel');
+        $this->createForeignKey($Table, $TblRole);
+        $this->createForeignKey($Table, $TblLevel);
         return $Table;
     }
 }

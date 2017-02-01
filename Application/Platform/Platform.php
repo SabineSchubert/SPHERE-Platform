@@ -24,42 +24,35 @@ class Platform implements IClusterInterface
     public static function registerCluster()
     {
 
-        $tblAccount = Account::useService()->getAccountBySession();
-        $tblIdentification = Account::useService()->getIdentificationByName('System');
-        if ($tblAccount && $tblIdentification) {
-            if ($tblAccount->getServiceTblIdentification()
-                && $tblAccount->getServiceTblIdentification()->getId() == $tblIdentification->getId()) {
+        $TblAccount = Account::useService()->getAccountBySession();
+        $TblIdentification = Account::useService()->getIdentificationByName('System');
+        if ($TblAccount && $TblIdentification) {
+            if ($TblAccount->getServiceTblIdentification()
+                && $TblAccount->getServiceTblIdentification()->getId() == $TblIdentification->getId()
+            ) {
                 Main::getDisplay()->addServiceNavigation(
                     new Link(
                         new Link\Route('/Setting/MyAccount/Consumer'),
                         new Link\Name(
-                            new Bold( new Label(
+                            new Bold(new Label(
                                 'Mandant '
-                                . ($tblAccount->getServiceTblConsumer()?$tblAccount->getServiceTblConsumer()->getAcronym() : '')
-                            , Label::LABEL_TYPE_DANGER) )
+                                . ($TblAccount->getServiceTblConsumer() ? $TblAccount->getServiceTblConsumer()->getAcronym() : '')
+                                , Label::LABEL_TYPE_DANGER))
                         )
                     )
                 );
             }
         }
 
-        /**
-         * Register Application
-         */
         System::registerApplication();
         Gatekeeper::registerApplication();
         Assistance::registerApplication();
-        /**
-         * Register Navigation
-         */
+
         Main::getDisplay()->addServiceNavigation(
             new Link(new Link\Route(__NAMESPACE__), new Link\Name('Plattform'), new Link\Icon(new CogWheels()))
         );
-        /**
-         * Register Route
-         */
         Main::getDispatcher()->registerRoute(
-            Main::getDispatcher()->createRoute(__NAMESPACE__, 'Platform::frontendPlatform')
+            Main::getDispatcher()->createRoute(__NAMESPACE__, __CLASS__ . '::frontendPlatform')
         );
     }
 
@@ -69,7 +62,7 @@ class Platform implements IClusterInterface
     public function frontendPlatform()
     {
 
-        $Stage = new Stage('Plattform', 'Systemeinstellungen');
+        $Stage = new Stage('Plattform', 'Systemkonfiguration');
 
         ob_start();
         phpinfo();
@@ -77,7 +70,7 @@ class Platform implements IClusterInterface
 
         $Stage->setContent(
             '<div id="phpinfo">'
-            .preg_replace('!,!', ', ',
+            . preg_replace('!,!', ', ',
                 preg_replace('!<th>(enabled)\s*</th>!i',
                     '<th><span class="badge badge-success">$1</span></th>',
                     preg_replace('!<td class="v">(On|enabled|active|Yes)\s*</td>!i',
@@ -92,7 +85,7 @@ class Platform implements IClusterInterface
                     )
                 )
             )
-            .'</div>'
+            . '</div>'
         );
         return $Stage;
     }

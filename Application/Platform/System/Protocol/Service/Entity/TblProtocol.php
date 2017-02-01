@@ -7,13 +7,13 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\TblAccount;
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Consumer;
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Service\Entity\TblConsumer;
+use SPHERE\Application\Platform\Gatekeeper\Consumer\Consumer;
+use SPHERE\Application\Platform\Gatekeeper\Consumer\Service\Entity\TblConsumer;
 use SPHERE\System\Database\Fitting\Element;
 
 /**
  * @Entity
- * @Table(name="tblProtocol")
+ * @Table(name="TblProtocol")
  * @Cache(usage="READ_ONLY")
  */
 class TblProtocol extends Element
@@ -106,12 +106,12 @@ class TblProtocol extends Element
     }
 
     /**
-     * @param null|\SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\TblAccount $tblAccount
+     * @param null|\SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\TblAccount $TblAccount
      */
-    public function setServiceTblAccount(TblAccount $tblAccount = null)
+    public function setServiceTblAccount(TblAccount $TblAccount = null)
     {
 
-        $this->serviceTblAccount = ( null === $tblAccount ? null : $tblAccount->getId() );
+        $this->serviceTblAccount = (null === $TblAccount ? null : $TblAccount->getId());
     }
 
     /**
@@ -146,13 +146,13 @@ class TblProtocol extends Element
     }
 
     /**
-     * @param null|TblConsumer $tblConsumer
+     * @param null|TblConsumer $TblConsumer
      */
     public function setServiceTblConsumer(
-        TblConsumer $tblConsumer = null
+        TblConsumer $TblConsumer = null
     ) {
 
-        $this->serviceTblConsumer = ( null === $tblConsumer ? null : $tblConsumer->getId() );
+        $this->serviceTblConsumer = (null === $TblConsumer ? null : $TblConsumer->getId());
     }
 
     /**

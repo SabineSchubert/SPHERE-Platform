@@ -46,7 +46,7 @@ class LoginAttemptHistory extends Element
      */
     public function setCredentialLock($CredentialLock)
     {
-        $this->CredentialLock = hash( 'sha256', $CredentialLock );
+        $this->CredentialLock = hash('sha256', $CredentialLock);
     }
 
     /**

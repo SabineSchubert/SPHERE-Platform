@@ -28,102 +28,102 @@ class Data extends AbstractData
          * CLOUD
          * Administrator (Setup Role)
          */
-        $tblRoleCloud = $this->createRole('Administrator', true);
+        $TblRoleCloud = $this->createRole('Administrator', true);
 
         // Level: Sphere-Platform
-        $tblLevel = $this->createLevel('Sphere-Platform');
-        $this->addRoleLevel($tblRoleCloud, $tblLevel);
+        $TblLevel = $this->createLevel('Sphere-Platform');
+        $this->addRoleLevel($TblRoleCloud, $TblLevel);
 
         // Privilege: Sphere-System
-        $tblPrivilege = $this->createPrivilege('Sphere-System');
-        $this->addLevelPrivilege($tblLevel, $tblPrivilege);
-        $tblRight = $this->createRight('/Platform');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Platform/System');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
+        $TblPrivilege = $this->createPrivilege('Sphere-System');
+        $this->addLevelPrivilege($TblLevel, $TblPrivilege);
+        $TblRight = $this->createRight('/Platform');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Platform/System');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
 
-        $tblRight = $this->createRight('/Platform/System/Protocol');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Platform/System/Archive');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
+        $TblRight = $this->createRight('/Platform/System/Protocol');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Platform/System/Archive');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
 
-        $tblRight = $this->createRight('/Platform/System/Database');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Platform/System/Database/Setup/Simulation');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Platform/System/Database/Setup/Execution');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Platform/System/Database/Setup/Upgrade');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Api/Platform/Database/Upgrade');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
+        $TblRight = $this->createRight('/Platform/System/Database');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Platform/System/Database/Setup/Simulation');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Platform/System/Database/Setup/Execution');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Platform/System/Database/Setup/Upgrade');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Api/Platform/Database/Upgrade');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
 
-        $tblRight = $this->createRight('/Platform/System/Cache');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
+        $TblRight = $this->createRight('/Platform/System/Cache');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
 
-        $tblRight = $this->createRight('/Platform/System/Test');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Platform/System/Test/Frontend');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Platform/System/Test/Upload');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Platform/System/Test/Upload/Delete');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Platform/System/Test/Upload/Delete/Check');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
+        $TblRight = $this->createRight('/Platform/System/Test');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Platform/System/Test/Frontend');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Platform/System/Test/Upload');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Platform/System/Test/Upload/Delete');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Platform/System/Test/Upload/Delete/Check');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
 
         // Privilege: Sphere-Gatekeeper
-        $tblPrivilege = $this->createPrivilege('Sphere-Gatekeeper');
-        $this->addLevelPrivilege($tblLevel, $tblPrivilege);
-        $tblRight = $this->createRight('/Platform');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Platform/Gatekeeper');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
+        $TblPrivilege = $this->createPrivilege('Sphere-Gatekeeper');
+        $this->addLevelPrivilege($TblLevel, $TblPrivilege);
+        $TblRight = $this->createRight('/Platform');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Platform/Gatekeeper');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
 
-        $tblRight = $this->createRight('/Platform/Gatekeeper/Authorization');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Platform/Gatekeeper/Authorization/Access');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Platform/Gatekeeper/Authorization/Access/Role');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Platform/Gatekeeper/Authorization/Access/RoleGrantLevel');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Platform/Gatekeeper/Authorization/Access/Level');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Platform/Gatekeeper/Authorization/Access/LevelGrantPrivilege');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Platform/Gatekeeper/Authorization/Access/Privilege');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Platform/Gatekeeper/Authorization/Access/PrivilegeGrantRight');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Platform/Gatekeeper/Authorization/Access/Right');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Api/Platform/Gatekeeper/Authorization/Access/PrivilegeGrantRight');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
+        $TblRight = $this->createRight('/Platform/Gatekeeper/Authorization');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Platform/Gatekeeper/Authorization/Access');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Platform/Gatekeeper/Authorization/Access/Role');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Platform/Gatekeeper/Authorization/Access/RoleGrantLevel');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Platform/Gatekeeper/Authorization/Access/Level');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Platform/Gatekeeper/Authorization/Access/LevelGrantPrivilege');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Platform/Gatekeeper/Authorization/Access/Privilege');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Platform/Gatekeeper/Authorization/Access/PrivilegeGrantRight');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Platform/Gatekeeper/Authorization/Access/Right');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Api/Platform/Gatekeeper/Authorization/Access/PrivilegeGrantRight');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
 
-        $tblRight = $this->createRight('/Platform/Gatekeeper/Authorization/Consumer');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
+        $TblRight = $this->createRight('/Platform/Gatekeeper/Authorization/Consumer');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
 
-        $tblRight = $this->createRight('/Platform/Gatekeeper/Authorization/Account');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
+        $TblRight = $this->createRight('/Platform/Gatekeeper/Authorization/Account');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
 
         // Level: Sphere-Setting
-        $tblLevel = $this->createLevel('Sphere-Setting');
-        $this->addRoleLevel($tblRoleCloud, $tblLevel);
+        $TblLevel = $this->createLevel('Sphere-Setting');
+        $this->addRoleLevel($TblRoleCloud, $TblLevel);
 
         // Privilege: Sphere-MyAccount
-        $tblPrivilege = $this->createPrivilege('Sphere-MyAccount');
-        $this->addLevelPrivilege($tblLevel, $tblPrivilege);
-        $tblRight = $this->createRight('/Setting');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Setting/MyAccount');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
+        $TblPrivilege = $this->createPrivilege('Sphere-MyAccount');
+        $this->addLevelPrivilege($TblLevel, $TblPrivilege);
+        $TblRight = $this->createRight('/Setting');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Setting/MyAccount');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
 
-        $tblRight = $this->createRight('/Setting/MyAccount/Password');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
+        $TblRight = $this->createRight('/Setting/MyAccount/Password');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
 
-        $tblRight = $this->createRight('/Setting/MyAccount/Consumer');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
+        $TblRight = $this->createRight('/Setting/MyAccount/Consumer');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
 
         /**
          * SERVER
@@ -131,17 +131,17 @@ class Data extends AbstractData
          */
 
         // Level: Benutzer - Einstellungen
-        $toRoleUserSetup = $tblLevel = $this->createLevel('Benutzer - Einstellungen');
+        $toRoleUserSetup = $TblLevel = $this->createLevel('Benutzer - Einstellungen');
 
         // Privilege: Benutzer - Mein Benutzerkonto
-        $tblPrivilege = $this->createPrivilege('Benutzer - Mein Benutzerkonto');
-        $this->addLevelPrivilege($tblLevel, $tblPrivilege);
-        $tblRight = $this->createRight('/Setting');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Setting/MyAccount');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Setting/MyAccount/Password');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
+        $TblPrivilege = $this->createPrivilege('Benutzer - Mein Benutzerkonto');
+        $this->addLevelPrivilege($TblLevel, $TblPrivilege);
+        $TblRight = $this->createRight('/Setting');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Setting/MyAccount');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Setting/MyAccount/Password');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
 
         /**
          * SERVER
@@ -149,48 +149,48 @@ class Data extends AbstractData
          */
 
         // Level: Administrator - Einstellungen
-        $toRoleAdminSetup = $tblLevel = $this->createLevel('Administrator - Einstellungen');
+        $toRoleAdminSetup = $TblLevel = $this->createLevel('Administrator - Einstellungen');
         // !!! Add To CLOUD Administrator
-        $this->addRoleLevel($tblRoleCloud, $tblLevel);
+        $this->addRoleLevel($TblRoleCloud, $TblLevel);
 
         // Privilege: Administrator - Mein Benutzerkonto
-        $tblPrivilege = $this->createPrivilege('Administrator - Mein Benutzerkonto');
-        $this->addLevelPrivilege($tblLevel, $tblPrivilege);
-        $tblRight = $this->createRight('/Setting');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Setting/MyAccount');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
+        $TblPrivilege = $this->createPrivilege('Administrator - Mein Benutzerkonto');
+        $this->addLevelPrivilege($TblLevel, $TblPrivilege);
+        $TblRight = $this->createRight('/Setting');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Setting/MyAccount');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
 
-        $tblRight = $this->createRight('/Setting/MyAccount/Password');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
+        $TblRight = $this->createRight('/Setting/MyAccount/Password');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
 
         // Privilege: Administrator - Benutzerverwaltung
-        $tblPrivilege = $this->createPrivilege('Administrator - Benutzerverwaltung');
-        $this->addLevelPrivilege($tblLevel, $tblPrivilege);
-        $tblRight = $this->createRight('/Setting');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Setting/Authorization');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
+        $TblPrivilege = $this->createPrivilege('Administrator - Benutzerverwaltung');
+        $this->addLevelPrivilege($TblLevel, $TblPrivilege);
+        $TblRight = $this->createRight('/Setting');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Setting/Authorization');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
 
-        $tblRight = $this->createRight('/Setting/Authorization/Account');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
-        $tblRight = $this->createRight('/Setting/Authorization/Account/Create');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
+        $TblRight = $this->createRight('/Setting/Authorization/Account');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Setting/Authorization/Account/Create');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
         $this->createRight('/Setting/Authorization/Account/Edit');
-        $tblRight = $this->createRight('/Setting/Authorization/Account/Destroy');
-        $this->addPrivilegeRight($tblPrivilege, $tblRight);
+        $TblRight = $this->createRight('/Setting/Authorization/Account/Destroy');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
 
         /**
          * Role: Einstellungen: Administrator
          */
-        $tblRole = $this->createRole('Einstellungen: Administrator');
-        $this->addRoleLevel($tblRole, $toRoleAdminSetup);
+        $TblRole = $this->createRole('Einstellungen: Administrator');
+        $this->addRoleLevel($TblRole, $toRoleAdminSetup);
 
         /**
          * Role: Einstellungen: Benutzer
          */
-        $tblRole = $this->createRole('Einstellungen: Benutzer');
-        $this->addRoleLevel($tblRole, $toRoleUserSetup);
+        $TblRole = $this->createRole('Einstellungen: Benutzer');
+        $this->addRoleLevel($TblRole, $toRoleUserSetup);
 
     }
 
@@ -238,23 +238,23 @@ class Data extends AbstractData
     }
 
     /**
-     * @param TblRole $tblRole
-     * @param TblLevel $tblLevel
+     * @param TblRole $TblRole
+     * @param TblLevel $TblLevel
      *
      * @return TblRoleLevel
      */
-    public function addRoleLevel(TblRole $tblRole, TblLevel $tblLevel)
+    public function addRoleLevel(TblRole $TblRole, TblLevel $TblLevel)
     {
 
         $Manager = $this->getEntityManager();
         $Entity = $this->getForceEntityBy(__METHOD__, $Manager, 'TblRoleLevel', array(
-            TblRoleLevel::ATTR_TBL_ROLE => $tblRole->getId(),
-            TblRoleLevel::ATTR_TBL_LEVEL => $tblLevel->getId()
+            TblRoleLevel::ATTR_TBL_ROLE => $TblRole->getId(),
+            TblRoleLevel::ATTR_TBL_LEVEL => $TblLevel->getId()
         ));
         if (null === $Entity) {
             $Entity = new TblRoleLevel();
-            $Entity->setTblRole($tblRole);
-            $Entity->setTblLevel($tblLevel);
+            $Entity->setTblRole($TblRole);
+            $Entity->setTblLevel($TblLevel);
             $Manager->saveEntity($Entity);
             Protocol::useService()->createInsertEntry($this->getConnection()->getDatabase(), $Entity);
         }
@@ -282,23 +282,23 @@ class Data extends AbstractData
     }
 
     /**
-     * @param TblLevel $tblLevel
-     * @param TblPrivilege $tblPrivilege
+     * @param TblLevel $TblLevel
+     * @param TblPrivilege $TblPrivilege
      *
      * @return TblLevelPrivilege
      */
-    public function addLevelPrivilege(TblLevel $tblLevel, TblPrivilege $tblPrivilege)
+    public function addLevelPrivilege(TblLevel $TblLevel, TblPrivilege $TblPrivilege)
     {
 
         $Manager = $this->getEntityManager();
         $Entity = $this->getForceEntityBy(__METHOD__, $Manager, 'TblLevelPrivilege', array(
-            TblLevelPrivilege::ATTR_TBL_LEVEL => $tblLevel->getId(),
-            TblLevelPrivilege::ATTR_TBL_PRIVILEGE => $tblPrivilege->getId()
+            TblLevelPrivilege::ATTR_TBL_LEVEL => $TblLevel->getId(),
+            TblLevelPrivilege::ATTR_TBL_PRIVILEGE => $TblPrivilege->getId()
         ));
         if (null === $Entity) {
             $Entity = new TblLevelPrivilege();
-            $Entity->setTblLevel($tblLevel);
-            $Entity->setTblPrivilege($tblPrivilege);
+            $Entity->setTblLevel($TblLevel);
+            $Entity->setTblPrivilege($TblPrivilege);
             $Manager->saveEntity($Entity);
             Protocol::useService()->createInsertEntry($this->getConnection()->getDatabase(), $Entity);
         }
@@ -326,23 +326,23 @@ class Data extends AbstractData
     }
 
     /**
-     * @param TblPrivilege $tblPrivilege
-     * @param TblRight $tblRight
+     * @param TblPrivilege $TblPrivilege
+     * @param TblRight $TblRight
      *
      * @return TblPrivilegeRight
      */
-    public function addPrivilegeRight(TblPrivilege $tblPrivilege, TblRight $tblRight)
+    public function addPrivilegeRight(TblPrivilege $TblPrivilege, TblRight $TblRight)
     {
 
         $Manager = $this->getEntityManager();
         $Entity = $this->getForceEntityBy(__METHOD__, $Manager, 'TblPrivilegeRight', array(
-            TblPrivilegeRight::ATTR_TBL_PRIVILEGE => $tblPrivilege->getId(),
-            TblPrivilegeRight::ATTR_TBL_RIGHT => $tblRight->getId()
+            TblPrivilegeRight::ATTR_TBL_PRIVILEGE => $TblPrivilege->getId(),
+            TblPrivilegeRight::ATTR_TBL_RIGHT => $TblRight->getId()
         ));
         if (null === $Entity) {
             $Entity = new TblPrivilegeRight();
-            $Entity->setTblPrivilege($tblPrivilege);
-            $Entity->setTblRight($tblRight);
+            $Entity->setTblPrivilege($TblPrivilege);
+            $Entity->setTblRight($TblRight);
             $Manager->saveEntity($Entity);
             Protocol::useService()->createInsertEntry($this->getConnection()->getDatabase(), $Entity);
         }
@@ -350,19 +350,19 @@ class Data extends AbstractData
     }
 
     /**
-     * @param TblRole $tblRole
-     * @param TblLevel $tblLevel
+     * @param TblRole $TblRole
+     * @param TblLevel $TblLevel
      *
      * @return bool
      */
-    public function removeRoleLevel(TblRole $tblRole, TblLevel $tblLevel)
+    public function removeRoleLevel(TblRole $TblRole, TblLevel $TblLevel)
     {
 
         $Manager = $this->getEntityManager();
         /** @var TblRoleLevel $Entity */
         $Entity = $this->getForceEntityBy(__METHOD__, $Manager, 'TblRoleLevel', array(
-            TblRoleLevel::ATTR_TBL_ROLE => $tblRole->getId(),
-            TblRoleLevel::ATTR_TBL_LEVEL => $tblLevel->getId()
+            TblRoleLevel::ATTR_TBL_ROLE => $TblRole->getId(),
+            TblRoleLevel::ATTR_TBL_LEVEL => $TblLevel->getId()
         ));
         if (null !== $Entity) {
             Protocol::useService()->createDeleteEntry($this->getConnection()->getDatabase(), $Entity);
@@ -373,19 +373,19 @@ class Data extends AbstractData
     }
 
     /**
-     * @param TblPrivilege $tblPrivilege
-     * @param TblRight $tblRight
+     * @param TblPrivilege $TblPrivilege
+     * @param TblRight $TblRight
      *
      * @return bool
      */
-    public function removePrivilegeRight(TblPrivilege $tblPrivilege, TblRight $tblRight)
+    public function removePrivilegeRight(TblPrivilege $TblPrivilege, TblRight $TblRight)
     {
 
         $Manager = $this->getEntityManager();
         /** @var TblPrivilegeRight $Entity */
         $Entity = $this->getForceEntityBy(__METHOD__, $Manager, 'TblPrivilegeRight', array(
-            TblPrivilegeRight::ATTR_TBL_PRIVILEGE => $tblPrivilege->getId(),
-            TblPrivilegeRight::ATTR_TBL_RIGHT => $tblRight->getId()
+            TblPrivilegeRight::ATTR_TBL_PRIVILEGE => $TblPrivilege->getId(),
+            TblPrivilegeRight::ATTR_TBL_RIGHT => $TblRight->getId()
         ));
         if (null !== $Entity) {
             Protocol::useService()->createDeleteEntry($this->getConnection()->getDatabase(), $Entity);
@@ -396,19 +396,19 @@ class Data extends AbstractData
     }
 
     /**
-     * @param TblLevel $tblLevel
-     * @param TblPrivilege $tblPrivilege
+     * @param TblLevel $TblLevel
+     * @param TblPrivilege $TblPrivilege
      *
      * @return bool
      */
-    public function removeLevelPrivilege(TblLevel $tblLevel, TblPrivilege $tblPrivilege)
+    public function removeLevelPrivilege(TblLevel $TblLevel, TblPrivilege $TblPrivilege)
     {
 
         $Manager = $this->getEntityManager();
         /** @var TblLevelPrivilege $Entity */
         $Entity = $this->getForceEntityBy(__METHOD__, $Manager, 'TblLevelPrivilege', array(
-            TblLevelPrivilege::ATTR_TBL_LEVEL => $tblLevel->getId(),
-            TblLevelPrivilege::ATTR_TBL_PRIVILEGE => $tblPrivilege->getId()
+            TblLevelPrivilege::ATTR_TBL_LEVEL => $TblLevel->getId(),
+            TblLevelPrivilege::ATTR_TBL_PRIVILEGE => $TblPrivilege->getId()
         ));
         if (null !== $Entity) {
             Protocol::useService()->createDeleteEntry($this->getConnection()->getDatabase(), $Entity);
@@ -528,15 +528,15 @@ class Data extends AbstractData
 
     /**
      *
-     * @param TblLevel $tblLevel
+     * @param TblLevel $TblLevel
      *
      * @return null|TblPrivilege[]
      */
-    public function getPrivilegeAllByLevel(TblLevel $tblLevel)
+    public function getPrivilegeAllByLevel(TblLevel $TblLevel)
     {
         /** @var TblLevelPrivilege[] $EntityList */
         $EntityList = $this->getCachedEntityListBy(__METHOD__, $this->getEntityManager(), 'TblLevelPrivilege', array(
-            TblLevelPrivilege::ATTR_TBL_LEVEL => $tblLevel->getId()
+            TblLevelPrivilege::ATTR_TBL_LEVEL => $TblLevel->getId()
         ));
         if ($EntityList) {
             array_walk($EntityList, function (TblLevelPrivilege &$V) {
@@ -551,16 +551,16 @@ class Data extends AbstractData
 
     /**
      *
-     * @param TblPrivilege $tblPrivilege
+     * @param TblPrivilege $TblPrivilege
      *
      * @return null|TblRight[]
      */
-    public function getRightAllByPrivilege(TblPrivilege $tblPrivilege)
+    public function getRightAllByPrivilege(TblPrivilege $TblPrivilege)
     {
 
         /** @var TblPrivilegeRight[] $EntityList */
         $EntityList = $this->getCachedEntityListBy(__METHOD__, $this->getEntityManager(), 'TblPrivilegeRight', array(
-            TblPrivilegeRight::ATTR_TBL_PRIVILEGE => $tblPrivilege->getId()
+            TblPrivilegeRight::ATTR_TBL_PRIVILEGE => $TblPrivilege->getId()
         ));
         if ($EntityList) {
             array_walk($EntityList, function (TblPrivilegeRight &$V) {
@@ -626,17 +626,17 @@ class Data extends AbstractData
 
     /**
      *
-     * @param TblRole $tblRole
+     * @param TblRole $TblRole
      *
      * @return null|TblLevel[]
      */
-    public function getLevelAllByRole(TblRole $tblRole)
+    public function getLevelAllByRole(TblRole $TblRole)
     {
 
         $EntityList = $this->getCachedEntityListBy(__METHOD__, $this->getEntityManager(),
             'TblRoleLevel',
             array(
-                TblRoleLevel::ATTR_TBL_ROLE => $tblRole->getId()
+                TblRoleLevel::ATTR_TBL_ROLE => $TblRole->getId()
             )
         );
         if ($EntityList) {

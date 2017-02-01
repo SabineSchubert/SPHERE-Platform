@@ -25,7 +25,7 @@ class Setup extends AbstractSetup
 
         $this->setTableProtocol($Schema);
 
-        return $this->saveSchema( $Schema, $Simulate );
+        return $this->saveSchema($Schema, $Simulate);
     }
 
     /**
@@ -36,54 +36,54 @@ class Setup extends AbstractSetup
     private function setTableProtocol(Schema &$Schema)
     {
 
-        $Table = $this->createTable($Schema, 'tblProtocol');
+        $Table = $this->createTable($Schema, 'TblProtocol');
         /**
          * Upgrade
          */
         // System
-        if (!$this->getConnection()->hasColumn('tblProtocol', 'ProtocolDatabase')) {
+        if (!$this->getConnection()->hasColumn('TblProtocol', 'ProtocolDatabase')) {
             $Table->addColumn('ProtocolDatabase', 'string', array('notnull' => false));
         }
         if (!$this->getConnection()->hasIndex($Table, array('ProtocolDatabase'))) {
             $Table->addIndex(array('ProtocolDatabase'));
         }
-        if (!$this->getConnection()->hasColumn('tblProtocol', 'ProtocolTimestamp')) {
+        if (!$this->getConnection()->hasColumn('TblProtocol', 'ProtocolTimestamp')) {
             $Table->addColumn('ProtocolTimestamp', 'integer', array('notnull' => false));
         }
         if (!$this->getConnection()->hasIndex($Table, array('ProtocolTimestamp'))) {
             $Table->addIndex(array('ProtocolTimestamp'));
         }
         // Editor
-        if (!$this->getConnection()->hasColumn('tblProtocol', 'serviceTblAccount')) {
+        if (!$this->getConnection()->hasColumn('TblProtocol', 'serviceTblAccount')) {
             $Table->addColumn('serviceTblAccount', 'bigint', array('notnull' => false));
         }
-        if (!$this->getConnection()->hasColumn('tblProtocol', 'AccountUsername')) {
+        if (!$this->getConnection()->hasColumn('TblProtocol', 'AccountUsername')) {
             $Table->addColumn('AccountUsername', 'string', array('notnull' => false));
         }
         if (!$this->getConnection()->hasIndex($Table, array('AccountUsername'))) {
             $Table->addIndex(array('AccountUsername'));
         }
         // Consumer
-        if (!$this->getConnection()->hasColumn('tblProtocol', 'serviceTblConsumer')) {
+        if (!$this->getConnection()->hasColumn('TblProtocol', 'serviceTblConsumer')) {
             $Table->addColumn('serviceTblConsumer', 'bigint', array('notnull' => false));
         }
-        if (!$this->getConnection()->hasColumn('tblProtocol', 'ConsumerName')) {
+        if (!$this->getConnection()->hasColumn('TblProtocol', 'ConsumerName')) {
             $Table->addColumn('ConsumerName', 'string', array('notnull' => false));
         }
         if (!$this->getConnection()->hasIndex($Table, array('ConsumerName'))) {
             $Table->addIndex(array('ConsumerName'));
         }
-        if (!$this->getConnection()->hasColumn('tblProtocol', 'ConsumerAcronym')) {
+        if (!$this->getConnection()->hasColumn('TblProtocol', 'ConsumerAcronym')) {
             $Table->addColumn('ConsumerAcronym', 'string', array('notnull' => false));
         }
         if (!$this->getConnection()->hasIndex($Table, array('ConsumerAcronym'))) {
             $Table->addIndex(array('ConsumerAcronym'));
         }
         // Data
-        if (!$this->getConnection()->hasColumn('tblProtocol', 'EntityFrom')) {
+        if (!$this->getConnection()->hasColumn('TblProtocol', 'EntityFrom')) {
             $Table->addColumn('EntityFrom', 'text', array('notnull' => false));
         }
-        if (!$this->getConnection()->hasColumn('tblProtocol', 'EntityTo')) {
+        if (!$this->getConnection()->hasColumn('TblProtocol', 'EntityTo')) {
             $Table->addColumn('EntityTo', 'text', array('notnull' => false));
         }
 

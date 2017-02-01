@@ -74,11 +74,11 @@ class Protocol implements IModuleInterface
     {
 
         ini_set('memory_limit', '2G');
-        require_once( __DIR__.'/Difference/finediff.php' );
+        require_once(__DIR__ . '/Difference/finediff.php');
 
         $Stage = new Stage('Protokoll', 'Aktivitäten');
 
-        if( isset( $Filter['ProtocolDatabase'] ) && $Filter['ProtocolDatabase'] == 0 ) {
+        if (isset($Filter['ProtocolDatabase']) && $Filter['ProtocolDatabase'] == 0) {
             $Filter['ProtocolDatabase'] = '';
         }
 
@@ -86,7 +86,7 @@ class Protocol implements IModuleInterface
             new FormColumn(
                 new Panel('Metadaten', array(
                     new SelectBox('Filter[ProtocolDatabase]', 'Datenbank',
-                        array_merge( array( 0 => '' ),
+                        array_merge(array(0 => ''),
                             array_combine(
                                 Protocol::useService()->getProtocolDatabaseNameList(),
                                 Protocol::useService()->getProtocolDatabaseNameList()
@@ -112,10 +112,10 @@ class Protocol implements IModuleInterface
         ))), new Primary('Suchen'));
 
         $Message = array();
-        if (!empty( $Filter )) {
+        if (!empty($Filter)) {
             array_walk($Filter, function (&$Input) {
 
-                if (!empty( $Input )) {
+                if (!empty($Input)) {
                     $Input = explode(' ', $Input);
                 } else {
                     $Input = false;
@@ -123,7 +123,7 @@ class Protocol implements IModuleInterface
             });
             $Filter = array_filter($Filter);
         }
-        if (!empty( $Filter )) {
+        if (!empty($Filter)) {
             $Result = (new Pile())
                 ->addPile(Protocol::useService(), new TblProtocol(), null, 'Id')
                 ->searchPile(array(
@@ -167,15 +167,15 @@ class Protocol implements IModuleInterface
                     }
                 }
 
-                $Result[$Index]['EntityDiff'] = ( '<pre>'.\FineDiff::renderDiffToHTMLFromOpcodes($Result[$Index]['EntityFrom'],
-                        $OpCode).'</pre>' );
+                $Result[$Index]['EntityDiff'] = ('<pre>' . \FineDiff::renderDiffToHTMLFromOpcodes($Result[$Index]['EntityFrom'],
+                        $OpCode) . '</pre>');
 
                 $Result[$Index]['EntityCreate'] = $this->markFilter($Result[$Index], $Filter, 'EntityCreate');
 
                 $Result[$Index]['EntityFrom'] = $this->markFilter($Result[$Index], $Filter, 'EntityFrom');
-                $Result[$Index]['EntityFrom'] = ( '<pre>'.$Result[$Index]['EntityFrom'].'</pre>' );
+                $Result[$Index]['EntityFrom'] = ('<pre>' . $Result[$Index]['EntityFrom'] . '</pre>');
                 $Result[$Index]['EntityTo'] = $this->markFilter($Result[$Index], $Filter, 'EntityTo');
-                $Result[$Index]['EntityTo'] = ( '<pre>'.$Result[$Index]['EntityTo'].'</pre>' );
+                $Result[$Index]['EntityTo'] = ('<pre>' . $Result[$Index]['EntityTo'] . '</pre>');
             }
 
         } else {
@@ -184,7 +184,7 @@ class Protocol implements IModuleInterface
         }
 
         $Stage->setContent(
-            '<style>del {background-color: #FFA0A0;} ins {background-color: #A0FFA0;} pre {font-size: 10px;}</style>'.
+            '<style>del {background-color: #FFA0A0;} ins {background-color: #A0FFA0;} pre {font-size: 10px;}</style>' .
             new Layout(array(
                 new LayoutGroup(
                     new LayoutRow(
@@ -199,10 +199,10 @@ class Protocol implements IModuleInterface
                             implode(' ', $Message),
                             new TableData($Result, null, array(
                                 'EntityCreate' => 'Timestamp',
-                                'Meta'         => 'Meta',
-                                'EntityFrom'   => 'Daten-Original',
-                                'EntityDiff'   => 'Daten-Änderung',
-                                'EntityTo'     => 'Daten-Ergebnis',
+                                'Meta' => 'Meta',
+                                'EntityFrom' => 'Daten-Original',
+                                'EntityDiff' => 'Daten-Änderung',
+                                'EntityTo' => 'Daten-Ergebnis',
                             ), array(
                                 'responsive' => false,
                                 'order' => array(
@@ -228,13 +228,13 @@ class Protocol implements IModuleInterface
     {
 
         return new Service(new Identifier('Platform', 'System', 'Protocol'),
-            __DIR__.'/Service/Entity', __NAMESPACE__.'\Service\Entity'
+            __DIR__ . '/Service/Entity', __NAMESPACE__ . '\Service\Entity'
         );
     }
 
     /**
-     * @param array  $Payload
-     * @param array  $Search
+     * @param array $Payload
+     * @param array $Search
      * @param string $Name
      *
      * @return string
@@ -242,11 +242,11 @@ class Protocol implements IModuleInterface
     private function markFilter($Payload, $Search, $Name)
     {
 
-        if (isset( $Search[$Name] )) {
-            if (!empty( $Search[$Name] )) {
+        if (isset($Search[$Name])) {
+            if (!empty($Search[$Name])) {
                 array_walk($Search[$Name], function (&$Text) {
 
-                    $Text = '!'.preg_quote(trim($Text), '!').'!is';
+                    $Text = '!' . preg_quote(trim($Text), '!') . '!is';
                 });
                 return preg_replace($Search[$Name], '<span style="background-color: yellow;">${0}</span>',
                     $Payload[$Name]);
@@ -268,7 +268,7 @@ class Protocol implements IModuleInterface
                 $Object = unserialize($Content);
                 if (method_exists($Object, '__toArray')) {
                     $Array = $Object->__toArray();
-                    if (isset( $Array['BinaryBlob'] )) {
+                    if (isset($Array['BinaryBlob'])) {
                         $Array['BinaryBlob'] = (string)new Info('BINARY');
                     }
                     $Return = (string)print_r($Array, true);
@@ -279,7 +279,7 @@ class Protocol implements IModuleInterface
                 return new Danger('NO STRUCTURE AVAILABLE');
             }
         }
-        if (empty( $Content )) {
+        if (empty($Content)) {
             return new Danger('NO DATA AVAILABLE');
         }
         return (string)$Content;

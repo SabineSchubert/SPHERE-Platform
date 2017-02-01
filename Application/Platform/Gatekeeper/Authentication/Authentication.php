@@ -21,7 +21,7 @@ class Authentication implements IModuleInterface
     {
 
         if (Account::useService()->getAccountBySession()) {
-            Main::getDisplay()->addServiceNavigation(new Link(new Link\Route(__NAMESPACE__.'/Offline'),
+            Main::getDisplay()->addServiceNavigation(new Link(new Link\Route(__NAMESPACE__ . '/Offline'),
                 new Link\Name('Abmelden'), new Link\Icon(new Off())
             ));
         } else {
@@ -30,7 +30,7 @@ class Authentication implements IModuleInterface
             ));
 
             $SamlAuth = Account::useService()->getIdentificationByName('Saml');
-            if( $SamlAuth && $SamlAuth->isActive() ) {
+            if ($SamlAuth && $SamlAuth->isActive()) {
                 Main::getDisplay()->addApplicationNavigation(new Link(new Link\Route(__NAMESPACE__),
                     new Link\Name('Lokale Anmeldung'), new Link\Icon(new Lock())
                 ));
@@ -38,7 +38,7 @@ class Authentication implements IModuleInterface
                     new Link\Name('Saml Anmeldung'), new Link\Icon(new Lock())
                 ));
                 Main::getDispatcher()->registerRoute(Main::getDispatcher()->createRoute(
-                    __NAMESPACE__.'/Saml', __NAMESPACE__.'\Frontend::frontendIdentificationSaml'
+                    __NAMESPACE__ . '/Saml', __NAMESPACE__ . '\Frontend::frontendIdentificationSaml'
                 ));
             }
         }
@@ -50,7 +50,7 @@ class Authentication implements IModuleInterface
             ->setParameterDefault('CredentialLock', null)
         );
         Main::getDispatcher()->registerRoute(Main::getDispatcher()->createRoute(
-            __NAMESPACE__.'/Offline', __NAMESPACE__.'\Frontend::frontendDestroySession'
+            __NAMESPACE__ . '/Offline', __NAMESPACE__ . '\Frontend::frontendDestroySession'
         )
             ->setParameterDefault('CredentialName', null)
             ->setParameterDefault('CredentialLock', null)
@@ -58,11 +58,11 @@ class Authentication implements IModuleInterface
 
         if (Account::useService()->getAccountBySession()) {
             Main::getDispatcher()->registerRoute(
-                Main::getDispatcher()->createRoute('', __NAMESPACE__.'\Frontend::frontendWelcome')
+                Main::getDispatcher()->createRoute('', __NAMESPACE__ . '\Frontend::frontendWelcome')
             );
         } else {
             Main::getDispatcher()->registerRoute(
-                Main::getDispatcher()->createRoute('', __NAMESPACE__.'\Frontend::frontendIdentification')
+                Main::getDispatcher()->createRoute('', __NAMESPACE__ . '\Frontend::frontendIdentification')
             );
         }
     }

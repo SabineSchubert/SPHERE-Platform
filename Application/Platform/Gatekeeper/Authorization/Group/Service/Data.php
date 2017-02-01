@@ -1,9 +1,9 @@
 <?php
 namespace SPHERE\Application\Platform\Gatekeeper\Authorization\Group\Service;
 
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Consumer;
-use SPHERE\Application\Platform\Gatekeeper\Authorization\Consumer\Service\Entity\TblConsumer;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Group\Service\Entity\TblGroup;
+use SPHERE\Application\Platform\Gatekeeper\Consumer\Consumer;
+use SPHERE\Application\Platform\Gatekeeper\Consumer\Service\Entity\TblConsumer;
 use SPHERE\Application\Platform\System\Protocol\Protocol;
 use SPHERE\System\Database\Binding\AbstractData;
 
@@ -26,11 +26,11 @@ class Data extends AbstractData
     /**
      * @param string $Name
      * @param string $Description
-     * @param null|TblConsumer $tblConsumer
+     * @param null|TblConsumer $TblConsumer
      *
      * @return TblGroup
      */
-    public function createGroup($Name, $Description, TblConsumer $tblConsumer = null)
+    public function createGroup($Name, $Description, TblConsumer $TblConsumer = null)
     {
 
         $Manager = $this->getEntityManager();
@@ -39,7 +39,7 @@ class Data extends AbstractData
             $Entity = new TblGroup();
             $Entity->setName($Name);
             $Entity->setDescription($Description);
-            $Entity->setServiceTblConsumer($tblConsumer);
+            $Entity->setServiceTblConsumer($TblConsumer);
             $Manager->saveEntity($Entity);
             Protocol::useService()->createInsertEntry($this->getConnection()->getDatabase(), $Entity);
         }
@@ -47,28 +47,28 @@ class Data extends AbstractData
     }
 
     /**
-     * @param TblGroup $tblGroup
+     * @param TblGroup $TblGroup
      * @param string $Name
      * @param string $Description
-     * @param TblConsumer|null $tblConsumer
+     * @param TblConsumer|null $TblConsumer
      *
      * @return false|TblGroup
      */
-    public function changeGroup(TblGroup $tblGroup, $Name, $Description, TblConsumer $tblConsumer = null)
+    public function changeGroup(TblGroup $TblGroup, $Name, $Description, TblConsumer $TblConsumer = null)
     {
 
-        if (null === $tblConsumer) {
-            $tblConsumer = Consumer::useService()->getConsumerBySession();
+        if (null === $TblConsumer) {
+            $TblConsumer = Consumer::useService()->getConsumerBySession();
         }
         $Manager = $this->getEntityManager();
 
         /** @var TblGroup $Entity */
-        $Entity = $Manager->getEntityById('TblGroup', $tblGroup->getId());
+        $Entity = $Manager->getEntityById('TblGroup', $TblGroup->getId());
         $Protocol = clone $Entity;
         if (null !== $Entity) {
             $Entity->setName($Name);
             $Entity->setDescription($Description);
-            $Entity->setServiceTblConsumer($tblConsumer);
+            $Entity->setServiceTblConsumer($TblConsumer);
             $Manager->saveEntity($Entity);
             Protocol::useService()->createUpdateEntry($this->getConnection()->getDatabase(), $Protocol, $Entity);
             return $Entity;
@@ -77,16 +77,16 @@ class Data extends AbstractData
     }
 
     /**
-     * @param TblGroup $tblGroup
+     * @param TblGroup $TblGroup
      *
      * @return bool
      */
-    public function destroyGroup(TblGroup $tblGroup)
+    public function destroyGroup(TblGroup $TblGroup)
     {
 
         $Manager = $this->getEntityManager();
         /** @var TblGroup $Entity */
-        $Entity = $Manager->getEntityById('TblGroup', $tblGroup->getId());
+        $Entity = $Manager->getEntityById('TblGroup', $TblGroup->getId());
         if (null !== $Entity) {
             Protocol::useService()->createDeleteEntry($this->getConnection()->getDatabase(), $Entity);
             $Manager->killEntity($Entity);
@@ -96,14 +96,14 @@ class Data extends AbstractData
     }
 
     /**
-     * @param TblConsumer $tblConsumer
+     * @param TblConsumer $TblConsumer
      * @return bool|TblGroup[]
      */
-    public function getGroupAll(TblConsumer $tblConsumer = null)
+    public function getGroupAll(TblConsumer $TblConsumer = null)
     {
-        if ($tblConsumer) {
+        if ($TblConsumer) {
             return $this->getCachedEntityListBy(__METHOD__, $this->getEntityManager(), 'TblGroup', array(
-                TblGroup::SERVICE_TBL_CONSUMER => $tblConsumer->getId()
+                TblGroup::SERVICE_TBL_CONSUMER => $TblConsumer->getId()
             ));
         } else {
             return $this->getCachedEntityList(__METHOD__, $this->getEntityManager(), 'TblGroup');

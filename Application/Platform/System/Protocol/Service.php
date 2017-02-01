@@ -57,14 +57,14 @@ class Service extends AbstractService
     }
 
     /**
-     * @param TblAccount $tblAccount
+     * @param TblAccount $TblAccount
      *
      * @return bool|TblProtocol[]
      */
-    public function getProtocolLastActivity(TblAccount $tblAccount)
+    public function getProtocolLastActivity(TblAccount $TblAccount)
     {
 
-        return (new Data($this->getBinding()))->getProtocolLastActivity($tblAccount);
+        return (new Data($this->getBinding()))->getProtocolLastActivity($TblAccount);
     }
 
     /**
@@ -84,25 +84,27 @@ class Service extends AbstractService
      * @return false|TblProtocol
      */
     public function createLoginAttemptEntry(
-        $CredentialName, $CredentialLock, $CredentialKey = null
+        $CredentialName,
+        $CredentialLock,
+        $CredentialKey = null
     ) {
 
-        $tblAccount = Account::useService()->getAccountBySession();
-        if ($tblAccount) {
-            $tblConsumer = $tblAccount->getServiceTblConsumer();
+        $TblAccount = Account::useService()->getAccountBySession();
+        if ($TblAccount) {
+            $TblConsumer = $TblAccount->getServiceTblConsumer();
         } else {
-            $tblConsumer = null;
+            $TblConsumer = null;
         }
 
         $Entity = new LoginAttemptHistory();
-        $Entity->setCredentialName( $CredentialName );
-        $Entity->setCredentialLock( $CredentialLock );
-        $Entity->setCredentialKey( $CredentialKey );
+        $Entity->setCredentialName($CredentialName);
+        $Entity->setCredentialLock($CredentialLock);
+        $Entity->setCredentialKey($CredentialKey);
 
         return (new Data($this->getBinding()))->createProtocolEntry(
             'LoginAttemptHistory',
-            ( $tblAccount ? $tblAccount : null ),
-            ( $tblConsumer ? $tblConsumer : null ),
+            ($TblAccount ? $TblAccount : null),
+            ($TblConsumer ? $TblConsumer : null),
             null,
             $Entity
         );
@@ -121,17 +123,17 @@ class Service extends AbstractService
         $useBulkSave = false
     ) {
 
-        $tblAccount = Account::useService()->getAccountBySession();
-        if ($tblAccount) {
-            $tblConsumer = $tblAccount->getServiceTblConsumer();
+        $TblAccount = Account::useService()->getAccountBySession();
+        if ($TblAccount) {
+            $TblConsumer = $TblAccount->getServiceTblConsumer();
         } else {
-            $tblConsumer = null;
+            $TblConsumer = null;
         }
 
         return (new Data($this->getBinding()))->createProtocolEntry(
             $DatabaseName,
-            ( $tblAccount ? $tblAccount : null ),
-            ( $tblConsumer ? $tblConsumer : null ),
+            ($TblAccount ? $TblAccount : null),
+            ($TblConsumer ? $TblConsumer : null),
             null,
             $Entity,
             $useBulkSave
@@ -139,7 +141,7 @@ class Service extends AbstractService
     }
 
     /**
-     * @param string  $DatabaseName
+     * @param string $DatabaseName
      * @param Element $From
      * @param Element $To
      * @param bool $useBulkSave MUST call "flushBulkEntries" if true
@@ -153,21 +155,21 @@ class Service extends AbstractService
         $useBulkSave = false
     ) {
 
-        $tblAccount = Account::useService()->getAccountBySession();
-        if ($tblAccount) {
-            $tblConsumer = $tblAccount->getServiceTblConsumer();
+        $TblAccount = Account::useService()->getAccountBySession();
+        if ($TblAccount) {
+            $TblConsumer = $TblAccount->getServiceTblConsumer();
         } else {
-            $tblConsumer = null;
+            $TblConsumer = null;
         }
 
-        if (( $Protocol = (new Data($this->getBinding()))->createProtocolEntry(
+        if (($Protocol = (new Data($this->getBinding()))->createProtocolEntry(
             $DatabaseName,
-            ( $tblAccount ? $tblAccount : null ),
-            ( $tblConsumer ? $tblConsumer : null ),
+            ($TblAccount ? $TblAccount : null),
+            ($TblConsumer ? $TblConsumer : null),
             $From,
             $To,
             $useBulkSave
-        ) )
+        ))
         ) {
 
         };
@@ -175,7 +177,7 @@ class Service extends AbstractService
     }
 
     /**
-     * @param string  $DatabaseName
+     * @param string $DatabaseName
      * @param Element $Entity
      * @param bool $useBulkSave MUST call "flushBulkEntries" if true
      *
@@ -187,17 +189,17 @@ class Service extends AbstractService
         $useBulkSave = false
     ) {
 
-        $tblAccount = Account::useService()->getAccountBySession();
-        if ($tblAccount) {
-            $tblConsumer = $tblAccount->getServiceTblConsumer();
+        $TblAccount = Account::useService()->getAccountBySession();
+        if ($TblAccount) {
+            $TblConsumer = $TblAccount->getServiceTblConsumer();
         } else {
-            $tblConsumer = null;
+            $TblConsumer = null;
         }
 
         return (new Data($this->getBinding()))->createProtocolEntry(
             $DatabaseName,
-            ( $tblAccount ? $tblAccount : null ),
-            ( $tblConsumer ? $tblConsumer : null ),
+            ($TblAccount ? $TblAccount : null),
+            ($TblConsumer ? $TblConsumer : null),
             $Entity,
             null,
             $useBulkSave
