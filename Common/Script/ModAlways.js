@@ -130,6 +130,9 @@
                     jQuery(iFrame[Frame]).show().css({height: '300px'});
                 }
             });
+
+            jQuery('.selecter-selected').addClass('form-control');
+
         });
         return this;
 

@@ -31,7 +31,7 @@ class Style extends Extension
     private function __construct()
     {
 
-        $this->setSource('/Common/Style/Bootstrap.css');
+//        $this->setSource('/Common/Style/Bootstrap.css');
 
         try {
 //            $this->setLibrary((new StyleLibrary('Bootstrap.Reboot', '4.0.0-Alpha-6'))->getLibrary());
@@ -73,10 +73,10 @@ class Style extends Extension
         $this->setSource('/Library/DataTables/RowReorder-1.1.2/css/rowReorder.bootstrap.min.css', false, true);
 
 ////        $this->setSource( '/Library/jQuery.DataTables/1.10.7/media/css/jquery.dataTables.min.css' );
-//        $this->setSource('/Library/jQuery.DataTables/1.10.7/extensions/Responsive/css/dataTables.responsive.css', false,
-//            true);
-//        $this->setSource('/Library/jQuery.DataTables.Plugins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css',
-//            false, true);
+        $this->setSource('/Library/jQuery.DataTables/1.10.7/extensions/Responsive/css/dataTables.responsive.css', false,
+            true);
+        $this->setSource('/Library/jQuery.DataTables.Plugins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css',
+            false, true);
 
         $this->setSource('/Library/Bootstrap.DateTimePicker/4.14.30/build/css/bootstrap-datetimepicker.min.css', false,
             true);

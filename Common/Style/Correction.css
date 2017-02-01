@@ -91,18 +91,21 @@ td > .list-group {
 /* SELECTER RESPONSIVE */
 
 .selecter {
+    font-size: 14px;
     max-width: inherit;
     margin: inherit;
 }
 
 .selecter-selected {
-    padding: 4px 10px;
+    font-size: 14px;
+    padding: 6px 12px;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 }
 
 .selecter-item {
-    padding: 5px 10px;
+    font-size: 14px;
+    padding: 6px 12px;
 }
 
 /* RADIOBOX RESPONSIVE */
