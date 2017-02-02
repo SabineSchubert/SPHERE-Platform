@@ -103,6 +103,8 @@ class Data extends AbstractData
 
         $TblRight = $this->createRight('/Platform/Gatekeeper/Authorization/Consumer');
         $this->addPrivilegeRight($TblPrivilege, $TblRight);
+        $TblRight = $this->createRight('/Api/Platform/Gatekeeper/Consumer');
+        $this->addPrivilegeRight($TblPrivilege, $TblRight);
 
         $TblRight = $this->createRight('/Platform/Gatekeeper/Authorization/Account');
         $this->addPrivilegeRight($TblPrivilege, $TblRight);

@@ -22,7 +22,7 @@ class Consumer implements IModuleInterface
         Database::registerService(__CLASS__);
 
         Main::getDisplay()->addModuleNavigation(
-            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Mandanten'), new Link\Icon(new Cluster()))
+            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Mandantenverwaltung'), new Link\Icon(new Cluster()))
         );
         Main::getDispatcher()->registerRoute(
             Main::getDispatcher()->createRoute(__NAMESPACE__, 'Frontend::frontendConsumer')

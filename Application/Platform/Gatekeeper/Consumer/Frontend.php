@@ -1,14 +1,13 @@
 <?php
 namespace SPHERE\Application\Platform\Gatekeeper\Consumer;
 
-use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
-use SPHERE\Common\Frontend\Form\Repository\Field\TextField;
-use SPHERE\Common\Frontend\Form\Structure\Form;
-use SPHERE\Common\Frontend\Form\Structure\FormColumn;
-use SPHERE\Common\Frontend\Form\Structure\FormGroup;
-use SPHERE\Common\Frontend\Form\Structure\FormRow;
-use SPHERE\Common\Frontend\Table\Repository\Title;
-use SPHERE\Common\Frontend\Table\Structure\TableData;
+use SPHERE\Application\Api\Platform\Gatekeeper\Consumer;
+use SPHERE\Common\Frontend\Icon\Repository\Cluster;
+use SPHERE\Common\Frontend\Layout\Structure\Layout;
+use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
+use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
+use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
+use SPHERE\Common\Frontend\Link\Repository\Standard;
 use SPHERE\Common\Window\Stage;
 
 /**
@@ -20,15 +19,38 @@ class Frontend
 {
 
     /**
-     * @param string $ConsumerAcronym
-     * @param string $ConsumerName
-     *
      * @return Stage
      */
-    public static function frontendConsumer($ConsumerAcronym = null, $ConsumerName = null)
+    public static function frontendConsumer()
     {
 
-        $Stage = new Stage('Mandanten');
+        $Stage = new Stage('Mandantenverwaltung', '', '');
+
+        $TableReceiver = Consumer::receiverTableConsumer();
+        $CreateReceiver = Consumer::receiverCreateConsumer();
+
+        $CreatePipeline = Consumer::pipelineCreateConsumer( $CreateReceiver );
+        $TablePipeline = Consumer::pipelineTableConsumer( $TableReceiver );
+
+        $Stage->addButton(
+            (new Standard('Mandant hinzufügen', '#', new Cluster()))->ajaxPipelineOnClick( $CreatePipeline)
+        );
+
+        $Stage->setContent(
+            new Layout(
+                new LayoutGroup(
+                    new LayoutRow(
+                        new LayoutColumn(array(
+                            $TableReceiver,
+                            $CreateReceiver,
+                            $TablePipeline
+                        ))
+                    )
+                )
+            )
+        );
+
+        /*
         $TblConsumerAll = Consumer::useService()->getConsumerAll();
         $Stage->setContent(
             new TableData($TblConsumerAll, new Title('Bestehende Mandanten'), array(
@@ -53,6 +75,8 @@ class Frontend
                 ), $ConsumerAcronym, $ConsumerName
             )
         );
+
+        */
         return $Stage;
     }
 }

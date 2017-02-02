@@ -79,7 +79,7 @@ class Service extends AbstractService
     }
 
     /**
-     * @return bool|TblConsumer[]
+     * @return null|TblConsumer[]
      */
     public function getConsumerAll()
     {

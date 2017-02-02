@@ -74,6 +74,7 @@ class TableData extends Table
             $DataList = array($DataList);
         }
         if (empty( $ColumnDefinition ) && !empty( $DataList )) {
+            reset($DataList);
             if (is_object(current($DataList))) {
                 /** @var Object[] $DataList */
                 $GridHead = array_keys(current($DataList)->__toArray());

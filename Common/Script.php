@@ -31,7 +31,7 @@ class Script extends Extension
 
         try {
             $this->setLibrary((new ScriptLibrary('jQuery', '1.11.3'))->getLibrary());
-            $this->setLibrary((new ScriptLibrary('jQuery-Ui', '1.11.4'))->getLibrary());
+            $this->setLibrary((new ScriptLibrary('jQuery.Ui', '1.11.4'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('jQuery.Selecter', '3.2.4'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('jQuery.Stepper', '3.0.8'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('jQuery.CountDown', '2.0.5'))->getLibrary());
@@ -130,7 +130,7 @@ class Script extends Extension
                 'Bootstrap',
                 'Tether',
                 'jQuery.deparam',
-                'jQuery-Ui',
+                'jQuery.Ui',
                 'jQuery'
             )
         );

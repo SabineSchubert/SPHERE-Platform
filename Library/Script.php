@@ -71,7 +71,7 @@ class Script
             "'undefined' !== typeof jQuery.deparam"
         ));
 
-        $this->addLibrary(new Library('jQuery-Ui', '1.11.4',
+        $this->addLibrary(new Library('jQuery.Ui', '1.11.4',
             $Location . '/jQuery.Ui/1.11.4/jquery-ui.min.js',
             "'undefined' !== typeof jQuery.ui"
         ));

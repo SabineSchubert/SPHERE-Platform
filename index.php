@@ -25,7 +25,7 @@ session_start();
 session_write_close();
 set_time_limit(240);
 ob_implicit_flush();
-ini_set('display_errors',1);
+ini_set('display_errors',0);
 
 /**
  * Setup: Loader
@@ -47,7 +47,7 @@ if (false) {
 }
 
 // Clear Cache
-if (true) {
+if (false) {
     (new CacheFactory())->createHandler(new CookieHandler())->clearCache();
     (new CacheFactory())->createHandler(new MemcachedHandler())->clearCache();
     (new CacheFactory())->createHandler(new APCuHandler())->clearCache();

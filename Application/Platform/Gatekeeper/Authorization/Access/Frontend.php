@@ -37,6 +37,7 @@ use SPHERE\Common\Main;
 use SPHERE\Common\Window\Navigation\Link;
 use SPHERE\Common\Window\Redirect;
 use SPHERE\Common\Window\Stage;
+use SPHERE\System\Extension\Repository\Debugger;
 
 /**
  * Class Frontend
@@ -247,7 +248,7 @@ class Frontend
         $TblRightAll = Access::useService()->getRightAll();
 
         $PublicRouteAll = Main::getDispatcher()->getPublicRoutes();
-        if ($PublicRouteAll) {
+        if (!empty($PublicRouteAll)) {
             array_walk($PublicRouteAll, function (&$Route) {
 
                 $Route = array(

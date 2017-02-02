@@ -8,12 +8,16 @@ namespace SPHERE\Application;
  */
 interface IApiInterface
 {
+    const API_TARGET = 'Method';
 
+    /**
+     *
+     */
     public static function registerApi();
 
     /**
-     * @param string $MethodName Callable Method
+     * @param string $Method
      * @return string
      */
-    public function ApiDispatcher($MethodName = '');
+    public function exportApi($Method = '');
 }
