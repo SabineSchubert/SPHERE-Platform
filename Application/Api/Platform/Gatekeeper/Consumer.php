@@ -56,7 +56,7 @@ class Consumer implements IApiInterface
 
     public static function receiverCreateConsumer()
     {
-        $Receiver = new ModalReceiver( 'Neuen Mandanten anlegen', new Close() );
+        $Receiver = new ModalReceiver('Neuen Mandanten anlegen', new Close());
 
         $Receiver->initContent(
             new Panel(
@@ -70,6 +70,31 @@ class Consumer implements IApiInterface
         );
 
         return $Receiver;
+    }
+
+    public static function pipelineCreateConsumer(AbstractReceiver $Receiver)
+    {
+        $Emitter = new ServerEmitter($Receiver, Consumer::getEndpoint());
+        $Emitter->setGetPayload(array(
+            Consumer::API_TARGET => 'formConsumer',
+            'Receiver' => $Receiver->getIdentifier()
+        ));
+        $Pipeline = new Pipeline();
+        $LoadingEmitter = new ClientEmitter($Receiver,
+            $Content = new Panel(
+                'Formular wird geladen...',
+                array(
+                    new ProgressBar(0, 100, 0, 6),
+                    new Muted('Daten werden vom Server abgerufen')
+                ),
+                Panel::PANEL_TYPE_DEFAULT
+            )
+        );
+        $Receiver->initContent($Content);
+        $Pipeline->addEmitter($LoadingEmitter);
+        $Pipeline->addEmitter($Emitter);
+
+        return $Pipeline;
     }
 
     /**
@@ -88,7 +113,6 @@ class Consumer implements IApiInterface
 
     public function tableConsumer($Receiver)
     {
-        sleep(3);
         $TblConsumerAll = ConsumerModule::useService()->getConsumerAll();
 
         $TableList = array();
@@ -138,42 +162,15 @@ class Consumer implements IApiInterface
         return $Pipeline;
     }
 
-    public static function pipelineCreateConsumer(AbstractReceiver $Receiver)
-    {
-        $Emitter = new ServerEmitter($Receiver, Consumer::getEndpoint());
-        $Emitter->setGetPayload(array(
-            Consumer::API_TARGET => 'formConsumer',
-            'Receiver' => $Receiver->getIdentifier()
-        ));
-        $Pipeline = new Pipeline();
-        $LoadingEmitter = new ClientEmitter($Receiver,
-            $Content = new Panel(
-                'Formular wird geladen...',
-                array(
-                    new ProgressBar(0, 100, 0, 6),
-                    new Muted('Daten werden vom Server abgerufen')
-                ),
-                Panel::PANEL_TYPE_DEFAULT
-            )
-        );
-        $Receiver->initContent($Content);
-        $Pipeline->addEmitter($LoadingEmitter);
-        $Pipeline->addEmitter($Emitter);
-
-        return $Pipeline;
-    }
-
     public function formConsumer()
     {
-
-        sleep(2);
 
         return (string)new Form(new FormGroup(
             new FormRow(array(
                 new FormColumn(
-                    new TextField(
+                    (new TextField(
                         'Acronym', 'Kürzel des Mandanten', 'Kürzel des Mandanten'
-                    )
+                    ))->setRequired()
                     , 4),
                 new FormColumn(
                     new TextField(

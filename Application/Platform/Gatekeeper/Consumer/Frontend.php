@@ -29,11 +29,12 @@ class Frontend
         $TableReceiver = Consumer::receiverTableConsumer();
         $CreateReceiver = Consumer::receiverCreateConsumer();
 
-        $CreatePipeline = Consumer::pipelineCreateConsumer( $CreateReceiver );
-        $TablePipeline = Consumer::pipelineTableConsumer( $TableReceiver );
+        $CreatePipeline = Consumer::pipelineCreateConsumer($CreateReceiver);
+        $TablePipeline = Consumer::pipelineTableConsumer($TableReceiver);
 
         $Stage->addButton(
-            (new Standard('Mandant hinzufügen', '#', new Cluster()))->ajaxPipelineOnClick( $CreatePipeline)
+            (new Standard('Mandant hinzufügen', Consumer::getEndpoint(), new Cluster()))
+                ->ajaxPipelineOnClick($CreatePipeline)
         );
 
         $Stage->setContent(
@@ -50,33 +51,6 @@ class Frontend
             )
         );
 
-        /*
-        $TblConsumerAll = Consumer::useService()->getConsumerAll();
-        $Stage->setContent(
-            new TableData($TblConsumerAll, new Title('Bestehende Mandanten'), array(
-                'Acronym' => 'Mandanten-Kürzel',
-                'Name' => 'Mandanten-Name'
-            ))
-            . Consumer::useService()->createConsumer(
-                new Form(new FormGroup(
-                        new FormRow(array(
-                            new FormColumn(
-                                new TextField(
-                                    'ConsumerAcronym', 'Kürzel des Mandanten', 'Kürzel des Mandanten'
-                                )
-                                , 4),
-                            new FormColumn(
-                                new TextField(
-                                    'ConsumerName', 'Name des Mandanten', 'Name des Mandanten'
-                                )
-                                , 8),
-                        )), new \SPHERE\Common\Frontend\Form\Repository\Title('Mandant anlegen'))
-                    , new Primary('Hinzufügen')
-                ), $ConsumerAcronym, $ConsumerName
-            )
-        );
-
-        */
         return $Stage;
     }
 }
