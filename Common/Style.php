@@ -31,26 +31,23 @@ class Style extends Extension
     private function __construct()
     {
 
-//        $this->setSource('/Common/Style/Bootstrap.css');
-
         try {
-//            $this->setLibrary((new StyleLibrary('Bootstrap.Reboot', '4.0.0-Alpha-6'))->getLibrary());
-//            $this->setLibrary((new StyleLibrary('Bootstrap.Grid', '4.0.0-Alpha-6'))->getLibrary());
-//            $this->setLibrary((new StyleLibrary('Bootstrap', '4.0.0-Alpha-6'))->getLibrary());
-            $this->setLibrary((new StyleLibrary('Bootstrap', '3.3.5'))->getLibrary());
-            $this->setLibrary((new StyleLibrary('Bootstrap.Theme', '3.3.5'))->getLibrary());
+            $this->setLibrary((new StyleLibrary('Bootstrap', '3.3.7'))->getLibrary());
+//            $this->setLibrary((new StyleLibrary('Bootstrap.Theme', '3.3.7'))->getLibrary());
+            $this->setSource('/Common/Style/Bootstrap.css');
+            $this->setSource('/Common/Style/Cover.css');
+            $this->setSource('/Common/Style/Resource.css');
             $this->setLibrary((new StyleLibrary('Bootstrap.Glyphicons.Glyphicons', '1.9.2'))->getLibrary());
             $this->setLibrary((new StyleLibrary('Bootstrap.Glyphicons.Halflings', '1.9.2'))->getLibrary());
             $this->setLibrary((new StyleLibrary('Bootstrap.Glyphicons.Filetypes', '1.9.2'))->getLibrary());
             $this->setLibrary((new StyleLibrary('Bootstrap.Glyphicons.Social', '1.9.2'))->getLibrary());
-
             $this->setLibrary((new StyleLibrary('Foundation.Icons', '3.0'))->getLibrary());
 
             $this->setLibrary((new StyleLibrary('jQuery.Formstone.Selecter', '3.2.4'))->getLibrary(), false, true);
             $this->setLibrary((new StyleLibrary('jQuery.Formstone.Stepper', '3.0.8'))->getLibrary(), false, true);
-
             $this->setSource((new ScriptLibrary('jQuery.Gridster', '0.6.10'))->getLibrary()->getLocation() . '/dist/jquery.gridster.min.css', false, true);
             $this->setSource((new StyleLibrary('Bootstrap.Checkbox', '0.3.3'))->getLibrary()->getLocation() . '/awesome-bootstrap-checkbox.css', false, true);
+
         } catch (\Exception $Exception) {
             Main::getDisplay()->setException($Exception, 'Style Library');
         }
@@ -73,10 +70,10 @@ class Style extends Extension
         $this->setSource('/Library/DataTables/RowReorder-1.1.2/css/rowReorder.bootstrap.min.css', false, true);
 
 ////        $this->setSource( '/Library/jQuery.DataTables/1.10.7/media/css/jquery.dataTables.min.css' );
-        $this->setSource('/Library/jQuery.DataTables/1.10.7/extensions/Responsive/css/dataTables.responsive.css', false,
-            true);
-        $this->setSource('/Library/jQuery.DataTables.Plugins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css',
-            false, true);
+//        $this->setSource('/Library/jQuery.DataTables/1.10.7/extensions/Responsive/css/dataTables.responsive.css', false,
+//            true);
+//        $this->setSource('/Library/jQuery.DataTables.Plugins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css',
+//            false, true);
 
         $this->setSource('/Library/Bootstrap.DateTimePicker/4.14.30/build/css/bootstrap-datetimepicker.min.css', false,
             true);
@@ -89,13 +86,14 @@ class Style extends Extension
         $this->setSource('/Library/Highlight.js/8.8.0/styles/docco.css', false, true);
 // 3.3.5
 
-        $this->setSource('/Common/Style/Correction.css', false, true);
+//        $this->setSource('/Common/Style/Correction.css', false, true);
         $this->setSource('/Common/Style/DataTable.Correction.css', false, true);
+        $this->setSource('/Common/Style/Panel.Correction.css', false, true);
 
-        $this->setSource('/Common/Style/CleanSlate/0.10.1/cleanslate.css', false, true);
+//        $this->setSource('/Common/Style/CleanSlate/0.10.1/cleanslate.css', false, true);
 
         $this->setSource('/Common/Style/PhpInfo.css', false, true);
-        $this->setSource('/Common/Style/Addition.css');
+//        $this->setSource('/Common/Style/Addition.css');
         $this->setSource('/Common/Style/Animate.css');
     }
 

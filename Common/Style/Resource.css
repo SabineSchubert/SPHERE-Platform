@@ -1,0 +1,51 @@
+@font-face {
+    font-family: 'CorpoA';
+    font-style: normal;
+    font-weight: normal;
+    src: url("/Common/Style/Font/CorpoA.ttf") format('truetype');
+}
+@font-face {
+    font-family: 'CorpoA';
+    font-style: normal;
+    font-weight: bold;
+    src: url("/Common/Style/Font/CorpoABold.ttf") format('truetype');
+}
+
+@font-face {
+    font-family: 'CorpoS';
+    font-style: normal;
+    font-weight: normal;
+    src: url("/Common/Style/Font/CorpoS.ttf") format('truetype');
+}
+
+@font-face {
+    font-family: 'CorpoALig';
+    font-style: normal;
+    font-weight: normal;
+    src: url("/Common/Style/Font/CorpoALig.ttf") format('truetype');
+}
+@font-face {
+    font-family: 'CorpoALig';
+    font-style: italic;
+    font-weight: normal;
+    src: url("/Common/Style/Font/CorpoALigItalic.ttf") format('truetype');
+}
+
+body {
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-image: url("/Common/Style/Resource/MB-Body-2013.jpg");
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+}
+
+div.MB-Logo {
+    width: 257px;
+    height: 110px;
+    background: transparent url("Resource/MB-Logo-2016-2.gif") no-repeat left center;
+}
+
+div.MB-Logo-Mobile {
+    width: 30px;
+    height: 30px;
+    background: #0f0;
+}

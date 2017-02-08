@@ -11,6 +11,7 @@ use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Access;
 use SPHERE\Application\Platform\Gatekeeper\Consumer\Consumer;
 use SPHERE\Application\Platform\Platform;
 use SPHERE\Application\Platform\System;
+use SPHERE\Application\Reporting\Reporting;
 use SPHERE\Common\Frontend\Icon\Repository\HazardSign;
 use SPHERE\Common\Frontend\Icon\Repository\Hospital;
 use SPHERE\Common\Frontend\Icon\Repository\Info;
@@ -326,6 +327,6 @@ class Main extends Extension
 
     public static function registerGuiPlatform()
     {
-
+        Reporting::registerCluster();
     }
 }

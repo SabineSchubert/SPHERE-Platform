@@ -1,40 +1,25 @@
 @font-face {
-    font-family: 'MetaPro';
+    font-family: 'CorpoA';
     font-style: normal;
     font-weight: normal;
-    src: url("{{ UriPath }}/Common/Style/Font/MetaPro-Normal.ttf") format('truetype');
+    src: url("{{ UriPath }}/Common/Style/Font/CorpoA.ttf") format('truetype');
 }
 @font-face {
-    font-family: 'MetaPro';
+    font-family: 'CorpoA';
     font-style: normal;
     font-weight: bold;
-    src: url("{{ UriPath }}/Common/Style/Font/MetaPro-Bold.ttf") format('truetype');
+    src: url("{{ UriPath }}/Common/Style/Font/CorpoABold.ttf") format('truetype');
 }
 
 @font-face {
-    font-family: 'Trebuchet MS';
+    font-family: 'CorpoALig';
     font-style: normal;
     font-weight: normal;
-    src: url("{{ UriPath }}/Common/Style/Font/trebuc.ttf") format('truetype');
+    src: url("{{ UriPath }}/Common/Style/Font/CorpoALig.ttf") format('truetype');
 }
-
 @font-face {
-    font-family: 'Trebuchet MS';
-    font-style: normal;
-    font-weight: bold;
-    src: url("{{ UriPath }}/Common/Style/Font/trebucbd.ttf") format('truetype');
-}
-
-@font-face {
-    font-family: 'Trebuchet MS';
+    font-family: 'CorpoALig';
     font-style: italic;
     font-weight: normal;
-    src: url("{{ UriPath }}/Common/Style/Font/trebucit.ttf") format('truetype');
-}
-
-@font-face {
-    font-family: 'Trebuchet MS';
-    font-style: italic;
-    font-weight: bold;
-    src: url("{{ UriPath }}/Common/Style/Font/trebucbi.ttf") format('truetype');
+    src: url("{{ UriPath }}/Common/Style/Font/CorpoALigItalic.ttf") format('truetype');
 }

@@ -203,8 +203,12 @@ class Frontend extends Extension implements IFrontendInterface
                             new Listing('Listing')
                         ), 3),
                         new LayoutColumn(array(
+                            new Panel('Panel', array('Content 1', 'Content 2', 'Content 3'),
+                                Panel::PANEL_TYPE_DEFAULT, 'Footer'),
                             new Panel('Panel', array('Conten 1', 'Content 2', 'Content 3'),
-                                Panel::PANEL_TYPE_DEFAULT, 'Footer')
+                                Panel::PANEL_TYPE_DANGER, 'Footer'),
+                            new Panel('Panel', array(new TextField(''),new TextField(''),new TextField('')),
+                                Panel::PANEL_TYPE_PRIMARY, 'Footer'),
                         ), 3),
                         new LayoutColumn(array(
                             new PullRight('PullRight')

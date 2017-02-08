@@ -1,0 +1,14 @@
+.panel-heading {
+    border-radius: 0;
+}
+.panel-footer {
+    border-radius: 0;
+}
+
+.panel > .panel-body {
+    color: #333;
+}
+
+.panel > .list-group {
+    color: #333;
+}
