@@ -1,29 +1,51 @@
+<div class="window-stage">
 {% if( StageTitle is not empty or StageDescription is not empty ) %}
-<h3>{{ StageTitle }}
-    <small>{{ StageDescription }}</small>
-</h3>
-{% endif %}
-
-{% if StageMessage is not empty %}
-    <div class="row">
-        <div class="col-xs-12">
-            {{ StageMessage }}
-        </div>
+    <div class="stage-header">
+            <h3>{{ StageTitle }}</h3>
+            <small>{{ StageDescription }}</small>
+            <br/>
+            {% if StageMessage is not empty %}
+                {{ StageMessage }}
+                <br/>
+            {% endif %}
     </div>
-    <hr/>
-{% endif %}
 
-{% if StageMenu is not empty %}
-    <div class="row">
-        <div class="col-xs-12">
+    {% if StageMenu is not empty %}
+        <div class="stage-header">
             {#<div class="btn-group">#}
             {% for Button in StageMenu %}
                 {{ Button }}
             {% endfor %}
             {#</div>#}
         </div>
-    </div>
-    <br/>
-{% endif %}
-{{ StageContent }}
+        <br/>
+    {% endif %}
 
+{% endif %}
+
+{#{% if StageMessage is not empty %}#}
+    {#<div class="row">#}
+        {#<div class="col-xs-12">#}
+            {#{{ StageMessage }}#}
+        {#</div>#}
+    {#</div>#}
+    {#<br/>#}
+{#{% endif %}#}
+
+{#{% if StageMenu is not empty %}#}
+    {#<div class="row">#}
+        {#<div class="col-xs-12">#}
+            {#<div class="btn-group">#}
+            {#{% for Button in StageMenu %}#}
+                {#{{ Button }}#}
+            {#{% endfor %}#}
+            {#</div>#}
+        {#</div>#}
+    {#</div>#}
+    {#<br/>#}
+{#{% endif %}#}
+
+    <div class="stage-body">
+        {{ StageContent }}
+    </div>
+</div>

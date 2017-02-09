@@ -47,5 +47,5 @@ div.MB-Logo {
 div.MB-Logo-Mobile {
     width: 30px;
     height: 30px;
-    background: #0f0;
+    background: transparent url("Resource/MB-Logo-2016-2.gif") no-repeat left center;
 }

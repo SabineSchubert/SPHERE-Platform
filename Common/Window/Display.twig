@@ -49,7 +49,7 @@
                     <div class="col-lg-offset-1 col-lg-3 col-md-4 col-sm-4 hidden-xs">
                         <div class="MB-Logo hidden-xs"></div>
                     </div>
-                    <div class="col-lg-7 col-md-8 col-sm-8 col-xs-12" style="border: 1px dotted red;">
+                    <div class="col-lg-7 col-md-8 col-sm-8 col-xs-12">
 
                         <nav class="navbar navbar-inverse">
                             <div class="container-fluid">
@@ -148,24 +148,28 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-offset-1 col-lg-10 col-xs-12">
-                        <nav class="navbar navbar-inverse">
-                            <div class="container-fluid">
-                                <ul class="nav navbar-nav">
-                                    {{ NavigationApplication }}
-                                </ul>
-                            </div>
-                        </nav>
+                        <div class="window-nav nav-application">
+                            <nav class="navbar navbar-default">
+                                <div class="container-fluid">
+                                    <ul class="nav navbar-nav">
+                                        {{ NavigationApplication }}
+                                    </ul>
+                                </div>
+                            </nav>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-offset-1 col-lg-10 col-xs-12">
-                        <nav class="navbar navbar-inverse">
-                            <div class="container-fluid">
-                                <ul class="nav navbar-nav">
-                                    {{ NavigationModule }}
-                                </ul>
-                            </div>
-                        </nav>
+                        <div class="window-nav nav-module">
+                            <nav class="navbar navbar-default">
+                                <div class="container-fluid">
+                                    <ul class="nav navbar-nav">
+                                        {{ NavigationModule }}
+                                    </ul>
+                                </div>
+                            </nav>
+                        </div>
                     </div>
                 </div>
             </div>

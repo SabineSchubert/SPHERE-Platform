@@ -87,6 +87,7 @@ class Style extends Extension
 // 3.3.5
 
 //        $this->setSource('/Common/Style/Correction.css', false, true);
+        $this->setSource('/Common/Style/Stage.Correction.css', false, true);
         $this->setSource('/Common/Style/DataTable.Correction.css', false, true);
         $this->setSource('/Common/Style/Panel.Correction.css', false, true);
 
