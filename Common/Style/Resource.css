@@ -2,12 +2,14 @@
     font-family: 'CorpoA';
     font-style: normal;
     font-weight: normal;
+    font-stretch: extra-condensed;
     src: url("/Common/Style/Font/CorpoA.ttf") format('truetype');
 }
 @font-face {
     font-family: 'CorpoA';
     font-style: normal;
     font-weight: bold;
+    font-stretch: extra-condensed;
     src: url("/Common/Style/Font/CorpoABold.ttf") format('truetype');
 }
 
