@@ -37,7 +37,12 @@ body {
     background-repeat: no-repeat;
     background-position: top center;
     background-image: url("/Common/Style/Resource/MB-Body-2013.jpg");
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .1);
+}
+
+.glyphicons {
+    top:0 !important;
+    line-height: inherit !important;
 }
 
 div.MB-Logo {
@@ -50,4 +55,8 @@ div.MB-Logo-Mobile {
     width: 30px;
     height: 30px;
     background: transparent url("Resource/MB-Logo-2016-2.gif") no-repeat left center;
+}
+
+div.window-nav.nav-cluster {
+    margin-top: 26px;
 }

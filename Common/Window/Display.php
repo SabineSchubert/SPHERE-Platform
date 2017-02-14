@@ -290,6 +290,10 @@ class Display extends Extension implements ITemplateInterface
         $this->Template->setVariable('BreadcrumbModule', $this->ModuleBreadcrumb);
         $this->Template->setVariable('NavigationService', implode('', $this->ServiceNavigation));
 
+        $this->Template->setVariable( 'BreadcrumbList',
+            array_filter( explode( '/', current( explode( '?', $this->getRequest()->getUrl() ) ) ) )
+        );
+
         $Debug = $this->getDebugger();
         $Runtime = $Debug->getRuntime();
 

@@ -23,7 +23,9 @@ use SPHERE\Common\Frontend\Layout\Structure\Layout;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
+use SPHERE\Common\Frontend\Layout\Structure\Teaser;
 use SPHERE\Common\Frontend\Link\Repository\Backward;
+use SPHERE\Common\Frontend\Link\Repository\Standard;
 use SPHERE\Common\Frontend\Message\Repository\Info;
 use SPHERE\Common\Frontend\Message\Repository\Success;
 use SPHERE\Common\Frontend\Text\Repository\Danger;
@@ -48,11 +50,31 @@ class Frontend extends Extension implements IFrontendInterface
     public function frontendWelcome()
     {
 
-        $Stage = new Stage('Willkommen', '');
-        $Stage->addButton(new Backward(true));
-        $Stage->setMessage(date('d.m.Y - H:i:s'));
+        $Stage = new Stage();
 
-        $Stage->setContent($this->getCleanLocalStorage());
+        $Stage->setTeaser(
+            (new Teaser())
+                ->addItem(
+                    '/Common/Style/Resource/Teaser/00-mercedes-benz-design-aesthetics-a-1280-686-848x454.jpg', 'Überschrift',
+                    new Standard('Link', '#'), 'Beschreibung', 'Titel', true
+                )
+                ->addItem(
+                    '/Common/Style/Resource/Teaser/00-mercedes-benz-design-e-klasse-coupe-c-238-edition-1-amg-line-1280x686-1-848x454.jpg', 'Überschrift',
+                    new Standard('Link', '#'), 'Beschreibung', 'Titel'
+                )
+                ->addItem(
+                    '/Common/Style/Resource/Teaser/00-mercedes-benz-design-skizze-van-nutzfahrzeug-truck-1280x686-848x454.jpg', 'Überschrift',
+                    new Standard('Link', '#'), 'Beschreibung', 'Titel'
+                )
+                ->addItem(
+                    '/Common/Style/Resource/Teaser/00-mercedes-benz-fahrzeuge-50-jahre-amg-mercedes-amg-gt-c-190-1280x686-2-848x454.jpg', 'Überschrift',
+                    new Standard('Link', '#'), 'Beschreibung', 'Titel'
+                )
+        );
+
+        $Stage->setContent(
+            $this->getCleanLocalStorage()
+        );
 
         return $Stage;
     }
@@ -132,8 +154,8 @@ class Frontend extends Extension implements IFrontendInterface
             Protocol::useService()->createLoginAttemptEntry($CredentialName, $CredentialLock, $CredentialKey);
         }
 
-        $View = new Stage('Anmeldung');
-        $View->setMessage('Bitte geben Sie Ihre Benutzerdaten ein');
+        $Stage = new Stage('Anmeldung');
+        $Stage->setMessage('Bitte geben Sie Ihre Benutzerdaten ein');
 
         // Get Identification-Type (Credential,..)
         $Identification = Account::useService()->getIdentificationByName('Credential');
@@ -186,7 +208,7 @@ class Frontend extends Extension implements IFrontendInterface
             $Form, $CredentialName, $CredentialLock, $Identification
         );
 
-        $View->setContent(
+        $Stage->setContent(
             new Layout(new LayoutGroup(array(
                 new LayoutRow(array(
                     new LayoutColumn(
@@ -201,7 +223,7 @@ class Frontend extends Extension implements IFrontendInterface
                 )),
             )))
         );
-        return $View;
+        return $Stage;
     }
 
     /**

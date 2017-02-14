@@ -4,6 +4,7 @@ namespace SPHERE\Common\Window;
 use MOC\V\Component\Template\Component\IBridgeInterface;
 use SPHERE\Common\Frontend\Ajax\Template\CloseModal;
 use SPHERE\Common\Frontend\ITemplateInterface;
+use SPHERE\Common\Frontend\Layout\Structure\Teaser;
 use SPHERE\Common\Frontend\Link\ILinkInterface;
 use SPHERE\Common\Frontend\Link\Repository\AbstractLink;
 use SPHERE\Common\Frontend\Text\Repository\Bold;
@@ -28,6 +29,8 @@ class Stage extends Extension implements ITemplateInterface
     private $Description = '';
     /** @var string $Message */
     private $Message = '';
+    /** @var Teaser $Teaser */
+    private $Teaser = null;
     /** @var string $Content */
     private $Content = '';
     /** @var ILinkInterface[] $Menu */
@@ -92,6 +95,18 @@ class Stage extends Extension implements ITemplateInterface
     }
 
     /**
+     * @param Teaser $Teaser
+     *
+     * @return Stage
+     */
+    public function setTeaser( Teaser $Teaser)
+    {
+
+        $this->Teaser = $Teaser;
+        return $this;
+    }
+
+    /**
      * @param ILinkInterface $Button
      *
      * @return Stage
@@ -126,6 +141,7 @@ class Stage extends Extension implements ITemplateInterface
         $this->Template->setVariable('StageTitle', $this->Title);
         $this->Template->setVariable('StageDescription', $this->Description);
         $this->Template->setVariable('StageMessage', $this->Message);
+        $this->Template->setVariable('StageTeaser', $this->Teaser);
         $this->Template->setVariable('StageContent', $this->Content);
 
         // Highlight current Route-Stage-Button

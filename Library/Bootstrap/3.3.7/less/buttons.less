@@ -1,6 +1,8 @@
 //
 // Buttons
 // --------------------------------------------------
+@import "mixins.less";
+@import "variables.less";
 
 
 // Base styles
@@ -163,4 +165,29 @@ input[type="button"] {
   &.btn-block {
     width: 100%;
   }
+}
+
+// Gradient button
+// --------------------------------------------------
+.btn-default {
+  #gradient > .vertical(lighten(@btn-default-bg,15%),darken(@btn-default-bg,25%));
+}
+.btn-primary {
+  #gradient > .vertical(lighten(@btn-primary-bg,15%),darken(@btn-primary-bg,25%));
+}
+// Success appears as green
+.btn-success {
+  #gradient > .vertical(lighten(@btn-success-bg,15%),darken(@btn-success-bg,25%));
+}
+// Info appears as blue-green
+.btn-info {
+  #gradient > .vertical(lighten(@btn-info-bg,15%),darken(@btn-info-bg,25%));
+}
+// Warning appears as orange
+.btn-warning {
+  #gradient > .vertical(lighten(@btn-warning-bg,15%),darken(@btn-warning-bg,25%));
+}
+// Danger and error appear as red
+.btn-danger {
+  #gradient > .vertical(lighten(@btn-danger-bg,15%),darken(@btn-danger-bg,25%));
 }
