@@ -1,0 +1,5 @@
+.panel .panel-body .radio,
+.list-group .list-group-item .radio {
+    margin-top: inherit;
+    margin-bottom: inherit;
+}

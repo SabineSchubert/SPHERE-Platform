@@ -37,7 +37,7 @@ body {
     background-repeat: no-repeat;
     background-position: top center;
     background-image: url("/Common/Style/Resource/MB-Body-2013.jpg");
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, .1);
+    text-shadow: 0 0 1px rgba(0, 0, 0, .1);
 }
 
 .glyphicons {
@@ -59,4 +59,12 @@ div.MB-Logo-Mobile {
 
 div.window-nav.nav-cluster {
     margin-top: 26px;
+}
+div.window-nav.nav-application,
+div.window-nav.nav-module {
+    background: #222222;
+}
+div.window-nav.nav-module hr {
+    margin: 0;
+    border-color: #333333;
 }

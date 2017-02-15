@@ -1,0 +1,10 @@
+.checkbox input[type=checkbox]:checked + label:after {
+    font-family: 'Glyphicons Halflings', serif;
+    content: "\e013";
+}
+
+.panel .panel-body .checkbox,
+.list-group .list-group-item .checkbox {
+    margin-top: inherit;
+    margin-bottom: inherit;
+}

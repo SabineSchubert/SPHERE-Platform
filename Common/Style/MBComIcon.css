@@ -1,0 +1,273 @@
+@font-face {
+    font-family: "mbcomicons";
+    src: url("/Common/Style/Font/mbcomicons.woff?3a3706dd052a9a3171c57cbc786cdcaa") format("woff");
+    font-weight: normal;
+    font-style: normal
+}
+
+.mbcom-icon {
+    font-family: "mbcomicons";
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 1;
+    font-weight: normal;
+    font-style: normal;
+    speak: none;
+    text-decoration: inherit;
+    text-transform: none;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale
+}
+
+.mbcom-icon-arrow-down:before {
+    content: "\f101"
+}
+
+.mbcom-icon-arrow-left:before {
+    content: "\f102"
+}
+
+.mbcom-icon-arrow-right:before {
+    content: "\f103"
+}
+
+.mbcom-icon-calendar:before {
+    content: "\f104"
+}
+
+.mbcom-icon-check:before {
+    content: "\f105"
+}
+
+.mbcom-icon-close:before {
+    content: "\f106"
+}
+
+.mbcom-icon-earth:before {
+    content: "\f107"
+}
+
+.mbcom-icon-energy-battery:before {
+    content: "\f108"
+}
+
+.mbcom-icon-energy-comfort:before {
+    content: "\f109"
+}
+
+.mbcom-icon-energy-costs:before {
+    content: "\f10a"
+}
+
+.mbcom-icon-energy-edrive:before {
+    content: "\f10b"
+}
+
+.mbcom-icon-energy-lightning:before {
+    content: "\f10c"
+}
+
+.mbcom-icon-energy-safety:before {
+    content: "\f10d"
+}
+
+.mbcom-icon-energy-solar-2:before {
+    content: "\f10e"
+}
+
+.mbcom-icon-energy-solar:before {
+    content: "\f10f"
+}
+
+.mbcom-icon-energy-sustainability:before {
+    content: "\f110"
+}
+
+.mbcom-icon-energy-system:before {
+    content: "\f111"
+}
+
+.mbcom-icon-envelope:before {
+    content: "\f112"
+}
+
+.mbcom-icon-facebook:before {
+    content: "\f113"
+}
+
+.mbcom-icon-foursquare:before {
+    content: "\f114"
+}
+
+.mbcom-icon-googleplus:before {
+    content: "\f115"
+}
+
+.mbcom-icon-instagram:before {
+    content: "\f116"
+}
+
+.mbcom-icon-kosteneinsparung:before {
+    content: "\f117"
+}
+
+.mbcom-icon-linked-in_icon:before {
+    content: "\f118"
+}
+
+.mbcom-icon-list-plus:before {
+    content: "\f119"
+}
+
+.mbcom-icon-list:before {
+    content: "\f11a"
+}
+
+.mbcom-icon-magnifier:before {
+    content: "\f11b"
+}
+
+.mbcom-icon-mail:before {
+    content: "\f11c"
+}
+
+.mbcom-icon-mb_logoc:before {
+    content: "\f11d"
+}
+
+.mbcom-icon-me-logo:before {
+    content: "\f11e"
+}
+
+.mbcom-icon-navi-bars:before {
+    content: "\f11f"
+}
+
+.mbcom-icon-navi-close:before {
+    content: "\f120"
+}
+
+.mbcom-icon-navi-icon-about:before {
+    content: "\f121"
+}
+
+.mbcom-icon-navi-icon-car:before {
+    content: "\f122"
+}
+
+.mbcom-icon-navi-icon-channel:before {
+    content: "\f123"
+}
+
+.mbcom-icon-navi-icon-login:before {
+    content: "\f124"
+}
+
+.mbcom-icon-navi-icon-lounge:before {
+    content: "\f125"
+}
+
+.mbcom-icon-navi-icon-search:before {
+    content: "\f126"
+}
+
+.mbcom-icon-navi-icon-theme:before {
+    content: "\f127"
+}
+
+.mbcom-icon-navi-icon-video:before {
+    content: "\f128"
+}
+
+.mbcom-icon-navi-search:before {
+    content: "\f129"
+}
+
+.mbcom-icon-pause:before {
+    content: "\f12a"
+}
+
+.mbcom-icon-phone:before {
+    content: "\f12b"
+}
+
+.mbcom-icon-pinterest:before {
+    content: "\f12c"
+}
+
+.mbcom-icon-play:before {
+    content: "\f12d"
+}
+
+.mbcom-icon-repeat:before {
+    content: "\f12e"
+}
+
+.mbcom-icon-series:before {
+    content: "\f12f"
+}
+
+.mbcom-icon-settings:before {
+    content: "\f130"
+}
+
+.mbcom-icon-share:before {
+    content: "\f131"
+}
+
+.mbcom-icon-slider-arrow-right-bold:before {
+    content: "\f132"
+}
+
+.mbcom-icon-slider-arrow-right:before {
+    content: "\f133"
+}
+
+.mbcom-icon-storify:before {
+    content: "\f134"
+}
+
+.mbcom-icon-table:before {
+    content: "\f135"
+}
+
+.mbcom-icon-telegram:before {
+    content: "\f136"
+}
+
+.mbcom-icon-time:before {
+    content: "\f137"
+}
+
+.mbcom-icon-trash:before {
+    content: "\f138"
+}
+
+.mbcom-icon-tumblr:before {
+    content: "\f139"
+}
+
+.mbcom-icon-twitter:before {
+    content: "\f13a"
+}
+
+.mbcom-icon-vimeo:before {
+    content: "\f13b"
+}
+
+.mbcom-icon-vine:before {
+    content: "\f13c"
+}
+
+.mbcom-icon-xing:before {
+    content: "\f13d"
+}
+
+.mbcom-icon-xing_icon:before {
+    content: "\f13e"
+}
+
+.mbcom-icon-youtube:before {
+    content: "\f13f"
+}

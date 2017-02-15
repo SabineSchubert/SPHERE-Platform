@@ -1,0 +1,18 @@
+.carousel-control .mbcom-icon-arrow-left,
+.carousel-control .mbcom-icon-arrow-right {
+    position: absolute;
+    top: 50%;
+    margin-top: -10px;
+    z-index: 5;
+    display: inline-block;
+}
+.carousel-control .icon-prev,
+.carousel-control .mbcom-icon-arrow-left {
+    left: 50%;
+    margin-left: -10px;
+}
+.carousel-control .icon-next,
+.carousel-control .mbcom-icon-arrow-right {
+    right: 50%;
+    margin-right: -10px;
+}
