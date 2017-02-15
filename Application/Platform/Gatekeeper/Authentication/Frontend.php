@@ -27,6 +27,7 @@ use SPHERE\Common\Frontend\Layout\Structure\Layout;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
+use SPHERE\Common\Frontend\Layout\Structure\Slick;
 use SPHERE\Common\Frontend\Layout\Structure\Teaser;
 use SPHERE\Common\Frontend\Link\Repository\Link;
 use SPHERE\Common\Frontend\Link\Repository\Standard;
@@ -57,6 +58,13 @@ class Frontend extends Extension implements IFrontendInterface
         $Stage = new Stage();
 
         $Stage->setTeaser(
+            (new Slick())
+                ->addImage('/Common/Style/Resource/Teaser/4260479090780-irgendwas-ist-immer.jpg')
+                ->addImage('/Common/Style/Resource/Teaser/00-mercedes-benz-design-aesthetics-a-1280-686-848x454.jpg')
+                ->addImage('/Common/Style/Resource/Teaser/00-mercedes-benz-design-e-klasse-coupe-c-238-edition-1-amg-line-1280x686-1-848x454.jpg')
+                ->addImage('/Common/Style/Resource/Teaser/00-mercedes-benz-design-skizze-van-nutzfahrzeug-truck-1280x686-848x454.jpg')
+                ->addImage('/Common/Style/Resource/Teaser/00-mercedes-benz-fahrzeuge-50-jahre-amg-mercedes-amg-gt-c-190-1280x686-2-848x454.jpg')
+            /*
             (new Teaser())
                 ->addItem(
                     '/Common/Style/Resource/Teaser/00-mercedes-benz-design-aesthetics-a-1280-686-848x454.jpg', 'Überschrift',
@@ -73,7 +81,7 @@ class Frontend extends Extension implements IFrontendInterface
                 ->addItem(
                     '/Common/Style/Resource/Teaser/00-mercedes-benz-fahrzeuge-50-jahre-amg-mercedes-amg-gt-c-190-1280x686-2-848x454.jpg', 'Überschrift',
                     new Standard('Link', '#'), 'Beschreibung', 'Titel'
-                )
+                )*/
         );
 
         $Stage->setContent(

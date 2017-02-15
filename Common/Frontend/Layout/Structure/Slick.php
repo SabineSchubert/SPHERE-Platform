@@ -14,6 +14,8 @@ class Slick extends Extension implements IFrontendInterface, ITemplateInterface
 {
     /** @var IBridgeInterface $Template */
     private $Template = null;
+    /** @var array $SlideList */
+    private $SlideList = array();
 
     /**
      * Slick constructor.
@@ -29,7 +31,28 @@ class Slick extends Extension implements IFrontendInterface, ITemplateInterface
      */
     public function getContent()
     {
+        $this->Template->setVariable( 'SlideList', $this->SlideList );
         return $this->Template->getContent();
+    }
+
+    /**
+     * @param string $Content
+     * @return $this
+     */
+    public function addContent( $Content )
+    {
+        $this->SlideList[] = $Content;
+        return $this;
+    }
+
+    /**
+     * @param $Source
+     * @return $this
+     */
+    public function addImage( $Source )
+    {
+        $this->addContent( '<div style="background-repeat: no-repeat; background-size: cover; width: 100%; height: 400px; background-image: url('.$Source.');"></div>' );
+        return $this;
     }
 
     /**
@@ -39,6 +62,4 @@ class Slick extends Extension implements IFrontendInterface, ITemplateInterface
     {
         return $this->getContent();
     }
-
-
 }

@@ -95,11 +95,11 @@ class Stage extends Extension implements ITemplateInterface
     }
 
     /**
-     * @param Teaser $Teaser
+     * @param $Teaser
      *
      * @return Stage
      */
-    public function setTeaser( Teaser $Teaser)
+    public function setTeaser($Teaser)
     {
 
         $this->Teaser = $Teaser;
@@ -138,11 +138,17 @@ class Stage extends Extension implements ITemplateInterface
     public function getContent()
     {
 
+        if( $this->getRequest()->getUrl() == '/' ) {
+            $StageBackground = '<style>div.window-stage { background: #222222; !important }</style>';
+        } else {
+            $StageBackground = '';
+        }
+
         $this->Template->setVariable('StageTitle', $this->Title);
         $this->Template->setVariable('StageDescription', $this->Description);
         $this->Template->setVariable('StageMessage', $this->Message);
         $this->Template->setVariable('StageTeaser', $this->Teaser);
-        $this->Template->setVariable('StageContent', $this->Content);
+        $this->Template->setVariable('StageContent', $StageBackground.$this->Content);
 
         // Highlight current Route-Stage-Button
         if (!empty( $this->Menu )) {

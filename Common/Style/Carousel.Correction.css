@@ -6,13 +6,75 @@
     z-index: 5;
     display: inline-block;
 }
+
 .carousel-control .icon-prev,
 .carousel-control .mbcom-icon-arrow-left {
     left: 50%;
     margin-left: -10px;
 }
+
 .carousel-control .icon-next,
 .carousel-control .mbcom-icon-arrow-right {
     right: 50%;
     margin-right: -10px;
+}
+
+/** Slick **/
+
+.container-slick {
+    margin: 0;
+    max-width: 100%;
+    padding: 0;
+}
+
+.slick-slider{
+    height: 100%;
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .container-slick {
+        width: 745px;
+    }
+}
+@media (min-width: 992px) {
+    .container-slick {
+        width: 965px;
+    }
+}
+@media (min-width: 1200px) {
+    .container-slick {
+        width: 1165px;
+    }
+}
+.slick {
+    background: #000;
+}
+
+.slick-prev {
+    z-index: 1000;
+    left: 50px;
+    width: 30px;
+    height: 30px;
+}
+
+.slick-next {
+    z-index: 1000;
+    right: 50px;
+    width: 30px;
+    height: 30px;
+}
+
+.slick-prev:before, .slick-next:before {
+    font-family: "mbcomicons", "slick", sans-serif;
+    font-size: 28px;
+    color: #fff;
+}
+
+.slick-prev:before {
+    content: "\f102";
+}
+
+.slick-next:before {
+    content: "\f103";
 }
