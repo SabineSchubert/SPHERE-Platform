@@ -18,10 +18,8 @@
                     {% if( Item.Description is not empty ) %}
                         <p>{{ Item.Description }}</p>
                     {% endif %}
-                </div>
-                <div class="carousel-caption">
                     {% if( Item.Link is not empty ) %}
-                        <div style="padding: 10px;">{{ Item.Link }}</div>
+                        <div style="padding: 10px 0;">{{ Item.Link }}</div>
                     {% endif %}
                 </div>
             </div>
@@ -29,11 +27,11 @@
     </div>
     {# Controls #}
     <a class="left carousel-control" href="#{{ Hash }}" role="button" data-slide="prev">
-        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="mbcom-icon mbcom-icon-arrow-left" aria-hidden="true"></span>
         <span class="sr-only">Zurück</span>
     </a>
     <a class="right carousel-control" href="#{{ Hash }}" role="button" data-slide="next">
-        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="mbcom-icon mbcom-icon-arrow-right" aria-hidden="true"></span>
         <span class="sr-only">Vor</span>
     </a>
 </div>

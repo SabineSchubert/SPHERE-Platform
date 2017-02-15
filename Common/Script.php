@@ -73,6 +73,8 @@ class Script extends Extension
             $this->setLibrary((new ScriptLibrary('MathJax', '2.5.0'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Highlight.js', '8.8.0'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Bootbox.js', '4.4.0'))->getLibrary());
+            $this->setLibrary((new ScriptLibrary('Slick', '1.6.0'))->getLibrary());
+
         } catch ( \Exception $Exception ) {
             Main::getDisplay()->setException( $Exception, 'JavaScript Library' );
         }
@@ -142,6 +144,13 @@ class Script extends Extension
                 'Bootstrap',
                 'Tether',
                 'jQuery.Ui',
+                'jQuery'
+            )
+        );
+
+        $this->setModule(
+            'ModSlick',array(
+                'Slick',
                 'jQuery'
             )
         );

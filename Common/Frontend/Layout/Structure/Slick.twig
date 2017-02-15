@@ -1,0 +1,21 @@
+<div class="container">
+    <div class="row">
+        <div class="slick">
+            <div><img src="/Common/Style/Resource/Teaser/00-mercedes-benz-design-aesthetics-a-1280-686-848x454.jpg"> </div>
+            <div>your content2</div>
+            <div>your content3</div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    //noinspection JSUnresolvedFunction
+    executeScript(function () {
+        Client.Use('ModSlick', function () {
+            jQuery('div.slick').ModSlick({
+                infinite: true,
+                slidesToShow: 1,
+                slidesToScroll: 1
+            });
+        });
+    });
+</script>

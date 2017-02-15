@@ -42,6 +42,9 @@ class Style extends Extension
             $this->setLibrary((new StyleLibrary('Bootstrap.Glyphicons.Filetypes', '1.9.2'))->getLibrary());
             $this->setLibrary((new StyleLibrary('Bootstrap.Glyphicons.Social', '1.9.2'))->getLibrary());
             $this->setLibrary((new StyleLibrary('Foundation.Icons', '3.0'))->getLibrary());
+            $this->setLibrary((new StyleLibrary('FontAwesome', '4.7.0'))->getLibrary());
+            $this->setLibrary((new StyleLibrary('Slick', '1.6.0'))->getLibrary());
+            $this->setLibrary((new StyleLibrary('Slick.Theme', '1.6.0'))->getLibrary());
 
             $this->setLibrary((new StyleLibrary('jQuery.Formstone.Selecter', '3.2.4'))->getLibrary(), false, true);
             $this->setLibrary((new StyleLibrary('jQuery.Formstone.Stepper', '3.0.8'))->getLibrary(), false, true);
@@ -87,9 +90,18 @@ class Style extends Extension
 // 3.3.5
 
 //        $this->setSource('/Common/Style/Correction.css', false, true);
+
         $this->setSource('/Common/Style/Stage.Correction.css', false, true);
         $this->setSource('/Common/Style/DataTable.Correction.css', false, true);
         $this->setSource('/Common/Style/Panel.Correction.css', false, true);
+        $this->setSource('/Common/Style/CheckBox.Correction.css', false, true);
+        $this->setSource('/Common/Style/RadioBox.Correction.css', false, true);
+        $this->setSource('/Common/Style/SelectBox.Correction.css', false, true);
+        $this->setSource('/Common/Style/TypeAHead.Correction.css', false, true);
+        $this->setSource('/Common/Style/Button.Correction.css', false, true);
+        $this->setSource('/Common/Style/Carousel.Correction.css', false, true);
+
+        $this->setSource('/Common/Style/MBComIcon.css');
 
 //        $this->setSource('/Common/Style/CleanSlate/0.10.1/cleanslate.css', false, true);
 

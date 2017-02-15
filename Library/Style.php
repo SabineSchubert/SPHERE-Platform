@@ -99,12 +99,22 @@ class Style
         $this->addLibrary(new Library('Foundation.Icons', '3.0',
             $Location . '/Foundation.Icons/3.0/foundation-icons.css'
         ));
+        $this->addLibrary(new Library('FontAwesome', '4.7.0',
+            $Location . '/FontAwesome/4.7.0/css/font-awesome.min.css'
+        ));
 
         $this->addLibrary(new Library('jQuery.Formstone.Selecter', '3.2.4',
             $Location . '/jQuery.Selecter/3.2.4/jquery.fs.selecter.min.css'
         ));
         $this->addLibrary(new Library('jQuery.Formstone.Stepper', '3.0.8',
             $Location . '/jQuery.Stepper/3.0.8/jquery.fs.stepper.css'
+        ));
+
+        $this->addLibrary(new Library('Slick', '1.6.0',
+            $Location . '/Slick/1.6.0/slick/slick.css'
+        ));
+        $this->addLibrary(new Library('Slick.Theme', '1.6.0',
+            $Location . '/Slick/1.6.0/slick/slick-theme.css'
         ));
 
     }

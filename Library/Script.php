@@ -229,6 +229,10 @@ class Script
             $Location . '/Bootbox.js/4.4.0/js/bootbox.min.js',
             "'undefined' !== typeof bootbox"
         ));
+        $this->addLibrary(new Library('Slick', '1.6.0',
+            $Location . '/Slick/1.6.0/slick/slick.min.js',
+            "'undefined' !== typeof jQuery.fn.slick"
+        ));
     }
 
     /**
