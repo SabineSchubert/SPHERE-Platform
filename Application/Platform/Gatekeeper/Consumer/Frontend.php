@@ -24,7 +24,7 @@ class Frontend
     public static function frontendConsumer()
     {
 
-        $Stage = new Stage('Mandantenverwaltung', '', '');
+        $Stage = new Stage('Mandantenverwaltung');
 
         $TableReceiver = Consumer::receiverTableConsumer();
         $CreateReceiver = Consumer::receiverCreateConsumer();

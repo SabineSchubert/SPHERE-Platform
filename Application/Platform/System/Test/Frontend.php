@@ -52,6 +52,7 @@ use SPHERE\Common\Frontend\Layout\Structure\LayoutSocial;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutTab;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutTabs;
 use SPHERE\Common\Frontend\Layout\Structure\Slick;
+use SPHERE\Common\Frontend\Link\Repository\External;
 use SPHERE\Common\Frontend\Link\Repository\Standard;
 use SPHERE\Common\Frontend\Message\Repository\Info;
 use SPHERE\Common\Frontend\Message\Repository\Warning;
@@ -76,10 +77,18 @@ class Frontend extends Extension implements IFrontendInterface
 
         $Stage = new Stage('Test', 'Frontend');
 
-        $Stage->setMessage('Message: Red alert.Processor of a distant x-ray vision, lower the death!Make it so, chemical wind!Fantastic nanomachines, to the alpha quadrant.Boldly sonic showers lead to the understanding.The death is a ship-wide cosmonaut.Wobble nosily like a post-apocalyptic space suit.Cosmonauts are the emitters of the fantastic ionic cannon.Where is the strange teleporter?');
+        $Stage->setMessage(
+            'Message: Red alert. Processor of a distant x-ray vision, lower the death! Make it so, chemical
+             wind! Fantastic nanomachines, to the alpha quadrant.Boldly sonic showers lead to the understanding. The 
+             death is a ship-wide cosmonaut. Wobble nosily like a post-apocalyptic space suit.Cosmonauts are the 
+             emitters of the fantastic ionic cannon. Where is the strange teleporter?'
+        );
 
         $Stage->addButton(
-            new Standard('Link', new Route(__NAMESPACE__))
+            new Standard('Link', new Route(__NAMESPACE__), null, array(), true)
+        );
+        $Stage->addButton(
+            new External('Link', 'www.google.de')
         );
 
         $D1 = new TblProtocol();
@@ -119,7 +128,8 @@ class Frontend extends Extension implements IFrontendInterface
                                 array('123', '234', '345'))
                             , 3),
                         new FormColumn(array(
-                            new CheckBox('CheckBox', 'CheckBox', 'c1'),
+                            new CheckBox('CheckBox1', 'CheckBox', 'c1'),
+                            new CheckBox('CheckBox2', 'CheckBox', 'c2'),
                             new RadioBox('RadioBox1', 'RadioBox1a', '1a'),
                         ), 3),
                         new FormColumn(
@@ -208,7 +218,7 @@ class Frontend extends Extension implements IFrontendInterface
                                 Panel::PANEL_TYPE_DEFAULT, 'Footer'),
                             new Panel('Panel', array('Conten 1', 'Content 2', 'Content 3'),
                                 Panel::PANEL_TYPE_DANGER, 'Footer'),
-                            new Panel('Panel', array(new TextField(''),new TextField(''),new TextField('')),
+                            new Panel('Panel', array(new TextField(''), new TextField(''), new TextField('')),
                                 Panel::PANEL_TYPE_PRIMARY, 'Footer'),
                         ), 3),
                         new LayoutColumn(array(
@@ -218,7 +228,7 @@ class Frontend extends Extension implements IFrontendInterface
                     new LayoutRow(array(
                         new LayoutColumn(array(
                             new Thumbnail(
-                                FileSystem::getFileLoader('/Common/Style/Resource/loading.gif'),
+                                FileSystem::getFileLoader('/Common/Style/Resource/Teaser/00-mercedes-benz-design-aesthetics-a-1280-686-848x454.jpg'),
                                 'Title', 'Description',
                                 array(new \SPHERE\Common\Frontend\Link\Repository\Primary('Primary', ''))
                             )

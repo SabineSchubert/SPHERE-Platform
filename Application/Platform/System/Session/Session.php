@@ -8,12 +8,14 @@ use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\
 use SPHERE\Application\Platform\System\Protocol\Protocol;
 use SPHERE\Application\Platform\System\Protocol\Service\Entity\TblProtocol;
 use SPHERE\Common\Frontend\Icon\Repository\Group;
+use SPHERE\Common\Frontend\Icon\Repository\Off;
 use SPHERE\Common\Frontend\IFrontendInterface;
 use SPHERE\Common\Frontend\Layout\Repository\Title;
 use SPHERE\Common\Frontend\Layout\Structure\Layout;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
+use SPHERE\Common\Frontend\Link\Repository\Danger;
 use SPHERE\Common\Frontend\Table\Structure\TableData;
 use SPHERE\Common\Frontend\Text\Repository\Muted;
 use SPHERE\Common\Main;
@@ -62,11 +64,22 @@ class Session extends Extension implements IModuleInterface
     /**
      * @return Stage
      */
-    public function frontendSession()
+    public function frontendSession($Id = null)
     {
 
         $Stage = new Stage('Aktive Sessions', 'der aktuell angemeldete Benutzer');
 
+
+        if ($Id) {
+            $tblSessionAll = Account::useService()->getSessionAll();
+            if ($tblSessionAll) {
+                foreach ($tblSessionAll as $tblSession) {
+                    if ($tblSession->getId() == $Id) {
+                        Account::useService()->destroySession(null, $tblSession->getSession());
+                    }
+                }
+            }
+        }
         $Result = array();
 
         $TblSessionAll = Account::useService()->getSessionAll();
@@ -104,7 +117,10 @@ class Session extends Extension implements IModuleInterface
                     'ActiveTime' => gmdate('H:i:s', $Interval),
                     'LoginTime' => $TblSession->getEntityCreate(),
                     'LastAction' => $Activity,
-                    'Identifier' => strtoupper($TblSession->getSession())
+                    'Identifier' => strtoupper($TblSession->getSession()),
+                    'Option' => new Danger('', new Link\Route(__NAMESPACE__), new Off(), array(
+                        'Id' => $TblSession->getId()
+                    ))
                 ));
 
             });
@@ -139,8 +155,14 @@ class Session extends Extension implements IModuleInterface
                                 'LastAction' => 'Aktivität',
                                 'ActiveTime' => 'Dauer',
                                 'TTL' => 'Timeout',
-                                'Identifier' => 'Session'
-                            )),
+                                'Identifier' => 'Session',
+                                'Option' => ''
+                            ), array(
+                                'order' => array(array(0, 'desc')),
+                                'columnDefs' => array(
+                                    array('width' => '1%', 'orderable' => false, 'targets' => -1)
+                                )
+                            ), true),
                         ))
                     ), new Title('Aktive Benutzer')
                 ),
@@ -155,9 +177,8 @@ class Session extends Extension implements IModuleInterface
                             ), array(
                                 'order' => array(array(0, 'desc')),
                                 'columnDefs' => array(
-                                    array('type' => 'de_datetime', 'width' => '10%', 'targets' => 0),
-                                    array('width' => '45%', 'targets' => 2),
-                                    array('width' => '45%', 'targets' => 3)
+                                    array('type' => 'de_datetime', 'width' => '20%', 'targets' => 0),
+                                    array('width' => '35%', 'targets' => array(2, 3))
                                 )
                             )),
                             new Redirect(

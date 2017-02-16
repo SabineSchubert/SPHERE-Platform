@@ -44,6 +44,7 @@ class Script extends Extension
             $this->setLibrary((new ScriptLibrary('jQuery.DataTable.Bootstrap', '1.10.12'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('jQuery.DataTable.Responsive', '2.1.0'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('jQuery.DataTable.RowReorder', '1.1.2'))->getLibrary());
+            $this->setLibrary((new ScriptLibrary('jQuery.DataTable.FixedHeader', '3.1.2'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('jQuery.DataTable.Buttons', '1.2.2'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('jQuery.DataTable.Buttons.Bootstrap', '1.2.2'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('jQuery.DataTable.Buttons.ColVis', '1.2.2'))->getLibrary());
@@ -168,6 +169,7 @@ class Script extends Extension
                 'jQuery.DataTable.Buttons.Bootstrap',
                 'jQuery.DataTable.Buttons',
                 'jQuery.DataTable.RowReorder',
+                'jQuery.DataTable.FixedHeader',
                 'jQuery.DataTable.Responsive',
                 'jQuery.DataTable.Bootstrap',
                 'jQuery.DataTable',

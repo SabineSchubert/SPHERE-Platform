@@ -5,7 +5,6 @@ use MOC\V\Component\Template\Component\IBridgeInterface;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Access;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
 use SPHERE\Application\Platform\Gatekeeper\Consumer\Consumer;
-use SPHERE\Application\Platform\Roadmap\Roadmap;
 use SPHERE\Common\Frontend\ITemplateInterface;
 use SPHERE\Common\Frontend\Layout\Repository\Accordion;
 use SPHERE\Common\Frontend\Layout\Repository\Listing;
@@ -45,6 +44,8 @@ class Display extends Extension implements ITemplateInterface
     private $ModuleBreadcrumb = '';
     /** @var array $ServiceNavigation */
     private $ServiceNavigation = array();
+    /** @var array $FooterNavigation */
+    private $FooterNavigation = array();
     /** @var array $Content */
     private $Content = array();
 
@@ -226,6 +227,17 @@ class Display extends Extension implements ITemplateInterface
     }
 
     /**
+     * @param $Link
+     * @return Display
+     */
+    public function addFooterNavigation($Link)
+    {
+
+        array_push($this->FooterNavigation, $Link);
+        return $this;
+    }
+
+    /**
      * @param \Exception $Exception
      * @param string     $Name
      *
@@ -289,6 +301,7 @@ class Display extends Extension implements ITemplateInterface
         $this->Template->setVariable('NavigationModule', implode('', $this->ModuleNavigation));
         $this->Template->setVariable('BreadcrumbModule', $this->ModuleBreadcrumb);
         $this->Template->setVariable('NavigationService', implode('', $this->ServiceNavigation));
+        $this->Template->setVariable('NavigationFooter', $this->FooterNavigation);
 
         $this->Template->setVariable( 'BreadcrumbList',
             array_filter( explode( '/', current( explode( '?', $this->getRequest()->getUrl() ) ) ) )

@@ -17,6 +17,7 @@ use SPHERE\Common\Frontend\Layout\Repository\PullClear;
 use SPHERE\Common\Frontend\Layout\Repository\PullLeft;
 use SPHERE\Common\Frontend\Layout\Repository\Title;
 use SPHERE\Common\Frontend\Link\Repository\Primary;
+use SPHERE\Common\Frontend\Link\Repository\Standard;
 use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Frontend\Table\Structure\TableBody;
 use SPHERE\Common\Frontend\Table\Structure\TableColumn;
@@ -198,14 +199,14 @@ class Database extends Extension implements IModuleInterface
     private function menuButton(Stage $Stage)
     {
 
-        $Stage->addButton(new Primary('Status', new Link\Route(__NAMESPACE__), new Question(),
+        $Stage->addButton(new Standard('Status', new Link\Route(__NAMESPACE__), new Question(),
             array(), 'Datenbankverbindungen'
         ));
-        $Stage->addButton(new \SPHERE\Common\Frontend\Link\Repository\Success('Simulation',
+        $Stage->addButton(new Standard('Simulation',
             new Link\Route(__NAMESPACE__ . '/Setup/Simulation'), new Search(),
             array(), 'Anzeige von Strukturänderungen'
         ));
-        $Stage->addButton(new \SPHERE\Common\Frontend\Link\Repository\Warning('Durchführung',
+        $Stage->addButton(new \SPHERE\Common\Frontend\Link\Repository\Danger('Durchführung',
             new Link\Route(__NAMESPACE__ . '/Setup/Execution'), new Flash(),
             array(), 'Durchführen von Strukturänderungen und einspielen zugehöriger Daten'
         ));

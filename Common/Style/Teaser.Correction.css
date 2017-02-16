@@ -1,0 +1,32 @@
+.slick {
+    background: #000;
+    display: none;
+}
+
+.slick-prev {
+    z-index: 1000;
+    left: 50px;
+    width: 30px;
+    height: 30px;
+}
+
+.slick-next {
+    z-index: 1000;
+    right: 50px;
+    width: 30px;
+    height: 30px;
+}
+
+.slick-prev:before, .slick-next:before {
+    font-family: "MBComIcon", "slick", sans-serif;
+    font-size: 28px;
+    color: #fff;
+}
+
+.slick-prev:before {
+    content: "\f102";
+}
+
+.slick-next:before {
+    content: "\f103";
+}

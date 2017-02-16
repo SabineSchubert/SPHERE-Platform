@@ -151,6 +151,10 @@ class Script
             $Location . '/DataTables/RowReorder-1.1.2/js/dataTables.rowReorder.min.js',
             "'undefined' !== typeof jQuery.fn.DataTable.RowReorder"
         ));
+        $this->addLibrary(new Library('jQuery.DataTable.FixedHeader','3.1.2',
+            $Location . '/DataTables/FixedHeader-3.1.2/js/dataTables.fixedHeader.min.js',
+            "'undefined' !== typeof jQuery.fn.DataTable.FixedHeader"
+        ));
         $this->addLibrary(new Library('jQuery.DataTable.Buttons', '1.2.2',
             $Location . '/DataTables/Buttons-1.2.2/js/dataTables.buttons.min.js',
             "'undefined' !== typeof jQuery.fn.DataTable.Buttons"

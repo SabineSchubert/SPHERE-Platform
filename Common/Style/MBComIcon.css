@@ -1,12 +1,13 @@
 @font-face {
-    font-family: "mbcomicons";
-    src: url("/Common/Style/Font/mbcomicons.woff?3a3706dd052a9a3171c57cbc786cdcaa") format("woff");
+    font-family: "MBComIcon";
+    src: url("/Common/Style/Font/MBComIcon/mbcomicons.eot?3a3706dd052a9a3171c57cbc786cdcaa");
+    src: url("/Common/Style/Font/MBComIcon/mbcomicons.eot?#iefix") format("embedded-opentype"), url("/Common/Style/Font/MBComIcon/mbcomicons.woff?3a3706dd052a9a3171c57cbc786cdcaa") format("woff"), url("/Common/Style/Font/MBComIcon/mbcomicons.ttf?3a3706dd052a9a3171c57cbc786cdcaa") format("truetype");
     font-weight: normal;
     font-style: normal
 }
 
 .mbcom-icon {
-    font-family: "mbcomicons";
+    font-family: "MBComIcon";
     display: inline-block;
     vertical-align: middle;
     line-height: 1;

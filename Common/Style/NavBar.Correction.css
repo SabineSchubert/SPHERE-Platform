@@ -1,0 +1,35 @@
+.navbar-claim {
+    height: 110px;
+    background-image: url(/Common/Style/Resource/MB-Logo-2016-2.gif);
+    background-repeat: no-repeat;
+    background-position: center left;
+}
+
+.navbar.navbar-service {
+
+}
+
+.navbar.navbar-cluster {
+    margin-top: 26px;
+}
+
+.navbar.navbar-application {
+    background: #222222;
+}
+
+.navbar.navbar-module {
+    background: #333333;
+}
+
+.navbar.navbar-footer {
+    background: #222222;
+}
+
+hr.muted {
+    margin: 0;
+    border-color: #333333;
+}
+
+.breadcrumb {
+    margin: 0;
+}

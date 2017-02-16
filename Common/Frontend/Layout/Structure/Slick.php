@@ -51,7 +51,8 @@ class Slick extends Extension implements IFrontendInterface, ITemplateInterface
      */
     public function addImage( $Source )
     {
-        $this->addContent( '<div style="background-repeat: no-repeat; background-size: cover; width: 100%; height: 400px; background-image: url('.$Source.');"></div>' );
+//        $this->addContent( '<img src="'.$Source.'"/>' );
+        $this->addContent( '<div style="background-repeat: no-repeat; background-position: center center; width: 100%; height: 454px; background-image: url('.$Source.');"></div>' );
         return $this;
     }
 

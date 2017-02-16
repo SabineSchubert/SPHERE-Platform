@@ -10,11 +10,11 @@
                 Hash: 'default',
                 onLoad: {
                     Title: '',
-                    Message: '',
+                    Message: ''
                 },
                 onSuccess: {
                     Title: '',
-                    Message: '',
+                    Message: ''
                 }
             }
         }, options);
@@ -91,18 +91,18 @@
                     delete document.ModAjax.NotifyTimeout[settings.Notify.Hash];
                 }, Timeout);
             }
-        }
+        };
         var parseAjaxError = function (request, status, error) {
             // Parse Error
             var ErrorMessage = '';
             if (request.status === 0) {
                 ErrorMessage = ('Not connected.\nPlease verify your network connection.');
             } else if (request.status == 400) {
-                ErrorMessage = ('Bad Request. [400]');
+                ErrorMessage = ('Bad Request [400]');
             } else if (request.status == 403) {
-                ErrorMessage = ('Forbidden. [403]');
+                ErrorMessage = ('Forbidden [403]');
             } else if (request.status == 404) {
-                ErrorMessage = ('The requested page not found. [404]');
+                ErrorMessage = ('The requested page not found [404]');
             } else if (request.status == 500) {
                 ErrorMessage = ('Internal Server Error [500]');
             } else if (request.status == 511) {
@@ -110,14 +110,14 @@
             } else if (status === 'parsererror') {
                 ErrorMessage = ('Requested JSON parse failed');
             } else if (status === 'timeout') {
-                ErrorMessage = ('Time out error.');
+                ErrorMessage = ('Time out error');
             } else if (status === 'abort') {
-                ErrorMessage = ('Ajax request aborted.');
+                ErrorMessage = ('Ajax request aborted');
             } else {
-                ErrorMessage = ('Uncaught Error. ' + request.status + '\n' + request.responseText);
+                ErrorMessage = ('Uncaught Error: ' + request.status + '\n' + request.responseText);
             }
             return ErrorMessage;
-        }
+        };
         var domLoadTemplate = '<div data-notify="container" class="col-xs-11 col-sm-4 alert alert-{0}" role="alert">' +
             '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
             '<span data-notify="icon"></span>&nbsp;' +
@@ -152,7 +152,7 @@
             min = Math.ceil(min);
             max = Math.floor(max);
             return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
+        };
 
 // Event Handler
 
@@ -194,7 +194,8 @@
             }
             document.ModAjax.NotifyHandler[settings.Notify.Hash + '-Error'] = $.notify({
                 title: ErrorMessage,
-                message: '<span class="text-muted"><small><small>' + this.url + '</small></small></span><hr/>' + request.responseText
+                message: '<span><small><small>' + this.url + '</small></small></span>'
+                + ( status != 'parsererror' && request.responseText.length > 2 ? '<hr/>' + request.responseText : '' )
             }, {
                 z_index: 32768,
                 newest_on_top: true,
@@ -226,7 +227,8 @@
                         }
                         document.ModAjax.NotifyHandler[settings.Notify.Hash + '-Error'] = $.notify({
                             title: 'Script-Error',
-                            message: '<span class="text-muted"><small><small>' + ErrorMessage + '</small></small></span><hr/>' + Response
+                            message: '<span><small><small>' + ErrorMessage + '</small></small></span>'
+                            + ( Response.length > 2 ? '<hr/>' + Response : '' )
                         }, {
                             z_index: 32768,
                             newest_on_top: true,

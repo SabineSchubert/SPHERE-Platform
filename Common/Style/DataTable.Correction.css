@@ -415,3 +415,19 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child:before
 .panel table.dataTable .radio input {
     margin-top: 0;
 }
+
+/** MB **/
+
+table {
+    color: #000;
+}
+
+table th {
+    color: #fff;
+    background-color: #333;
+    font-weight: normal;
+}
+table > thead > tr > th {
+    border: 1px solid #ddd;
+    border-bottom: none !important;
+}

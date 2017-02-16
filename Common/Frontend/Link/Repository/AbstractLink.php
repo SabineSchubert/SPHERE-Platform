@@ -81,8 +81,9 @@ abstract class AbstractLink extends Extension implements ILinkInterface
         $this->Template = $this->getTemplate(__DIR__.'/Link.twig');
 
         if (null !== $Icon) {
+            /*
             if( $Icon instanceof Edit) {
-                $this->Type = $this->Type.' bg-info';
+                $this->Type = $this->Type.' bg-primary';
             }
             if( $Icon instanceof Remove) {
                 $this->Type = $this->Type.' bg-danger';
@@ -93,6 +94,7 @@ abstract class AbstractLink extends Extension implements ILinkInterface
             if( $Icon instanceof View) {
                 $this->Type = $this->Type.' bg-success';
             }
+            */
             $this->Template->setVariable('ElementIcon', $Icon);
         }
         $this->Template->setVariable('ElementType', $this->Type);

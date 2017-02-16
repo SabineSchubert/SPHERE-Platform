@@ -59,29 +59,10 @@ class Frontend extends Extension implements IFrontendInterface
 
         $Stage->setTeaser(
             (new Slick())
-                ->addImage('/Common/Style/Resource/Teaser/4260479090780-irgendwas-ist-immer.jpg')
                 ->addImage('/Common/Style/Resource/Teaser/00-mercedes-benz-design-aesthetics-a-1280-686-848x454.jpg')
                 ->addImage('/Common/Style/Resource/Teaser/00-mercedes-benz-design-e-klasse-coupe-c-238-edition-1-amg-line-1280x686-1-848x454.jpg')
                 ->addImage('/Common/Style/Resource/Teaser/00-mercedes-benz-design-skizze-van-nutzfahrzeug-truck-1280x686-848x454.jpg')
                 ->addImage('/Common/Style/Resource/Teaser/00-mercedes-benz-fahrzeuge-50-jahre-amg-mercedes-amg-gt-c-190-1280x686-2-848x454.jpg')
-            /*
-            (new Teaser())
-                ->addItem(
-                    '/Common/Style/Resource/Teaser/00-mercedes-benz-design-aesthetics-a-1280-686-848x454.jpg', 'Überschrift',
-                    new Standard('Link', '#', new FAAngleRight()), 'Beschreibung', 'Titel', true
-                )
-                ->addItem(
-                    '/Common/Style/Resource/Teaser/00-mercedes-benz-design-e-klasse-coupe-c-238-edition-1-amg-line-1280x686-1-848x454.jpg', 'Überschrift',
-                    new Standard('Link', '#'), 'Beschreibung', 'Titel'
-                )
-                ->addItem(
-                    '/Common/Style/Resource/Teaser/00-mercedes-benz-design-skizze-van-nutzfahrzeug-truck-1280x686-848x454.jpg', 'Überschrift',
-                    new Standard('Link', '#'), 'Beschreibung', 'Titel'
-                )
-                ->addItem(
-                    '/Common/Style/Resource/Teaser/00-mercedes-benz-fahrzeuge-50-jahre-amg-mercedes-amg-gt-c-190-1280x686-2-848x454.jpg', 'Überschrift',
-                    new Standard('Link', '#'), 'Beschreibung', 'Titel'
-                )*/
         );
 
         $Stage->setContent(
@@ -303,7 +284,7 @@ class Frontend extends Extension implements IFrontendInterface
                                     ->setRequired(),
                                 (new PasswordField('CredentialLock', 'Passwort', 'Passwort', new Lock()))
                                     ->setRequired()->setDefaultValue($CredentialLock, true)
-                            ), Panel::PANEL_TYPE_INFO)
+                            ), Panel::PANEL_TYPE_DEFAULT)
                         )
                     )
                 )
@@ -321,7 +302,7 @@ class Frontend extends Extension implements IFrontendInterface
                         ''
                         , 3),
                     new LayoutColumn(
-                        new Well($FormService)
+                        $FormService
                         , 6),
                     new LayoutColumn(
                         ''

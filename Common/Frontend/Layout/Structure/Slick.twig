@@ -1,25 +1,15 @@
-<div class="container container-slick hidden-xs">
-        <div class="slick">
-            {% for Item in SlideList %}
-                <div>{{ Item }}</div>
-            {% endfor %}
-        </div>
+<div class="slick">
+    {% for Item in SlideList %}
+        <div>{{ Item }}</div>
+    {% endfor %}
 </div>
 <script type="text/javascript">
     //noinspection JSUnresolvedFunction
     executeScript(function () {
         Client.Use('ModSlick', function () {
             jQuery('div.slick').ModSlick({
-                acessibility: true,
-                adaptiveHeight: false,
                 mobileFirst: true
             });
-            jQuery(window).on('resize', function () {
-                jQuery('.container-slick').width( jQuery('.stage-teaser').width() );
-            });
-            window.setTimeout(function() {
-                jQuery('.container-slick').width( jQuery('.stage-teaser').width() );
-            }, 100);
         });
     });
 </script>

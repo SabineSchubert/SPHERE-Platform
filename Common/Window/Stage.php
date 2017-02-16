@@ -2,6 +2,7 @@
 namespace SPHERE\Common\Window;
 
 use MOC\V\Component\Template\Component\IBridgeInterface;
+use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
 use SPHERE\Common\Frontend\Ajax\Template\CloseModal;
 use SPHERE\Common\Frontend\ITemplateInterface;
 use SPHERE\Common\Frontend\Layout\Structure\Teaser;
@@ -10,6 +11,7 @@ use SPHERE\Common\Frontend\Link\Repository\AbstractLink;
 use SPHERE\Common\Frontend\Text\Repository\Bold;
 use SPHERE\Common\Frontend\Text\Repository\Info;
 use SPHERE\Common\Frontend\Text\Repository\Muted;
+use SPHERE\Common\Frontend\Text\Repository\Primary;
 use SPHERE\System\Extension\Extension;
 
 /**
@@ -138,17 +140,11 @@ class Stage extends Extension implements ITemplateInterface
     public function getContent()
     {
 
-        if( $this->getRequest()->getUrl() == '/' ) {
-            $StageBackground = '<style>div.window-stage { background: #222222; !important }</style>';
-        } else {
-            $StageBackground = '';
-        }
-
         $this->Template->setVariable('StageTitle', $this->Title);
         $this->Template->setVariable('StageDescription', $this->Description);
         $this->Template->setVariable('StageMessage', $this->Message);
         $this->Template->setVariable('StageTeaser', $this->Teaser);
-        $this->Template->setVariable('StageContent', $StageBackground.$this->Content);
+        $this->Template->setVariable('StageContent', $this->Content);
 
         // Highlight current Route-Stage-Button
         if (!empty( $this->Menu )) {
@@ -161,12 +157,12 @@ class Stage extends Extension implements ITemplateInterface
                     case AbstractLink::TYPE_SUCCESS:
                     case AbstractLink::TYPE_LINK:
                         $this->Menu[current($HighlightButton)]->setName(
-                            (new Bold($this->Menu[current($HighlightButton)]->getName()))
+                            (($this->Menu[current($HighlightButton)]->getName()))
                         );
                         break;
                     default:
                         $this->Menu[current($HighlightButton)]->setName(
-                            new Info(new Bold($this->Menu[current($HighlightButton)]->getName()))
+                            new Primary(($this->Menu[current($HighlightButton)]->getName()))
                         );
                 }
             }

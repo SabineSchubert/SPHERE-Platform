@@ -5,41 +5,38 @@
 
             <div class="clearfix">
                 <div class="pull-left">
-
                     {% if StageTitle is not empty %}
                         <h3>{{ StageTitle }}</h3>
                     {% endif %}
+                    {% if StageDescription is not empty %}
                     <small>{{ StageDescription }}</small>
-                    <br/>
-
+                    {% endif %}
                 </div>
-                <div class="pull-right" style="margin-top: 22px;">
-
-                    {% if StageMenu is not empty %}
+                {% if StageMenu is not empty %}
+                    <div class="pull-right" style="margin-top: 22px;">
                         {#<div class="btn-group">#}
                         {% for Button in StageMenu %}
                             {{ Button }}
                         {% endfor %}
                         {#</div>#}
                         <br/>
-                    {% endif %}
-
-                </div>
-            </div>
-
-            <div class="stage-message">
-                {% if StageMessage is not empty %}
-                    {{ StageMessage }}
-                    <br/>
+                    </div>
                 {% endif %}
             </div>
+
+            {% if StageMessage is not empty %}
+                <div class="stage-message">
+                    {{ StageMessage }}
+                    <br/>
+                </div>
+            {% endif %}
 
         </div>
 
     {% endif %}
 
     {% if StageTeaser is not empty %}
-        <div class="stage-teaser">
+        <div class="stage-teaser hidden-xs">
             {{ StageTeaser }}
         </div>
     {% endif %}

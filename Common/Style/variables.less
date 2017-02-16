@@ -15,10 +15,10 @@
 @text-color: @gray-lighter;
 @link-color: @brand-primary;
 @link-hover-color: darken(@link-color, 15%);
-@link-hover-decoration: underline;
-@font-family-sans-serif: "CorpoS", "Helvetica Neue", Helvetica, Arial, sans-serif;
-@font-family-serif: "CorpoA", Georgia, "Times New Roman", Times, serif;
-@font-family-monospace: Menlo, Monaco, Consolas, "Courier New", monospace;
+@link-hover-decoration: none;
+@font-family-sans-serif: "CorporateSRegular", "Helvetica Neue", Helvetica, Arial, sans-serif;
+@font-family-serif: "CorporateSDemi", Georgia, "Times New Roman", Times, serif;
+@font-family-monospace: "CorporateSDemi", Menlo, Monaco, Consolas, "Courier New", monospace;
 @font-family-base: @font-family-sans-serif;
 @font-size-base: 16px;
 @font-size-large: ceil((@font-size-base * 1.25));
@@ -31,7 +31,7 @@
 @font-size-h6: ceil((@font-size-base * 0.85));
 @line-height-base: 1.428571429;
 @line-height-computed: floor((@font-size-base * @line-height-base));
-@headings-font-family: "CorpoA";
+@headings-font-family: "CorporateACondensedRegular";
 @headings-font-weight: normal;
 @headings-line-height: 1.1;
 @headings-color: inherit;
@@ -58,7 +58,7 @@
 @table-cell-padding: 8px;
 @table-condensed-cell-padding: 5px;
 @table-bg: #ffffff;
-@table-bg-accent: #f0f0f0;
+@table-bg-accent: #ffffff;
 @table-bg-hover: #f5f5f5;
 @table-bg-active: @table-bg-hover;
 @table-border-color: #ddd;
@@ -104,7 +104,7 @@
 @input-group-addon-border-color: @input-border;
 @cursor-disabled: not-allowed;
 @dropdown-bg: #fff;
-@dropdown-border: rgba(0,0,0,.15);
+@dropdown-border: rgba(0, 0, 0, .15);
 @dropdown-fallback-border: #ccc;
 @dropdown-divider-bg: #e5e5e5;
 @dropdown-link-color: @gray-dark;
@@ -157,7 +157,7 @@
 @navbar-default-color: #777;
 @navbar-default-bg: transparent;
 @navbar-default-border: @navbar-default-bg;
-  /*darken(@navbar-default-bg, 6.5%);*/
+/*darken(@navbar-default-bg, 6.5%);*/
 @navbar-default-link-color: #777;
 @navbar-default-link-hover-color: lighten(@brand-primary, 15%);
 @navbar-default-link-hover-bg: transparent;
@@ -235,7 +235,8 @@
 @state-warning-text: #8a6d3b;
 @state-warning-bg: #fcf8e3;
 @state-warning-border: darken(spin(@state-warning-bg, -10), 5%);
-@state-danger-text: lighten(spin(@state-danger-bg, -10), 5%);;
+@state-danger-text: lighten(spin(@state-danger-bg, -10), 5%);
+;
 @state-danger-bg: #9f0002;
 @state-danger-border: darken(spin(@state-danger-bg, -10), 5%);
 @tooltip-max-width: 200px;
@@ -244,9 +245,9 @@
 @tooltip-opacity: .9;
 @tooltip-arrow-width: 5px;
 @tooltip-arrow-color: @tooltip-bg;
-@popover-bg: #fff;
-@popover-max-width: 276px;
-@popover-border-color: rgba(0,0,0,.2);
+@popover-bg: @gray-dark;
+@popover-max-width: 300px;
+@popover-border-color: rgba(0, 0, 0, .2);
 @popover-fallback-border-color: #ccc;
 @popover-title-bg: darken(@popover-bg, 3%);
 @popover-arrow-width: 10px;
@@ -267,7 +268,7 @@
 @modal-title-padding: 15px;
 @modal-title-line-height: @line-height-base;
 @modal-content-bg: #fff;
-@modal-content-border-color: rgba(0,0,0,.2);
+@modal-content-border-color: rgba(0, 0, 0, .2);
 @modal-content-fallback-border-color: #999;
 @modal-backdrop-bg: #000;
 @modal-backdrop-opacity: .5;
@@ -289,7 +290,7 @@
 @alert-warning-text: @state-warning-text;
 @alert-warning-border: @state-warning-border;
 @alert-danger-bg: @state-danger-bg;
-@alert-danger-text: @state-danger-text;
+@alert-danger-text: #fff;
 @alert-danger-border: @state-danger-border;
 @progress-bg: #f5f5f5;
 @progress-bar-color: #fff;
@@ -314,7 +315,7 @@
 @list-group-link-hover-color: @list-group-link-color;
 @list-group-link-heading-color: #333;
 @panel-bg: #ffffff;
-@panel-body-padding: 10px 15px;
+@panel-body-padding: 5px 10px;
 @panel-heading-padding: 10px 15px;
 @panel-footer-padding: @panel-heading-padding;
 @panel-border-radius: @border-radius-base;
@@ -335,7 +336,7 @@
 @panel-warning-text: @state-warning-text;
 @panel-warning-border: @state-warning-border;
 @panel-warning-heading-bg: @state-warning-bg;
-@panel-danger-text: @state-danger-text;
+@panel-danger-text: #fff;
 @panel-danger-border: @state-danger-border;
 @panel-danger-heading-bg: @state-danger-bg;
 @thumbnail-padding: 0;
@@ -344,8 +345,8 @@
 @thumbnail-border-radius: @border-radius-base;
 @thumbnail-caption-color: @text-color;
 @thumbnail-caption-padding: 9px;
-@well-bg: #f5f5f5;
-@well-border: darken(@well-bg, 7%);
+@well-bg: #222222;
+@well-border: lighten(@well-bg, 7%);
 @badge-color: #fff;
 @badge-link-hover-color: #fff;
 @badge-bg: @gray-light;
@@ -358,9 +359,9 @@
 @breadcrumb-padding-horizontal: 15px;
 @breadcrumb-bg: #f8f8f8;
 @breadcrumb-color: #ccc;
-@breadcrumb-active-color: @brand-primary;
+@breadcrumb-active-color: darken(@brand-primary, 10%);
 @breadcrumb-separator: "/";
-@carousel-text-shadow: 0 1px 2px rgba(0,0,0,.6);
+@carousel-text-shadow: 0 1px 2px rgba(0, 0, 0, .6);
 @carousel-control-color: #fff;
 @carousel-control-width: 15%;
 @carousel-control-opacity: .5;

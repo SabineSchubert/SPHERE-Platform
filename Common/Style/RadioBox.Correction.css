@@ -3,3 +3,7 @@
     margin-top: inherit;
     margin-bottom: inherit;
 }
+
+div.radio label {
+    line-height: 1.028571;
+}
