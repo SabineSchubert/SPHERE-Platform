@@ -4,10 +4,14 @@ namespace SPHERE\Common\Window;
 use MOC\V\Component\Template\Component\IBridgeInterface;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
 use SPHERE\Common\Frontend\Ajax\Template\CloseModal;
+use SPHERE\Common\Frontend\Icon\Repository\Star;
+use SPHERE\Common\Frontend\Icon\Repository\StarEmpty;
 use SPHERE\Common\Frontend\ITemplateInterface;
 use SPHERE\Common\Frontend\Layout\Structure\Teaser;
 use SPHERE\Common\Frontend\Link\ILinkInterface;
 use SPHERE\Common\Frontend\Link\Repository\AbstractLink;
+use SPHERE\Common\Frontend\Link\Repository\Standard;
+use SPHERE\Common\Frontend\Link\Repository\Warning;
 use SPHERE\Common\Frontend\Text\Repository\Bold;
 use SPHERE\Common\Frontend\Text\Repository\Info;
 use SPHERE\Common\Frontend\Text\Repository\Muted;
@@ -145,6 +149,15 @@ class Stage extends Extension implements ITemplateInterface
         $this->Template->setVariable('StageMessage', $this->Message);
         $this->Template->setVariable('StageTeaser', $this->Teaser);
         $this->Template->setVariable('StageContent', $this->Content);
+
+        if( empty( $this->getRequest()->getParameterArray() ) ) {
+            $this->addButton(
+                new Standard('','#', new StarEmpty(), array(), 'Zu&nbsp;Favoriten')
+            );
+            $this->addButton(
+                new Warning('','#', new Star(), array(), 'Favorit&nbsp;entfernen')
+            );
+        }
 
         // Highlight current Route-Stage-Button
         if (!empty( $this->Menu )) {
