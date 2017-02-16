@@ -19,17 +19,11 @@ class Name extends Extension
 
     /**
      * @param string $Value
-     *
-     * @throws \Exception
      */
     public function __construct($Value)
     {
 
-        if ((is_object($Value) && $Value instanceof ITextInterface ) || preg_match($this->Pattern, $Value)) {
-            $this->Value = $Value;
-        } else {
-            throw new \Exception(__CLASS__.' > Pattern mismatch: ('.$Value.') ['.$this->Pattern.']');
-        }
+        $this->setValue($Value);
     }
 
     /**
@@ -48,5 +42,18 @@ class Name extends Extension
     {
 
         return $this->Value;
+    }
+
+    /**
+     * @param string $Value
+     * @throws \Exception
+     */
+    public function setValue($Value)
+    {
+        if ((is_object($Value) && $Value instanceof ITextInterface ) || preg_match($this->Pattern, $Value)) {
+            $this->Value = $Value;
+        } else {
+            throw new \Exception(__CLASS__.' > Pattern mismatch: ('.$Value.') ['.$this->Pattern.']');
+        }
     }
 }
