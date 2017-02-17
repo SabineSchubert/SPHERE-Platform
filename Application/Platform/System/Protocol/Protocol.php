@@ -204,6 +204,9 @@ class Protocol implements IModuleInterface
                                 'EntityDiff' => 'Daten-Änderung',
                                 'EntityTo' => 'Daten-Ergebnis',
                             ), array(
+                                'ExtensionDownloadExcel' => array(
+                                    'Enabled' => true
+                                ),
                                 'responsive' => false,
                                 'order' => array(
                                     array(0, 'desc')
@@ -211,7 +214,7 @@ class Protocol implements IModuleInterface
                                 'columnDefs' => array(
                                     array('type' => 'de_datetime', 'targets' => 0)
                                 )
-                            ))
+                            ), true)
                         ))
                     )
                     , new Title('Ergebnis')),

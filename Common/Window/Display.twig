@@ -10,24 +10,20 @@
     <link hreflang="de">
     {{ ManagerStyle }}
     <script type="text/javascript">
-        var executeScript = function (Callback)
-        {
+        var executeScript = function (Callback) {
             // Save On-Load
             var Event = window.onload;
             // Init On-Load
             if (typeof window.onload != 'function') {
-                window.onload = function ()
-                {
-                    executeScript = function (Callback)
-                    {
+                window.onload = function () {
+                    executeScript = function (Callback) {
                         Callback();
                     };
                 };
                 Event = window.onload;
             }
             // Append On-Load
-            window.onload = function ()
-            {
+            window.onload = function () {
                 if (Event) {
                     Event();
                 }
@@ -51,21 +47,24 @@
                     <nav class="navbar navbar-default navbar-service small">
                         <ul class="nav navbar-nav navbar-right">
                             {{ NavigationService }}
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                   aria-haspopup="true" aria-expanded="false">
+                                    <span class="glyphicons glyphicons-star" aria-hidden="true"></span>&nbsp;Favoriten
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#"><span class="glyphicons glyphicons-link" aria-hidden="true"></span>&nbsp;Mandantenverwaltung</a>
+                                    </li>
+                                    <li><a href="#"><span class="glyphicons glyphicons-link" aria-hidden="true"></span>&nbsp;Cache</a>
+                                    </li>
+                                    <li><a href="#"><span class="glyphicons glyphicons-link" aria-hidden="true"></span>&nbsp;Protokoll</a>
+                                    </li>
+                                </ul>
+                            </li>
                         </ul>
                     </nav>
                     <nav class="navbar navbar-inverse navbar-cluster">
                         <ul class="nav navbar-nav navbar-right">
-
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                    <span class="glyphicons glyphicons-star" aria-hidden="true"></span>&nbsp;Favoriten
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#"><span class="glyphicons glyphicons-link" aria-hidden="true"></span>&nbsp;Mandantenverwaltung</a></li>
-                                    <li><a href="#"><span class="glyphicons glyphicons-link" aria-hidden="true"></span>&nbsp;Cache</a></li>
-                                    <li><a href="#"><span class="glyphicons glyphicons-link" aria-hidden="true"></span>&nbsp;Protokoll</a></li>
-                                </ul>
-                            </li>
                             {{ NavigationCluster }}
                         </ul>
                     </nav>
@@ -105,45 +104,45 @@
         </div>
     {% endif %}
 
-    {% if(BreadcrumbList is not empty) %}
-        <div class="container-fluid">
-            <div class="row">
-                <div class="hidden-sm hidden-md col-lg-1"></div>
-                <div class="col-sm-12 col-md-12 col-lg-10">
-                    <ol class="breadcrumb">
-                        {% set Link = '' %}
-                        {% for Index, Crumb in BreadcrumbList %}
-                            {% set Link = Link ~ '/' ~ Crumb %}
-                            {% set Crumb = Crumb|replace({'-und-': " & "}) %}
-
-                            {% if(Index == 1) %}
-                                {% set Crumb = BreadcrumbCluster %}
-                            {% endif %}
-                            {% if(Index == 2) %}
-                                {% set Crumb = BreadcrumbApplication %}
-                            {% endif %}
-                            {% if(Index == 3) %}
-                                {% set Crumb = BreadcrumbModule %}
-                            {% endif %}
-
-                            {% if(Index == BreadcrumbList|length) %}
-                                <li class="active">
-                                    <small>{{ Crumb }}</small>
-                                </li>
-                            {% else %}
-                                <li><a href="{{ Link }}">
-                                        <small>{{ Crumb }}</small>
-                                    </a></li>
-                            {% endif %}
-                        {% endfor %}
-                    </ol>
-                </div>
-                <div class="hidden-sm hidden-md col-lg-1"></div>
-            </div>
-        </div>
-    {% endif %}
-
 </div>
+
+{% if(BreadcrumbList is not empty) %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="hidden-sm hidden-md col-lg-1"></div>
+            <div class="col-sm-12 col-md-12 col-lg-10">
+                <ol class="breadcrumb">
+                    {% set Link = '' %}
+                    {% for Index, Crumb in BreadcrumbList %}
+                        {% set Link = Link ~ '/' ~ Crumb %}
+                        {% set Crumb = Crumb|replace({'-und-': " & "}) %}
+
+                        {% if(Index == 1) %}
+                            {% set Crumb = BreadcrumbCluster %}
+                        {% endif %}
+                        {% if(Index == 2) %}
+                            {% set Crumb = BreadcrumbApplication %}
+                        {% endif %}
+                        {% if(Index == 3) %}
+                            {% set Crumb = BreadcrumbModule %}
+                        {% endif %}
+
+                        {% if(Index == BreadcrumbList|length) %}
+                            <li class="active">
+                                <small>{{ Crumb }}</small>
+                            </li>
+                        {% else %}
+                            <li><a href="{{ Link }}">
+                                    <small>{{ Crumb }}</small>
+                                </a></li>
+                        {% endif %}
+                    {% endfor %}
+                </ol>
+            </div>
+            <div class="hidden-sm hidden-md col-lg-1"></div>
+        </div>
+    </div>
+{% endif %}
 
 {# ---------------------------------------------------------------------------------------------------------- CONTENT #}
 
@@ -165,7 +164,35 @@
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-10">
             <nav class="navbar navbar-default navbar-footer small">
                 <div class="container-fluid">
-                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <ul class="nav navbar-nav navbar-left">
+                        <li>
+                            <a><span class="glyphicons glyphicons-clock"></span> {{ DebuggerRuntime }}</a>
+                        </li>
+                        <li>
+                            <a><span class="glyphicons glyphicons-cluster"></span> {{ CacheSlot }}</a>
+                        </li>
+                        {#<li>#}
+                        {#<a><span class="glyphicons glyphicons-database"></span>{{ Consumer }}</a>#}
+                        {#</li>#}
+                        <li>
+                            <a><span class="glyphicons glyphicons-globe"></span> {{ DebuggerHost }}</a>
+                        </li>
+                        <li>
+                            <a><span class="glyphicons glyphicons-transfer"></span> {{ CpuLoad }}</a>
+                        </li>
+                        <li>
+                            <a><span class="glyphicons glyphicons-notes-2"></span> {{ MemoryPeak }}</a>
+                        </li>
+                        <li>
+                            <a href="http://www.beyondsecurity.com/vulnerability-scanner-verification/www.[...]"
+                               rel="external">
+                                <span class="glyphicons glyphicons-shield"></span> Secure
+                            </a>
+                        </li>
+                        <li>
+                            <a><span class="glyphicons glyphicons-group"></span> {{ DebuggerSessionCount }}</a>
+                        </li>
+                    </ul>
                     <ul class="nav navbar-nav navbar-right">
                         {% for Item in NavigationFooter %}
                             <li>{{ Item }}</li>
@@ -183,15 +210,20 @@
 {% if( DebuggerProtocol is not empty) %}
     <div class="container-fluid">
         <div class="row">
-            <div class="col-xs-12 small" style="color: #000;">
+            <div class="col-xs-12 small text-center text-muted">
                 <br/>
                 <hr class="muted"/>
+                {#<a href="/Roadmap/Current"><span class="glyphicons glyphicons-bookmark"></span> {{ RoadmapVersion }}</a>#}
+                <div class="text-left" style="font-size: 1.1em; margin-top: 10px; color: #000;">
+                    {{ DebuggerProtocol }}
+                </div>
                 <br/>
-                {{ DebuggerProtocol }}
             </div>
         </div>
     </div>
 {% endif %}
+
+<br/>
 
 {# ----------------------------------------------------------------------------------------------------------- SCRIPT #}
 
@@ -204,18 +236,14 @@
     //    _paq.push(['trackPageView']);
     //    _paq.push(['enableLinkTracking']);
 
-    executeScript(function ()
-    {
-        Client.Use('ModAlways', function ()
-        {
+    executeScript(function () {
+        Client.Use('ModAlways', function () {
             jQuery().ModAlways();
 
-            jQuery('[data-toggle="collapse"]').on('mouseover', function ()
-            {
+            jQuery('[data-toggle="collapse"]').on('mouseover', function () {
                 jQuery(jQuery(this).attr('data-target')).collapse('show');
             })
-            jQuery('[data-toggle="collapse"]').on('mouseleave', function ()
-            {
+            jQuery('[data-toggle="collapse"]').on('mouseleave', function () {
                 jQuery(jQuery(this).attr('data-target')).collapse('hide');
             })
         });

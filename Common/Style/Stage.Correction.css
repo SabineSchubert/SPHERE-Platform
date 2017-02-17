@@ -64,10 +64,15 @@ td > .list-group {
 }
 
 
+@media print {
+    a[href]:after {
+        content: "";
+    }
+}
 
 input,
 button,
 select,
 textarea {
-    /*font-family: "CorporateSDemi";*/
+    font-family: "CorporateSDemi";
 }

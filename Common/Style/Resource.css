@@ -49,29 +49,16 @@ body {
     border: none;
 }
 
+/* GLYPHICONS */
 
+.halflings {
+    vertical-align: text-top;
+}
 
+.glyphicon {
+    vertical-align: text-top;
+}
 
-/*div.MB-Logo {*/
-    /*width: 257px;*/
-    /*height: 110px;*/
-    /*background: transparent url("Resource/MB-Logo-2016-2.gif") no-repeat left center;*/
-/*}*/
-
-/*div.MB-Logo-Mobile {*/
-    /*width: 30px;*/
-    /*height: 30px;*/
-    /*background: transparent url("Resource/MB-Logo-2016-2.gif") no-repeat left center;*/
-/*}*/
-
-/*div.window-nav.nav-cluster {*/
-    /*margin-top: 26px;*/
-/*}*/
-/*div.window-nav.nav-application,*/
-/*div.window-nav.nav-module {*/
-    /*background: #222222;*/
-/*}*/
-/*div.window-nav.nav-module hr {*/
-    /*margin: 0;*/
-    /*border-color: #333333;*/
-/*}*/
+.glyphicons {
+    vertical-align: text-top;
+}

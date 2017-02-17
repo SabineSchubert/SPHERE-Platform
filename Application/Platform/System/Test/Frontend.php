@@ -88,7 +88,7 @@ class Frontend extends Extension implements IFrontendInterface
             new Standard('Link', new Route(__NAMESPACE__), null, array(), true)
         );
         $Stage->addButton(
-            new External('Link', 'www.google.de')
+            new External('Link', 'http://www.google.de')
         );
 
         $D1 = new TblProtocol();

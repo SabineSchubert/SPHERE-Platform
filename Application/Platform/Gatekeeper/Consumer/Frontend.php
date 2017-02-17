@@ -1,7 +1,7 @@
 <?php
 namespace SPHERE\Application\Platform\Gatekeeper\Consumer;
 
-use SPHERE\Application\Api\Platform\Gatekeeper\Consumer;
+use SPHERE\Application\Api\Platform\Gatekeeper\Consumer as ConsumerApi;
 use SPHERE\Common\Frontend\Icon\Repository\Cluster;
 use SPHERE\Common\Frontend\Layout\Structure\Layout;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
@@ -26,14 +26,14 @@ class Frontend
 
         $Stage = new Stage('Mandantenverwaltung');
 
-        $TableReceiver = Consumer::receiverTableConsumer();
-        $CreateReceiver = Consumer::receiverCreateConsumer();
+        $TableReceiver = ConsumerApi::receiverTableConsumer();
+        $CreateReceiver = ConsumerApi::receiverCreateConsumer();
 
-        $CreatePipeline = Consumer::pipelineCreateConsumer($CreateReceiver);
-        $TablePipeline = Consumer::pipelineTableConsumer($TableReceiver);
+        $CreatePipeline = ConsumerApi::pipelineCreateConsumer($CreateReceiver);
+        $TablePipeline = ConsumerApi::pipelineTableConsumer($TableReceiver);
 
         $Stage->addButton(
-            (new Standard('Mandant hinzufügen', Consumer::getEndpoint(), new Cluster()))
+            (new Standard('Mandant hinzufügen', ConsumerApi::getEndpoint(), new Cluster()))
                 ->ajaxPipelineOnClick($CreatePipeline)
         );
 

@@ -428,6 +428,6 @@ table th {
     font-weight: normal;
 }
 table > thead > tr > th {
-    border: 1px solid #ddd;
-    border-bottom: none !important;
+    border: 1px solid #ccc !important;
+    border-bottom: 0 !important;
 }

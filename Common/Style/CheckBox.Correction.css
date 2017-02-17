@@ -12,3 +12,7 @@
 div.checkbox label {
     line-height: 1.028571;
 }
+
+.checkbox label::after {
+    top: 1px;
+}

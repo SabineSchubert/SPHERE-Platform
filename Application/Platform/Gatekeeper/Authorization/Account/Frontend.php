@@ -115,17 +115,17 @@ class Frontend
                     new FormRow(array(
                         new FormColumn(
                             (new TextField('Account[Name]', 'Benutzername', 'Benutzername', new Person()))
-                                ->setPrefixValue($TblConsumer->getAcronym())
+                                ->setPrefixValue($TblConsumer->getAcronym())->setAutoFocus()->setRequired()
                             , 4),
                         new FormColumn(
-                            new PasswordField(
+                            (new PasswordField(
                                 'Account[Password]', 'Passwort', 'Passwort', new Lock()
-                            ), 4),
+                            ))->setRequired(), 4),
                         new FormColumn(
-                            new PasswordField(
+                            (new PasswordField(
                                 'Account[PasswordSafety]', 'Passwort wiederholen', 'Passwort wiederholen',
                                 new Repeat()
-                            ), 4),
+                            ))->setRequired(), 4),
                     )),
                 ), new \SPHERE\Common\Frontend\Form\Repository\Title('Benutzerkonnto anlegen')),
                 new FormGroup(array(

@@ -168,15 +168,15 @@ class Consumer implements IApiInterface
         return (string)new Form(new FormGroup(
             new FormRow(array(
                 new FormColumn(
+                    new Panel('Mandanten Informationen',array(
                     (new TextField(
                         'Acronym', 'Kürzel des Mandanten', 'Kürzel des Mandanten'
-                    ))->setRequired()
-                    , 4),
-                new FormColumn(
+                    ))->setRequired(),
                     new TextField(
                         'Name', 'Name des Mandanten', 'Name des Mandanten'
                     )
-                    , 8),
+                    ))
+                )
             ))
         ), new Primary('Hinzufügen')
         );

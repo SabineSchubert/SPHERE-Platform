@@ -2,6 +2,7 @@
 namespace SPHERE\Common\Window;
 
 use MOC\V\Component\Template\Component\IBridgeInterface;
+use SPHERE\Application\Api\Platform\Utility\Favorite;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
 use SPHERE\Common\Frontend\Ajax\Template\CloseModal;
 use SPHERE\Common\Frontend\Icon\Repository\Star;
@@ -11,9 +12,6 @@ use SPHERE\Common\Frontend\Layout\Structure\Teaser;
 use SPHERE\Common\Frontend\Link\ILinkInterface;
 use SPHERE\Common\Frontend\Link\Repository\AbstractLink;
 use SPHERE\Common\Frontend\Link\Repository\Standard;
-use SPHERE\Common\Frontend\Link\Repository\Warning;
-use SPHERE\Common\Frontend\Text\Repository\Bold;
-use SPHERE\Common\Frontend\Text\Repository\Info;
 use SPHERE\Common\Frontend\Text\Repository\Muted;
 use SPHERE\Common\Frontend\Text\Repository\Primary;
 use SPHERE\System\Extension\Extension;
@@ -43,6 +41,8 @@ class Stage extends Extension implements ITemplateInterface
     private $Menu = array();
     /** @var array $MaskMenu Highlight current Path-Button if only one exists */
     private $MaskMenu = array();
+    /** @var bool $hasUtilityFavorite */
+    private $hasUtilityFavorite = true;
 
     /**
      * @param null|string $Title
@@ -150,12 +150,14 @@ class Stage extends Extension implements ITemplateInterface
         $this->Template->setVariable('StageTeaser', $this->Teaser);
         $this->Template->setVariable('StageContent', $this->Content);
 
-        if( empty( $this->getRequest()->getParameterArray() ) ) {
-            $this->addButton(
-                new Standard('','#', new StarEmpty(), array(), 'Zu&nbsp;Favoriten')
-            );
-            $this->addButton(
-                new Warning('','#', new Star(), array(), 'Favorit&nbsp;entfernen')
+        if((
+            $this->hasUtilityFavorite
+            && Account::useService()->getAccountBySession()
+        )) {
+
+            $ReceiverFavoriteButton = Favorite::receiverFavoriteButton();
+            $this->Template->setVariable('StageFavorite', $ReceiverFavoriteButton
+                . Favorite::pipelineFavoriteButton($ReceiverFavoriteButton)
             );
         }
 
@@ -199,5 +201,13 @@ class Stage extends Extension implements ITemplateInterface
 
         $this->Content = $Content;
         return $this;
+    }
+
+    /**
+     * @param bool $Toggle
+     */
+    public function hasUtilityFavorite($Toggle = false)
+    {
+        $this->hasUtilityFavorite = (bool)$Toggle;
     }
 }

@@ -12,16 +12,18 @@
                     <small>{{ StageDescription }}</small>
                     {% endif %}
                 </div>
-                {% if StageMenu is not empty %}
-                    <div class="pull-right" style="margin-top: 22px;">
+                <div class="pull-right" style="margin-top: 22px;">
+                    {% if StageMenu is not empty %}
                         {#<div class="btn-group">#}
                         {% for Button in StageMenu %}
                             {{ Button }}
                         {% endfor %}
                         {#</div>#}
-                        <br/>
-                    </div>
-                {% endif %}
+                    {% endif %}
+                    {% if StageFavorite is not empty %}
+                        {{ StageFavorite }}
+                    {% endif %}
+                </div>
             </div>
 
             {% if StageMessage is not empty %}

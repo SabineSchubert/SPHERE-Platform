@@ -2,6 +2,7 @@
 namespace SPHERE\Application\Api\Platform;
 
 use SPHERE\Application\Api\Platform\Gatekeeper\Consumer;
+use SPHERE\Application\Api\Platform\Utility\Favorite;
 use SPHERE\Application\IApplicationInterface;
 
 /**
@@ -13,5 +14,6 @@ class Platform implements IApplicationInterface
     public static function registerApplication()
     {
         Consumer::registerApi();
+        Favorite::registerApi();
     }
 }
