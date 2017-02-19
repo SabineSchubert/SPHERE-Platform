@@ -34,6 +34,7 @@ use SPHERE\Common\Window\Stage;
 use SPHERE\System\Authenticator\Authenticator;
 use SPHERE\System\Authenticator\Type\Get;
 use SPHERE\System\Authenticator\Type\Post;
+use SPHERE\System\Authenticator\Type\Request;
 use SPHERE\System\Cache\Handler\APCuHandler;
 use SPHERE\System\Cache\Handler\MemcachedHandler;
 use SPHERE\System\Cache\Handler\MemoryHandler;
@@ -132,14 +133,14 @@ class Main extends Extension
                 if ($this->runAuthenticator()) {
                     if (Access::useService()->existsRightByName($this->getRequest()->getPathInfo())) {
                         if (!Access::useService()->hasAuthorization($this->getRequest()->getPathInfo())) {
-                            header('HTTP/1.0 403 Forbidden');
+                            header('HTTP/1.0 403 Forbidden: '.$this->getRequest()->getPathInfo());
                         } else {
                             echo self::getDispatcher()->fetchRoute(
                                 $this->getRequest()->getPathInfo()
                             );
                         }
                     } else {
-                        header('HTTP/1.0 511 Network Authentication Required');
+                        header('HTTP/1.0 511 Network Authentication Required: '.$this->getRequest()->getPathInfo());
                         self::getDisplay()->setContent(
                             self::getDispatcher()->fetchRoute(
                                 $this->getRequest()->getPathInfo()
@@ -148,7 +149,7 @@ class Main extends Extension
                         echo self::getDisplay()->getContent();
                     }
                 } else {
-                    header('HTTP/1.0 400 Bad Request');
+                    header('HTTP/1.0 400 Bad Request: '.$this->getRequest()->getUrl());
                 }
                 exit(0);
             } catch (\Exception $Exception) {
@@ -268,7 +269,8 @@ class Main extends Extension
 
         $Get = (new Authenticator(new Get()))->getAuthenticator();
         $Post = (new Authenticator(new Post()))->getAuthenticator();
-        if (!($Get->validateSignature() && $Post->validateSignature())) {
+        $Request = (new Authenticator(new Request()))->getAuthenticator();
+        if (!($Get->validateSignature() && $Post->validateSignature() && $Request->validateSignature())) {
             self::getDisplay()->setClusterNavigation();
             self::getDisplay()->setApplicationNavigation();
             self::getDisplay()->setModuleNavigation();

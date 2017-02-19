@@ -7,7 +7,7 @@ use SPHERE\Common\Frontend\Icon\Repository\FolderClosed;
 use SPHERE\Common\Frontend\Icon\Repository\Tag;
 use SPHERE\Common\Frontend\Layout\Repository\Listing;
 use SPHERE\Common\Frontend\Table\Repository\Title;
-use SPHERE\Common\Frontend\Table\Structure\TableData;
+use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Frontend\Text\Repository\Danger;
 use SPHERE\Common\Frontend\Text\Repository\Info;
 use SPHERE\Common\Frontend\Text\Repository\Muted;
@@ -209,6 +209,10 @@ class Script
             $Location . '/Bootstrap.Validator/master-0.11.x/dist/validator.min.js',
             "'undefined' !== typeof jQuery.fn.validator"
         ));
+        $this->addLibrary(new Library('Bootstrap.Validator', '0.11.9',
+            $Location . '/Bootstrap.Validator/0.11.9/dist/validator.min.js',
+            "'undefined' !== typeof jQuery.fn.validator"
+        ));
         $this->addLibrary(new Library('Twitter.Typeahead', '0.11.1',
             $Location . '/Twitter.Typeahead/0.11.1/dist/typeahead.bundle.min.js',
             "'undefined' !== typeof jQuery.fn.typeahead"
@@ -331,7 +335,7 @@ class Script
     }
 
     /**
-     * @return TableData
+     * @return Table
      */
     public function getShow()
     {
@@ -379,6 +383,6 @@ class Script
             );
         }
 
-        return new TableData($ShowList, new Title('Script Library', 'Content'), array(), false, true);
+        return new Table($ShowList, new Title('Script Library', 'Content'), array(), false, true);
     }
 }

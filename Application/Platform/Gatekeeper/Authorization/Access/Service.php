@@ -289,9 +289,9 @@ class Service extends AbstractService
             $Form->setError('Name', 'Bitte geben Sie einen Namen ein');
         }
         if (!empty($Name)) {
-            $Form->setSuccess('Name', 'Die Rolle wurde hinzugefügt');
-            (new Data($this->getBinding()))->createRole($Name);
-            return new Redirect('/Platform/Gatekeeper/Authorization/Access/Role', Redirect::TIMEOUT_SUCCESS);
+            $Form->setSuccess('Name', 'Die Rolle "'.$Name.'" wurde hinzugefügt');
+//            (new Data($this->getBinding()))->createRole($Name);
+//            return new Redirect('/Platform/Gatekeeper/Authorization/Access/Role', Redirect::TIMEOUT_SUCCESS);
         }
         return $Form;
     }

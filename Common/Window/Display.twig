@@ -53,11 +53,23 @@
                                     <span class="glyphicons glyphicons-star" aria-hidden="true"></span>&nbsp;Favoriten
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#"><span class="glyphicons glyphicons-link" aria-hidden="true"></span>&nbsp;Mandantenverwaltung</a>
+                                    <li>
+                                        <a href="#">
+                                            <span class="glyphicons glyphicons-link" aria-hidden="true"></span>
+                                            &nbsp;Mandantenverwaltung
+                                        </a>
                                     </li>
-                                    <li><a href="#"><span class="glyphicons glyphicons-link" aria-hidden="true"></span>&nbsp;Cache</a>
+                                    <li>
+                                        <a href="#">
+                                            <span class="glyphicons glyphicons-link" aria-hidden="true"></span>
+                                            &nbsp;Cache
+                                        </a>
                                     </li>
-                                    <li><a href="#"><span class="glyphicons glyphicons-link" aria-hidden="true"></span>&nbsp;Protokoll</a>
+                                    <li>
+                                        <a href="#">
+                                            <span class="glyphicons glyphicons-link" aria-hidden="true"></span>
+                                            &nbsp;Protokoll
+                                        </a>
                                     </li>
                                 </ul>
                             </li>
@@ -146,7 +158,7 @@
 
 {# ---------------------------------------------------------------------------------------------------------- CONTENT #}
 
-<div class="container-fluid">
+<div class="container-fluid FadeIn">
     <div class="row">
         <div class="hidden-xs hidden-sm hidden-md col-lg-1"></div>
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-10">
@@ -213,7 +225,6 @@
             <div class="col-xs-12 small text-center text-muted">
                 <br/>
                 <hr class="muted"/>
-                {#<a href="/Roadmap/Current"><span class="glyphicons glyphicons-bookmark"></span> {{ RoadmapVersion }}</a>#}
                 <div class="text-left" style="font-size: 1.1em; margin-top: 10px; color: #000;">
                     {{ DebuggerProtocol }}
                 </div>
@@ -238,12 +249,14 @@
 
     executeScript(function () {
         Client.Use('ModAlways', function () {
+            jQuery('div.FadeIn').fadeIn('fast');
             jQuery().ModAlways();
 
-            jQuery('[data-toggle="collapse"]').on('mouseover', function () {
+            var DataToggleCollapse = jQuery('[data-toggle="collapse"]');
+            DataToggleCollapse.on('mouseover', function () {
                 jQuery(jQuery(this).attr('data-target')).collapse('show');
-            })
-            jQuery('[data-toggle="collapse"]').on('mouseleave', function () {
+            });
+            DataToggleCollapse.on('mouseleave', function () {
                 jQuery(jQuery(this).attr('data-target')).collapse('hide');
             })
         });

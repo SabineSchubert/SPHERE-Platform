@@ -16,7 +16,7 @@ use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
 use SPHERE\Common\Frontend\Link\Repository\Danger;
-use SPHERE\Common\Frontend\Table\Structure\TableData;
+use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Frontend\Text\Repository\Muted;
 use SPHERE\Common\Main;
 use SPHERE\Common\Window\Navigation\Link;
@@ -147,7 +147,7 @@ class Session extends Extension implements IModuleInterface
                 new LayoutGroup(
                     new LayoutRow(
                         new LayoutColumn(array(
-                            new TableData($Result, null, array(
+                            new Table($Result, null, array(
                                 'Id' => '#',
                                 'Consumer' => 'Mandant',
                                 'Account' => 'Benutzer',
@@ -169,7 +169,7 @@ class Session extends Extension implements IModuleInterface
                 new LayoutGroup(
                     new LayoutRow(
                         new LayoutColumn(array(
-                            new TableData($History, null, array(
+                            new Table($History, null, array(
                                 'LoginTime' => 'Zeitpunkt',
                                 'AccountId' => 'Account',
                                 'Account' => 'Benutzer',

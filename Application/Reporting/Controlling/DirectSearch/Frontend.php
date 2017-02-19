@@ -28,7 +28,7 @@ use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
 use SPHERE\Common\Frontend\Link\Repository\Standard;
 use SPHERE\Common\Frontend\Message\Repository\Warning;
-use SPHERE\Common\Frontend\Table\Structure\TableData;
+use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Frontend\Text\Repository\Bold;
 use SPHERE\Common\Window\Navigation\Link\Route;
 use SPHERE\Common\Window\Stage;
@@ -523,7 +523,7 @@ class Frontend extends Extension
 	}
 
 	private function tableMasterDataPartNumber() {
-		return new TableData(
+		return new Table(
 			array(
 				array(
 					'Description' => new Bold( 'Teilenummer' ),
@@ -571,7 +571,7 @@ class Frontend extends Extension
 	}
 
 	private function tableMasterDataMarketingCode() {
-		return new TableData(
+		return new Table(
 			array(
 				array(
 					'Description' => 'Marketingcode',
@@ -611,7 +611,7 @@ class Frontend extends Extension
 	}
 
 	private function tableMasterDataProductManager() {
-		return new TableData(
+		return new Table(
 			array(
 				array(
 					'Description' => 'Marketingcode',
@@ -664,7 +664,7 @@ class Frontend extends Extension
 			$PriceValue = '';
 		}
 
-		return new TableData(
+		return new Table(
 			array(
 				array(
 					'Description' => $PriceDescription,
@@ -712,7 +712,7 @@ class Frontend extends Extension
 	}
 
 	private function tablePriceDevelopmentPartNumber() {
-		return new TableData(
+		return new Table(
 			array(
 				array(
 					'Year' => '',
@@ -803,7 +803,7 @@ class Frontend extends Extension
 	}
 
 	private function tableSalesDataPartNumber() {
-		return new TableData(
+		return new Table(
 			array(
 				array(
 					'Description' => new Bold( 'Teilenummer' ),
@@ -851,7 +851,7 @@ class Frontend extends Extension
 	}
 
 	private function tableSalesDataMarketingCode() {
-		return new TableData(
+		return new Table(
 			array(
 				array(
 					'Description' => new Bold( 'Teilenummer' ),
@@ -899,7 +899,7 @@ class Frontend extends Extension
 	}
 
 	private function tableSalesDataProductManager() {
-		return new TableData(
+		return new Table(
 			array(
 				array(
 					'Description' => new Bold( 'Teilenummer' ),
@@ -947,7 +947,7 @@ class Frontend extends Extension
 	}
 
 	private function tableCompetitionExtraPartNumber() {
-		return new TableData(
+		return new Table(
 			array(
 				array(
 					'Description' => new Bold( 'Dimension' ),
@@ -995,7 +995,7 @@ class Frontend extends Extension
 	}
 
 	private function tableCompetitionDataPartNumber() {
-		return new TableData(
+		return new Table(
 			array(
 				array(
 					'Description' => 'Wettbewerber',

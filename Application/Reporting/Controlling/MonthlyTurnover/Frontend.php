@@ -27,7 +27,7 @@ use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
 use SPHERE\Common\Frontend\Link\Repository\Standard;
-use SPHERE\Common\Frontend\Table\Structure\TableData;
+use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Window\Navigation\Link\Route;
 use SPHERE\Common\Window\Stage;
 use SPHERE\System\Extension\Extension;
@@ -62,7 +62,7 @@ class Frontend extends Extension
 		$Table = '';
 		if( $Search ) {
 			if (empty($Result)) {
-				$Table = new TableData(
+				$Table = new Table(
 					array(
 						array( 'A' => ':)' )
 					), null, array(
@@ -114,7 +114,7 @@ class Frontend extends Extension
 		$Table = '';
 		if( $Search ) {
 			if (empty($Result)) {
-				$Table = new TableData(
+				$Table = new Table(
 					array(
 						array( 'A' => ':)' )
 					), null, array(
@@ -165,7 +165,7 @@ class Frontend extends Extension
 		$Table = '';
 		if( $Search ) {
 			if (empty($Result)) {
-				$Table = new TableData(
+				$Table = new Table(
 					array(
 						array( 'A' => ':)' )
 					), null, array(

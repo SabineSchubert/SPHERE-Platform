@@ -28,10 +28,10 @@ use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
 use SPHERE\Common\Frontend\Link\Repository\Standard;
-use SPHERE\Common\Frontend\Table\Structure\Table;
+use SPHERE\Common\Frontend\Table\Structure\TableContainer;
 use SPHERE\Common\Frontend\Table\Structure\TableBody;
 use SPHERE\Common\Frontend\Table\Structure\TableColumn;
-use SPHERE\Common\Frontend\Table\Structure\TableData;
+use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Frontend\Table\Structure\TableHead;
 use SPHERE\Common\Frontend\Table\Structure\TableRow;
 use SPHERE\Common\Frontend\Text\Repository\Bold;
@@ -246,7 +246,7 @@ class Frontend extends Extension
 //							)
 //						, false);
 //		return $Table;
-		return new TableData(
+		return new Table(
 			array(
 				array(
 					'Description' => 'Teilenummer',
@@ -293,7 +293,7 @@ class Frontend extends Extension
 				new FormRow(
 					new FormColumn(
 
-						new TableData(
+						new Table(
 							array(
 								array(
 									'' => 'Alt:',
@@ -448,7 +448,7 @@ class Frontend extends Extension
 
 	private function tablePriceViewing() {
 		return
-			new TableData(
+			new Table(
 				array(
 					array(
 						'Bezeichnung' => 'BLP in €',
@@ -519,7 +519,7 @@ class Frontend extends Extension
 
 	private function tableTotalViewing() {
 		return
-			new TableData(
+			new Table(
 				array(
 					array(
 						'Bezeichnung' => 'Bruttoumsatz in €',

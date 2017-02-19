@@ -7,7 +7,7 @@ use SPHERE\Common\Frontend\Icon\Repository\FolderClosed;
 use SPHERE\Common\Frontend\Icon\Repository\Tag;
 use SPHERE\Common\Frontend\Layout\Repository\Listing;
 use SPHERE\Common\Frontend\Table\Repository\Title;
-use SPHERE\Common\Frontend\Table\Structure\TableData;
+use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Frontend\Text\Repository\Danger;
 use SPHERE\Common\Frontend\Text\Repository\Info;
 use SPHERE\Common\Frontend\Text\Repository\Muted;
@@ -211,7 +211,7 @@ class Style
     }
 
     /**
-     * @return TableData
+     * @return Table
      */
     public function getShow()
     {
@@ -259,6 +259,6 @@ class Style
             );
         }
 
-        return new TableData($ShowList, new Title('Style Library', 'Content'), array(), false, true);
+        return new Table($ShowList, new Title('Style Library', 'Content'), array(), false, true);
     }
 }

@@ -23,7 +23,7 @@ use SPHERE\Common\Frontend\Layout\Repository\Panel;
 use SPHERE\Common\Frontend\Link\Repository\Danger;
 use SPHERE\Common\Frontend\Message\Repository\Warning;
 use SPHERE\Common\Frontend\Table\Repository\Title;
-use SPHERE\Common\Frontend\Table\Structure\TableData;
+use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Window\Stage;
 
 /**
@@ -103,7 +103,7 @@ class Frontend
 
         $Stage->setContent(
             ($TblAccountAll
-                ? new TableData($TblAccountAll, new Title('Bestehende Benutzerkonnten'), array(
+                ? new Table($TblAccountAll, new Title('Bestehende Benutzerkonnten'), array(
                     'Username' => 'Benutzername',
 //                    'Option' => 'Optionen'
                 ))

@@ -65,7 +65,7 @@ class Script extends Extension
             $this->setLibrary((new ScriptLibrary('Bootstrap.FileInput', '4.1.6'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Bootstrap.Select', '1.6.4'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Bootstrap.Notify', '3.1.3'))->getLibrary());
-            $this->setLibrary((new ScriptLibrary('Bootstrap.Validator', '0.11.x'))->getLibrary());
+            $this->setLibrary((new ScriptLibrary('Bootstrap.Validator', '0.11.9'))->getLibrary());
 
             $this->setLibrary((new ScriptLibrary('Twitter.Typeahead', '0.11.1'))->getLibrary());
 

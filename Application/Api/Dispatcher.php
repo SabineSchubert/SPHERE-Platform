@@ -1,9 +1,18 @@
 <?php
 namespace SPHERE\Application\Api;
 
+use SPHERE\Common\Frontend\Ajax\Pipeline;
+use SPHERE\Common\Frontend\Form\IFormInterface;
 use SPHERE\Common\Frontend\ITemplateInterface;
+use SPHERE\Common\Frontend\Layout\Repository\Accordion;
+use SPHERE\Common\Frontend\Layout\Repository\Listing;
 use SPHERE\Common\Window\Error;
+use SPHERE\System\Debugger\Logger\BenchmarkLogger;
+use SPHERE\System\Debugger\Logger\CacheLogger;
+use SPHERE\System\Debugger\Logger\ErrorLogger;
+use SPHERE\System\Debugger\Logger\QueryLogger;
 use SPHERE\System\Extension\Extension;
+use SPHERE\System\Extension\Repository\Debugger;
 
 /**
  * Class Dispatcher
@@ -100,8 +109,36 @@ class Dispatcher extends Extension
             $Result = new Error('Ajax-Error', 'Missing API-Method (' . $MethodName . ')');
         }
 
-        if ($Result instanceof ITemplateInterface) {
-            $Result = $Result->__toString();
+        if (
+            $Result instanceof Pipeline
+            || $Result instanceof ITemplateInterface
+            || $Result instanceof IFormInterface
+        ) {
+            if (Debugger::$Enabled) {
+                $Debugger = new Accordion();
+
+                $ProtocolBenchmark = $this->getLogger(new BenchmarkLogger())->getLog();
+                if (!empty( $ProtocolBenchmark )) {
+                    $Debugger->addItem('Debugger (Benchmark)', new Listing($ProtocolBenchmark), true );
+                }
+                $ProtocolError = $this->getLogger(new ErrorLogger())->getLog();
+                if (!empty( $ProtocolError )) {
+                    $Debugger->addItem('Debugger (Error)', new Listing($ProtocolError), false );
+                }
+                $ProtocolCache = $this->getLogger(new CacheLogger())->getLog();
+                if (!empty( $ProtocolCache )) {
+                    $Debugger->addItem('Debugger (Cache)', new Listing($ProtocolCache), false );
+                }
+                $ProtocolQuery = $this->getLogger(new QueryLogger())->getLog();
+                if (!empty( $ProtocolQuery )) {
+                    $Debugger->addItem('Debugger (Query)', new Listing($ProtocolQuery), false );
+                }
+            }
+
+            $Result = implode(array(
+                $Result->__toString(),
+                ( Debugger::$Enabled ? '<br/><div class="small">'.$Debugger.'</div>' : '' )
+            ));
         } else {
             if (is_object($Result)) {
                 $Result = (string)new Error(

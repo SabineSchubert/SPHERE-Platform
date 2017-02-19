@@ -46,8 +46,8 @@ class Favorite extends Extension implements IApiInterface
         ));
         $Pipeline = new Pipeline();
         $LoadingEmitter = new ClientEmitter($Receiver, new Standard('', '#', new More()));
-        $Pipeline->addEmitter($LoadingEmitter);
-        $Pipeline->addEmitter($Emitter);
+        $Pipeline->appendEmitter($LoadingEmitter);
+        $Pipeline->appendEmitter($Emitter);
 
         return $Pipeline;
     }

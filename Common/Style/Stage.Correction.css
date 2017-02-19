@@ -76,3 +76,8 @@ select,
 textarea {
     font-family: "CorporateSDemi";
 }
+
+
+.modal, .modal-open, .modal-open .navbar-fixed-top {
+    padding-right: 0 !important;
+}

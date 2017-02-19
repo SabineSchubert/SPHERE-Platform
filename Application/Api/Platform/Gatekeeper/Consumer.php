@@ -24,7 +24,7 @@ use SPHERE\Common\Frontend\Layout\Repository\Panel;
 use SPHERE\Common\Frontend\Layout\Repository\ProgressBar;
 use SPHERE\Common\Frontend\Link\Repository\Link;
 use SPHERE\Common\Frontend\Link\Repository\Standard;
-use SPHERE\Common\Frontend\Table\Structure\TableData;
+use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Frontend\Text\Repository\Muted;
 
 /**
@@ -91,8 +91,8 @@ class Consumer implements IApiInterface
             )
         );
         $Receiver->initContent($Content);
-        $Pipeline->addEmitter($LoadingEmitter);
-        $Pipeline->addEmitter($Emitter);
+        $Pipeline->appendEmitter($LoadingEmitter);
+        $Pipeline->appendEmitter($Emitter);
 
         return $Pipeline;
     }
@@ -125,7 +125,7 @@ class Consumer implements IApiInterface
         }
         return new Panel(
             'Bestehende Mandanten',
-            new TableData($TableList, null, array(
+            new Table($TableList, null, array(
                 'Acronym' => 'Kürzel des Mandanten',
                 'Name' => 'Name des Mandanten',
                 'Option' => ''
@@ -156,8 +156,8 @@ class Consumer implements IApiInterface
             )
         );
         $Receiver->initContent($Content);
-        $Pipeline->addEmitter($LoadingEmitter);
-        $Pipeline->addEmitter($Emitter);
+        $Pipeline->appendEmitter($LoadingEmitter);
+        $Pipeline->appendEmitter($Emitter);
 
         return $Pipeline;
     }

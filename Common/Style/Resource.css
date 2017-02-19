@@ -38,6 +38,8 @@ body {
     background-position: top center;
     background-image: url("/Common/Style/Resource/MB-Body-2013.jpg");
     text-shadow: 0 0 1px rgba(0, 0, 0, .1);
+    -webkit-font-smoothing: antialiased;
+    overflow-y: scroll !important;
 }
 
 .glyphicons {
@@ -61,4 +63,34 @@ body {
 
 .glyphicons {
     vertical-align: text-top;
+}
+
+/* Prevent Flash ( + Js Mod.. ) */
+
+.FadeIn,
+.Dynamic-Frontend {
+    display: none;
+}
+
+/* Scrollbar */
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px; }
+
+::-webkit-scrollbar-button {
+    background: #aeaeae; }
+
+::-webkit-scrollbar-track {
+    border-radius: 0px;
+    background: #000; }
+
+::-webkit-scrollbar-thumb {
+    border: 0px;
+    border-radius: 0px;
+    background: #aeaeae; }
+
+body {
+    scrollbar-face-color: #aeaeae;
+    scrollbar-track-color: #000;
 }

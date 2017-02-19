@@ -30,10 +30,10 @@ use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
 use SPHERE\Common\Frontend\Link\Repository\Standard;
-use SPHERE\Common\Frontend\Table\Structure\Table;
+use SPHERE\Common\Frontend\Table\Structure\TableContainer;
 use SPHERE\Common\Frontend\Table\Structure\TableBody;
 use SPHERE\Common\Frontend\Table\Structure\TableColumn;
-use SPHERE\Common\Frontend\Table\Structure\TableData;
+use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Frontend\Table\Structure\TableHead;
 use SPHERE\Common\Frontend\Table\Structure\TableRow;
 use SPHERE\Common\Frontend\Table\Structure\TableVertical;
@@ -197,7 +197,7 @@ class Frontend extends Extension
 
 	private function tableAllocationBasicData() {
 		return
-			new TableData(array(
+			new Table(array(
 				array(
 					'Description' => 'Bezeichnung',
 					'Value' => 'Abschneider'
@@ -265,7 +265,7 @@ class Frontend extends Extension
 
 	private function tableAllocationChanceDiscount() {
 		return
-			new TableData(array(
+			new Table(array(
 				array(
 					'Description' => '&nbsp;',
 					'Value' => '&nbsp;'
@@ -333,7 +333,7 @@ class Frontend extends Extension
 
 	private function tableAllocationChanceGrossPrice() {
 		return
-			new TableData(array(
+			new Table(array(
 				array(
 					'Description' => '&nbsp;',
 					'Value' => '&nbsp;'
@@ -401,7 +401,7 @@ class Frontend extends Extension
 
 	private function tableBalancingBasicData() {
 		return
-			new TableData(array(
+			new Table(array(
 					array(
 						'Description' => 'Menge absolut'
 					),
@@ -435,7 +435,7 @@ class Frontend extends Extension
 
 	private function tableBalancingChanceDiscount() {
 		return
-				new TableData(array(
+				new Table(array(
 					array(
 						'Description' => '&nbsp;',
 						'Value' => '&nbsp;'
@@ -475,7 +475,7 @@ class Frontend extends Extension
 
 	private function tableBalancingChanceGrossPrice() {
 		return
-			new TableData(array(
+			new Table(array(
 				array(
 					'Description' => '&nbsp;',
 					'Value' => '&nbsp;'
@@ -515,7 +515,7 @@ class Frontend extends Extension
 
 	private function tableIncreaseNuChanceDiscount() {
 		return
-			new TableData(array(
+			new Table(array(
 				array(
 					'Description' => '0 St.',
 					'Value' => 'Mehrmenge absolut '
@@ -540,7 +540,7 @@ class Frontend extends Extension
 
 	private function tableIncreaseNuChanceGrossPrice() {
 		return
-			new TableData(array(
+			new Table(array(
 				array(
 					'Description' => '0 St.',
 					'Value' => 'Mehrmenge absolut '
@@ -565,7 +565,7 @@ class Frontend extends Extension
 
 	private function tableIncreaseDbChanceDiscount() {
 		return
-			new TableData(array(
+			new Table(array(
 				array(
 					'Description' => 'Mehrmenge absolut',
 					'Value' => '0 St.'
@@ -590,7 +590,7 @@ class Frontend extends Extension
 
 	private function tableIncreaseDbChanceGrossPrice() {
 		return
-			new TableData(array(
+			new Table(array(
 				array(
 					'Description' => 'Mehrmenge absolut',
 					'Value' => '0 St.'

@@ -3,6 +3,7 @@ namespace SPHERE\Common\Window;
 
 use MOC\V\Component\Template\Component\IBridgeInterface;
 use SPHERE\Application\Api\Platform\Utility\Favorite;
+use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Access;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
 use SPHERE\Common\Frontend\Ajax\Template\CloseModal;
 use SPHERE\Common\Frontend\Icon\Repository\Star;
@@ -153,6 +154,7 @@ class Stage extends Extension implements ITemplateInterface
         if((
             $this->hasUtilityFavorite
             && Account::useService()->getAccountBySession()
+            && Access::useService()->hasAuthorization(Favorite::getEndpoint())
         )) {
 
             $ReceiverFavoriteButton = Favorite::receiverFavoriteButton();

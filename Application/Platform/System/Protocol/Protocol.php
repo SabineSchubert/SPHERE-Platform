@@ -20,7 +20,7 @@ use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
 use SPHERE\Common\Frontend\Message\Repository\Warning;
-use SPHERE\Common\Frontend\Table\Structure\TableData;
+use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Frontend\Text\Repository\Danger;
 use SPHERE\Common\Frontend\Text\Repository\Info;
 use SPHERE\Common\Main;
@@ -197,7 +197,7 @@ class Protocol implements IModuleInterface
                     new LayoutRow(
                         new LayoutColumn(array(
                             implode(' ', $Message),
-                            new TableData($Result, null, array(
+                            new Table($Result, null, array(
                                 'EntityCreate' => 'Timestamp',
                                 'Meta' => 'Meta',
                                 'EntityFrom' => 'Daten-Original',

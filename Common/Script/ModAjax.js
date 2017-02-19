@@ -5,6 +5,7 @@
 // Settings
 
         var settings = $.extend(true, {
+            Sync: true,
             Receiver: [],
             Notify: {
                 Hash: 'default',
@@ -19,6 +20,8 @@
             }
         }, options);
 
+        $('.Dynamic-Frontend:hidden').fadeIn('slow');
+
 // Init Pipeline
 
         /**
@@ -30,7 +33,7 @@
                 Script();
             };
             // Block new Execution Request
-            if (document.ModAjax.Running) {
+            if (settings.Sync && document.ModAjax.Running) {
                 $.notify({
                     title: 'Die Anfrage kann nicht verarbeitet werden',
                     message: 'Bitte warten Sie bis alle Aktionen abgeschlossen sind'
@@ -188,25 +191,31 @@
         var isErrorEvent = false;
         var onErrorEvent = function (request, status, error) {
             isErrorEvent = true;
-            var ErrorMessage = parseAjaxError(request, status, error);
-            if (console && console.log) {
-                console.log(request.responseText);
+            var Notify = getNotifyObject();
+            if (Notify) {
+                Notify.update({progress: getRandomInt(50, 80)});
             }
-            document.ModAjax.NotifyHandler[settings.Notify.Hash + '-Error'] = $.notify({
-                title: ErrorMessage,
-                message: '<span><small><small>' + this.url + '</small></small></span>'
-                + ( status != 'parsererror' && request.responseText.length > 2 ? '<hr/>' + request.responseText : '' )
-            }, {
-                z_index: 32768,
-                newest_on_top: true,
-                showProgressbar: false,
-                placement: {from: "top", align: "right"},
-                type: 'danger',
-                delay: 0,
-                animate: {enter: 'animated fadeInRight', exit: 'animated fadeOutRight'},
-                template: domErrorTemplate
-            });
             freePipeline();
+            for (var Index in settings.Receiver) {
+                var callReceiver;
+                if (settings.Receiver.hasOwnProperty(Index)) {
+                     try {
+                        callReceiver = new Function('Response', settings.Receiver[Index]);
+                        callReceiver(
+                            '<div class="panel panel-danger">'+
+                                '<div class="panel-heading">'+
+                                    '<h6 class="panel-title">API-Error <small>'+ request.status +'</small></h6>'+
+                                '</div>'+
+                                '<div class="panel-body">'+
+                                    error +
+                                '</div>'+
+                            '</div>'
+                        );
+                     } catch (Exception) {
+                         console.log( 'Script Error', Exception );
+                     }
+                }
+            }
         };
 
         var onSuccessEvent = function (Response) {
