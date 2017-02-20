@@ -202,7 +202,6 @@ class Frontend extends Extension implements IFrontendInterface
                         ), 3),
                         new LayoutColumn(array(
                             new Container('Container'),
-                            new LineChart()
                         ), 3),
                         new LayoutColumn(array(
                             new Header('Header')
@@ -213,7 +212,8 @@ class Frontend extends Extension implements IFrontendInterface
                             new Label('Label')
                         ), 3),
                         new LayoutColumn(array(
-                            new Listing('Listing')
+                            new Listing(array('Listing', 'Listing 2')),
+                            new LineChart()
                         ), 3),
                         new LayoutColumn(array(
                             new Panel('Panel', array('Content 1', 'Content 2', 'Content 3'),
