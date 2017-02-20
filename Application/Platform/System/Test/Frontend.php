@@ -10,6 +10,7 @@ use SPHERE\Common\Frontend\Ajax\Receiver\BlockReceiver;
 use SPHERE\Common\Frontend\Ajax\Receiver\FieldValueReceiver;
 use SPHERE\Common\Frontend\Ajax\Receiver\InlineReceiver;
 use SPHERE\Common\Frontend\Ajax\Receiver\ModalReceiver;
+use SPHERE\Common\Frontend\Chart\Repository\LineChart;
 use SPHERE\Common\Frontend\Form\Repository\Button\Danger;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Button\Reset;
@@ -200,7 +201,8 @@ class Frontend extends Extension implements IFrontendInterface
                             new Badge('Badge')
                         ), 3),
                         new LayoutColumn(array(
-                            new Container('Container')
+                            new Container('Container'),
+                            new LineChart()
                         ), 3),
                         new LayoutColumn(array(
                             new Header('Header')

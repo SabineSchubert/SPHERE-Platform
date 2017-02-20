@@ -51,6 +51,8 @@ class Style extends Extension
             $this->setSource((new ScriptLibrary('jQuery.Gridster', '0.6.10'))->getLibrary()->getLocation() . '/dist/jquery.gridster.min.css', false, true);
             $this->setSource((new StyleLibrary('Bootstrap.Checkbox', '0.3.3'))->getLibrary()->getLocation() . '/awesome-bootstrap-checkbox.css', false, true);
 
+            $this->setSource((new StyleLibrary('Morris.js', '0.5.1'))->getLibrary()->getSource(), false, true);
+
         } catch (\Exception $Exception) {
             Main::getDisplay()->setException($Exception, 'Style Library');
         }

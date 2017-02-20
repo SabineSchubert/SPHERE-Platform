@@ -237,6 +237,16 @@ class Script
             $Location . '/Highlight.js/8.8.0/highlight.pack.js',
             "'undefined' !== typeof hljs"
         ));
+
+        $this->addLibrary(new Library('Raphael.js', '2.2.0',
+            '/Library/Raphael.Js/2.2.0/raphael.min.js',
+            "'undefined' !== typeof Raphael"
+        ));
+        $this->addLibrary(new Library( 'Morris.js', '0.5.1',
+            $Location . '/Morris.Js/0.5.1/morris.min.js',
+            "'undefined' !== typeof Morris"
+        ));
+
         $this->addLibrary(new Library('Bootbox.js', '4.4.0',
             $Location . '/Bootbox.js/4.4.0/js/bootbox.min.js',
             "'undefined' !== typeof bootbox"

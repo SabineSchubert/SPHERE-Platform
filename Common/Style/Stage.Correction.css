@@ -81,3 +81,16 @@ textarea {
 .modal, .modal-open, .modal-open .navbar-fixed-top {
     padding-right: 0 !important;
 }
+
+
+
+.bootstrap-datetimepicker-widget table td,.bootstrap-datetimepicker-widget table th {
+    border-radius: 0;
+}
+.bootstrap-datetimepicker-widget table thead tr:first-child th:hover {
+    background: #222222;
+}
+
+.bootstrap-datetimepicker-widget table td span {
+    border-radius: 0;
+}

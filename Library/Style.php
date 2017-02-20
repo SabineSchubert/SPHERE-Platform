@@ -117,6 +117,9 @@ class Style
             $Location . '/Slick/1.6.0/slick/slick-theme.css'
         ));
 
+        $this->addLibrary(new Library('Morris.js', '0.5.1',
+            $Location . '/Morris.Js/0.5.1/morris.css'
+        ));
     }
 
     /**
