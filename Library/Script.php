@@ -229,6 +229,10 @@ class Script
             $Location . '/jQuery.FlowPlayer/6.0.3/flowplayer.min.js',
             "'undefined' !== typeof jQuery.fn.flowplayer"
         ));
+        $this->addLibrary(new Library('jQuery.DetectElementResize', '0.5.3',
+            $Location . '/DetectElementResize/0.5.3/jquery.resize.js',
+            "'undefined' !== typeof jQuery.fn.removeResize"
+        ));
         $this->addLibrary(new Library('Highlight.js', '8.8.0',
             $Location . '/Highlight.js/8.8.0/highlight.pack.js',
             "'undefined' !== typeof hljs"
