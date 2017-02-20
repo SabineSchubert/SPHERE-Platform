@@ -39,7 +39,11 @@
 
         }, options);
 
-        new Morris.Line(settings);
+        var Chart = new Morris.Line(settings);
+        window.setTimeout(function(){
+            Chart.raphael.setSize('100%','100%');
+            Chart.redraw();
+        },500);
 
         return this;
     };
