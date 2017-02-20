@@ -48,7 +48,9 @@
                 });
                 return false;
             } else {
-                document.ModAjax.Running = true;
+                if(settings.Sync) {
+                    document.ModAjax.Running = true;
+                }
                 return true;
             }
         };
@@ -56,7 +58,9 @@
          * Listen for Requests if Pipeline not "busy"
          */
         var freePipeline = function () {
-            document.ModAjax.Running = false;
+            if(settings.Sync) {
+                document.ModAjax.Running = false;
+            }
         };
 
 // Init Notify

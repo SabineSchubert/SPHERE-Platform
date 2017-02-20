@@ -2,6 +2,7 @@
 namespace SPHERE\Common\Window;
 
 use MOC\V\Component\Template\Component\IBridgeInterface;
+use SPHERE\Application\Api\Platform\Utility\Favorite;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Access;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
 use SPHERE\Application\Platform\Gatekeeper\Consumer\Consumer;
@@ -301,6 +302,13 @@ class Display extends Extension implements ITemplateInterface
         $this->Template->setVariable('NavigationModule', implode('', $this->ModuleNavigation));
         $this->Template->setVariable('BreadcrumbModule', $this->ModuleBreadcrumb);
         $this->Template->setVariable('NavigationService', implode('', $this->ServiceNavigation));
+
+        if( Account::useService()->getAccountBySession() ) {
+            $this->Template->setVariable('NavigationFavorite',
+                Favorite::receiverNavigation() . Favorite::pipelineNavigationFavorite(Favorite::receiverNavigation())
+            );
+        }
+
         $this->Template->setVariable('NavigationFooter', $this->FooterNavigation);
 
         $this->Template->setVariable( 'BreadcrumbList',
@@ -381,37 +389,6 @@ class Display extends Extension implements ITemplateInterface
                 : ': '.str_replace('/', ' - ', trim($this->getRequest()->getPathInfo(), '/'))
             )
         );
-
-        // Read RoadMap-Version
-        $Map = null;
-
-        // Set Depending Information
-        switch (strtolower($this->getRequest()->getHost())) {
-            case 'www.schulsoftware.schule':
-            case 'www.kreda.schule':
-                $BrandTitle = '<a class="navbar-brand" href="/">Schulsoftware <span class="text-info">Professional</span></a>';
-                $this->Template->setVariable('RoadmapVersion', $Map ? $Map->getVersionRelease() : 'Roadmap');
-                break;
-            case 'trial.schulsoftware.schule':
-            case 'trial.kreda.schule':
-                $BrandTitle = '<a class="navbar-brand" href="/">Schulsoftware <span class="text-info">Trial</span></a>';
-                $this->Template->setVariable('RoadmapVersion', $Map ? $Map->getVersionRelease() : 'Roadmap');
-                break;
-            case 'demo.schulsoftware.schule':
-            case 'demo.kreda.schule':
-                $BrandTitle = '<a class="navbar-brand" href="/">Schulsoftware <span class="text-danger">Demo</span></a>';
-                $this->Template->setVariable('RoadmapVersion', $Map ? $Map->getVersionPreview() : 'Roadmap');
-                break;
-            case 'nightly.schulsoftware.schule':
-            case 'nightly.kreda.schule':
-                $BrandTitle = '<a class="navbar-brand" href="/">Schulsoftware <span class="text-danger">Nightly</span></a>';
-                $this->Template->setVariable('RoadmapVersion', $Map ? $Map->getVersionPreview() : 'Roadmap');
-                break;
-            default:
-                $BrandTitle = '<a class="navbar-brand" href="/">Schulsoftware <span class="text-warning">'.$this->getRequest()->getHost().'</span></a>';
-                $this->Template->setVariable('RoadmapVersion', 'Roadmap');
-        }
-        $this->Template->setVariable('BrandSwitch', $BrandTitle);
 
         return $this->Template->getContent();
     }

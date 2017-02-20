@@ -51,6 +51,7 @@ class Favorite implements IModuleInterface
     {
 
         $Stage = new Stage('Dashboard', 'Favoriten');
+        $Stage->hasUtilityFavorite(true);
 
         return $Stage;
     }

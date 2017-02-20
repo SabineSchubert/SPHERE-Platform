@@ -77,7 +77,7 @@
 @btn-info-border: darken(@btn-info-bg, 5%);
 @btn-warning-color: #fff;
 @btn-warning-bg: @brand-warning;
-@btn-warning-border: @btn-default-border;
+@btn-warning-border: darken(@btn-warning-bg, 5%);
 @btn-danger-color: #fff;
 @btn-danger-bg: @brand-danger;
 @btn-danger-border: darken(@btn-danger-bg, 5%);
@@ -103,12 +103,12 @@
 @input-group-addon-bg: @gray-lighter;
 @input-group-addon-border-color: @input-border;
 @cursor-disabled: not-allowed;
-@dropdown-bg: #fff;
-@dropdown-border: rgba(0, 0, 0, .15);
+@dropdown-bg: @gray-dark;
+@dropdown-border: rgba(0, 0, 0, .2);
 @dropdown-fallback-border: #ccc;
-@dropdown-divider-bg: #e5e5e5;
-@dropdown-link-color: @gray-dark;
-@dropdown-link-hover-color: darken(@gray-dark, 5%);
+@dropdown-divider-bg: #666666;
+@dropdown-link-color: @brand-primary;
+@dropdown-link-hover-color: darken(@brand-primary, 5%);
 @dropdown-link-hover-bg: #f5f5f5;
 @dropdown-link-active-color: @component-active-color;
 @dropdown-link-active-bg: @component-active-bg;
@@ -236,7 +236,6 @@
 @state-warning-bg: #fcf8e3;
 @state-warning-border: darken(spin(@state-warning-bg, -10), 5%);
 @state-danger-text: lighten(spin(@state-danger-bg, -10), 5%);
-;
 @state-danger-bg: #9f0002;
 @state-danger-border: darken(spin(@state-danger-bg, -10), 5%);
 @tooltip-max-width: 200px;
@@ -246,7 +245,7 @@
 @tooltip-arrow-width: 5px;
 @tooltip-arrow-color: @tooltip-bg;
 @popover-bg: @gray-dark;
-@popover-max-width: 300px;
+@popover-max-width: 600px;
 @popover-border-color: rgba(0, 0, 0, .2);
 @popover-fallback-border-color: #ccc;
 @popover-title-bg: darken(@popover-bg, 3%);

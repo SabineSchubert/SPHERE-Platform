@@ -15,6 +15,7 @@ use SPHERE\Common\Frontend\Form\IFormInterface;
 use SPHERE\Common\Window\Redirect;
 use SPHERE\System\Cache\Handler\MemcachedHandler;
 use SPHERE\System\Database\Binding\AbstractService;
+use SPHERE\System\Database\Fitting\Element;
 
 /**
  * Class Service
@@ -277,24 +278,42 @@ class Service extends AbstractService
     }
 
     /**
-     * @param IFormInterface $Form
-     * @param null|string $Name
+     * Insert TblRole, If not exists
      *
-     * @return IFormInterface|Redirect
+     * @param string $Name
+     * @param bool $IsInternal
+     * @return null|TblRole|Element
      */
-    public function createRole(IFormInterface $Form, $Name)
+    public function createRole($Name, $IsInternal = false)
     {
-
-        if (null !== $Name && empty($Name)) {
-            $Form->setError('Name', 'Bitte geben Sie einen Namen ein');
+        if(!($Entity = $this->getRoleByName($Name))) {
+            if(($Entity = (new Data($this->getBinding()))->insertRole($Name, $IsInternal))) {
+                return $Entity;
+            }
+            return null;
         }
-        if (!empty($Name)) {
-            $Form->setSuccess('Name', 'Die Rolle "'.$Name.'" wurde hinzugefügt');
-//            (new Data($this->getBinding()))->createRole($Name);
-//            return new Redirect('/Platform/Gatekeeper/Authorization/Access/Role', Redirect::TIMEOUT_SUCCESS);
-        }
-        return $Form;
+        return $Entity;
     }
+
+//    /**
+//     * @param IFormInterface $Form
+//     * @param null|string $Name
+//     *
+//     * @return IFormInterface|Redirect
+//     */
+//    public function createRole(IFormInterface $Form, $Name)
+//    {
+//
+//        if (null !== $Name && empty($Name)) {
+//            $Form->setError('Name', 'Bitte geben Sie einen Namen ein');
+//        }
+//        if (!empty($Name)) {
+//            $Form->setSuccess('Name', 'Die Rolle "'.$Name.'" wurde hinzugefügt');
+////            (new Data($this->getBinding()))->createRole($Name);
+////            return new Redirect('/Platform/Gatekeeper/Authorization/Access/Role', Redirect::TIMEOUT_SUCCESS);
+//        }
+//        return $Form;
+//    }
 
     /**
      * @param integer $Id

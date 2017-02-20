@@ -68,7 +68,7 @@ class Session extends Extension implements IModuleInterface
     {
 
         $Stage = new Stage('Aktive Sessions', 'der aktuell angemeldete Benutzer');
-
+        $Stage->hasUtilityFavorite(true);
 
         if ($Id) {
             $tblSessionAll = Account::useService()->getSessionAll();

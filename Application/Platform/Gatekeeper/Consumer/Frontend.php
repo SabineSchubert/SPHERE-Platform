@@ -25,6 +25,7 @@ class Frontend
     {
 
         $Stage = new Stage('Mandantenverwaltung');
+        $Stage->hasUtilityFavorite(true);
 
         $TableReceiver = ConsumerApi::receiverTableConsumer();
         $CreateReceiver = ConsumerApi::receiverCreateConsumer();

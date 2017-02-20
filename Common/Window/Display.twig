@@ -47,31 +47,20 @@
                     <nav class="navbar navbar-default navbar-service small">
                         <ul class="nav navbar-nav navbar-right">
                             {{ NavigationService }}
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                   aria-haspopup="true" aria-expanded="false">
-                                    <span class="glyphicons glyphicons-star" aria-hidden="true"></span>&nbsp;Favoriten
+                            {{ NavigationFavorite }}
+                            {#<li class="dropdown">#}
+                                {#<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"#}
+                                   {#aria-haspopup="true" aria-expanded="false">#}
+                                    {#<span class="glyphicons glyphicons-star" aria-hidden="true"></span>#}
+                                {#</a>#}
+                                {#<ul class="dropdown-menu">#}
+                                {#{{ NavigationFavorite }}#}
+                                {#</ul>#}
+                            {#</li>#}
+                            <li>
+                                <a href="#" data-html="true" data-trigger="hover" data-toggle="popover" data-content="<div>4x&nbsp;Q440......................................................................................................................</div><div>2x&nbsp;Artikel</div>" title="Warenkorb">
+                                    <span class="glyphicons glyphicons-shopping-cart" aria-hidden="true"></span>&nbsp;6
                                 </a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="#">
-                                            <span class="glyphicons glyphicons-link" aria-hidden="true"></span>
-                                            &nbsp;Mandantenverwaltung
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <span class="glyphicons glyphicons-link" aria-hidden="true"></span>
-                                            &nbsp;Cache
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <span class="glyphicons glyphicons-link" aria-hidden="true"></span>
-                                            &nbsp;Protokoll
-                                        </a>
-                                    </li>
-                                </ul>
                             </li>
                         </ul>
                     </nav>

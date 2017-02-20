@@ -21,7 +21,7 @@ class Setup extends AbstractSetup
     {
         $Schema = $this->loadSchema();
 
-        $this->setTableFavoriteNavigation($Schema);
+        $this->setTableFavorite($Schema);
 
         return $this->saveSchema($Schema, $Simulate);
     }
@@ -31,12 +31,13 @@ class Setup extends AbstractSetup
      *
      * @return Table
      */
-    private function setTableFavoriteNavigation(Schema $Schema)
+    private function setTableFavorite(Schema $Schema)
     {
 
-        $Table = $this->createTable($Schema, 'TblFavoriteNavigation');
+        $Table = $this->createTable($Schema, 'TblFavorite');
         $this->createColumn($Table, 'Route', self::FIELD_TYPE_STRING);
-        $this->createColumn($Table, 'Name', self::FIELD_TYPE_STRING);
+        $this->createColumn($Table, 'Title', self::FIELD_TYPE_STRING);
+        $this->createColumn($Table, 'Description', self::FIELD_TYPE_STRING);
         $this->createServiceKey( $Table, (new TblAccount())->getEntityShortName() );
 
         return $Table;

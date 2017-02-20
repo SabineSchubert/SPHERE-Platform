@@ -21,3 +21,19 @@
     <a href="#" class="{{ ElementType }}" data-trigger="hover" data-toggle="popover"
        data-content="{{ ElementToolTip }}" disabled>{{ ElementIcon }} {{ ElementName }}</a>
 {% endif %}
+<script>
+    //noinspection JSUnresolvedFunction
+    executeScript(function()
+    {
+        Client.Use("ModAlways", function() {
+            $('a#{{ ElementHash }}').not('[data-original-title]').popover({
+                placement: 'auto top',
+                template: '<div class="popover">'
+                + '<div class="arrow"></div>'
+                + '<div class="popover-title" style="white-space: nowrap; border-radius: 0;"></div>'
+                + '<div class="popover-content"></div>'
+                + '</div>'
+            });
+        });
+    });
+</script>

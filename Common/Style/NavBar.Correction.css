@@ -70,3 +70,10 @@ hr.muted {
 .breadcrumb {
     margin: 0;
 }
+
+ul.nav li.dropdown:hover ul.dropdown-menu{
+    display: block;
+}
+.dropdown-menu .divider {
+    margin: 3px 0;
+}

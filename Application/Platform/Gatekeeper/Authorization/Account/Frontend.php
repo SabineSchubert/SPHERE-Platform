@@ -40,7 +40,8 @@ class Frontend
     public function frontendAccount()
     {
 
-        $Stage = new Stage('Benutzerkonnten');
+        $Stage = new Stage('Benutzerkonten');
+        $Stage->hasUtilityFavorite(true);
 
         $TblAccount = Account::useService()->getAccountBySession();
         if ($TblAccount) {
@@ -103,11 +104,11 @@ class Frontend
 
         $Stage->setContent(
             ($TblAccountAll
-                ? new Table($TblAccountAll, new Title('Bestehende Benutzerkonnten'), array(
+                ? new Table($TblAccountAll, new Title('Bestehende Benutzerkonten'), array(
                     'Username' => 'Benutzername',
 //                    'Option' => 'Optionen'
                 ))
-                : new Warning('Keine Benutzerkonnten vorhanden')
+                : new Warning('Keine Benutzerkonten vorhanden')
             )
             //.Account::useService()->createAccount(
             . new Form(array(
@@ -127,7 +128,7 @@ class Frontend
                                 new Repeat()
                             ))->setRequired(), 4),
                     )),
-                ), new \SPHERE\Common\Frontend\Form\Repository\Title('Benutzerkonnto anlegen')),
+                ), new \SPHERE\Common\Frontend\Form\Repository\Title('Benutzerkonto anlegen')),
                 new FormGroup(array(
                     new FormRow(array(
                         new FormColumn(array(

@@ -6,13 +6,10 @@ use SPHERE\Application\Api\Platform\Utility\Favorite;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Access;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
 use SPHERE\Common\Frontend\Ajax\Template\CloseModal;
-use SPHERE\Common\Frontend\Icon\Repository\Star;
-use SPHERE\Common\Frontend\Icon\Repository\StarEmpty;
 use SPHERE\Common\Frontend\ITemplateInterface;
 use SPHERE\Common\Frontend\Layout\Structure\Teaser;
 use SPHERE\Common\Frontend\Link\ILinkInterface;
 use SPHERE\Common\Frontend\Link\Repository\AbstractLink;
-use SPHERE\Common\Frontend\Link\Repository\Standard;
 use SPHERE\Common\Frontend\Text\Repository\Muted;
 use SPHERE\Common\Frontend\Text\Repository\Primary;
 use SPHERE\System\Extension\Extension;
@@ -43,7 +40,7 @@ class Stage extends Extension implements ITemplateInterface
     /** @var array $MaskMenu Highlight current Path-Button if only one exists */
     private $MaskMenu = array();
     /** @var bool $hasUtilityFavorite */
-    private $hasUtilityFavorite = true;
+    private $hasUtilityFavorite = false;
 
     /**
      * @param null|string $Title
@@ -157,9 +154,9 @@ class Stage extends Extension implements ITemplateInterface
             && Access::useService()->hasAuthorization(Favorite::getEndpoint())
         )) {
 
-            $ReceiverFavoriteButton = Favorite::receiverFavoriteButton();
+            $ReceiverFavoriteButton = Favorite::receiverFavorite();
             $this->Template->setVariable('StageFavorite', $ReceiverFavoriteButton
-                . Favorite::pipelineFavoriteButton($ReceiverFavoriteButton)
+                . Favorite::pipelineGetFavorite($ReceiverFavoriteButton, $this->getRequest()->getPathInfo(), $this->Title, $this->Description )
             );
         }
 
@@ -208,7 +205,7 @@ class Stage extends Extension implements ITemplateInterface
     /**
      * @param bool $Toggle
      */
-    public function hasUtilityFavorite($Toggle = false)
+    public function hasUtilityFavorite($Toggle = true)
     {
         $this->hasUtilityFavorite = (bool)$Toggle;
     }

@@ -32,7 +32,7 @@ class Notify extends AbstractTemplate
         $Script = new NotifyScript($Title, $Message, $Type, $Delay);
         $this->setTemplate( new InlineReceiver() );
         $Emitter = new ScriptEmitter($this->getTemplate(), $Script);
-        $Pipeline = new Pipeline();
+        $Pipeline = new Pipeline(false);
 
         $Pipeline->appendEmitter($Emitter);
         $this->getTemplate()->initContent($Pipeline);

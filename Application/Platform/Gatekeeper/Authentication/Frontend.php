@@ -12,8 +12,6 @@ use SPHERE\Common\Frontend\Form\Structure\Form;
 use SPHERE\Common\Frontend\Form\Structure\FormColumn;
 use SPHERE\Common\Frontend\Form\Structure\FormGroup;
 use SPHERE\Common\Frontend\Form\Structure\FormRow;
-use SPHERE\Common\Frontend\Icon\Repository\ChevronRight;
-use SPHERE\Common\Frontend\Icon\Repository\FAAngleRight;
 use SPHERE\Common\Frontend\Icon\Repository\Hospital;
 use SPHERE\Common\Frontend\Icon\Repository\Lock;
 use SPHERE\Common\Frontend\Icon\Repository\Person;
@@ -22,15 +20,12 @@ use SPHERE\Common\Frontend\IFrontendInterface;
 use SPHERE\Common\Frontend\Layout\Repository\Panel;
 use SPHERE\Common\Frontend\Layout\Repository\PullRight;
 use SPHERE\Common\Frontend\Layout\Repository\Thumbnail;
-use SPHERE\Common\Frontend\Layout\Repository\Well;
 use SPHERE\Common\Frontend\Layout\Structure\Layout;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
 use SPHERE\Common\Frontend\Layout\Structure\Slick;
-use SPHERE\Common\Frontend\Layout\Structure\Teaser;
 use SPHERE\Common\Frontend\Link\Repository\Link;
-use SPHERE\Common\Frontend\Link\Repository\Standard;
 use SPHERE\Common\Frontend\Message\Repository\Info;
 use SPHERE\Common\Frontend\Message\Repository\Success;
 use SPHERE\Common\Frontend\Text\Repository\Danger;
@@ -110,48 +105,6 @@ class Frontend extends Extension implements IFrontendInterface
                             )
                             , 3),
                     )),
-                    new LayoutRow(array(
-                        new LayoutColumn(
-                            new Thumbnail(
-                                FileSystem::getFileLoader('/Common/Style/Resource/Teaser/00-mercedes-benz-design-aesthetics-a-1280-686-848x454.jpg'),
-                                'Titel',
-                                'Beschreibung',
-                                array(
-                                    new Standard('Link', '#')
-                                )
-                            )
-                            , 3),
-                        new LayoutColumn(
-                            new Thumbnail(
-                                FileSystem::getFileLoader('/Common/Style/Resource/Teaser/00-mercedes-benz-design-e-klasse-coupe-c-238-edition-1-amg-line-1280x686-1-848x454.jpg'),
-                                'Titel',
-                                'Beschreibung',
-                                array(
-                                    new Standard('Link', '#')
-                                )
-                            )
-                            , 3),
-                        new LayoutColumn(
-                            new Thumbnail(
-                                FileSystem::getFileLoader('/Common/Style/Resource/Teaser/00-mercedes-benz-design-skizze-van-nutzfahrzeug-truck-1280x686-848x454.jpg'),
-                                'Titel',
-                                'Beschreibung',
-                                array(
-                                    new Standard('Link', '#')
-                                )
-                            )
-                            , 3),
-                        new LayoutColumn(
-                            new Thumbnail(
-                                FileSystem::getFileLoader('/Common/Style/Resource/Teaser/00-mercedes-benz-fahrzeuge-50-jahre-amg-mercedes-amg-gt-c-190-1280x686-2-848x454.jpg'),
-                                'Titel',
-                                'Beschreibung',
-                                array(
-                                    new Standard('Link', '#')
-                                )
-                            )
-                            , 3),
-                    ))
                 )),
                 new LayoutGroup(
                     new LayoutRow(

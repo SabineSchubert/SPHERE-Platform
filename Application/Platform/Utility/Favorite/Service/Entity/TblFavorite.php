@@ -11,18 +11,23 @@ use SPHERE\System\Database\Fitting\Element;
 
 /**
  * @Entity
- * @Table(name="TblFavoriteNavigation")
+ * @Table(name="TblFavorite")
  * @Cache(usage="READ_ONLY")
  */
-class TblFavoriteNavigation extends Element
+class TblFavorite extends Element
 {
     const SERVICE_TBL_ACCOUNT = 'serviceTblAccount';
     const ATTR_ROUTE = 'Route';
+    const ATTR_TITLE = 'Title';
 
     /**
      * @Column(type="string")
      */
-    protected $Name;
+    protected $Title;
+    /**
+     * @Column(type="string")
+     */
+    protected $Description;
     /**
      * @Column(type="string")
      */
@@ -57,17 +62,17 @@ class TblFavoriteNavigation extends Element
     /**
      * @return string
      */
-    public function getName()
+    public function getTitle()
     {
-        return $this->Name;
+        return $this->Title;
     }
 
     /**
-     * @param string $Name
+     * @param string $Title
      */
-    public function setName($Name)
+    public function setTitle($Title)
     {
-        $this->Name = $Name;
+        $this->Title = $Title;
     }
 
     /**
@@ -84,5 +89,21 @@ class TblFavoriteNavigation extends Element
     public function setRoute($Route)
     {
         $this->Route = $Route;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->Description;
+    }
+
+    /**
+     * @param string $Description
+     */
+    public function setDescription($Description)
+    {
+        $this->Description = $Description;
     }
 }

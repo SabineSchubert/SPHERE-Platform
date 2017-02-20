@@ -22,7 +22,6 @@ use SPHERE\Common\Frontend\Icon\Repository\TileBig;
 use SPHERE\Common\Frontend\Icon\Repository\TileList;
 use SPHERE\Common\Frontend\Layout\Repository\Panel;
 use SPHERE\Common\Frontend\Layout\Repository\PullRight;
-use SPHERE\Common\Frontend\Layout\Repository\Title;
 use SPHERE\Common\Frontend\Layout\Structure\Layout;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
@@ -33,6 +32,7 @@ use SPHERE\Common\Frontend\Link\Repository\External;
 use SPHERE\Common\Frontend\Link\Repository\Standard;
 use SPHERE\Common\Frontend\Message\Repository\Info;
 use SPHERE\Common\Frontend\Message\Repository\Warning;
+use SPHERE\Common\Frontend\Table\Repository\Title;
 use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Main;
 use SPHERE\Common\Window\Navigation\Link;
@@ -53,6 +53,7 @@ class Frontend
     public function frontendAccess()
     {
         $Stage = new Stage( 'Rechteverwaltung' );
+        $Stage->hasUtilityFavorite(true);
 
         $ReceiverStage = AccessApi::receiverStage();
 

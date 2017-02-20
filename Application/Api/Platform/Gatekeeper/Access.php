@@ -122,19 +122,35 @@ class Access extends Receiver implements IApiInterface
         );
     }
 
-    public function insertRole($Receiver, $TableReceiver, $Name = null)
+    public function insertRole($Receiver, $TableReceiver, $Name = null, $IsInternal = null)
     {
         // TODO: Insert Route
+        $Error = false;
+        $Form = $this->formRole($Receiver, $TableReceiver);
 
-        // Error
-        // return $this->formRole( $Receiver, $TableReceiver )->setError( 'Name', ':)' );
+        if( !$Name ) {
+            $Error = true;
+            $Form->setError('Name', 'Bitte geben Sie einen Namen an');
+        }
 
-        // Success
-        $TableReceiver = Access::receiverTableRole()->setIdentifier($TableReceiver);
-        $Receiver = Access::receiverCreateRole()->setIdentifier($Receiver);
-        return new Success('Rolle erfolgreich hinzugefügt')
-            . (Access::pipelineTableRole($TableReceiver))
-                ->appendEmitter((new CloseModal($Receiver))->getEmitter());
+        if( $Error ) {
+            // on Error
+            return $Form;
+        } else {
+            // on Success
+            $TableReceiver = Access::receiverTableRole()->setIdentifier($TableReceiver);
+            $Receiver = Access::receiverCreateRole()->setIdentifier($Receiver);
+
+            if( AccessApp::useService()->createRole( $Name, ( $IsInternal ? true : false ) ) ) {
+                // on Success
+                return new Success('Rolle erfolgreich angelegt')
+                    . (Access::pipelineTableRole($TableReceiver))
+                        ->appendEmitter((new CloseModal($Receiver))->getEmitter());
+            } else {
+                // on Error
+                return $Form->setError('Name', 'Die Rolle konnte nicht angelegt werden');
+            }
+        }
     }
 
 }
