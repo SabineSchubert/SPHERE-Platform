@@ -6,13 +6,12 @@
  * Time: 13:33
  */
 
-namespace SPHERE\Application\RROp\PriceList\Car;
+namespace SPHERE\Application\RROP\PriceList\Car;
 
 
 use SPHERE\Application\IModuleInterface;
 use SPHERE\Application\IServiceInterface;
 use SPHERE\Common\Frontend\Icon\Repository\Calculator;
-use SPHERE\Common\Frontend\IFrontendInterface;
 use SPHERE\Common\Main;
 use SPHERE\Common\Window\Navigation\Link;
 
@@ -37,7 +36,7 @@ class Car implements IModuleInterface
 	}
 
 	/**
-	 * @return IFrontendInterface
+	 * @return Frontend
 	 */
 	public static function useFrontend()
 	{

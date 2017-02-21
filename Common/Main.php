@@ -12,6 +12,7 @@ use SPHERE\Application\Platform\Gatekeeper\Consumer\Consumer;
 use SPHERE\Application\Platform\Platform;
 use SPHERE\Application\Platform\System;
 use SPHERE\Application\Reporting\Reporting;
+use SPHERE\Application\RROP\RROP;
 use SPHERE\Common\Frontend\Icon\Repository\HazardSign;
 use SPHERE\Common\Frontend\Icon\Repository\Hospital;
 use SPHERE\Common\Frontend\Icon\Repository\Info;
@@ -356,6 +357,7 @@ class Main extends Extension
                     'http://www.daimler.com/'
                     , null, array(), false, External::STYLE_LINK)
             );
+        RROP::registerCluster();
         Reporting::registerCluster();
     }
 }
