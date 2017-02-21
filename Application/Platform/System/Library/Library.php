@@ -15,13 +15,15 @@ use SPHERE\Common\Window\Navigation\Link;
 use SPHERE\Common\Window\Stage;
 use SPHERE\Library\Script;
 use SPHERE\Library\Style;
+use SPHERE\System\Cache\Handler\CookieHandler;
+use SPHERE\System\Extension\Extension;
 
 /**
  * Class Library
  *
  * @package SPHERE\Application\Platform\System\Library
  */
-class Library implements IModuleInterface
+class Library extends Extension implements IModuleInterface
 {
     public static function registerModule()
     {
@@ -56,9 +58,18 @@ class Library implements IModuleInterface
      * @param int $Lib
      * @return Stage
      */
-    public function frontendLibrary($Lib = 1)
+    public function frontendLibrary($Lib = null)
     {
         $Stage = new Stage('Bibliotheken', 'Style / Javascript');
+
+        $Cache = $this->getCache(new CookieHandler());
+        if( !$Lib ) {
+            if (!($Lib = $Cache->getValue(sha1(__METHOD__)))) {
+                $Lib = 1;
+            }
+        } else {
+            $Cache->setValue(sha1(__METHOD__), $Lib, 3600);
+        }
 
         $Stage->addButton(
             new Standard('Style Library', new Link\Route(__NAMESPACE__), null, array('Lib' => 1))

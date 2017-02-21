@@ -48,7 +48,7 @@ class Title extends Extension implements ITemplateInterface
 
         if (empty( $this->Menu )) {
             if (empty( $this->Description )) {
-                return '<h4>'.$this->Title.'</h4><hr/>';
+                return '<h4>'.$this->Title.'</h4><hr cass="muted"/>';
             } else {
                 return '<h4>'.$this->Title.' <small>'.$this->Description.'</small></h4><hr/>';
             }

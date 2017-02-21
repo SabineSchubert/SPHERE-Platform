@@ -37,17 +37,60 @@ body {
     background-repeat: no-repeat;
     background-position: top center;
     background-image: url("/Common/Style/Resource/MB-Body-2013.jpg");
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+    text-shadow: 0 0 1px rgba(0, 0, 0, .1);
+    -webkit-font-smoothing: antialiased;
+    overflow-y: scroll !important;
 }
 
-div.MB-Logo {
-    width: 257px;
-    height: 110px;
-    background: transparent url("Resource/MB-Logo-2016-2.gif") no-repeat left center;
+.glyphicons {
+    top:0 !important;
+    line-height: inherit !important;
 }
 
-div.MB-Logo-Mobile {
-    width: 30px;
-    height: 30px;
-    background: transparent url("Resource/MB-Logo-2016-2.gif") no-repeat left center;
+.thumbnail {
+    border: none;
+}
+
+/* GLYPHICONS */
+
+.halflings {
+    vertical-align: text-top;
+}
+
+.glyphicon {
+    vertical-align: text-top;
+}
+
+.glyphicons {
+    vertical-align: text-top;
+}
+
+/* Prevent Flash ( + Js Mod.. ) */
+
+.FadeIn,
+.Dynamic-Frontend {
+    display: none;
+}
+
+/* Scrollbar */
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px; }
+
+::-webkit-scrollbar-button {
+    background: #aeaeae; }
+
+::-webkit-scrollbar-track {
+    border-radius: 0px;
+    background: #000; }
+
+::-webkit-scrollbar-thumb {
+    border: 0px;
+    border-radius: 0px;
+    background: #aeaeae; }
+
+body {
+    scrollbar-face-color: #aeaeae;
+    scrollbar-track-color: #000;
 }

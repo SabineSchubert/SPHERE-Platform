@@ -7,7 +7,7 @@ use SPHERE\Common\Frontend\Icon\Repository\FolderClosed;
 use SPHERE\Common\Frontend\Icon\Repository\Tag;
 use SPHERE\Common\Frontend\Layout\Repository\Listing;
 use SPHERE\Common\Frontend\Table\Repository\Title;
-use SPHERE\Common\Frontend\Table\Structure\TableData;
+use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Frontend\Text\Repository\Danger;
 use SPHERE\Common\Frontend\Text\Repository\Info;
 use SPHERE\Common\Frontend\Text\Repository\Muted;
@@ -99,6 +99,9 @@ class Style
         $this->addLibrary(new Library('Foundation.Icons', '3.0',
             $Location . '/Foundation.Icons/3.0/foundation-icons.css'
         ));
+        $this->addLibrary(new Library('FontAwesome', '4.7.0',
+            $Location . '/FontAwesome/4.7.0/css/font-awesome.min.css'
+        ));
 
         $this->addLibrary(new Library('jQuery.Formstone.Selecter', '3.2.4',
             $Location . '/jQuery.Selecter/3.2.4/jquery.fs.selecter.min.css'
@@ -107,6 +110,16 @@ class Style
             $Location . '/jQuery.Stepper/3.0.8/jquery.fs.stepper.css'
         ));
 
+        $this->addLibrary(new Library('Slick', '1.6.0',
+            $Location . '/Slick/1.6.0/slick/slick.css'
+        ));
+        $this->addLibrary(new Library('Slick.Theme', '1.6.0',
+            $Location . '/Slick/1.6.0/slick/slick-theme.css'
+        ));
+
+        $this->addLibrary(new Library('Morris.js', '0.5.1',
+            $Location . '/Morris.Js/0.5.1/morris.css'
+        ));
     }
 
     /**
@@ -201,7 +214,7 @@ class Style
     }
 
     /**
-     * @return TableData
+     * @return Table
      */
     public function getShow()
     {
@@ -249,6 +262,6 @@ class Style
             );
         }
 
-        return new TableData($ShowList, new Title('Style Library', 'Content'), array(), false, true);
+        return new Table($ShowList, new Title('Style Library', 'Content'), array(), false, true);
     }
 }

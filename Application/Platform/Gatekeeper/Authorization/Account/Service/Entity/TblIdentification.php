@@ -16,6 +16,7 @@ class TblIdentification extends Element
 {
 
     const NAME_CREDENTIAL = 'Credential';
+    const NAME_SAML = 'Saml';
 
     const ATTR_NAME = 'Name';
     const ATTR_SESSION_TIMEOUT = 'SessionTimeout';

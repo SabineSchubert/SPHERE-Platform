@@ -82,6 +82,7 @@ class Cache extends Extension implements IModuleInterface
     {
 
         $Stage = new Stage('Cache', 'Status');
+        $Stage->hasUtilityFavorite(true);
 
         $Stage->addButton(new Standard('Cache löschen', '/Platform/System/Cache', null, array('Clear' => true),
             'Cache leeren'));

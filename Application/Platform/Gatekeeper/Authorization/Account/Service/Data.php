@@ -32,15 +32,22 @@ class Data extends AbstractData
 
         // Identification
         $this->createIdentification(TblIdentification::NAME_CREDENTIAL, 'Benutzername / Passwort', true);
+        $this->createIdentification(TblIdentification::NAME_SAML, 'SAML Auth', true);
 
         $TblConsumer = Consumer::useService()->getConsumerById(1);
+
         // Choose the right Identification for Authentication
-        $TblIdentification = $this->getIdentificationByName(TblIdentification::NAME_CREDENTIAL);
+        $TblIdentificationCredential = $this->getIdentificationByName(TblIdentification::NAME_CREDENTIAL);
+        $TblIdentificationSaml = $this->getIdentificationByName(TblIdentification::NAME_SAML);
+
         $TblRole = Access::useService()->getRoleByName('Administrator');
 
         // Install Administrator
         $TblAccount = $this->createAccount('root', 'sphere', $TblConsumer);
-        $this->addAccountAuthentication($TblAccount, $TblIdentification);
+
+        $this->addAccountAuthentication($TblAccount, $TblIdentificationCredential);
+        $this->addAccountAuthentication($TblAccount, $TblIdentificationSaml);
+
         $this->addAccountAuthorization($TblAccount, $TblRole);
         if (!$this->getSettingByAccount($TblAccount, 'Surface')) {
             $this->setSettingByAccount($TblAccount, 'Surface', 1);

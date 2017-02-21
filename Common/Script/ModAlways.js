@@ -64,9 +64,16 @@
              * Activate: Tooltip
              */
 //            $('[data-toggle="tooltip"]').tooltip({
-//                container: 'body',
 //                placement: 'auto top'
 //            });
+            $('[data-toggle="popover"]').not('[data-content=""]').popover({
+                placement: 'auto top',
+                template: '<div class="popover">'
+                    +'<div class="arrow"></div>'
+                    +'<div class="popover-title" style="white-space: nowrap; border-radius: 0;"></div>'
+                    +'<div class="popover-content"></div>'
+                +'</div>'
+            });
             /**
              * Activate: External Link
              */

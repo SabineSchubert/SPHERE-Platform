@@ -1,205 +1,222 @@
 <?php
 namespace SPHERE\Common\Frontend\Table\Structure;
 
-use MOC\V\Component\Template\Component\IBridgeInterface;
-use SPHERE\Common\Frontend\ITemplateInterface;
 use SPHERE\Common\Frontend\Table\Repository\Title;
-use SPHERE\System\Extension\Extension;
 
 /**
- * Class Table
+ * Class TableData
  *
  * @package SPHERE\Common\Frontend\Table\Structure
  */
-class Table extends Extension implements ITemplateInterface
+class Table extends TableContainer
 {
 
-    /** @var TableHead[] $TableHead */
-    protected $TableHead = array();
-    /** @var TableBody[] $TableBody */
-    protected $TableBody = array();
-    /** @var TableFoot[] $TableFoot */
-    protected $TableFoot = array();
-    /** @var bool|string|array|null $Interactive */
-    protected $Interactive = false;
-    /** @var IBridgeInterface $Template */
-    protected $Template = null;
-    /** @var string $Hash */
-    protected $Hash = '';
-
     /**
-     * @param TableHead  $TableHead
-     * @param TableBody  $TableBody
-     * @param Title      $TableTitle
+     * @param string|Object[] $DataList
+     * @param Title $TableTitle
+     * @param array $ColumnDefinition
      * @param bool|array $Interactive
-     * @param TableFoot  $TableFoot
+     * @param bool $useHtmlRenderer false JS, true DOM
      */
     public function __construct(
-        TableHead $TableHead,
-        TableBody $TableBody,
+        $DataList,
         Title $TableTitle = null,
-        $Interactive = false,
-        TableFoot $TableFoot = null
+        $ColumnDefinition = array(),
+        $Interactive = true,
+        $useHtmlRenderer = false
     ) {
 
-        $this->Interactive = $Interactive;
+        /**
+         *
+         */
+        if (is_bool($DataList)) {
+            $DataList = array();
+        }
 
-        if (!is_array($TableHead)) {
-            $TableHead = array($TableHead);
-        }
-        $this->TableHead = $TableHead;
-        if (!is_array($TableBody)) {
-            $TableBody = array($TableBody);
-        }
-        $this->TableBody = $TableBody;
-        if (!is_array($TableFoot)) {
-            if($TableFoot === null) {
-                $TableFoot = array();
-            } else {
-                $TableFoot = array($TableFoot);
-            }
-        }
-        $this->TableFoot = $TableFoot;
-        if ($Interactive) {
-            $this->Template = $this->getTemplate(__DIR__.'/TableData.twig');
+        /**
+         * Server-Side-Processing
+         */
+        if (is_string($DataList) && ( $Interactive || is_array($Interactive) )) {
+
+            $DataColumns = array_keys($ColumnDefinition);
+            array_walk($DataColumns, function (&$V) {
+
+                $V = array('data' => $V);
+            });
             if (is_array($Interactive)) {
-                $Options = json_encode($Interactive);
-                $Options = preg_replace( '!"(function\s*\(.*?\)\s*\{.*?\})"!is', '${1}', $Options );
-                $this->Template->setVariable('InteractiveOption', $Options);
+                $Interactive = array_merge_recursive($Interactive, array(
+                    "processing" => true,
+                    "serverSide" => true,
+                    "ajax"       => array(
+                        "url"  => $this->getRequest()->getUrlBase().$DataList,
+                        "type" => "POST"
+                    ),
+                    "columns"    => $DataColumns
+                ));
+            } else {
+                $Interactive = array(
+                    "processing" => true,
+                    "serverSide" => true,
+                    "ajax"       => array(
+                        "url"  => $this->getRequest()->getUrlBase().$DataList,
+                        "type" => "POST"
+                    ),
+                    "columns"    => $DataColumns
+                );
             }
-        } elseif ($Interactive === null) {
-            $this->Template = $this->getTemplate(__DIR__.'/TableData.twig');
-            $Interactive = array(
-                "paging"         => false,
-                "searching"      => false,
-                "iDisplayLength" => -1,
-                "info"           => false
-            );
-            $Options = json_encode($Interactive);
-            $Options = preg_replace( '!"(function\s*\(.*?\)\s*\{.*?\})"!is', '${1}', $Options );
-            $this->Template->setVariable('InteractiveOption', $Options);
+            $DataList = array();
+        }
+
+        /**
+         *
+         */
+        if (!is_array($DataList)) {
+            $DataList = array($DataList);
+        }
+        if (empty( $ColumnDefinition ) && !empty( $DataList )) {
+            reset($DataList);
+            if (is_object(current($DataList))) {
+                /** @var Object[] $DataList */
+                $GridHead = array_keys(current($DataList)->__toArray());
+            } else {
+                $GridHead = array_keys(current($DataList));
+            }
+        } elseif (!empty( $ColumnDefinition )) {
+            // Rename by ShowCol
+            $GridHead = array_values($ColumnDefinition);
         } else {
-            $this->Template = $this->getTemplate(__DIR__.'/Table.twig');
+            $GridHead = array();
         }
-        $this->Template->setVariable('TableTitle', $TableTitle);
-    }
 
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-
-        return $this->getContent();
-    }
-
-    /**
-     * @return string
-     */
-    public function getContent()
-    {
-
-        $this->Template->setVariable('HeadList', $this->TableHead);
-        $this->Template->setVariable('BodyList', $this->TableBody);
-        $this->Template->setVariable('FootList', $this->TableFoot);
-        $this->Template->setVariable('Hash', $this->getHash());
-
-        return $this->Template->getContent();
-    }
-
-    /**
-     * @return string
-     */
-    public function getHash()
-    {
-
-        if (empty( $this->Hash )) {
-            $HeadList = $this->TableHead;
-            array_walk($HeadList, function (&$H) {
-
-                if (is_object($H)) {
-                    $H = serialize($H);
-                }
-            });
-            $BodyList = $this->TableBody;
-            array_walk($BodyList, function (&$H) {
-
-                if (is_object($H)) {
-                    $H = serialize($H);
-                }
-            });
-            $FootList = $this->TableFoot;
-            array_walk($FootList, function (&$H) {
-
-                if (is_object($H)) {
-                    $H = serialize($H);
-                }
-            });
-            $this->Hash = md5(json_encode($HeadList) . json_encode($BodyList) . json_encode($FootList));
+        if (empty( $ColumnDefinition )) {
+            $ColumnDefinition = array_combine(array_values($GridHead), array_values($GridHead));
         }
-        return $this->Hash;
+
+        if (!$useHtmlRenderer && (count($DataList) > 0 && $Interactive)) {
+            // JS Table Data
+            $ObjectList = array();
+            array_walk($DataList, function (&$Row) use (&$ObjectList, $ColumnDefinition) {
+
+                array_walk($Row, function (&$Column, $Index) use ($ColumnDefinition, $Row) {
+
+                    /**
+                     * With Object, use getter instead of property (if available)
+                     */
+                    if (is_object($Column) && method_exists($Row, 'get'.substr(trim($Index), 2))) {
+                        $Column = $Row->{'get'.substr(trim($Index), 2)}();
+                    }
+                    /**
+                     * Other values
+                     */
+                    if (empty( $ColumnDefinition )) {
+                        $Column = (new TableColumn($Column))->getContent();
+                    } elseif (in_array(preg_replace('!^[^a-z0-9_]*!is', '', $Index), array_keys($ColumnDefinition))) {
+                        $Column = (new TableColumn($Column))->getContent();
+                    } else {
+                        $Column = false;
+                    }
+                });
+                // Convert to Array
+                if (is_object($Row)) {
+                    /** @var Object $Row */
+                    $Row = array_filter($Row->__toArray());
+                } else {
+                    $Row = array_filter($Row);
+                }
+
+                $Index = array_flip(array_keys($ColumnDefinition));
+                array_walk($Index, function (&$Value) {
+
+                    $Value = '';
+                });
+                /** @var array $Row */
+                // Sort by ShowCol
+                $Row = array_merge($Index, $Row);
+            });
+            $ObjectList = $DataList;
+
+            $IndexList = array_keys($ColumnDefinition);
+            array_walk($IndexList, function (&$Name) {
+
+                $Name = array('data' => $Name);
+            });
+
+            $DataList = array();
+        } else {
+            // HTML Table Data
+            /** @var TableRow[] $DataList */
+            /** @noinspection PhpUnusedParameterInspection */
+            array_walk($DataList, function (&$Row, $Index, $Content) {
+
+                array_walk($Row, function (&$Column, $Index, $Content) {
+
+                    /**
+                     * With Object, use getter instead of property (if available)
+                     */
+                    if (is_object($Column) && method_exists($Content[1], 'get'.substr(trim($Index), 2))) {
+                        $Column = $Content[1]->{'get'.substr(trim($Index), 2)}();
+                    }
+
+                    /**
+                     * Other values
+                     */
+                    if (empty( $Content[0] )) {
+                        $Column = new TableColumn($Column);
+                    } elseif (in_array(preg_replace('!^[^a-z0-9_]*!is', '', $Index), array_keys($Content[0]))) {
+                        $Column = new TableColumn($Column);
+                    } else {
+                        $Column = false;
+                    }
+                }, array($Content, $Row));
+                // Convert to Array
+                if (is_object($Row)) {
+                    /** @var Object $Row */
+                    $Row = array_filter($Row->__toArray());
+                } else {
+                    $Row = array_filter($Row);
+                }
+                /** @var array $Row */
+                // Sort by ShowCol
+                $Row = array_merge(array_flip(array_keys($Content)), $Row);
+                /** @noinspection PhpParamsInspection */
+                $Row = new TableRow($Row);
+            }, $ColumnDefinition);
+        }
+
+        array_walk($GridHead, function (&$V) {
+
+            $V = new TableColumn($V);
+        });
+
+        if (count($DataList) > 0 || $Interactive) {
+
+            if (isset( $ObjectList ) && isset( $IndexList )) {
+                // Fix missing Data .. WHY DOES THIS WORK???
+                $ObjectList = array_slice($ObjectList, 0);
+
+                if (is_array($Interactive)) {
+                    $Interactive = array_merge($Interactive, array('data' => $ObjectList, 'columns' => $IndexList));
+                }
+                if (!is_array($Interactive)) {
+                    $Interactive = array('data' => $ObjectList, 'columns' => $IndexList);
+                }
+            }
+
+            parent::__construct(
+                new TableHead(new TableRow($GridHead)), new TableBody($DataList), $TableTitle,
+                $Interactive, null
+            );
+        } else {
+            if ($Interactive === null) {
+                parent::__construct(
+                    new TableHead(new TableRow($GridHead)), new TableBody($DataList), $TableTitle, null, null
+                );
+            } else {
+                parent::__construct(
+                    new TableHead(new TableRow($GridHead)), new TableBody($DataList), $TableTitle, false, null
+                );
+            }
+        }
     }
 
-    /**
-     * @param TableHead $TableHead
-     */
-    public function appendHead(TableHead $TableHead)
-    {
-
-        array_push($this->TableHead, $TableHead);
-    }
-
-    /**
-     * @param TableHead $TableHead
-     */
-    public function prependHead(TableHead $TableHead)
-    {
-
-        array_unshift($this->TableHead, $TableHead);
-    }
-
-    /**
-     * @param TableBody $TableBody
-     */
-    public function appendBody(TableBody $TableBody)
-    {
-
-        array_push($this->TableBody, $TableBody);
-    }
-
-    /**
-     * @param TableBody $TableBody
-     */
-    public function prependBody(TableBody $TableBody)
-    {
-
-        array_unshift($this->TableBody, $TableBody);
-    }
-
-    /**
-     * @param TableFoot $TableFoot
-     */
-    public function appendFoot(TableFoot $TableFoot)
-    {
-
-        array_push($this->TableFoot, $TableFoot);
-    }
-
-    /**
-     * @param TableFoot $TableFoot
-     */
-    public function prependFoot(TableFoot $TableFoot)
-    {
-
-        array_unshift($this->TableFoot, $TableFoot);
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-
-        return '';
-    }
 }

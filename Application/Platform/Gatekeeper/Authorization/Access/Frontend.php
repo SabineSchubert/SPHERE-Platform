@@ -1,6 +1,7 @@
 <?php
 namespace SPHERE\Application\Platform\Gatekeeper\Authorization\Access;
 
+use SPHERE\Application\Api\Platform\Gatekeeper\Access as AccessApi;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Frontend\Summary;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblLevel;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblPrivilege;
@@ -32,12 +33,11 @@ use SPHERE\Common\Frontend\Link\Repository\Standard;
 use SPHERE\Common\Frontend\Message\Repository\Info;
 use SPHERE\Common\Frontend\Message\Repository\Warning;
 use SPHERE\Common\Frontend\Table\Repository\Title;
-use SPHERE\Common\Frontend\Table\Structure\TableData;
+use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Main;
 use SPHERE\Common\Window\Navigation\Link;
 use SPHERE\Common\Window\Redirect;
 use SPHERE\Common\Window\Stage;
-use SPHERE\System\Extension\Repository\Debugger;
 
 /**
  * Class Frontend
@@ -46,6 +46,41 @@ use SPHERE\System\Extension\Repository\Debugger;
  */
 class Frontend
 {
+
+    /**
+     * @return Stage
+     */
+    public function frontendAccess()
+    {
+        $Stage = new Stage( 'Rechteverwaltung' );
+        $Stage->hasUtilityFavorite(true);
+
+        $ReceiverStage = AccessApi::receiverStage();
+
+        $Stage->addButton((new Standard('Rollen', new Link\Route(__NAMESPACE__ . '/Role'), new TagList(), array(),
+            'Zusammenstellung von Berechtigungen'))
+            ->ajaxPipelineOnClick( AccessApi::pipelineStageRole( $ReceiverStage ) )
+        );
+
+        $Stage->addButton((new Standard('Zugriffslevel', new Link\Route(__NAMESPACE__ . '/Level'), new Tag(), array(),
+            'Gruppen von Privilegien'))
+            ->ajaxPipelineOnClick( AccessApi::pipelineStageLevel( $ReceiverStage ) )
+        );
+
+        $Stage->addButton((new Standard('Privilegien', new Link\Route(__NAMESPACE__ . '/Privilege'), new TileBig(),
+            array(), 'Gruppen von Rechten'))
+        );
+
+        $Stage->addButton((new Standard('Rechte', new Link\Route(__NAMESPACE__ . '/Right'), new TileList(), array(),
+            'Geschützte Routen'))
+        );
+
+        $Stage->setContent(
+            $ReceiverStage.AccessApi::pipelineStageRole( $ReceiverStage )
+        );
+
+        return $Stage;
+    }
 
     /**
      * @return Stage
@@ -155,7 +190,7 @@ class Frontend
 
         $Stage->setContent(
             ($TblLevelAll
-                ? new TableData($TblLevelAll, new Title('Bestehende Zugriffslevel'), array(
+                ? new Table($TblLevelAll, new Title('Bestehende Zugriffslevel'), array(
                     'Name' => 'Name',
                     'Option' => 'Optionen'
                 ))
@@ -215,7 +250,7 @@ class Frontend
 
         $Stage->setContent(
             ($TblPrivilegeAll
-                ? new TableData($TblPrivilegeAll, new Title('Bestehende Privilegien'), array(
+                ? new Table($TblPrivilegeAll, new Title('Bestehende Privilegien'), array(
                     'Name' => 'Name',
                     'Option' => ''
                 ))
@@ -267,7 +302,7 @@ class Frontend
         }
         $Stage->setContent(
             ($TblRightAll
-                ? new TableData($TblRightAll, new Title('Bestehende Rechte', 'Routen'), array(
+                ? new Table($TblRightAll, new Title('Bestehende Rechte', 'Routen'), array(
                     'Route' => 'Name'
                 ))
                 : new Warning('Keine Routen vorhanden')
@@ -283,7 +318,7 @@ class Frontend
                     , new Primary('Hinzufügen')
                 ), $Name
             )
-            . new TableData($PublicRouteAll, new Title('Öffentliche Routen', 'PUBLIC ACCESS'))
+            . new Table($PublicRouteAll, new Title('Öffentliche Routen', 'PUBLIC ACCESS'))
         );
         return $Stage;
     }
@@ -330,7 +365,7 @@ class Frontend
         }
         $Stage->setContent(
             ($TblRoleAll
-                ? new TableData($TblRoleAll, new Title('Bestehende Rollen'), array(
+                ? new Table($TblRoleAll, new Title('Bestehende Rollen'), array(
                     'Name' => 'Name',
                     'Option' => 'Optionen'
                 ))
@@ -431,7 +466,7 @@ class Frontend
                             new \SPHERE\Common\Frontend\Layout\Repository\Title('Zugriffslevel', 'Zugewiesen'),
                             (empty($TblAccessList)
                                 ? new Warning('Keine Zugriffslevel vergeben')
-                                : new TableData($TblAccessList, null,
+                                : new Table($TblAccessList, null,
                                     array('Name' => 'Name', 'Option' => ''))
                             )
                         ), 6),
@@ -439,7 +474,7 @@ class Frontend
                             new \SPHERE\Common\Frontend\Layout\Repository\Title('Zugriffslevel', 'Verfügbar'),
                             (empty($TblAccessListAvailable)
                                 ? new Info('Keine weiteren Zugriffslevel verfügbar')
-                                : new TableData($TblAccessListAvailable, null,
+                                : new Table($TblAccessListAvailable, null,
                                     array('Name' => 'Name ', 'Option' => ' '))
                             )
                         ), 6)
@@ -533,7 +568,7 @@ class Frontend
                             new \SPHERE\Common\Frontend\Layout\Repository\Title('Privilegien', 'Zugewiesen'),
                             (empty($TblAccessList)
                                 ? new Warning('Keine Privilegien vergeben')
-                                : new TableData($TblAccessList, null,
+                                : new Table($TblAccessList, null,
                                     array('Name' => 'Name', 'Option' => ''))
                             )
                         ), 6),
@@ -541,7 +576,7 @@ class Frontend
                             new \SPHERE\Common\Frontend\Layout\Repository\Title('Privilegien', 'Verfügbar'),
                             (empty($TblAccessListAvailable)
                                 ? new Info('Keine weiteren Privilegien verfügbar')
-                                : new TableData($TblAccessListAvailable, null,
+                                : new Table($TblAccessListAvailable, null,
                                     array('Name' => 'Name ', 'Option' => ' '))
                             )
                         ), 6)
@@ -605,7 +640,7 @@ class Frontend
                     new LayoutRow(array(
                         new LayoutColumn(array(
                             new \SPHERE\Common\Frontend\Layout\Repository\Title('Rechte', 'Zugewiesen'),
-                            new TableData($TblAccessList, null,
+                            new Table($TblAccessList, null,
                                 array('Exchange' => '', 'Route' => 'Route'), array(
                                     'order' => array(array(1, 'asc')),
                                     'columnDefs' => array(
@@ -630,7 +665,7 @@ class Frontend
                         ), 6),
                         new LayoutColumn(array(
                             new \SPHERE\Common\Frontend\Layout\Repository\Title('Rechte', 'Verfügbar'),
-                            new TableData($TblAccessListAvailable, null,
+                            new Table($TblAccessListAvailable, null,
                                 array('Exchange' => ' ', 'Route' => 'Route '), array(
                                     'order' => array(array(1, 'asc')),
                                     'columnDefs' => array(

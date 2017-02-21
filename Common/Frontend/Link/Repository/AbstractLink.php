@@ -38,6 +38,8 @@ abstract class AbstractLink extends Extension implements ILinkInterface
     protected $Path;
     /** @var string $Link */
     protected $Link;
+    /** @var array $Data */
+    protected $Data;
     /** @var IBridgeInterface $Template */
     protected $Template = null;
 
@@ -72,6 +74,12 @@ abstract class AbstractLink extends Extension implements ILinkInterface
             $this->setName($Name);
         }
 
+        if( !empty( $Data ) ) {
+            $this->Data = $Data;
+        } else {
+            $this->Data = array();
+        }
+
         if (false !== strpos($Path, '\\')) {
             $this->Path = new Route($Path);
         } else {
@@ -81,8 +89,9 @@ abstract class AbstractLink extends Extension implements ILinkInterface
         $this->Template = $this->getTemplate(__DIR__.'/Link.twig');
 
         if (null !== $Icon) {
+            /*
             if( $Icon instanceof Edit) {
-                $this->Type = $this->Type.' bg-info';
+                $this->Type = $this->Type.' bg-primary';
             }
             if( $Icon instanceof Remove) {
                 $this->Type = $this->Type.' bg-danger';
@@ -93,6 +102,7 @@ abstract class AbstractLink extends Extension implements ILinkInterface
             if( $Icon instanceof View) {
                 $this->Type = $this->Type.' bg-success';
             }
+            */
             $this->Template->setVariable('ElementIcon', $Icon);
         }
         $this->Template->setVariable('ElementType', $this->Type);
@@ -223,13 +233,21 @@ abstract class AbstractLink extends Extension implements ILinkInterface
         $Script = '';
         if( is_array( $Pipeline ) ) {
             foreach( $Pipeline as $Element ) {
-                $Script .= $Element->parseScript();
+                $Script .= $Element->parseScript($this);
             }
         } else {
-            $Script = $Pipeline->parseScript();
+            $Script = $Pipeline->parseScript($this);
         }
 
         $this->Template->setVariable('AjaxEventClick', $Script);
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->Data;
     }
 }

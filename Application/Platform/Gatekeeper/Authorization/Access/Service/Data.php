@@ -221,6 +221,22 @@ class Data extends AbstractData
 
     /**
      * @param string $Name
+     * @param bool $IsInternal
+     * @return TblRole
+     */
+    public function insertRole($Name, $IsInternal = false)
+    {
+        $Entity = new TblRole();
+        $Entity->setName($Name);
+        $Entity->setInternal($IsInternal);
+
+        $this->getEntityManager()->saveEntity($Entity);
+        Protocol::useService()->createInsertEntry($this->getConnection()->getDatabase(), $Entity);
+        return $Entity;
+    }
+
+    /**
+     * @param string $Name
      *
      * @return TblLevel
      */

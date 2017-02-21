@@ -2,8 +2,8 @@
 namespace SPHERE\Common;
 
 use MOC\V\Core\FileSystem\FileSystem;
-use SPHERE\Library\Script\Library;
 use SPHERE\Library\Script as ScriptLibrary;
+use SPHERE\Library\Script\Library;
 use SPHERE\System\Extension\Extension;
 
 /**
@@ -44,6 +44,7 @@ class Script extends Extension
             $this->setLibrary((new ScriptLibrary('jQuery.DataTable.Bootstrap', '1.10.12'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('jQuery.DataTable.Responsive', '2.1.0'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('jQuery.DataTable.RowReorder', '1.1.2'))->getLibrary());
+            $this->setLibrary((new ScriptLibrary('jQuery.DataTable.FixedHeader', '3.1.2'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('jQuery.DataTable.Buttons', '1.2.2'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('jQuery.DataTable.Buttons.Bootstrap', '1.2.2'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('jQuery.DataTable.Buttons.ColVis', '1.2.2'))->getLibrary());
@@ -56,6 +57,7 @@ class Script extends Extension
             $this->setLibrary((new ScriptLibrary('jQuery.FlowPlayer', '6.0.3'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('jQuery.iCheck', '1.0.2'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('jQuery.deparam', '1.3pre'))->getLibrary());
+            $this->setLibrary((new ScriptLibrary('jQuery.DetectElementResize', '0.5.3'))->getLibrary());
 
             $this->setLibrary((new ScriptLibrary('Bootstrap', '3.3.5'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Tether', '1.4.0'))->getLibrary());
@@ -64,7 +66,7 @@ class Script extends Extension
             $this->setLibrary((new ScriptLibrary('Bootstrap.FileInput', '4.1.6'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Bootstrap.Select', '1.6.4'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Bootstrap.Notify', '3.1.3'))->getLibrary());
-            $this->setLibrary((new ScriptLibrary('Bootstrap.Validator', '0.11.x'))->getLibrary());
+            $this->setLibrary((new ScriptLibrary('Bootstrap.Validator', '0.11.9'))->getLibrary());
 
             $this->setLibrary((new ScriptLibrary('Twitter.Typeahead', '0.11.1'))->getLibrary());
 
@@ -73,8 +75,13 @@ class Script extends Extension
             $this->setLibrary((new ScriptLibrary('MathJax', '2.5.0'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Highlight.js', '8.8.0'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Bootbox.js', '4.4.0'))->getLibrary());
-        } catch ( \Exception $Exception ) {
-            Main::getDisplay()->setException( $Exception, 'JavaScript Library' );
+            $this->setLibrary((new ScriptLibrary('Slick', '1.6.0'))->getLibrary());
+
+            $this->setLibrary((new ScriptLibrary('Raphael.js', '2.2.0'))->getLibrary());
+            $this->setLibrary((new ScriptLibrary('Morris.js', '0.5.1'))->getLibrary());
+
+        } catch (\Exception $Exception) {
+            Main::getDisplay()->setException($Exception, 'JavaScript Library');
         }
 
 ///*
@@ -123,12 +130,12 @@ class Script extends Extension
 
         $this->setModule(
             'ModAlways', array(
-                'Highlight.js',
+//                'Highlight.js',
                 'Bootbox.js',
                 'List.Js',
                 'Bootstrap.Notify',
                 'Bootstrap',
-                'Tether',
+//                'Tether',
                 'jQuery.deparam',
                 'jQuery.Ui',
                 'jQuery'
@@ -140,15 +147,21 @@ class Script extends Extension
                 'List.Js',
                 'Bootstrap.Notify',
                 'Bootstrap',
-                'Tether',
+//                'Tether',
                 'jQuery.Ui',
                 'jQuery'
             )
         );
 
         $this->setModule(
-            'ModTable',
-            array(
+            'ModSlick', array(
+                'Slick',
+                'jQuery'
+            )
+        );
+
+        $this->setModule(
+            'ModTable', array(
 //                'jQuery.DataTable.Plugin.Sorting.Weekday',
                 'jQuery.DataTable.Plugin.Sorting.DateTime',
                 'jQuery.DataTable.Plugin.Sorting.GermanString',
@@ -159,64 +172,128 @@ class Script extends Extension
                 'jQuery.DataTable.Buttons.Bootstrap',
                 'jQuery.DataTable.Buttons',
                 'jQuery.DataTable.RowReorder',
+                'jQuery.DataTable.FixedHeader',
                 'jQuery.DataTable.Responsive',
                 'jQuery.DataTable.Bootstrap',
                 'jQuery.DataTable',
+                'jQuery.DetectElementResize',
                 'jQuery'
             )
         );
         $this->setModule(
-            'ModPicker', array('Bootstrap.DatetimePicker', 'Moment.Js', 'jQuery')
+            'ModPicker', array(
+                'Bootstrap.DatetimePicker',
+                'Moment.Js',
+                'jQuery'
+            )
         );
         $this->setModule(
-            'ModSelecter', array('jQuery.Selecter', 'jQuery')
+            'ModSelecter', array(
+                'jQuery.Selecter',
+                'jQuery'
+            )
         );
         $this->setModule(
-            'ModCarousel', array('jQuery.Carousel', 'jQuery')
+            'ModCarousel', array(
+                'jQuery.Carousel',
+                'jQuery'
+            )
         );
         $this->setModule(
-            'ModVideo', array('jQuery.FlowPlayer', 'jQuery')
+            'ModVideo', array(
+                'jQuery.FlowPlayer',
+                'jQuery'
+            )
         );
         $this->setModule(
-            'ModSelect', array('Bootstrap.Select', 'Bootstrap', 'Tether', 'jQuery')
+            'ModSelect', array(
+                'Bootstrap.Select',
+                'Bootstrap',
+//                'Tether',
+                'jQuery'
+            )
         );
         $this->setModule(
-            'ModCountDown', array('jQuery.CountDown', 'Bootstrap', 'Tether', 'Moment.Js', 'jQuery')
+            'ModCountDown', array(
+                'jQuery.CountDown',
+                'Bootstrap',
+//                'Tether',
+                'Moment.Js',
+                'jQuery'
+            )
         );
         $this->setModule(
-            'ModCompleter', array('Twitter.Typeahead', 'Bootstrap', 'Tether', 'jQuery')
+            'ModCompleter', array(
+                'Twitter.Typeahead',
+                'Bootstrap',
+//                'Tether',
+                'jQuery'
+            )
         );
         $this->setModule(
-            'ModUpload', array('Bootstrap.FileInput', 'Bootstrap', 'Tether', 'jQuery')
+            'ModUpload', array(
+                'Bootstrap.FileInput',
+                'Bootstrap',
+//                'Tether',
+                'jQuery'
+            )
         );
         $this->setModule(
-            'ModCheckBox', array('jQuery.CheckBox', 'jQuery')
+            'ModCheckBox', array(
+                'jQuery.CheckBox', 'jQuery')
         );
         $this->setModule(
-            'ModMathJax', array('MathJax', 'jQuery')
+            'ModMathJax', array(
+                'MathJax',
+                'jQuery'
+            )
         );
         $this->setModule(
-            'ModProgress', array('jQuery')
+            'ModProgress', array(
+                'jQuery'
+            )
         );
         $this->setModule(
-            'ModGrid', array('jQuery.Gridster', 'jQuery.StorageApi', 'jQuery')
+            'ModGrid', array(
+                'jQuery.Gridster',
+                'jQuery.StorageApi',
+                'jQuery'
+            )
         );
         $this->setModule(
-            'ModSortable', array('jQuery-Ui', 'jQuery')
+            'ModSortable', array(
+                'jQuery-Ui',
+                'jQuery'
+            )
         );
         $this->setModule(
-            'ModForm', array( 'Bootstrap.Validator', 'jQuery.Sisyphus', 'jQuery.Mask', 'jQuery')
+            'ModForm', array(
+                'Bootstrap.Validator',
+                'jQuery.Sisyphus',
+                'jQuery.Mask',
+                'jQuery'
+            )
         );
         $this->setModule(
-            'ModCleanStorage', array('jQuery')
+            'ModCleanStorage', array(
+                'jQuery'
+            )
+        );
+        $this->setModule(
+            'ModMorris', array(
+                'Morris.js',
+                'Raphael.js',
+                'jQuery'
+            )
         );
     }
 
     /**
      * @param Library $Library
      */
-    public function setLibrary( Library $Library ) {
-        $this->setSource( $Library->getName(), $Library->getSource(), $Library->getTest() );
+    public function setLibrary(Library $Library)
+    {
+        $this->setSource($Library->getName(), $Library->getSource(), $Library->getTest());
     }
 
     /**
@@ -230,10 +307,10 @@ class Script extends Extension
         $PathBase = $this->getRequest()->getPathBase();
         if (!in_array($Alias, self::$SourceList)) {
             $RealPath = FileSystem::getFileLoader($Location)->getRealPath();
-            if( !empty($RealPath) ) {
+            if (!empty($RealPath)) {
                 $cTag = '?cTAG-' . md5_file($RealPath);
             } else {
-                $cTag = '?cTAG-' . 'MISS-'.time();
+                $cTag = '?cTAG-' . 'MISS-' . time();
             }
             self::$SourceList[$Alias] = "Client.Source('" . $Alias . "','" . $PathBase . $Location . $cTag . "',function(){return " . $Test . ";});";
         }
@@ -241,17 +318,17 @@ class Script extends Extension
 
     /**
      * @param string $Alias
-     * @param array  $Dependencies
+     * @param array $Dependencies
      */
     public function setModule($Alias, $Dependencies = array())
     {
 
         if (!in_array($Alias, self::$ModuleList)) {
             $RealPath = FileSystem::getFileLoader('/Common/Script/' . $Alias . '.js')->getRealPath();
-            if( !empty($RealPath) ) {
+            if (!empty($RealPath)) {
                 $cTag = '?cTAG-' . md5_file($RealPath);
             } else {
-                $cTag = '?cTAG-' . 'MISS-'.time();
+                $cTag = '?cTAG-' . 'MISS-' . time();
             }
             self::$ModuleList[$Alias] = "Client.Module('" . $Alias . "'," . json_encode($Dependencies) . ",'" . $cTag . "');";
         }
@@ -276,9 +353,9 @@ class Script extends Extension
         $ScriptTagClose = '</script>';
         $LineBreak = "\n";
         return $ScriptTagOpen
-        .implode("\n", self::$SourceList).$LineBreak
-        .implode("\n", self::$ModuleList).$LineBreak
-        .$ScriptTagClose;
+            . implode("\n", self::$SourceList) . $LineBreak
+            . implode("\n", self::$ModuleList) . $LineBreak
+            . $ScriptTagClose;
     }
 
 }

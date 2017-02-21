@@ -23,7 +23,7 @@ use SPHERE\Common\Frontend\Layout\Repository\Panel;
 use SPHERE\Common\Frontend\Link\Repository\Danger;
 use SPHERE\Common\Frontend\Message\Repository\Warning;
 use SPHERE\Common\Frontend\Table\Repository\Title;
-use SPHERE\Common\Frontend\Table\Structure\TableData;
+use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Window\Stage;
 
 /**
@@ -40,7 +40,8 @@ class Frontend
     public function frontendAccount()
     {
 
-        $Stage = new Stage('Benutzerkonnten');
+        $Stage = new Stage('Benutzerkonten');
+        $Stage->hasUtilityFavorite(true);
 
         $TblAccount = Account::useService()->getAccountBySession();
         if ($TblAccount) {
@@ -103,11 +104,11 @@ class Frontend
 
         $Stage->setContent(
             ($TblAccountAll
-                ? new TableData($TblAccountAll, new Title('Bestehende Benutzerkonnten'), array(
+                ? new Table($TblAccountAll, new Title('Bestehende Benutzerkonten'), array(
                     'Username' => 'Benutzername',
 //                    'Option' => 'Optionen'
                 ))
-                : new Warning('Keine Benutzerkonnten vorhanden')
+                : new Warning('Keine Benutzerkonten vorhanden')
             )
             //.Account::useService()->createAccount(
             . new Form(array(
@@ -115,19 +116,19 @@ class Frontend
                     new FormRow(array(
                         new FormColumn(
                             (new TextField('Account[Name]', 'Benutzername', 'Benutzername', new Person()))
-                                ->setPrefixValue($TblConsumer->getAcronym())
+                                ->setPrefixValue($TblConsumer->getAcronym())->setAutoFocus()->setRequired()
                             , 4),
                         new FormColumn(
-                            new PasswordField(
+                            (new PasswordField(
                                 'Account[Password]', 'Passwort', 'Passwort', new Lock()
-                            ), 4),
+                            ))->setRequired(), 4),
                         new FormColumn(
-                            new PasswordField(
+                            (new PasswordField(
                                 'Account[PasswordSafety]', 'Passwort wiederholen', 'Passwort wiederholen',
                                 new Repeat()
-                            ), 4),
+                            ))->setRequired(), 4),
                     )),
-                ), new \SPHERE\Common\Frontend\Form\Repository\Title('Benutzerkonnto anlegen')),
+                ), new \SPHERE\Common\Frontend\Form\Repository\Title('Benutzerkonto anlegen')),
                 new FormGroup(array(
                     new FormRow(array(
                         new FormColumn(array(

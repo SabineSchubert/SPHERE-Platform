@@ -2,6 +2,7 @@ div.window-stage {
     background: #fff;
 }
 
+div.window-stage div.stage-teaser h3:before,
 div.window-stage div.stage-header h3:before {
     height: 2px;
     width: 60px;
@@ -11,6 +12,23 @@ div.window-stage div.stage-header h3:before {
     margin: 10px 0;
 }
 
+div.window-stage div.stage-body h4:before {
+    height: 2px;
+    width: 30px;
+    background-color: #000;
+    display: block;
+    content: '';
+    margin: 10px 0;
+}
+
+div.window-stage div.stage-body hr {
+    margin: 0 0 10px 0;
+    border-color: #cccccc;
+}
+
+div.window-stage div.stage-message {
+    margin-top: 5px;
+}
 div.window-stage div.stage-header {
     background: #222222;
     padding-top: 1px;
@@ -19,9 +37,60 @@ div.window-stage div.stage-header {
     padding-right: 20px;
 }
 
+div.window-stage div.stage-teaser {
+    background: #000;
+}
+
 div.window-stage div.stage-body {
-    padding-top: 1px;
+    color: #222222;
+    padding-top: 20px;
     padding-bottom: 20px;
     padding-left: 20px;
     padding-right: 20px;
+}
+
+.breadcrumb > li + li:before {
+    font-family: "FontAwesome";
+    content: "\f105";
+}
+
+/** LIST GROUP **/
+.list-group .list-group-item {
+    padding: 5px 10px;
+}
+
+td > .list-group {
+    margin-bottom: 0;
+}
+
+
+@media print {
+    a[href]:after {
+        content: "";
+    }
+}
+
+input,
+button,
+select,
+textarea {
+    font-family: "CorporateSDemi";
+}
+
+
+.modal, .modal-open, .modal-open .navbar-fixed-top {
+    padding-right: 0 !important;
+}
+
+
+
+.bootstrap-datetimepicker-widget table td,.bootstrap-datetimepicker-widget table th {
+    border-radius: 0;
+}
+.bootstrap-datetimepicker-widget table thead tr:first-child th:hover {
+    background: #222222;
+}
+
+.bootstrap-datetimepicker-widget table td span {
+    border-radius: 0;
 }

@@ -47,6 +47,7 @@
             responsive: true,
             autoWidth: false,
             deferRender: true,
+            fixedHeader: true,
             // Setup RowReorder Extension
             ExtensionRowReorder: {
                 Enabled: false,
@@ -315,6 +316,18 @@
         // }
 
         Table = this.DataTable(settings);
+        /**
+         * Fix: FixedHeaders won't recalculate if DT changes size/content/etc.
+         */
+        if( settings.fixedHeader ) {
+            Table.on( 'draw.dt', function () {
+                Table.fixedHeader.adjust();
+            } );
+            // TODO: div:resize Event needs better handler
+            jQuery('div#nav-toggle').resize(function(){
+                Table.fixedHeader.adjust();
+            });
+        }
 
         // Activate AJAX JS on Change
         // Table.on( 'draw', function () {

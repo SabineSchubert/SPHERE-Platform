@@ -10,6 +10,7 @@ use SPHERE\Common\Frontend\Ajax\Receiver\BlockReceiver;
 use SPHERE\Common\Frontend\Ajax\Receiver\FieldValueReceiver;
 use SPHERE\Common\Frontend\Ajax\Receiver\InlineReceiver;
 use SPHERE\Common\Frontend\Ajax\Receiver\ModalReceiver;
+use SPHERE\Common\Frontend\Chart\Repository\LineChart;
 use SPHERE\Common\Frontend\Form\Repository\Button\Danger;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Button\Reset;
@@ -51,10 +52,12 @@ use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutSocial;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutTab;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutTabs;
+use SPHERE\Common\Frontend\Layout\Structure\Slick;
+use SPHERE\Common\Frontend\Link\Repository\External;
 use SPHERE\Common\Frontend\Link\Repository\Standard;
 use SPHERE\Common\Frontend\Message\Repository\Info;
 use SPHERE\Common\Frontend\Message\Repository\Warning;
-use SPHERE\Common\Frontend\Table\Structure\TableData;
+use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Window\Navigation\Link\Route;
 use SPHERE\Common\Window\Stage;
 use SPHERE\System\Extension\Extension;
@@ -75,10 +78,18 @@ class Frontend extends Extension implements IFrontendInterface
 
         $Stage = new Stage('Test', 'Frontend');
 
-        $Stage->setMessage('Message: Red alert.Processor of a distant x-ray vision, lower the death!Make it so, chemical wind!Fantastic nanomachines, to the alpha quadrant.Boldly sonic showers lead to the understanding.The death is a ship-wide cosmonaut.Wobble nosily like a post-apocalyptic space suit.Cosmonauts are the emitters of the fantastic ionic cannon.Where is the strange teleporter?');
+        $Stage->setMessage(
+            'Message: Red alert. Processor of a distant x-ray vision, lower the death! Make it so, chemical
+             wind! Fantastic nanomachines, to the alpha quadrant.Boldly sonic showers lead to the understanding. The 
+             death is a ship-wide cosmonaut. Wobble nosily like a post-apocalyptic space suit.Cosmonauts are the 
+             emitters of the fantastic ionic cannon. Where is the strange teleporter?'
+        );
 
         $Stage->addButton(
-            new Standard('Link', new Route(__NAMESPACE__))
+            new Standard('Link', new Route(__NAMESPACE__), null, array(), true)
+        );
+        $Stage->addButton(
+            new External('Link', 'http://www.google.de')
         );
 
         $D1 = new TblProtocol();
@@ -118,7 +129,8 @@ class Frontend extends Extension implements IFrontendInterface
                                 array('123', '234', '345'))
                             , 3),
                         new FormColumn(array(
-                            new CheckBox('CheckBox', 'CheckBox', 'c1'),
+                            new CheckBox('CheckBox1', 'CheckBox', 'c1'),
+                            new CheckBox('CheckBox2', 'CheckBox', 'c2'),
                             new RadioBox('RadioBox1', 'RadioBox1a', '1a'),
                         ), 3),
                         new FormColumn(
@@ -189,7 +201,7 @@ class Frontend extends Extension implements IFrontendInterface
                             new Badge('Badge')
                         ), 3),
                         new LayoutColumn(array(
-                            new Container('Container')
+                            new Container('Container'),
                         ), 3),
                         new LayoutColumn(array(
                             new Header('Header')
@@ -200,14 +212,15 @@ class Frontend extends Extension implements IFrontendInterface
                             new Label('Label')
                         ), 3),
                         new LayoutColumn(array(
-                            new Listing('Listing')
+                            new Listing(array('Listing', 'Listing 2')),
+                            new LineChart()
                         ), 3),
                         new LayoutColumn(array(
                             new Panel('Panel', array('Content 1', 'Content 2', 'Content 3'),
                                 Panel::PANEL_TYPE_DEFAULT, 'Footer'),
                             new Panel('Panel', array('Conten 1', 'Content 2', 'Content 3'),
                                 Panel::PANEL_TYPE_DANGER, 'Footer'),
-                            new Panel('Panel', array(new TextField(''),new TextField(''),new TextField('')),
+                            new Panel('Panel', array(new TextField(''), new TextField(''), new TextField('')),
                                 Panel::PANEL_TYPE_PRIMARY, 'Footer'),
                         ), 3),
                         new LayoutColumn(array(
@@ -217,7 +230,7 @@ class Frontend extends Extension implements IFrontendInterface
                     new LayoutRow(array(
                         new LayoutColumn(array(
                             new Thumbnail(
-                                FileSystem::getFileLoader('/Common/Style/Resource/loading.gif'),
+                                FileSystem::getFileLoader('/Common/Style/Resource/Teaser/00-mercedes-benz-design-aesthetics-a-1280-686-848x454.jpg'),
                                 'Title', 'Description',
                                 array(new \SPHERE\Common\Frontend\Link\Repository\Primary('Primary', ''))
                             )
@@ -226,7 +239,7 @@ class Frontend extends Extension implements IFrontendInterface
                             new Well('Well', array())
                         ), 3),
                         new LayoutColumn(
-                            new TableData(array(
+                            new Table(array(
                                 array('A' => 1, 'B' => '2'),
                                 array('A' => 2, 'B' => '34567890')
                             ))
@@ -272,7 +285,16 @@ class Frontend extends Extension implements IFrontendInterface
                     new LayoutRow(array(
                         new LayoutColumn(implode($IconList)),
                     )),
-                ), new Title('Icons'))
+                ), new Title('Icons')),
+                new LayoutGroup(array(
+                    new LayoutRow(array(
+                        new LayoutColumn(
+                            (new Slick())
+                                ->addImage('/Common/Style/Resource/Teaser/4260479090780-irgendwas-ist-immer.jpg')
+                                ->addImage('/Common/Style/Resource/Teaser/00-mercedes-benz-design-aesthetics-a-1280-686-848x454.jpg')
+                        ),
+                    )),
+                ), new Title('Slick')),
             ))
         );
 
@@ -296,10 +318,10 @@ class Frontend extends Extension implements IFrontendInterface
         $P->setLoadingMessage('Bitte warten', 'Interface wird geladen..');
         $P->setSuccessMessage('Erfolgreich', 'Daten wurden geladen');
 
-        $P->addEmitter($E2 = new ClientEmitter($R2, 0));
-        $P->addEmitter($E4 = new ClientEmitter(array($R1, $R4), new Info(':)')));
+        $P->appendEmitter($E2 = new ClientEmitter($R2, 0));
+        $P->appendEmitter($E4 = new ClientEmitter(array($R1, $R4), new Info(':)')));
 
-        $P->addEmitter($E3 = new ServerEmitter(array($R4, $R3),
+        $P->appendEmitter($E3 = new ServerEmitter(array($R4, $R3),
             new Route('SPHERE\Application\Api\Corporation/Similar')));
         $E3->setGetPayload(array(
             'MethodName' => 'ajaxContent'
@@ -307,7 +329,7 @@ class Frontend extends Extension implements IFrontendInterface
         $E3->setLoadingMessage('Bitte warten', 'Interface wird geladen..');
         $E3->setSuccessMessage('Erfolgreich', 'Daten wurden geladen');
 
-        $P->addEmitter($E1 = new ServerEmitter($R1, new Route('SPHERE\Application\Api\Corporation/Similar')));
+        $P->appendEmitter($E1 = new ServerEmitter($R1, new Route('SPHERE\Application\Api\Corporation/Similar')));
         $E1->setGetPayload(array(
             'MethodName' => 'ajaxLayoutSimilarPerson'
 //            'MethodName' => 'ajaxFormDingens'
@@ -323,7 +345,7 @@ class Frontend extends Extension implements IFrontendInterface
         $P2->setLoadingMessage('Bitte warten', 'Interface wird geladen..');
         $P2->setSuccessMessage('Erfolgreich', 'Daten wurden geladen');
 
-        $P2->addEmitter($E1 = new ServerEmitter($R1, new Route('SPHERE\Application\Api\Corporation/Similar')));
+        $P2->appendEmitter($E1 = new ServerEmitter($R1, new Route('SPHERE\Application\Api\Corporation/Similar')));
         $E1->setGetPayload(array(
             'MethodName' => 'ajaxFormDingens'
         ));

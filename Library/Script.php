@@ -7,7 +7,7 @@ use SPHERE\Common\Frontend\Icon\Repository\FolderClosed;
 use SPHERE\Common\Frontend\Icon\Repository\Tag;
 use SPHERE\Common\Frontend\Layout\Repository\Listing;
 use SPHERE\Common\Frontend\Table\Repository\Title;
-use SPHERE\Common\Frontend\Table\Structure\TableData;
+use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Frontend\Text\Repository\Danger;
 use SPHERE\Common\Frontend\Text\Repository\Info;
 use SPHERE\Common\Frontend\Text\Repository\Muted;
@@ -151,6 +151,10 @@ class Script
             $Location . '/DataTables/RowReorder-1.1.2/js/dataTables.rowReorder.min.js',
             "'undefined' !== typeof jQuery.fn.DataTable.RowReorder"
         ));
+        $this->addLibrary(new Library('jQuery.DataTable.FixedHeader','3.1.2',
+            $Location . '/DataTables/FixedHeader-3.1.2/js/dataTables.fixedHeader.min.js',
+            "'undefined' !== typeof jQuery.fn.DataTable.FixedHeader"
+        ));
         $this->addLibrary(new Library('jQuery.DataTable.Buttons', '1.2.2',
             $Location . '/DataTables/Buttons-1.2.2/js/dataTables.buttons.min.js',
             "'undefined' !== typeof jQuery.fn.DataTable.Buttons"
@@ -205,6 +209,10 @@ class Script
             $Location . '/Bootstrap.Validator/master-0.11.x/dist/validator.min.js',
             "'undefined' !== typeof jQuery.fn.validator"
         ));
+        $this->addLibrary(new Library('Bootstrap.Validator', '0.11.9',
+            $Location . '/Bootstrap.Validator/0.11.9/dist/validator.min.js',
+            "'undefined' !== typeof jQuery.fn.validator"
+        ));
         $this->addLibrary(new Library('Twitter.Typeahead', '0.11.1',
             $Location . '/Twitter.Typeahead/0.11.1/dist/typeahead.bundle.min.js',
             "'undefined' !== typeof jQuery.fn.typeahead"
@@ -221,13 +229,31 @@ class Script
             $Location . '/jQuery.FlowPlayer/6.0.3/flowplayer.min.js',
             "'undefined' !== typeof jQuery.fn.flowplayer"
         ));
+        $this->addLibrary(new Library('jQuery.DetectElementResize', '0.5.3',
+            $Location . '/DetectElementResize/0.5.3/jquery.resize.js',
+            "'undefined' !== typeof jQuery.fn.removeResize"
+        ));
         $this->addLibrary(new Library('Highlight.js', '8.8.0',
             $Location . '/Highlight.js/8.8.0/highlight.pack.js',
             "'undefined' !== typeof hljs"
         ));
+
+        $this->addLibrary(new Library('Raphael.js', '2.2.0',
+            '/Library/Raphael.Js/2.2.0/raphael.min.js',
+            "'undefined' !== typeof Raphael"
+        ));
+        $this->addLibrary(new Library( 'Morris.js', '0.5.1',
+            $Location . '/Morris.Js/0.5.1/morris.min.js',
+            "'undefined' !== typeof Morris"
+        ));
+
         $this->addLibrary(new Library('Bootbox.js', '4.4.0',
             $Location . '/Bootbox.js/4.4.0/js/bootbox.min.js',
             "'undefined' !== typeof bootbox"
+        ));
+        $this->addLibrary(new Library('Slick', '1.6.0',
+            $Location . '/Slick/1.6.0/slick/slick.min.js',
+            "'undefined' !== typeof jQuery.fn.slick"
         ));
     }
 
@@ -323,7 +349,7 @@ class Script
     }
 
     /**
-     * @return TableData
+     * @return Table
      */
     public function getShow()
     {
@@ -371,6 +397,6 @@ class Script
             );
         }
 
-        return new TableData($ShowList, new Title('Script Library', 'Content'), array(), false, true);
+        return new Table($ShowList, new Title('Script Library', 'Content'), array(), false, true);
     }
 }

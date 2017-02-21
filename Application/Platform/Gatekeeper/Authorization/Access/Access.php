@@ -25,9 +25,13 @@ class Access implements IModuleInterface
             new Link(new Link\Route(__NAMESPACE__), new Link\Name('Rechteverwaltung'), new Link\Icon(new Sheriff()))
         );
 
+//        Main::getDispatcher()->registerRoute(Main::getDispatcher()->createRoute(
+//            __NAMESPACE__, 'Frontend::frontendWelcome'
+//        ));
         Main::getDispatcher()->registerRoute(Main::getDispatcher()->createRoute(
-            __NAMESPACE__, 'Frontend::frontendWelcome'
+            __NAMESPACE__, 'Frontend::frontendAccess'
         ));
+
         Main::getDispatcher()->registerRoute(Main::getDispatcher()->createRoute(
             __NAMESPACE__ . '/Role', __NAMESPACE__ . '\Frontend::frontendRole'
         )

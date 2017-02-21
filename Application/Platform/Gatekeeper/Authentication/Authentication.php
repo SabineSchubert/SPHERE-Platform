@@ -20,9 +20,9 @@ class Authentication implements IModuleInterface
     public static function registerModule()
     {
 
-        if (Account::useService()->getAccountBySession()) {
+        if (($TblAccount = Account::useService()->getAccountBySession())) {
             Main::getDisplay()->addServiceNavigation(new Link(new Link\Route(__NAMESPACE__ . '/Offline'),
-                new Link\Name('Abmelden'), new Link\Icon(new Off())
+                new Link\Name('Abmelden ('.$TblAccount->getUsername().')'), new Link\Icon(new Off())
             ));
         } else {
             Main::getDisplay()->addServiceNavigation(new Link(new Link\Route(__NAMESPACE__),

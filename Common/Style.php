@@ -42,11 +42,16 @@ class Style extends Extension
             $this->setLibrary((new StyleLibrary('Bootstrap.Glyphicons.Filetypes', '1.9.2'))->getLibrary());
             $this->setLibrary((new StyleLibrary('Bootstrap.Glyphicons.Social', '1.9.2'))->getLibrary());
             $this->setLibrary((new StyleLibrary('Foundation.Icons', '3.0'))->getLibrary());
+            $this->setLibrary((new StyleLibrary('FontAwesome', '4.7.0'))->getLibrary());
+            $this->setLibrary((new StyleLibrary('Slick', '1.6.0'))->getLibrary());
+            $this->setLibrary((new StyleLibrary('Slick.Theme', '1.6.0'))->getLibrary());
 
             $this->setLibrary((new StyleLibrary('jQuery.Formstone.Selecter', '3.2.4'))->getLibrary(), false, true);
             $this->setLibrary((new StyleLibrary('jQuery.Formstone.Stepper', '3.0.8'))->getLibrary(), false, true);
             $this->setSource((new ScriptLibrary('jQuery.Gridster', '0.6.10'))->getLibrary()->getLocation() . '/dist/jquery.gridster.min.css', false, true);
             $this->setSource((new StyleLibrary('Bootstrap.Checkbox', '0.3.3'))->getLibrary()->getLocation() . '/awesome-bootstrap-checkbox.css', false, true);
+
+            $this->setSource((new StyleLibrary('Morris.js', '0.5.1'))->getLibrary()->getSource(), false, true);
 
         } catch (\Exception $Exception) {
             Main::getDisplay()->setException($Exception, 'Style Library');
@@ -68,7 +73,7 @@ class Style extends Extension
 
         $this->setSource('/Library/DataTables/Responsive-2.1.0/css/responsive.bootstrap.min.css', false, true);
         $this->setSource('/Library/DataTables/RowReorder-1.1.2/css/rowReorder.bootstrap.min.css', false, true);
-
+        $this->setSource('/Library/DataTables/FixedHeader-3.1.2/css/fixedHeader.bootstrap.min.css', false, true);
 ////        $this->setSource( '/Library/jQuery.DataTables/1.10.7/media/css/jquery.dataTables.min.css' );
 //        $this->setSource('/Library/jQuery.DataTables/1.10.7/extensions/Responsive/css/dataTables.responsive.css', false,
 //            true);
@@ -87,9 +92,20 @@ class Style extends Extension
 // 3.3.5
 
 //        $this->setSource('/Common/Style/Correction.css', false, true);
+
+        $this->setSource('/Common/Style/NavBar.Correction.css', false, true);
         $this->setSource('/Common/Style/Stage.Correction.css', false, true);
         $this->setSource('/Common/Style/DataTable.Correction.css', false, true);
         $this->setSource('/Common/Style/Panel.Correction.css', false, true);
+        $this->setSource('/Common/Style/CheckBox.Correction.css', false, true);
+        $this->setSource('/Common/Style/RadioBox.Correction.css', false, true);
+        $this->setSource('/Common/Style/SelectBox.Correction.css', false, true);
+        $this->setSource('/Common/Style/TypeAHead.Correction.css', false, true);
+        $this->setSource('/Common/Style/Button.Correction.css', false, true);
+        $this->setSource('/Common/Style/Teaser.Correction.css', false, true);
+
+        $this->setSource('/Common/Style/MBComIcon.css');
+        $this->setSource('/Common/Style/MBComFont.css');
 
 //        $this->setSource('/Common/Style/CleanSlate/0.10.1/cleanslate.css', false, true);
 

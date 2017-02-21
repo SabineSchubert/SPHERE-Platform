@@ -2,13 +2,16 @@
 namespace SPHERE\Common\Window;
 
 use MOC\V\Component\Template\Component\IBridgeInterface;
+use SPHERE\Application\Api\Platform\Utility\Favorite;
+use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Access;
+use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
 use SPHERE\Common\Frontend\Ajax\Template\CloseModal;
 use SPHERE\Common\Frontend\ITemplateInterface;
+use SPHERE\Common\Frontend\Layout\Structure\Teaser;
 use SPHERE\Common\Frontend\Link\ILinkInterface;
 use SPHERE\Common\Frontend\Link\Repository\AbstractLink;
-use SPHERE\Common\Frontend\Text\Repository\Bold;
-use SPHERE\Common\Frontend\Text\Repository\Info;
 use SPHERE\Common\Frontend\Text\Repository\Muted;
+use SPHERE\Common\Frontend\Text\Repository\Primary;
 use SPHERE\System\Extension\Extension;
 
 /**
@@ -28,12 +31,16 @@ class Stage extends Extension implements ITemplateInterface
     private $Description = '';
     /** @var string $Message */
     private $Message = '';
+    /** @var Teaser $Teaser */
+    private $Teaser = null;
     /** @var string $Content */
     private $Content = '';
     /** @var ILinkInterface[] $Menu */
     private $Menu = array();
     /** @var array $MaskMenu Highlight current Path-Button if only one exists */
     private $MaskMenu = array();
+    /** @var bool $hasUtilityFavorite */
+    private $hasUtilityFavorite = false;
 
     /**
      * @param null|string $Title
@@ -92,6 +99,18 @@ class Stage extends Extension implements ITemplateInterface
     }
 
     /**
+     * @param $Teaser
+     *
+     * @return Stage
+     */
+    public function setTeaser($Teaser)
+    {
+
+        $this->Teaser = $Teaser;
+        return $this;
+    }
+
+    /**
      * @param ILinkInterface $Button
      *
      * @return Stage
@@ -126,7 +145,20 @@ class Stage extends Extension implements ITemplateInterface
         $this->Template->setVariable('StageTitle', $this->Title);
         $this->Template->setVariable('StageDescription', $this->Description);
         $this->Template->setVariable('StageMessage', $this->Message);
+        $this->Template->setVariable('StageTeaser', $this->Teaser);
         $this->Template->setVariable('StageContent', $this->Content);
+
+        if((
+            $this->hasUtilityFavorite
+            && Account::useService()->getAccountBySession()
+            && Access::useService()->hasAuthorization(Favorite::getEndpoint())
+        )) {
+
+            $ReceiverFavoriteButton = Favorite::receiverFavorite();
+            $this->Template->setVariable('StageFavorite', $ReceiverFavoriteButton
+                . Favorite::pipelineGetFavorite($ReceiverFavoriteButton, $this->getRequest()->getPathInfo(), $this->Title, $this->Description )
+            );
+        }
 
         // Highlight current Route-Stage-Button
         if (!empty( $this->Menu )) {
@@ -139,12 +171,12 @@ class Stage extends Extension implements ITemplateInterface
                     case AbstractLink::TYPE_SUCCESS:
                     case AbstractLink::TYPE_LINK:
                         $this->Menu[current($HighlightButton)]->setName(
-                            (new Bold($this->Menu[current($HighlightButton)]->getName()))
+                            (($this->Menu[current($HighlightButton)]->getName()))
                         );
                         break;
                     default:
                         $this->Menu[current($HighlightButton)]->setName(
-                            new Info(new Bold($this->Menu[current($HighlightButton)]->getName()))
+                            new Primary(($this->Menu[current($HighlightButton)]->getName()))
                         );
                 }
             }
@@ -168,5 +200,13 @@ class Stage extends Extension implements ITemplateInterface
 
         $this->Content = $Content;
         return $this;
+    }
+
+    /**
+     * @param bool $Toggle
+     */
+    public function hasUtilityFavorite($Toggle = true)
+    {
+        $this->hasUtilityFavorite = (bool)$Toggle;
     }
 }
