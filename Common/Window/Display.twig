@@ -238,7 +238,7 @@
 
     executeScript(function () {
         Client.Use('ModAlways', function () {
-            jQuery('div.FadeIn').fadeIn('fast');
+            jQuery('div.FadeIn').css('visibility','visible').hide().fadeIn('fast');
             jQuery().ModAlways();
 
             var DataToggleCollapse = jQuery('[data-toggle="collapse"]');

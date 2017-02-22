@@ -69,7 +69,8 @@ body {
 
 .FadeIn,
 .Dynamic-Frontend {
-    display: none;
+    visibility: hidden;
+    /*display: none;*/
 }
 
 /* Scrollbar */

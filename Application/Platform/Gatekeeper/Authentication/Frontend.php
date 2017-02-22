@@ -26,6 +26,7 @@ use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
 use SPHERE\Common\Frontend\Layout\Structure\Slick;
 use SPHERE\Common\Frontend\Link\Repository\Link;
+use SPHERE\Common\Frontend\Link\Repository\Standard;
 use SPHERE\Common\Frontend\Message\Repository\Info;
 use SPHERE\Common\Frontend\Message\Repository\Success;
 use SPHERE\Common\Frontend\Text\Repository\Danger;
@@ -54,10 +55,44 @@ class Frontend extends Extension implements IFrontendInterface
 
         $Stage->setTeaser(
             (new Slick())
-                ->addImage('/Common/Style/Resource/Teaser/00-mercedes-benz-design-aesthetics-a-1280-686-848x454.jpg')
-                ->addImage('/Common/Style/Resource/Teaser/00-mercedes-benz-design-e-klasse-coupe-c-238-edition-1-amg-line-1280x686-1-848x454.jpg')
-                ->addImage('/Common/Style/Resource/Teaser/00-mercedes-benz-design-skizze-van-nutzfahrzeug-truck-1280x686-848x454.jpg')
-                ->addImage('/Common/Style/Resource/Teaser/00-mercedes-benz-fahrzeuge-50-jahre-amg-mercedes-amg-gt-c-190-1280x686-2-848x454.jpg')
+                ->addContent('<div style="background-repeat: no-repeat; background-size: cover; background-position: center center; width: 100%; height: 454px; background-image: url(\'/Common/Style/Resource/Teaser/00-mercedes-benz-design-aesthetics-a-1280-686-848x454.jpg\');">'
+                    . '<div class="container-fluid">'
+                    . '<div class="col-xs-2"></div>'
+                    . '<div class="col-xs-8" style="text-shadow: 1px 1px 1px rgba(0, 0, 0, .3);">'
+                    . '<h1>Willkommen</h1>'
+                    . '<div class="text-muted">Teres, velox indexs sed mire talem de magnum, secundus castor. Ignigena de lotus fraticinida, talem particula! Torquis ridetiss, tanquam festus buxum.</div>'
+                    . '<br/>'
+                    . new Standard('Erfahren Sie mehr...', '#')
+                    . '</div>'
+                    . '<div class="col-xs-2"></div>'
+                    . '</div>'
+                    . '</div>')
+                ->addContent('<div style="background-repeat: no-repeat; background-size: cover; background-position: center center; width: 100%; height: 454px; background-image: url(\'/Common/Style/Resource/Teaser/00-mercedes-benz-design-e-klasse-coupe-c-238-edition-1-amg-line-1280x686-1-848x454.jpg\');">'
+                    . '<div class="container-fluid">'
+                    . '<div class="col-xs-2"></div>'
+                    . '<div class="col-xs-8" style="text-shadow: 1px 1px 1px rgba(0, 0, 0, .3);">'
+                    . '<h1>Thema 1</h1>'
+                    . '<div class="text-muted"></div>'
+                    . '<br/>'
+                    . new \SPHERE\Common\Frontend\Link\Repository\Primary('Erfahren Sie mehr...', '#')
+                    . '</div>'
+                    . '<div class="col-xs-2"></div>'
+                    . '</div>'
+                    . '</div>')
+                ->addContent('<div style="background-repeat: no-repeat; background-size: cover; background-position: center center; width: 100%; height: 454px; background-image: url(\'/Common/Style/Resource/Teaser/00-mercedes-benz-design-skizze-van-nutzfahrzeug-truck-1280x686-848x454.jpg\');">'
+                    . '<div class="container-fluid">'
+                    . '<div class="col-xs-2"></div>'
+                    . '<div class="col-xs-8" style="text-shadow: 1px 1px 1px rgba(0, 0, 0, .3);">'
+                    . '<h1>Thema 2</h1>'
+                    . '<div>Peace is the only freedom, the only guarantee of result. Be mediocre for whoever does, because each has been felt with courage. Mysterious places of living will balanced view a unveiled doer. To some, a self is an enlightenment for forgetting.</div>'
+                    . '<br/>'
+                    . new Link('Erfahren Sie mehr...', '#')
+                    . '</div>'
+                    . '<div class="col-xs-2"></div>'
+                    . '</div>'
+                    . '</div>')
+                ->addContent('<div style="background-repeat: no-repeat; background-size: cover; background-position: center center; width: 100%; height: 454px; background-image: url(\'/Common/Style/Resource/Teaser/00-mercedes-benz-fahrzeuge-50-jahre-amg-mercedes-amg-gt-c-190-1280x686-2-848x454.jpg\');">'
+                    . '</div>')
         );
 
         $Stage->setContent(

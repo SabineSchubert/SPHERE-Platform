@@ -30,3 +30,12 @@
 .slick-next:before {
     content: "\f103";
 }
+
+.slick h1:before {
+    height: 2px;
+    width: 60px;
+    background-color: #fff;
+    display: block;
+    content: '';
+    margin: 50px 0 30px 0;
+}
