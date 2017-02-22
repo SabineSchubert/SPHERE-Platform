@@ -21,6 +21,7 @@
     font-family: "MBComIcon", "slick", sans-serif;
     font-size: 28px;
     color: #fff;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
 }
 
 .slick-prev:before {
@@ -38,4 +39,8 @@
     display: block;
     content: '';
     margin: 50px 0 30px 0;
+}
+
+.slick h1.black:before {
+    background-color: #000;
 }

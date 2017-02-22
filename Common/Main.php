@@ -19,6 +19,7 @@ use SPHERE\Application\RROP\RROP;
 use SPHERE\Application\Statistic\Statistic;
 use SPHERE\Application\Training\Training;
 use SPHERE\Common\Frontend\Icon\Repository\HazardSign;
+use SPHERE\Common\Frontend\Icon\Repository\Home;
 use SPHERE\Common\Frontend\Icon\Repository\Hospital;
 use SPHERE\Common\Frontend\Icon\Repository\Info;
 use SPHERE\Common\Frontend\Icon\Repository\Shield;
@@ -336,6 +337,7 @@ class Main extends Extension
 
     public static function registerGuiPlatform()
     {
+
 
         Main::getDisplay()
             ->addFooterNavigation(new External(

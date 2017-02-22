@@ -13,6 +13,7 @@ use SPHERE\Application\IApplicationInterface;
 use SPHERE\Application\IClusterInterface;
 use SPHERE\Application\OtherApplication\Combination\Combination;
 use SPHERE\Application\OtherApplication\Documentation\Documentation;
+use SPHERE\Application\OtherApplication\Test\Test;
 use SPHERE\Application\OtherApplication\TnrSearch\TnrSearch;
 use SPHERE\Application\OtherApplication\Warranty\Warranty;
 use SPHERE\Common\Frontend\Icon\Repository\CogWheels;
@@ -37,6 +38,7 @@ class OtherApplication implements IClusterInterface
         Combination::registerApplication();
         Documentation::registerApplication();
         Warranty::registerApplication();
+        Test::registerApplication();
 //		Search::registerModule();
 //		DirectSearch::registerModule();
 //		MonthlyTurnover::registerModule();

@@ -3,35 +3,28 @@
  * Created by PhpStorm.
  * User: Kunze
  * Date: 22.02.2017
- * Time: 01:04
+ * Time: 01:13
  */
 
-namespace SPHERE\Application\Eila\Reporting;
+namespace SPHERE\Application\OtherApplication\Test;
 
 
-use SPHERE\Application\Eila\Reporting\Customer\Customer;
-use SPHERE\Application\Eila\Reporting\Individual\Individual;
-use SPHERE\Application\Eila\Reporting\Stock\Stock;
 use SPHERE\Application\IApplicationInterface;
-use SPHERE\Common\Frontend\Icon\Repository\ListingTable;
+use SPHERE\Common\Frontend\Icon\Repository\TextSize;
 use SPHERE\Common\Frontend\Icon\Repository\Wrench;
 use SPHERE\Common\Main;
 use SPHERE\Common\Window\Navigation\Link;
 
-class Reporting implements IApplicationInterface
+class Test implements IApplicationInterface
 {
     public static function registerApplication()
     {
         Main::getDisplay()->addApplicationNavigation(
-            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Auswertungen'), new Link\Icon(new ListingTable()))
+            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Frontend'), new Link\Icon(new TextSize()))
         );
         Main::getDispatcher()->registerRoute(Main::getDispatcher()->createRoute(
             __NAMESPACE__, __CLASS__ . '::frontendDashboard'
         ));
-
-        Customer::registerModule();
-        Stock::registerModule();
-        Individual::registerModule();
     }
 
     /**
@@ -39,7 +32,7 @@ class Reporting implements IApplicationInterface
      */
     public function frontendDashboard()
     {
-
+        return \SPHERE\Application\Platform\System\Test\Test::useFrontend()->frontendPlatform();
     }
 
 }

@@ -79,13 +79,13 @@ class Youtube implements IApplicationInterface
                             '<div class="embed-responsive embed-responsive-16by9">
                                 <iframe class="embed-responsive-item" src="//www.youtube.com/embed/P3y8vc-3iVU" allowfullscreen></iframe>
                             </div>'
-                        ), 4),
+                        ), 6),
                         new LayoutColumn(array(
                             new Title('Box Clever', 'Simons Cat' ),
                             '<div class="embed-responsive embed-responsive-16by9">
                                 <iframe class="embed-responsive-item" src="//www.youtube.com/embed/ZpCl5O6tTv8" allowfullscreen></iframe>
                             </div>'
-                        ), 4),
+                        ), 6),
                     ))
                 ))
             )

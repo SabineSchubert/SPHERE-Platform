@@ -49,15 +49,15 @@ div.window-stage div.stage-body {
     padding-right: 20px;
 }
 
-div.window-stage div.stage-body h4,
-div.window-stage div.stage-body .h4,
-div.window-stage div.stage-body h5,
-div.window-stage div.stage-body .h5,
-div.window-stage div.stage-body h6,
-div.window-stage div.stage-body .h6 {
-    margin-top: 20px;
-    margin-bottom: 15px;
-}
+/*div.window-stage div.stage-body h4,*/
+/*div.window-stage div.stage-body .h4,*/
+/*div.window-stage div.stage-body h5,*/
+/*div.window-stage div.stage-body .h5,*/
+/*div.window-stage div.stage-body h6,*/
+/*div.window-stage div.stage-body .h6 {*/
+    /*margin-top: 20px;*/
+    /*margin-bottom: 15px;*/
+/*}*/
 
 .breadcrumb > li + li:before {
     font-family: "FontAwesome";

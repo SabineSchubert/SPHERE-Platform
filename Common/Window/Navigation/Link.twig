@@ -9,6 +9,7 @@
             Client.Use("ModAlways", function() {
                 $('a[href="{{ Route }}"]').popover("destroy").popover({
                     placement: 'bottom',
+                    html: true,
                     template: '<div class="popover">'
                     + '<div class="arrow"></div>'
                     + '<div class="popover-title" style="white-space: nowrap; border-radius: 0;"></div>'
