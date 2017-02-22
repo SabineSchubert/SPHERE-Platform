@@ -25,4 +25,12 @@ class Warranty implements IApplicationInterface
         ));
     }
 
+    /**
+     * @return Stage
+     */
+    public function frontendDashboard()
+    {
+
+    }
+
 }

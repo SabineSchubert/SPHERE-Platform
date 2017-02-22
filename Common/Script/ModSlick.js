@@ -7,7 +7,7 @@
         var settings = $.extend({
             infinite: true,
             autoplay: true,
-            autoplaySpeed: 3000
+            autoplaySpeed: 7000
         }, options);
 
         this.show();

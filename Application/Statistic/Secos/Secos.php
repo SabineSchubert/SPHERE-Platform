@@ -33,4 +33,12 @@ class Secos implements IApplicationInterface
         Eigene::registerModule();
     }
 
+    /**
+     * @return Stage
+     */
+    public function frontendDashboard()
+    {
+
+    }
+
 }

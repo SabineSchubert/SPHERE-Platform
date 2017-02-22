@@ -33,4 +33,12 @@ class Reporting implements IApplicationInterface
         Individual::registerModule();
     }
 
+    /**
+     * @return Stage
+     */
+    public function frontendDashboard()
+    {
+
+    }
+
 }

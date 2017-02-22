@@ -33,4 +33,12 @@ class Stock implements IApplicationInterface
         Eigene::registerModule();
     }
 
+    /**
+     * @return Stage
+     */
+    public function frontendDashboard()
+    {
+
+    }
+
 }

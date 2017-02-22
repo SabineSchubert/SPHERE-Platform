@@ -26,4 +26,12 @@ class TnrSearch implements IApplicationInterface
         ));
     }
 
+    /**
+     * @return Stage
+     */
+    public function frontendDashboard()
+    {
+
+    }
+
 }

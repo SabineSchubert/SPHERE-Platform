@@ -22,7 +22,7 @@ div.window-stage div.stage-body h4:before {
 }
 
 div.window-stage div.stage-body hr {
-    margin: 0 0 10px 0;
+    margin: 10px 0 10px 0;
     border-color: #cccccc;
 }
 
@@ -47,6 +47,16 @@ div.window-stage div.stage-body {
     padding-bottom: 20px;
     padding-left: 20px;
     padding-right: 20px;
+}
+
+div.window-stage div.stage-body h4,
+div.window-stage div.stage-body .h4,
+div.window-stage div.stage-body h5,
+div.window-stage div.stage-body .h5,
+div.window-stage div.stage-body h6,
+div.window-stage div.stage-body .h6 {
+    margin-top: 20px;
+    margin-bottom: 15px;
 }
 
 .breadcrumb > li + li:before {

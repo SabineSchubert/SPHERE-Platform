@@ -27,7 +27,7 @@ class Eila implements IClusterInterface
 	public static function registerCluster()
 	{
 		Main::getDisplay()->addClusterNavigation(
-            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Einlagerungssoftware'), new Link\Icon(new Transfer()))
+            new Link(new Link\Route(__NAMESPACE__), new Link\Name('EILA'), new Link\Icon(new Transfer()), false, 'Einlagerungssoftware')
         );
         Main::getDispatcher()->registerRoute(
             Main::getDispatcher()->createRoute(__NAMESPACE__, __CLASS__ . '::frontendDashboard')

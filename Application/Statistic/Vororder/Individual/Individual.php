@@ -44,4 +44,11 @@ class Individual implements IModuleInterface
         // TODO: Implement useFrontend() method.
     }
 
+    /**
+     * @return Stage
+     */
+    public function frontendDashboard()
+    {
+
+    }
 }

@@ -26,4 +26,12 @@ class Administration implements IApplicationInterface
         ));
     }
 
+    /**
+     * @return Stage
+     */
+    public function frontendDashboard()
+    {
+
+    }
+
 }

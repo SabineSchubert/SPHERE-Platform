@@ -17,6 +17,7 @@ use SPHERE\Application\Statistic\Tapss\Tapss;
 use SPHERE\Application\Statistic\Vororder\Vororder;
 use SPHERE\Common\Frontend\Icon\Repository\Equalizer;
 use SPHERE\Common\Frontend\Icon\Repository\Search as SearchIcon;
+use SPHERE\Common\Frontend\Icon\Repository\Signal;
 use SPHERE\Common\Main;
 use SPHERE\Common\Window\Navigation\Link;
 use SPHERE\Common\Window\Stage;
@@ -28,7 +29,7 @@ class Statistic implements IClusterInterface
 	public static function registerCluster()
 	{
 		Main::getDisplay()->addClusterNavigation(
-            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Statistik'), new Link\Icon(new \SPHERE\Common\Frontend\Icon\Repository\Statistic()))
+            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Statistik'), new Link\Icon(new Signal()))
         );
         Main::getDispatcher()->registerRoute(
             Main::getDispatcher()->createRoute(__NAMESPACE__, __CLASS__ . '::frontendDashboard')

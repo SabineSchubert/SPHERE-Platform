@@ -26,4 +26,12 @@ class InOut implements IApplicationInterface
         ));
     }
 
+    /**
+     * @return Stage
+     */
+    public function frontendDashboard()
+    {
+
+    }
+
 }

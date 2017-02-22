@@ -9,15 +9,18 @@
 namespace SPHERE\Application\PriceList\Classic;
 
 
+use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Window\Stage;
 use SPHERE\System\Extension\Extension;
 
 class Frontend extends Extension
 {
 	public function frontendClassic() {
-		$Stage = new Stage('Preisliste Classic');
+		$Stage = new Stage('Preisliste', 'Classic');
         $Stage->hasUtilityFavorite(true);
-        $Stage->setMessage('');
+        $Stage->setContent(
+            new Table(array(), null, array('Spalte 1','Spalte 2','Spalte 3','Spalte 4','Spalte 5'))
+        );
 		return $Stage;
 	}
 }

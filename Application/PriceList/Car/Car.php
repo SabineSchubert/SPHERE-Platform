@@ -13,6 +13,7 @@ use SPHERE\Application\IApplicationInterface;
 use SPHERE\Application\IModuleInterface;
 use SPHERE\Application\IServiceInterface;
 use SPHERE\Common\Frontend\Icon\Repository\Calculator;
+use SPHERE\Common\Frontend\Icon\Repository\Cars;
 use SPHERE\Common\Main;
 use SPHERE\Common\Window\Navigation\Link;
 
@@ -21,7 +22,7 @@ class Car implements IApplicationInterface
 	public static function registerApplication()
 	{
 		Main::getDisplay()->addApplicationNavigation(
-            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Pkw und smart'), new Link\Icon(new Calculator()))
+            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Pkw und smart'), new Link\Icon(new Cars()))
         );
         Main::getDispatcher()->registerRoute(
             Main::getDispatcher()->createRoute(__NAMESPACE__, __NAMESPACE__ . '\Frontend::frontendCar')

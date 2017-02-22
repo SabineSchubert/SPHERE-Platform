@@ -67,10 +67,12 @@ body {
 
 /* Prevent Flash ( + Js Mod.. ) */
 
-.FadeIn,
-.Dynamic-Frontend {
+.FadeIn {
     visibility: hidden;
-    /*display: none;*/
+}
+.Dynamic-Frontend {
+    /*visibility: hidden;*/
+    display: none;
 }
 
 /* Scrollbar */

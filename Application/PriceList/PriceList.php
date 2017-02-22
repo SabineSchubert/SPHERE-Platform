@@ -16,6 +16,7 @@ use SPHERE\Application\PriceList\Classic\Classic;
 use SPHERE\Application\PriceList\Trapo\Trapo;
 use SPHERE\Application\PriceList\Truck\Truck;
 use SPHERE\Common\Frontend\Icon\Repository\Calendar;
+use SPHERE\Common\Frontend\Icon\Repository\Listing;
 use SPHERE\Common\Frontend\Icon\Repository\Search as SearchIcon;
 use SPHERE\Common\Main;
 use SPHERE\Common\Window\Navigation\Link;
@@ -28,7 +29,7 @@ class PriceList implements IClusterInterface
 	public static function registerCluster()
 	{
 		Main::getDisplay()->addClusterNavigation(
-            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Preisliste'), new Link\Icon(new Calendar()))
+            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Preisliste'), new Link\Icon(new Listing()))
         );
         Main::getDispatcher()->registerRoute(
             Main::getDispatcher()->createRoute(__NAMESPACE__, __CLASS__ . '::frontendDashboard')

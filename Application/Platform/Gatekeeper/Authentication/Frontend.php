@@ -20,6 +20,7 @@ use SPHERE\Common\Frontend\IFrontendInterface;
 use SPHERE\Common\Frontend\Layout\Repository\Panel;
 use SPHERE\Common\Frontend\Layout\Repository\PullRight;
 use SPHERE\Common\Frontend\Layout\Repository\Thumbnail;
+use SPHERE\Common\Frontend\Layout\Repository\Title;
 use SPHERE\Common\Frontend\Layout\Structure\Layout;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
@@ -58,9 +59,9 @@ class Frontend extends Extension implements IFrontendInterface
                 ->addContent('<div style="background-repeat: no-repeat; background-size: cover; background-position: center center; width: 100%; height: 454px; background-image: url(\'/Common/Style/Resource/Teaser/00-mercedes-benz-design-aesthetics-a-1280-686-848x454.jpg\');">'
                     . '<div class="container-fluid">'
                     . '<div class="col-xs-2"></div>'
-                    . '<div class="col-xs-8" style="text-shadow: 1px 1px 1px rgba(0, 0, 0, .3);">'
+                    . '<div class="col-xs-8" style="text-shadow: 1px 0 1px rgba(0, 0, 0, .8);">'
                     . '<h1>Willkommen</h1>'
-                    . '<div class="text-muted">Teres, velox indexs sed mire talem de magnum, secundus castor. Ignigena de lotus fraticinida, talem particula! Torquis ridetiss, tanquam festus buxum.</div>'
+                    . '<div class="">Jemand musste Josef K. verleumdet haben, denn ohne dass er etwas Böses getan hätte, wurde er eines Morgens verhaftet. »Wie ein Hund!« sagte er, es war, als sollte die Scham ihn überleben. Als Gregor Samsa eines Morgens aus unruhigen Träumen erwachte, fand er sich in seinem Bett zu einem ungeheueren Ungeziefer verwandelt.</div>'
                     . '<br/>'
                     . new Standard('Erfahren Sie mehr...', '#')
                     . '</div>'
@@ -70,9 +71,9 @@ class Frontend extends Extension implements IFrontendInterface
                 ->addContent('<div style="background-repeat: no-repeat; background-size: cover; background-position: center center; width: 100%; height: 454px; background-image: url(\'/Common/Style/Resource/Teaser/00-mercedes-benz-design-e-klasse-coupe-c-238-edition-1-amg-line-1280x686-1-848x454.jpg\');">'
                     . '<div class="container-fluid">'
                     . '<div class="col-xs-2"></div>'
-                    . '<div class="col-xs-8" style="text-shadow: 1px 1px 1px rgba(0, 0, 0, .3);">'
+                    . '<div class="col-xs-8" style="text-shadow: 1px 0 1px rgba(0, 0, 0, .8);">'
                     . '<h1>Thema 1</h1>'
-                    . '<div class="text-muted"></div>'
+                    . '<div class="text-muted">Und es war ihnen wie eine Bestätigung ihrer neuen Träume und guten Absichten, als am Ziele ihrer Fahrt die Tochter als erste sich erhob und ihren jungen Körper dehnte. »Es ist ein eigentümlicher Apparat«, sagte der Offizier zu dem Forschungsreisenden und überblickte mit einem gewissermaßen bewundernden Blick den ihm doch wohlbekannten Apparat.</div>'
                     . '<br/>'
                     . new \SPHERE\Common\Frontend\Link\Repository\Primary('Erfahren Sie mehr...', '#')
                     . '</div>'
@@ -82,9 +83,9 @@ class Frontend extends Extension implements IFrontendInterface
                 ->addContent('<div style="background-repeat: no-repeat; background-size: cover; background-position: center center; width: 100%; height: 454px; background-image: url(\'/Common/Style/Resource/Teaser/00-mercedes-benz-design-skizze-van-nutzfahrzeug-truck-1280x686-848x454.jpg\');">'
                     . '<div class="container-fluid">'
                     . '<div class="col-xs-2"></div>'
-                    . '<div class="col-xs-8" style="text-shadow: 1px 1px 1px rgba(0, 0, 0, .3);">'
+                    . '<div class="col-xs-8" style="text-shadow: 1px 0 1px rgba(0, 0, 0, .8);">'
                     . '<h1>Thema 2</h1>'
-                    . '<div>Peace is the only freedom, the only guarantee of result. Be mediocre for whoever does, because each has been felt with courage. Mysterious places of living will balanced view a unveiled doer. To some, a self is an enlightenment for forgetting.</div>'
+                    . '<div class="">Sie hätten noch ins Boot springen können, aber der Reisende hob ein schweres, geknotetes Tau vom Boden, drohte ihnen damit und hielt sie dadurch von dem Sprunge ab. In den letzten Jahrzehnten ist das Interesse an Hungerkünstlern sehr zurückgegangen. Aber sie überwanden sich, umdrängten den Käfig und wollten sich gar nicht fortrühren.</div>'
                     . '<br/>'
                     . new Link('Erfahren Sie mehr...', '#')
                     . '</div>'
@@ -99,7 +100,22 @@ class Frontend extends Extension implements IFrontendInterface
             new Layout(array(
                 new LayoutGroup(array(
                     new LayoutRow(array(
-                        new LayoutColumn(
+                        new LayoutColumn(array(
+                            new Title('Hinter den Wortbergen', 'Lorem ipsum'),
+                            'Weit hinten, hinter den Wortbergen, fern der Länder Vokalien und Konsonantien leben die Blindtexte. Abgeschieden wohnen sie in Buchstabhausen an der Küste des Semantik, eines großen Sprachozeans. Ein kleines Bächlein namens Duden fließt durch ihren Ort und versorgt sie mit den nötigen Regelialien. Es ist ein paradiesmatisches Land, in dem einem gebratene Satzteile in den Mund fliegen. Nicht einmal von der allmächtigen Interpunktion werden die Blindtexte beherrscht – ein geradezu unorthographisches Leben.',
+                        ),6),
+                        new LayoutColumn(array(
+                            new Title('Typoblindtext ', 'Lorem ipsum'),
+                            'Dies ist ein Typoblindtext. An ihm kann man sehen, ob alle Buchstaben da sind und wie sie aussehen. Manchmal benutzt man Worte wie Hamburgefonts, Rafgenduks oder Handgloves, um Schriften zu testen. Manchmal Sätze, die alle Buchstaben des Alphabets enthalten - man nennt diese Sätze »Pangrams«. Sehr bekannt ist dieser: The quick brown fox jumps over the lazy old dog. Oft werden in Typoblindtexte auch fremdsprachige Satzteile eingebaut (AVAIL® and Wefox™ are testing aussi la Kerning), um die Wirkung in anderen Sprachen zu testen. In Lateinisch sieht zum Beispiel fast jede Schrift gut aus. Quod erat demonstrandum. Seit 1975 fehlen in den meisten Testtexten die Zahlen, weswegen nach TypoGb. 204 § ab dem Jahr 2034 Zahlen in 86 der Texte zur Pflicht werden. Nichteinhaltung wird mit bis zu 245 € oder 368 $ bestraft. Genauso wichtig in sind mittlerweile auch Âçcèñtë, die in neueren Schriften aber fast immer enthalten sind. Ein wichtiges aber schwierig zu integrierendes Feld sind OpenType-Funktionalitäten. Je nach Software und Voreinstellungen können eingebaute Kapitälchen, Kerning oder Ligaturen (sehr pfiffig) nicht richtig dargestellt werden.',
+                        ),6),
+                    )),
+                    new LayoutRow(array(
+                        new LayoutColumn(array(
+                            new Title('Spotlight'),
+                        ))
+                    )),
+                    new LayoutRow(array(
+                        new LayoutColumn(array(
                             new Thumbnail(
                                 FileSystem::getFileLoader('/Common/Style/Resource/Teaser/00-mercedes-benz-design-aesthetics-a-1280-686-848x454.jpg'),
                                 'Titel',
@@ -108,7 +124,7 @@ class Frontend extends Extension implements IFrontendInterface
                                     new Link('Erfahren Sie mehr...', '#')
                                 )
                             )
-                            , 3),
+                        ), 3),
                         new LayoutColumn(
                             new Thumbnail(
                                 FileSystem::getFileLoader('/Common/Style/Resource/Teaser/00-mercedes-benz-design-e-klasse-coupe-c-238-edition-1-amg-line-1280x686-1-848x454.jpg'),

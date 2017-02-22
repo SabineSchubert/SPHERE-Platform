@@ -33,4 +33,11 @@ class Vororder implements IApplicationInterface
         Eigene::registerModule();
     }
 
+    /**
+     * @return Stage
+     */
+    public function frontendDashboard()
+    {
+
+    }
 }

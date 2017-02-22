@@ -26,4 +26,12 @@ class Combination implements IApplicationInterface
         ));
     }
 
+    /**
+     * @return Stage
+     */
+    public function frontendDashboard()
+    {
+
+    }
+
 }

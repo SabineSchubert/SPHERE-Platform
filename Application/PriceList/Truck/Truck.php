@@ -21,7 +21,7 @@ class Truck implements IApplicationInterface
 	public static function registerApplication()
 	{
 		Main::getDisplay()->addApplicationNavigation(
-            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Lkw'), new Link\Icon(new Calculator()))
+            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Lkw'), new Link\Icon(new \SPHERE\Common\Frontend\Icon\Repository\Truck()))
         );
         Main::getDispatcher()->registerRoute(
             Main::getDispatcher()->createRoute(__NAMESPACE__, __NAMESPACE__ . '\Frontend::frontendTruck')
