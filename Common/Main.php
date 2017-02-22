@@ -7,12 +7,17 @@ use Doctrine\DBAL\Exception\TableNotFoundException;
 use MOC\V\Component\Router\Component\Bridge\Repository\UniversalRouter;
 use SPHERE\Application\Api\Api;
 use SPHERE\Application\Dispatcher;
+use SPHERE\Application\Eila\Eila;
+use SPHERE\Application\OtherApplication\OtherApplication;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Access;
 use SPHERE\Application\Platform\Gatekeeper\Consumer\Consumer;
 use SPHERE\Application\Platform\Platform;
 use SPHERE\Application\Platform\System;
+use SPHERE\Application\PriceList\PriceList;
 use SPHERE\Application\Reporting\Reporting;
 use SPHERE\Application\RROP\RROP;
+use SPHERE\Application\Statistic\Statistic;
+use SPHERE\Application\Training\Training;
 use SPHERE\Common\Frontend\Icon\Repository\HazardSign;
 use SPHERE\Common\Frontend\Icon\Repository\Hospital;
 use SPHERE\Common\Frontend\Icon\Repository\Info;
@@ -357,7 +362,12 @@ class Main extends Extension
                     'http://www.daimler.com/'
                     , null, array(), false, External::STYLE_LINK)
             );
-        RROP::registerCluster();
-        Reporting::registerCluster();
+//        RROP::registerCluster();
+//        Reporting::registerCluster();
+        PriceList::registerCluster();
+        Statistic::registerCluster();
+        Training::registerCluster();
+        Eila::registerCluster();
+        OtherApplication::registerCluster();
     }
 }
