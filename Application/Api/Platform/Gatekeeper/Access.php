@@ -82,7 +82,7 @@ class Access extends Receiver implements IApiInterface
                     'order' => array(1, 'asc'),
                     'columnDefs' => array(
                         array('width' => '1%', 'targets' => array(0, -1)),
-                        array('orderable' => false, 'targets' => array(0, -1))
+                        array('searchable' => false, 'orderable' => false, 'targets' => array(0, -1))
                     )
                 ));
         } else {
