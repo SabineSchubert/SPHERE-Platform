@@ -29,15 +29,16 @@ class Dispatcher extends Extension
     /**
      * Dispatcher constructor.
      *
-     * @param string $__CLASS__
+     * @param string|object $ClassName
      * @throws \Exception
      */
-    public function __construct($__CLASS__)
+    public function __construct($ClassName)
     {
-        if (class_exists($__CLASS__, true)) {
-            $this->ApiClass = new $__CLASS__;
+        $Class = new \ReflectionClass($ClassName);
+        if (class_exists($Class->getName(), true)) {
+            $this->ApiClass = $Class->newInstance();
         } else {
-            throw new \Exception('Missing API-Class (' . $__CLASS__ . ')');
+            throw new \Exception('Missing API-Class (' . $ClassName . ')');
         }
     }
 
@@ -133,12 +134,14 @@ class Dispatcher extends Extension
                 if (!empty( $ProtocolQuery )) {
                     $Debugger->addItem('Debugger (Query)', new Listing($ProtocolQuery), false );
                 }
+                $Result = implode(array(
+                    $Result->__toString(),
+                    ( Debugger::$Enabled ? '<br/><div class="small">'.$Debugger.'</div>' : '' )
+                ));
+            } else {
+                $Result = $Result->__toString();
             }
 
-            $Result = implode(array(
-                $Result->__toString(),
-                ( Debugger::$Enabled ? '<br/><div class="small">'.$Debugger.'</div>' : '' )
-            ));
         } else {
             if (is_object($Result)) {
                 $Result = (string)new Error(
