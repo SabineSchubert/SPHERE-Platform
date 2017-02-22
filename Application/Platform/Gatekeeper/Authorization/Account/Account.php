@@ -44,7 +44,7 @@ class Account implements IModuleInterface
     public static function useService()
     {
 
-        return new Service(new Identifier('Platform', 'Gatekeeper', 'Authorization', 'Account'),
+        return new Service(new Identifier('Platform', 'Gatekeeper', 'Authorization'),
             __DIR__ . '/Service/Entity', __NAMESPACE__ . '\Service\Entity'
         );
     }
