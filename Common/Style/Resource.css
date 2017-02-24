@@ -67,9 +67,9 @@ body {
 
 /* Prevent Flash ( + Js Mod.. ) */
 
-.FadeIn {
-    visibility: hidden;
-}
+/*.FadeIn {*/
+    /*visibility: hidden;*/
+/*}*/
 .Dynamic-Frontend {
     /*visibility: hidden;*/
     display: none;

@@ -49,10 +49,6 @@ class System implements IApplicationInterface
         Main::getDispatcher()->registerRoute(Main::getDispatcher()->createRoute(
             __NAMESPACE__, __CLASS__ . '::frontendDashboard'
         ));
-
-        Main::getDispatcher()->registerWidget('System', array(__CLASS__, 'widgetDrive'), 2, 2);
-        Main::getDispatcher()->registerWidget('System', array(__CLASS__, 'widgetMemory'), 2, 2);
-        Main::getDispatcher()->registerWidget('System', array(__CLASS__, 'widgetLoad'), 2, 2);
     }
 
     /**

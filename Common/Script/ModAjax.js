@@ -20,7 +20,7 @@
             }
         }, options);
 
-        $('.Dynamic-Frontend:hidden').fadeIn('slow');
+//         $('.Dynamic-Frontend:hidden').fadeIn('slow');
 
 // Init Pipeline
 
@@ -330,7 +330,7 @@
                 }
             }
             Callback();
-        }
+        };
 
         return {
             'loadAjax': callAjax,

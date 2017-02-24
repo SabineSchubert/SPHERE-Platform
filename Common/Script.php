@@ -79,6 +79,7 @@ class Script extends Extension
 
             $this->setLibrary((new ScriptLibrary('Raphael.js', '2.2.0'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Morris.js', '0.5.1'))->getLibrary());
+            $this->setLibrary((new ScriptLibrary('Baron.js', '2.2.9'))->getLibrary());
 
         } catch (\Exception $Exception) {
             Main::getDisplay()->setException($Exception, 'JavaScript Library');
@@ -130,6 +131,7 @@ class Script extends Extension
 
         $this->setModule(
             'ModAlways', array(
+                'Baron.js',
 //                'Highlight.js',
                 'Bootbox.js',
                 'List.Js',

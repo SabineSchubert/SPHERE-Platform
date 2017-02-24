@@ -255,6 +255,11 @@ class Script
             $Location . '/Slick/1.6.0/slick/slick.min.js',
             "'undefined' !== typeof jQuery.fn.slick"
         ));
+
+        $this->addLibrary(new Library('Baron.js', '2.2.9',
+            $Location . '/Baron.js/2.2.9/baron.min.js',
+            "'undefined' !== typeof jQuery.fn.baron"
+        ));
     }
 
     /**

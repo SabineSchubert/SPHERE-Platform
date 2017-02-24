@@ -25,8 +25,6 @@ class Dispatcher extends Extension
     /** @var IBridgeInterface|null $Router */
     private static $Router = null;
 
-    private static $Widget = array();
-
     private static $PublicRoutes = array();
 
     /**
@@ -37,15 +35,6 @@ class Dispatcher extends Extension
 
         if (null !== $Router) {
             self::$Router = $Router;
-
-            // Roadmap
-            try {
-                $this->registerRoute($this->createRoute('Roadmap/Current',
-                    'SPHERE\Application\Platform\Roadmap\Roadmap::frontendDashboard')
-                );
-            } catch (\Exception $Exception) {
-                $this->getLogger(new ErrorLogger())->addLog('Unable to register Roadmap');
-            }
         }
     }
 
@@ -148,52 +137,5 @@ class Dispatcher extends Extension
                 return $Stage;
             }
         }
-    }
-
-    /**
-     * @param string $Location
-     * @param string $Content
-     * @param int $Width
-     * @param int $Height
-     */
-    public static function registerWidget($Location, $Content, $Width = 2, $Height = 2)
-    {
-
-        self::$Widget[$Location][] = array($Content, $Width, $Height);
-    }
-
-    /**
-     * @param string $Location
-     *
-     * @return string
-     */
-    public static function fetchDashboard($Location)
-    {
-
-        $Dashboard = '<div class="Location-' . $Location . ' gridster"><ul style="list-style: none; display: none;">';
-        if (isset(self::$Widget[$Location])) {
-            $Row = 1;
-            $Column = 1;
-            foreach ((array)self::$Widget[$Location] as $Index => $Widget) {
-
-                if (is_callable($Widget[0])) {
-                    $Widget[0] = call_user_func($Widget[0]);
-                }
-
-                $Dashboard .= '<li id="Widget-' . $Location . '-' . $Index . '" '
-                    . 'data-row="' . $Row . '" '
-                    . 'data-col="' . $Column . '" '
-                    . 'data-sizex="' . $Widget[1] . '" '
-                    . 'data-sizey="' . $Widget[2] . '" '
-                    . 'class="Widget"><div class="Widget-Payload">' . $Widget[0] . '</div></li>';
-                if ($Column >= 8) {
-                    $Column = 1;
-                    $Row++;
-                }
-                $Column++;
-            }
-        }
-        return $Dashboard . '</div>'
-            . '<script>executeScript(function(){Client.Use( "ModGrid", function() { jQuery( "div.Location-' . $Location . '.gridster ul" ).ModGrid({ storage: "Widget-' . $Location . '" }); } );});</script>';
     }
 }
