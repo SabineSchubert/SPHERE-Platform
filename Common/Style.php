@@ -1,6 +1,7 @@
 <?php
 namespace SPHERE\Common;
 
+use MOC\V\Core\FileSystem\FileSystem;
 use MOC\V\Core\HttpKernel\Vendor\Universal\Request;
 use SPHERE\Library\Script as ScriptLibrary;
 use SPHERE\Library\Style as StyleLibrary;
@@ -283,7 +284,14 @@ class Style extends Extension
 
         array_walk($StyleList, function (&$Location) {
 
-            $Location = '<link rel="stylesheet" href="' . $Location . '">';
+            $RealPath = FileSystem::getFileLoader($Location)->getRealPath();
+            if (!empty($RealPath)) {
+                $cTag = '?cTAG-' . md5_file($RealPath);
+            } else {
+                $cTag = '?cTAG-' . 'MISS-' . time();
+            }
+
+            $Location = '<link rel="stylesheet" href="' . $Location . $cTag . '">';
         });
         array_unshift($StyleList, $this->getCombinedStyleTag($Content));
         return implode("\n", $StyleList);

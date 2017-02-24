@@ -1,0 +1,18 @@
+{
+    "name": "RROP",
+    "icons": [
+        {
+            "src": "/Common/Style/Favicon/android-chrome-192x192.png?v=yyxbR6Yxmb",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/Common/Style/Favicon/android-chrome-512x512.png?v=yyxbR6Yxmb",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#ffffff",
+    "background_color": "#ffffff",
+    "display": "standalone"
+}
