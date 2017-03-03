@@ -11,9 +11,9 @@ namespace SPHERE\Application\OtherApplication\Test;
 
 use SPHERE\Application\IApplicationInterface;
 use SPHERE\Common\Frontend\Icon\Repository\TextSize;
-use SPHERE\Common\Frontend\Icon\Repository\Wrench;
 use SPHERE\Common\Main;
 use SPHERE\Common\Window\Navigation\Link;
+use SPHERE\Common\Window\Stage;
 
 class Test implements IApplicationInterface
 {

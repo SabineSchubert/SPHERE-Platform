@@ -3,6 +3,7 @@ namespace SPHERE\Application\Platform\Utility;
 
 use SPHERE\Application\IApplicationInterface;
 use SPHERE\Application\Platform\Utility\Favorite\Favorite;
+use SPHERE\Application\Platform\Utility\Translation\Translation;
 use SPHERE\Common\Frontend\Icon\Repository\Wrench;
 use SPHERE\Common\Main;
 use SPHERE\Common\Window\Navigation\Link;
@@ -16,6 +17,7 @@ class Utility implements IApplicationInterface
 {
     public static function registerApplication()
     {
+        Translation::registerModule();
         Favorite::registerModule();
 
         Main::getDisplay()->addApplicationNavigation(

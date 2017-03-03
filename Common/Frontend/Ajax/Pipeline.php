@@ -162,6 +162,8 @@ class Pipeline
                             $Payload = json_decode( $Emitter->getAjaxPostPayload() );
                             $Payload = array_merge( $FrontendElement->getData(), $Payload );
                             $Data = json_encode( $Payload, JSON_FORCE_OBJECT );
+                        } else {
+                            $Data = json_encode( $Data, JSON_FORCE_OBJECT );
                         }
                         $Data = 'var EmitterData = ' . $Data . ';';
                         $Data .= 'var FormData = jQuery("form#' . $FrontendElement->getHash() . '").serializeArray();';
@@ -170,6 +172,8 @@ class Pipeline
                     } else {
                         if( !empty( $FrontendElement->getData() ) ) {
                             $Data = json_encode( $FrontendElement->getData(), JSON_FORCE_OBJECT );
+                        } else {
+                            $Data = json_encode( $Data, JSON_FORCE_OBJECT );
                         }
                         $Data = 'var EmitterData = ' . $Data . ';';
                         $Data .= 'var FormData = jQuery("form#' . $FrontendElement->getHash() . '").serializeArray();';
