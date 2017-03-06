@@ -1,6 +1,7 @@
 <?php
 namespace SPHERE\Application\Platform\Utility\Translation;
 
+use MOC\V\Component\Template\Template;
 use SPHERE\Application\Platform\Utility\Translation\Component\AbstractComponent;
 use SPHERE\System\Config\ConfigFactory;
 use SPHERE\System\Config\Reader\ArrayReader;
@@ -42,7 +43,8 @@ class Localization extends AbstractComponent
         $Identifier = parent::__toString();
 
         $de = (new ConfigFactory())->createReader(array(
-            'SPHERE\Application\Platform\Utility\Translation\Localization.Stage.Headline.Singular,Big' => ' :P '
+            'SPHERE\Application\Platform\Utility\Translation\Localization.Stage.Headline.Singular,Big' => ' :P ',
+            'Seite 1.Stage.Headline.Normal' => Template::getTwigTemplateString(' :P öäüß {{ Number|join(\', ^^ -> \') }}' )->setVariable('Number',array('abc'))->getContent()
         ), new ArrayReader());
 
         if (($config = $de->getConfig())) {
