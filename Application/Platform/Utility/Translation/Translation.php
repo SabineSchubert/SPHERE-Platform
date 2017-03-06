@@ -49,11 +49,15 @@ class Translation implements IModuleInterface
 
 
         return new Stage(
-            new Localization(new Group('Stage', new Group('Headline', new Singular('Singular.Big')))),
+            'Normal',
+            new Localization(new Group('Stage', new Group('Headline', new Singular('Normal'))), 'Seite 1')
+
+        /*
             new Localization(new Group('Stage',
                 new Plural('Small', new Pattern(array('!^0$!', '!^[0-9]{1}$!', '!^[0-9]{2,}$!'))))
             )
         ,             new Localization(new Group('Stage', new Group('Headline', new Singular('Small'))))
-);
+        */
+        );
     }
 }
