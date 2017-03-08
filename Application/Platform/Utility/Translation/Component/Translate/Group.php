@@ -10,15 +10,34 @@ class Group
 
     public function __construct($Identifier, Group $Child = null)
     {
-        $this->Identifier = preg_replace( '![^\w\d]!is','_', $Identifier );
+        $this->Identifier = preg_replace( '![^:\w\d]!is','_', $Identifier );
         $this->Group = $Child;
     }
 
-    public function getPath()
+    public function getDefinition( Preset $Preset )
     {
         if( $this->Group ) {
-            return array( $this->Identifier => $this->Group->getPath() );
-//            return $this->Identifier.'-'.$this->Group->getPath();
+            return array( $this->Identifier => $this->Group->getDefinition( $Preset ) );
+        } else {
+            return array( $this->Identifier => array(
+                'Default' => array(
+                    'Locale' => $Preset->getDefaultLocale(),
+                    'Pattern' => $Preset->getDefaultPattern(),
+                ),
+                'Pattern' => $Preset->getPatternList(),
+                'Parameter' => $Preset->getParameter()->getParameterList(),
+                'Switch' => $Preset->getParameter()->getSwitch()
+            ) );
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        if( $this->Group ) {
+            return $this->Identifier.' > '.$this->Group->__toString();
         } else {
             return $this->Identifier;
         }

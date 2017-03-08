@@ -6,16 +6,20 @@ namespace SPHERE\Application\Platform\Utility\Translation\Component\Translate;
  */
 class Parameter
 {
-    /** @var array $Register */
-    private $Register = array();
+    /** @var array $ParameterList */
+    private $ParameterList = array();
+    /** @var string $Switch */
+    private $Switch = '';
 
     /**
      * Parameter constructor.
      * @param array $ParameterList Key-Value pairs
+     * @param string $Switch
      */
-    public function __construct($ParameterList = array())
+    public function __construct($ParameterList = array(), $Switch = '')
     {
-        $this->Register = $ParameterList;
+        $this->ParameterList = $ParameterList;
+        $this->Switch = $Switch;
     }
 
     /**
@@ -25,7 +29,23 @@ class Parameter
      */
     public function addValue($Key, $Value)
     {
-        $this->Register[$Key] = $Value;
+        $this->ParameterList[$Key] = $Value;
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSwitch()
+    {
+        return $this->Switch;
+    }
+
+    /**
+     * @return array
+     */
+    public function getParameterList()
+    {
+        return $this->ParameterList;
     }
 }
