@@ -1,106 +1,57 @@
 <?php
 namespace SPHERE\Application\Platform\Utility\Translation\Component;
 
-use SPHERE\Application\Platform\Utility\Translation\IComponentInterface;
-use SPHERE\System\Extension\Extension;
+use MOC\V\Core\HttpKernel\HttpKernel;
+use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
+use SPHERE\System\Cache\CacheFactory;
+use SPHERE\System\Cache\Handler\MemoryHandler;
 
-abstract class AbstractComponent extends Extension
+/**
+ * Class AbstractComponent
+ * @package SPHERE\Application\Platform\Utility\Translation\Component
+ */
+abstract class AbstractComponent
 {
-
-    /** @var string $Delimiter */
-    private $Delimiter = '.';
-    /** @var string $Identifier */
-    private $Identifier = '';
-    /** @var null|IComponentInterface $Component */
-    private $Component = null;
-
     /**
      * @return string
      */
-    public function __toString()
+    private function getBrowserLocale()
     {
-
-        return $this->getPath();
-    }
-
-    /**
-     * @return string
-     */
-    public function getPath()
-    {
-        if ($this->getComponent() instanceof Group) {
-            return implode(
-                $this->getDelimiter(), array(
-                $this->getIdentifier(),
-                $this->getComponent()->getPath()
-            ));
-        } else {
-            if ($this->getComponent() instanceof Singular) {
-                return implode(
-                    $this->getDelimiter(), array(
-                    $this->getIdentifier(),
-                    $this->getComponent()->getIdentifier()
-                ));
-            } else {
-                if ($this->getComponent() instanceof Plural) {
-                    return implode(
-                        $this->getDelimiter(), array(
-                        $this->getIdentifier(),
-                        $this->getComponent()->getIdentifier()
-                    ));
-                } else {
-                    return $this->getIdentifier();
-                }
-            }
+        $LanguageList = HttpKernel::getRequest()->getLanguageList();
+        if( !empty( $LanguageList ) ) {
+            reset( $LanguageList );
+            return current( $LanguageList );
         }
-    }
-
-    /**
-     * @return null|IComponentInterface
-     */
-    protected function getComponent()
-    {
-        return $this->Component;
-    }
-
-    /**
-     * @param null|IComponentInterface $Component
-     */
-    protected function setComponent($Component)
-    {
-        $this->Component = $Component;
+        return $this->getFallbackLocale();
     }
 
     /**
      * @return string
      */
-    protected function getDelimiter()
-    {
-        return $this->Delimiter;
-    }
-
-    /**
-     * @param string $Delimiter
-     */
-    protected function setDelimiter($Delimiter)
-    {
-        $this->Delimiter = $Delimiter;
+    private function getFallbackLocale() {
+        return 'en_US';
     }
 
     /**
      * @return string
      */
-    public function getIdentifier()
+    protected function getLocale()
     {
-        return $this->Identifier;
-    }
+        $Cache = (new CacheFactory())->getCache(new MemoryHandler());
 
-    /**
-     * @param string $Identifier
-     */
-    protected function setIdentifier($Identifier)
-    {
-        $Identifier = preg_replace('!' . preg_quote($this->getDelimiter()) . '!is', ',', $Identifier);
-        $this->Identifier = $Identifier;
+        if( !($Locale = $Cache->getValue('Locale', __METHOD__)) ) {
+
+            $TblAccount = Account::useService()->getAccountBySession();
+            if ($TblAccount) {
+                // TODO Replace with fetch Locale Setting from Account
+                $Locale = $this->getBrowserLocale();
+            } else {
+                $Locale = $this->getBrowserLocale();
+            }
+
+            $Cache->setValue( 'Locale', $Locale, 0, __METHOD__ );
+        }
+
+        return $Locale;
     }
 }

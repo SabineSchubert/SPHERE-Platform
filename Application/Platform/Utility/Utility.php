@@ -1,12 +1,11 @@
 <?php
 namespace SPHERE\Application\Platform\Utility;
 
+use SPHERE\Application\AppTrait;
 use SPHERE\Application\IApplicationInterface;
 use SPHERE\Application\Platform\Utility\Favorite\Favorite;
 use SPHERE\Application\Platform\Utility\Translation\Translation;
 use SPHERE\Common\Frontend\Icon\Repository\Wrench;
-use SPHERE\Common\Main;
-use SPHERE\Common\Window\Navigation\Link;
 use SPHERE\Common\Window\Stage;
 
 /**
@@ -15,17 +14,14 @@ use SPHERE\Common\Window\Stage;
  */
 class Utility implements IApplicationInterface
 {
+    use AppTrait;
+
     public static function registerApplication()
     {
         Translation::registerModule();
         Favorite::registerModule();
 
-        Main::getDisplay()->addApplicationNavigation(
-            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Dienstprogramm'), new Link\Icon(new Wrench()))
-        );
-        Main::getDispatcher()->registerRoute(Main::getDispatcher()->createRoute(
-            __NAMESPACE__, __CLASS__ . '::frontendDashboard'
-        ));
+        self::createApplication( __NAMESPACE__, __CLASS__, 'frontendDashboard', 'Dienstprogramm', new Wrench() );
     }
 
     /**

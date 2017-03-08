@@ -4,13 +4,11 @@ namespace SPHERE\Application\Platform\Utility\Translation;
 use SPHERE\Application\AppTrait;
 use SPHERE\Application\IModuleInterface;
 use SPHERE\Application\IServiceInterface;
-use SPHERE\Application\Platform\Utility\Translation\Component\Group;
-use SPHERE\Application\Platform\Utility\Translation\Component\Pattern;
-use SPHERE\Application\Platform\Utility\Translation\Component\Plural;
-use SPHERE\Application\Platform\Utility\Translation\Component\Singular;
+use SPHERE\Application\Platform\Utility\Translation\Component\Translate;
 use SPHERE\Common\Frontend\Icon\Repository\Conversation;
 use SPHERE\Common\Frontend\IFrontendInterface;
 use SPHERE\Common\Window\Stage;
+use SPHERE\System\Extension\Repository\Debugger;
 
 /**
  * Class Translation
@@ -26,11 +24,11 @@ class Translation implements IModuleInterface
     }
 
     /**
-     * @return IServiceInterface
+     * @return Service
      */
     public static function useService()
     {
-        // TODO: Implement useService() method.
+        return new Service();
     }
 
     /**
@@ -46,11 +44,21 @@ class Translation implements IModuleInterface
      */
     public function frontendDashboard()
     {
-
-
+        Debugger::screenDump(
+            $T = new Translate(
+                new Translate\Group(__METHOD__,
+                    new Translate\Group('Identifier.1',
+                        new Translate\Group('Identifier2')
+                    )
+                ),
+                new Translate\Preset(Translate\Preset::LOCALE_DE_DE)
+            ),
+            $T->getPath()
+        );
         return new Stage(
-            'Normal',
-            new Localization(new Group('Stage', new Group('Headline', new Singular('Normal'))), 'Seite 1')
+
+//            'Normal',
+//            new Localization(new Group('Stage', new Group('Headline', new Singular('Normal'))), 'Seite 1')
 
         /*
             new Localization(new Group('Stage',

@@ -1,8 +1,8 @@
 <?php
-namespace SPHERE\Application\Platform\Utility\Translation;
+namespace SPHERE\Application\Platform\Utility\Translation\Component;
 
 use MOC\V\Component\Template\Template;
-use SPHERE\Application\Platform\Utility\Translation\Component\AbstractComponent;
+use SPHERE\Application\Platform\Utility\Translation\IComponentInterface;
 use SPHERE\System\Config\ConfigFactory;
 use SPHERE\System\Config\Reader\ArrayReader;
 
