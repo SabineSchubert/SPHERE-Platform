@@ -51,12 +51,12 @@ class Platform implements IClusterInterface
         Utility::registerApplication();
 
         Main::getDisplay()->addServiceNavigation(
-            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Plattform'), new Link\Icon(new CogWheels()))
-        );
-        Main::getDispatcher()->registerRoute(
-            Main::getDispatcher()->createRoute(__NAMESPACE__, __CLASS__ . '::frontendPlatform')
-        );
-    }
+new Link(new Link\Route(__NAMESPACE__), new Link\Name('Plattform'), new Link\Icon(new CogWheels()))
+);
+Main::getDispatcher()->registerRoute(
+Main::getDispatcher()->createRoute(__NAMESPACE__, __CLASS__ . '::frontendPlatform')
+);
+}
 
     /**
      * @return Stage

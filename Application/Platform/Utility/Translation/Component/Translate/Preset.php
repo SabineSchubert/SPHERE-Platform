@@ -41,6 +41,9 @@ class Preset extends AbstractComponent
     public function __construct($DefaultPattern, Parameter $Parameter = null, $DefaultLocale = self::LOCALE_EN_US)
     {
         $this->DefaultPattern = $DefaultPattern;
+        if( null === $Parameter ) {
+            $Parameter = new Parameter();
+        }
         $this->setParameter($Parameter);
         $this->setDefaultLocale($DefaultLocale);
     }
@@ -76,13 +79,14 @@ class Preset extends AbstractComponent
             }
         }
 
+        // TODO: TR Mod
         if ($this->getDefaultLocale() != $this->getLocale()) {
             $Translate = new Paragraph( new Link( 'Translation ('.$this->getDefaultLocale().' => '.$this->getLocale().')', '#', new Conversation(), array(), 'Missing ('.$this->getLocale() . ') ' . $this->getBreadCrumb() ) );
         } else {
             $Translate = '';
         }
 
-        return $Translate. $Template->getContent();
+        return $Translate . $Template->getContent();
     }
 
     /**

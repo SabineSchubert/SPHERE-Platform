@@ -42,4 +42,14 @@ class Group
             return $this->Identifier;
         }
     }
+
+    /**
+     * @param Group|null $Child
+     * @return $this
+     */
+    public function setChild(Group $Child = null)
+    {
+        $this->Group = $Child;
+        return $this;
+    }
 }
