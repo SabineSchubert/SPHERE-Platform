@@ -10,7 +10,6 @@ use SPHERE\Common\Frontend\Ajax\Emitter\ClientEmitter;
 use SPHERE\Common\Frontend\Form\Repository\AbstractField;
 use SPHERE\Common\Frontend\Form\Structure\Form;
 use SPHERE\Common\Frontend\Link\Repository\AbstractLink;
-use SPHERE\System\Extension\Repository\Debugger;
 
 /**
  * Class Pipeline

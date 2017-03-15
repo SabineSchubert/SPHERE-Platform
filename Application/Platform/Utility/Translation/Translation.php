@@ -69,7 +69,7 @@ class Translation implements IModuleInterface
             (new Translate\Preset(
                 '{% if(Anzahl < 1) %} Keine Äpfel :( {% else %} {% if(Anzahl > 1) %} {{ Anzahl }} Äpfel :D kosten {{ Kosten }} {% else %} {{ Anzahl }} Apfel :) {% endif %} {% endif %}',
                 new Translate\Parameter(array(
-                    'Anzahl' => 1.1,
+                    'Anzahl' => 2,
                         'Kosten' => (new Localize( 40 ))->getCurrency()
                     )
 //                ),
