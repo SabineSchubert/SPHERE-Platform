@@ -27,7 +27,6 @@ class Time extends AbstractComponent
         $this->Value = $Value;
         $this->DateStyle = $DateStyle;
         $this->TimeStyle = $TimeStyle;
-
     }
 
     /**

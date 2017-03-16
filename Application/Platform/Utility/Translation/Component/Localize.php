@@ -23,7 +23,7 @@ class Localize extends AbstractComponent
     }
 
     /**
-     * @return Number
+     * @return Localize\Number
      */
     public function getCurrency()
     {
@@ -31,7 +31,7 @@ class Localize extends AbstractComponent
     }
 
     /**
-     * @return Time
+     * @return Localize\Time
      */
     public function getDateTime()
     {
@@ -39,7 +39,7 @@ class Localize extends AbstractComponent
     }
 
     /**
-     * @return Time
+     * @return Localize\Time
      */
     public function getDate()
     {
@@ -47,7 +47,7 @@ class Localize extends AbstractComponent
     }
 
     /**
-     * @return Time
+     * @return Localize\Time
      */
     public function getTime()
     {

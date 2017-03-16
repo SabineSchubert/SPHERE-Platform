@@ -120,6 +120,9 @@ class Style
         $this->addLibrary(new Library('Morris.js', '0.5.1',
             $Location . '/Morris.Js/0.5.1/morris.css'
         ));
+        $this->addLibrary(new Library('Highlight.js-Darcula', '9.10.0',
+            $Location . '/Highlight.js/9.10.0/styles/darcula.css'
+        ));
     }
 
     /**

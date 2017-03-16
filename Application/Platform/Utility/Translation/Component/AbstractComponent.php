@@ -15,31 +15,11 @@ abstract class AbstractComponent
     /**
      * @return string
      */
-    private function getBrowserLocale()
-    {
-        $LanguageList = HttpKernel::getRequest()->getLanguageList();
-        if( !empty( $LanguageList ) ) {
-            reset( $LanguageList );
-            return current( $LanguageList );
-        }
-        return $this->getFallbackLocale();
-    }
-
-    /**
-     * @return string
-     */
-    private function getFallbackLocale() {
-        return 'en_US';
-    }
-
-    /**
-     * @return string
-     */
     protected function getLocale()
     {
         $Cache = (new CacheFactory())->getCache(new MemoryHandler());
 
-        if( !($Locale = $Cache->getValue('Locale', __METHOD__)) ) {
+        if (!($Locale = $Cache->getValue('Locale', __METHOD__))) {
 
             $TblAccount = Account::useService()->getAccountBySession();
             if ($TblAccount) {
@@ -49,9 +29,30 @@ abstract class AbstractComponent
                 $Locale = $this->getBrowserLocale();
             }
 
-            $Cache->setValue( 'Locale', $Locale, 0, __METHOD__ );
+            $Cache->setValue('Locale', $Locale, 0, __METHOD__);
         }
 
         return $Locale;
+    }
+
+    /**
+     * @return string
+     */
+    private function getBrowserLocale()
+    {
+        $LanguageList = HttpKernel::getRequest()->getLanguageList();
+        if (!empty($LanguageList)) {
+            reset($LanguageList);
+            return current($LanguageList);
+        }
+        return $this->getFallbackLocale();
+    }
+
+    /**
+     * @return string
+     */
+    private function getFallbackLocale()
+    {
+        return 'en_US';
     }
 }

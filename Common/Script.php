@@ -73,7 +73,7 @@ class Script extends Extension
             $this->setLibrary((new ScriptLibrary('Moment.Js', '2.8.4'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('List.Js', '1.1.1'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('MathJax', '2.5.0'))->getLibrary());
-            $this->setLibrary((new ScriptLibrary('Highlight.js', '8.8.0'))->getLibrary());
+            $this->setLibrary((new ScriptLibrary('Highlight.js', '9.10.0'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Bootbox.js', '4.4.0'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Slick', '1.6.0'))->getLibrary());
 
@@ -132,7 +132,7 @@ class Script extends Extension
         $this->setModule(
             'ModAlways', array(
                 'Baron.js',
-//                'Highlight.js',
+                'Highlight.js',
                 'Bootbox.js',
                 'List.Js',
                 'Bootstrap.Notify',

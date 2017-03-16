@@ -1,5 +1,6 @@
 <?php
 namespace SPHERE\Application\Platform\Utility\Translation\Component\Translate;
+
 /**
  * Class Parameter
  * @package SPHERE\Application\Platform\Utility\Translation\Component\Translate

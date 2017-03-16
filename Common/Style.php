@@ -89,7 +89,8 @@ class Style extends Extension
 
         $this->setSource('/Library/jQuery.jCarousel/0.3.3/examples/responsive/jcarousel.responsive.css', false, true);
         $this->setSource('/Library/jQuery.FlowPlayer/6.0.3/skin/functional.css', false, true);
-        $this->setSource('/Library/Highlight.js/8.8.0/styles/docco.css', false, true);
+//        $this->setSource('/Library/Highlight.js/9.10.0/styles/docco.css', false, true);
+        $this->setLibrary((new StyleLibrary('Highlight.js-Darcula','9.10.0'))->getLibrary(),false, true);
 // 3.3.5
 
 //        $this->setSource('/Common/Style/Correction.css', false, true);

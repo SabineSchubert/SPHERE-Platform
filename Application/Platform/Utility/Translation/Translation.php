@@ -6,14 +6,15 @@ use MOC\V\Component\Document\Component\Parameter\Repository\FileParameter;
 use MOC\V\Component\Document\Document;
 use SPHERE\Application\AppTrait;
 use SPHERE\Application\IModuleInterface;
-use SPHERE\Application\IServiceInterface;
 use SPHERE\Application\Platform\Utility\Translation\Component\Localize;
-use SPHERE\Application\Platform\Utility\Translation\Component\Localize\Number;
-use SPHERE\Application\Platform\Utility\Translation\Component\Localize\Time;
 use SPHERE\Application\Platform\Utility\Translation\Component\Translate;
 use SPHERE\Common\Frontend\Form\Repository\Field\TextField;
 use SPHERE\Common\Frontend\Icon\Repository\Conversation;
+use SPHERE\Common\Frontend\Icon\Repository\Question;
 use SPHERE\Common\Frontend\IFrontendInterface;
+use SPHERE\Common\Frontend\Text\Repository\Code;
+use SPHERE\Common\Frontend\Text\Repository\Muted;
+use SPHERE\Common\Frontend\Text\Repository\Tooltip;
 use SPHERE\Common\Window\Stage;
 use SPHERE\System\Extension\Repository\Debugger;
 
@@ -23,7 +24,7 @@ use SPHERE\System\Extension\Repository\Debugger;
  */
 class Translation implements IModuleInterface
 {
-    use AppTrait, TranslationTrait;
+    use AppTrait, LocaleTrait;
 
     public static function registerModule()
     {
@@ -52,35 +53,37 @@ class Translation implements IModuleInterface
     public function frontendDashboard()
     {
 
-//        $File = tempnam( sys_get_temp_dir(), 'tryamltest' ).'.yaml';
+        $File = tempnam( sys_get_temp_dir(), 'tryamltest' ).'.yaml';
 //        Debugger::screenDump( $File );
-//        /** @var SymfonyYaml $Setting */
-//        $Setting = Document::getDocument( $File );
+        /** @var SymfonyYaml $Setting */
+        $Setting = Document::getDocument( $File );
 
-
-        $T = new Translate(
-            new Translate\Group(__METHOD__,
-                new Translate\Group('Identifier.1',
-                    new Translate\Group('Identifier1',
-                        new Translate\Group('Identifier.A')
-                    )
-                )
-            ),
-            (new Translate\Preset(
-                '{% if(Anzahl < 1) %} Keine Äpfel :( {% else %} {% if(Anzahl > 1) %} {{ Anzahl }} Äpfel :D kosten {{ Kosten }} {% else %} {{ Anzahl }} Apfel :) {% endif %} {% endif %}',
-                new Translate\Parameter(array(
-                    'Anzahl' => 2,
-                        'Kosten' => (new Localize( 40 ))->getCurrency()
-                    )
-//                ),
-//                    'Anzahl'
-                ),
-                Translate\Preset::LOCALE_DE_DE
-            ))
-//                ->addPattern('!^0$!is', '{{ Anzahl }} Apfel')
-//                ->addPattern('!^1$!is', '{{ Anzahl }} Apfel')
-//                ->addPattern('!^[0-9]+$!is', '{{ Anzahl }} Äpfel')
+        $T = $this->doTranslate(array(
+            __METHOD__,
+            'Identifier.1',
+            'Identifier1',
+            'Identifier.A'
+        ),
+            '{% if(Anzahl < 1) %}
+                Keine Äpfel :( ({{ Kosten }})
+             {% else %}
+                {% if(Anzahl > 1) %}
+                    {% if(Anzahl > 10) %}
+                        Viele Äpfel XD
+                    {% else %}
+                        {{ Anzahl }} Äpfel kosten {{ Kosten }}
+                    {% endif %}
+                {% else %}
+                   {{ Anzahl }} Apfel ist kostenlos
+                {% endif %}
+             {% endif %}'
+            , array(
+                'Anzahl' => 3*1,
+                'Kosten' => $this->doLocalize(3*0.5)->getCurrency()
+            ), Translate\Preset::LOCALE_DE_DE
         );
+
+        $T->getPreset()->appendPattern( '!.*?!is', ':P' );
 
         $F = new TextField('',
             'Number',
@@ -88,18 +91,30 @@ class Translation implements IModuleInterface
         );
 
         $FT = new TextField('',
-            $this->translateSimple( array( 'Textfeld', 'Platzhalter' ), 'Number' ),
-            $this->translateSimple( array( 'Textfeld', 'Label' ), 'Number' )
+            $this->doTranslate(array('Textfeld', 'Platzhalter'), 'Number'),
+            $this->doTranslate(array('Textfeld', 'Label'), 'Number')
         );
 
-//        $Path = array_merge_recursive( $T->getDefinition(), $T2->getDefinition() );
-//        $Setting->setContent( $Path );
-//        $Setting->saveFile(new FileParameter($File), 10);
-//        Debugger::screenDump(
-//            $Path,
-//            file_get_contents( $File )
-//        );
+        $Path = $T->getDefinition();
 
-        return (new Stage( $T ))->setContent( $F. $FT. 'Drücken Sie auf '.new Conversation().' :)'.' <br/> '. (new Localize( time() ))->getDateTime() );
+        $Setting->setContent( $Path );
+        $Setting->saveFile(new FileParameter($File), 10);
+        Debugger::screenDump(
+            $Path,
+            file_get_contents( $File )
+        );
+
+        $PatternList = array_column($Setting->getContent(), 'Pattern');
+//        $PatternList = array_map(function ($Region) {return $Region['Pattern'];}, $Setting->getContent());
+
+        return (new Stage($T))->setContent(
+            $F . $FT .
+            (new Localize(time()))->getDateTime()
+            . new Muted(new Tooltip($this->doTranslate(array('Question'), 'Question'), 'Answer', new Question()))
+            .'<br/>'
+
+            . new Code( file_get_contents( $File ), Code::TYPE_YAML )
+            .new Code( print_r($PatternList, true) )
+        );
     }
 }

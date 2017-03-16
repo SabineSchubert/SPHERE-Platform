@@ -3,14 +3,6 @@ namespace SPHERE\Application\Platform\Utility\Translation\Component\Translate;
 
 use MOC\V\Component\Template\Template;
 use SPHERE\Application\Platform\Utility\Translation\Component\AbstractComponent;
-use SPHERE\Common\Frontend\Icon\Repository\Conversation;
-use SPHERE\Common\Frontend\Layout\Repository\Badge;
-use SPHERE\Common\Frontend\Layout\Repository\Paragraph;
-use SPHERE\Common\Frontend\Link\Repository\Link;
-use SPHERE\Common\Frontend\Text\Repository\Bold;
-use SPHERE\Common\Frontend\Text\Repository\Danger;
-use SPHERE\Common\Frontend\Text\Repository\Muted;
-use SPHERE\Common\Frontend\Text\Repository\Small;
 
 /**
  * Class Preset
@@ -40,8 +32,8 @@ class Preset extends AbstractComponent
      */
     public function __construct($DefaultPattern, Parameter $Parameter = null, $DefaultLocale = self::LOCALE_EN_US)
     {
-        $this->DefaultPattern = $DefaultPattern;
-        if( null === $Parameter ) {
+        $this->DefaultPattern = trim($DefaultPattern);
+        if (null === $Parameter) {
             $Parameter = new Parameter();
         }
         $this->setParameter($Parameter);
@@ -54,7 +46,7 @@ class Preset extends AbstractComponent
     public function __toString()
     {
 
-        $this->addPattern('!.*!is', $this->DefaultPattern);
+        $this->appendPattern('!.*!is', $this->DefaultPattern);
         $Template = null;
         if (key_exists(
             ($Switch = $this->getParameter()->getSwitch()),
@@ -81,12 +73,12 @@ class Preset extends AbstractComponent
 
         // TODO: TR Mod
         if ($this->getDefaultLocale() != $this->getLocale()) {
-            $Translate = new Paragraph( new Link( 'Translation ('.$this->getDefaultLocale().' => '.$this->getLocale().')', '#', new Conversation(), array(), 'Missing ('.$this->getLocale() . ') ' . $this->getBreadCrumb() ) );
+            return '{'.$Template->getContent().':'.$this->getLocale().'}';
+//            $Translate = new Paragraph(new Link('Translation (' . $this->getDefaultLocale() . ' => ' . $this->getLocale() . ')',
+//                '#', new Conversation(), array(), 'Missing (' . $this->getLocale() . ') ' . $this->getBreadCrumb()));
         } else {
-            $Translate = '';
+            return $Template->getContent();
         }
-
-        return $Translate . $Template->getContent();
     }
 
     /**
@@ -94,7 +86,7 @@ class Preset extends AbstractComponent
      * @param $Template
      * @return $this
      */
-    public function addPattern($RegEx, $Template)
+    public function appendPattern($RegEx, $Template)
     {
         $this->PatternList[$RegEx] = strip_tags($Template);
         return $this;
