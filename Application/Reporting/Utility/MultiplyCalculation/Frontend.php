@@ -2,176 +2,175 @@
 /**
  * Created by PhpStorm.
  * User: schubert
- * Date: 26.10.2016
- * Time: 09:14
+ * Date: 13.03.2017
+ * Time: 09:32
  */
 
 namespace SPHERE\Application\Reporting\Utility\MultiplyCalculation;
 
-
+use SPHERE\Application\Api\Reporting\Utility\MultiplyCalculation\MultiplyCalculation as ApiMultiplyCalculation;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Button\Reset;
-use SPHERE\Common\Frontend\Form\Repository\Field\HiddenField;
 use SPHERE\Common\Frontend\Form\Repository\Field\TextField;
 use SPHERE\Common\Frontend\Form\Structure\Form;
 use SPHERE\Common\Frontend\Form\Structure\FormColumn;
 use SPHERE\Common\Frontend\Form\Structure\FormGroup;
 use SPHERE\Common\Frontend\Form\Structure\FormRow;
-use SPHERE\Common\Frontend\Icon\Repository\MoneyEuro;
 use SPHERE\Common\Frontend\Icon\Repository\Search;
 use SPHERE\Common\Frontend\Icon\Repository\Warning;
 use SPHERE\Common\Frontend\Layout\Repository\Panel;
 use SPHERE\Common\Frontend\Layout\Repository\PullRight;
 use SPHERE\Common\Frontend\Layout\Repository\Title;
-use SPHERE\Common\Frontend\Form\Repository\Title as FormTitle;
-use SPHERE\Common\Frontend\Layout\Repository\Well;
 use SPHERE\Common\Frontend\Layout\Structure\Layout;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
-use SPHERE\Common\Frontend\Link\Repository\Standard;
-use SPHERE\Common\Frontend\Table\Structure\TableContainer;
-use SPHERE\Common\Frontend\Table\Structure\TableBody;
-use SPHERE\Common\Frontend\Table\Structure\TableColumn;
 use SPHERE\Common\Frontend\Table\Structure\Table;
-use SPHERE\Common\Frontend\Table\Structure\TableHead;
-use SPHERE\Common\Frontend\Table\Structure\TableRow;
-use SPHERE\Common\Frontend\Table\Structure\TableVertical;
 use SPHERE\Common\Frontend\Text\Repository\Bold;
-use SPHERE\Common\Window\Navigation\Link\Route;
 use SPHERE\Common\Window\Stage;
 use SPHERE\System\Extension\Extension;
+use SPHERE\System\Extension\Repository\Debugger;
 
 class Frontend extends Extension
 {
-	public function frontendMultiplyCalculation( $Search = null ) {
+	public function frontendMultiplyCalculation( $Search = null )
+	{
 		$Stage = new Stage('Mehrmengenberechnung');
 		$Stage->setMessage('');
 
-		$LayoutGroupPartNumberInformation = '';
-				$FormGroupMultiCalcAllocation = '';
-				$FormGroupMultiCalcBalancing = '';
-				$FormMultiplyQuantity = '';
-				if ($Search) {
-					if (empty($Result)) {
+		$Form = '';
+		$LayoutAllocation = '';
+		$LayoutBalancing = '';
+		if ($Search) {
+			if (empty($Result)) {
 
-						//$this->preloadPriceData();
+				//$this->preloadPriceData();
 
-						$FormGroupMultiCalcAllocation =
-							new FormGroup(
+				//FormField
+				$DiscountNumberField = new TextField('DiscountNumber', 'Rabattnummer', 'Rabatt-Änderung');
+				$GrossPriceField = new TextField('GrossPrice', 'BLP', 'BLP-Änderung');
+				$NetSaleField = new TextField('NetSale', 'Steigerung NU', 'Steigerung NU');
+				$CoverageContributionField = new TextField('CoverageContribution', 'Steigerung DB', 'Steigerung DB');
+
+				//Receiver
+				$TableAllocationChanceDiscountReceiver = (ApiMultiplyCalculation::Receiver())->setIdentifier( $DiscountNumberField->getName() );
+				$TableAllocationChanceGrossPriceReceiver = (ApiMultiplyCalculation::Receiver()->setIdentifier($GrossPriceField->getName()));
+				$TableBalancingChanceDiscountReceiver = (ApiMultiplyCalculation::Receiver())->setIdentifier($NetSaleField->getName());
+				$TableBalancingChanceGrossPriceReceiver = (ApiMultiplyCalculation::Receiver())->setIdentifier($CoverageContributionField->getName());
+
+				//Pipeline
+				$DiscountNumberPipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableAllocationChanceDiscountReceiver, $NetSaleField);
+				$GrossPricePipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableAllocationChanceGrossPriceReceiver, $CoverageContributionField);
+				$NetSalePipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableBalancingChanceDiscountReceiver, $CoverageContributionField);
+				$CoverageContributionPipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableBalancingChanceGrossPriceReceiver, $NetSaleField);
+
+				$LayoutContent = new Form(
+					new FormGroup(
+						array(
+							new FormRow(
 								array(
-									new FormRow(array(
-										new LayoutColumn(
-											'&nbsp;', 4
-										),
-										new FormColumn(
-											new Panel( 'Rabatt-Änderung', array(
-												new TextField('DiscountNumber','Rabattnummer')
-											), Panel::PANEL_TYPE_INFO)
-											, 4
-										),
-										new FormColumn(
-											new Panel( 'BLP-Änderung', array(
-													new TextField('BLP','BLP')
-											), Panel::PANEL_TYPE_INFO)
-											, 4
-										)
-									)),
-									new FormRow(array(
-										new FormColumn(
-											$this->tableAllocationBasicData(), 4
-										),
-										new FormColumn(
-											$this->tableAllocationChanceDiscount(), 4
-										),
-										new FormColumn(
-											$this->tableAllocationChanceGrossPrice(), 4
-										)
-									))
-								)
-								, new FormTitle('Mehrmengenberechung bei Vergabe von Zusatzrabatten bzw. Änderung des BLP')
-							);
-
-						$FormGroupMultiCalcBalancing =
-							new FormGroup(
-								new FormRow(
-									array(
-										new FormColumn(
-											$this->tableBalancingBasicData(), 4
-										),
-										new FormColumn(
-											$this->tableBalancingChanceDiscount(), 4
-										),
-										new FormColumn(
-											$this->tableBalancingChanceGrossPrice(), 4
-										)
+									new FormColumn(
+										new Panel( '', array(
+											$DiscountNumberField->ajaxPipelineOnChange( $DiscountNumberPipeline )
+										), Panel::PANEL_TYPE_DEFAULT), 6
+									),
+									new FormColumn(
+										new Panel( '', array(
+												$GrossPriceField->ajaxPipelineOnChange( $GrossPricePipeline )
+										), Panel::PANEL_TYPE_DEFAULT), 6
 									)
 								)
-								, new FormTitle('Mehrmengenberechnung zum Ausgleich des Zusatzrabattes auf Ebene:')
-							);
-
-						$FormMultiplyQuantity =
-							new FormGroup(array(
-								new FormRow(
-									array(
-										new FormColumn(
-											new Panel( 'Steigerung NU', array(
-												new TextField('Test', 'Test')
-											), Panel::PANEL_TYPE_INFO)
-											, 4
-										),
-										new FormColumn(
-											$this->tableIncreaseNuChanceDiscount(), 4
-										),
-										new FormColumn(
-											$this->tableIncreaseNuChanceGrossPrice(), 4
-										)
+							),
+							new FormRow(
+								array(
+									new FormColumn(
+										new Panel( '', array(
+											$NetSaleField->ajaxPipelineOnChange( $NetSalePipeline )
+										), Panel::PANEL_TYPE_DEFAULT), 6
+									),
+									new FormColumn(
+										new Panel( '', array(
+											$CoverageContributionField->ajaxPipelineOnChange( $CoverageContributionPipeline )
+										), Panel::PANEL_TYPE_DEFAULT), 6
 									)
-								),
-								new FormRow(
-									array(
-										new FormColumn(
-											new Panel( 'Steigerung DB', array(
-												new TextField('Test', 'Test')
-											), Panel::PANEL_TYPE_INFO)
-											, 4
-										),
-										new FormColumn(
-											$this->tableIncreaseDbChanceDiscount(), 4
-										),
-										new FormColumn(
-											$this->tableIncreaseDbChanceGrossPrice(), 4
-										)
-									)
-								)
-							));
-
-					} else {
-						$Table = new Warning('Die Teilenummer konnte nicht gefunden werden.');
-					}
-				}
-
-				$Stage->setContent(
-					new Layout(
-						new LayoutGroup(
-							new LayoutRow(
-								new LayoutColumn(
-									$this->fromSearchPartNumber(), 4
 								)
 							)
 						)
 					)
-					.
-					(new Form (array(
-						//Vergabe
-						$FormGroupMultiCalcAllocation,
-						//Ausgleich
-						$FormGroupMultiCalcBalancing,
-						//Mehrmenge
-						$FormMultiplyQuantity
-					)))
 				);
 
+				$Form =
+					new Layout(
+						new LayoutGroup(
+							new LayoutRow(
+								array(
+									new LayoutColumn('', 4),
+									new LayoutColumn($LayoutContent, 8)
+								)
+							)
+							, new Title('Mehrmengenberechung bei Vergabe von Zusatzrabatten bzw. Änderung des BLP')
+						)
+					);
+
+				$LayoutAllocation = new Layout(
+					array(
+						new LayoutGroup(
+							new LayoutRow(
+								array(
+									new LayoutColumn(
+										$this->tableAllocationBasicData(), 4
+									),
+									new LayoutColumn(
+										$TableAllocationChanceDiscountReceiver, 4
+									),
+									new LayoutColumn(
+										$TableAllocationChanceGrossPriceReceiver, 4
+									)
+								)
+							)
+						)
+					)
+				).$DiscountNumberPipeline.$GrossPricePipeline;
+
+				$LayoutBalancing = new Layout(
+					new LayoutGroup(
+						new LayoutRow(
+							array(
+								new LayoutColumn(
+									$this->tableBalancingBasicData(), 4
+								),
+								new LayoutColumn(
+									$TableBalancingChanceDiscountReceiver, 4
+								),
+								new LayoutColumn(
+									$TableBalancingChanceGrossPriceReceiver, 4
+								)
+							)
+						)
+						, new Title('Mehrmengenberechnung zum Ausgleich des Zusatzrabattes auf Ebene')
+					)
+				);
+
+			} else {
+				$Table = new Warning('Die Teilenummer konnte nicht gefunden werden.');
+			}
+		}
+
+
+		$Stage->setContent(
+			new Layout(
+				new LayoutGroup(
+					new LayoutRow(
+						new LayoutColumn(
+							$this->fromSearchPartNumber(), 4
+						)
+					)
+				)
+			)
+			.$Form
+			.$LayoutAllocation
+			.$LayoutBalancing
+		);
 		return $Stage;
 	}
 
@@ -196,6 +195,20 @@ class Frontend extends Extension
 	}
 
 	private function tableAllocationBasicData() {
+		$PriceDataOld = array(
+			array('GrossPrice' => 150.00, 'DiscountNumber' => 5, 'Discount' => 17.00, 'Costs' => 140.00, 'PartsMore' => 5.00, 'Quantity' => 2)
+		);
+		$PriceData['Old'] = $PriceDataOld[0];
+
+		$CalcRules = $this->getCalculationRules();
+
+		$NetPrice['Old'] = $CalcRules->calcNetPrice( $PriceData['Old']['GrossPrice'], $PriceData['Old']['Discount'] );
+		$GrossSales['Old'] = $CalcRules->calcGrossSales( $PriceData['Old']['GrossPrice'], $PriceData['Old']['Quantity'] );
+		$NetSales['Old'] = $CalcRules->calcNetSales( $NetPrice['Old'], $PriceData['Old']['Quantity'] );
+		$CoverageContribution['Old'] = $CalcRules->calcCoverageContribution( $NetPrice['Old'], $PriceData['Old']['Costs'] );
+		$TotalCoverageContribution['Old'] = $CalcRules->calcTotalCoverageContribution( $CoverageContribution['Old'], $PriceData['Old']['Quantity'] );
+		$TotalCoverageContributionProportionNetSales['Old'] = $CalcRules->calcTotalCoverageContributionProportionNetSales($TotalCoverageContribution['Old'], $NetSales['Old'] );
+
 		return
 			new Table(array(
 				array(
@@ -204,47 +217,47 @@ class Frontend extends Extension
 				),
 				array(
 					'Description' => 'BLP/TP',
-					'Value' => new PullRight( number_format(26.03,2,',','.').' €' )
+					'Value' => new PullRight( number_format( $PriceData['Old']['GrossPrice'] ,2,',','.').' €' )
 				),
 				array(
 					'Description' => 'RG',
-					'Value' => new PullRight( '20' )
+					'Value' => new PullRight( $PriceData['Old']['DiscountNumber'] )
 				),
 				array(
 					'Description' => 'Rabattsatz',
-					'Value' => new PullRight( number_format(33.00,2,',','.').' %' )
+					'Value' => new PullRight( number_format($PriceData['Old']['Discount'],2,',','.').' %' )
 				),
 				array(
 					'Description' => 'NLP/TP',
-					'Value' => new PullRight( number_format(17.44,2,',','.').' €' )
+					'Value' => new PullRight( number_format($NetPrice['Old'] ,2,',','.').' €' )
 				),
 				array(
 					'Description' => 'Kosten',
-					'Value' => new PullRight( number_format(14.11,2,',','.').' €' )
+					'Value' => new PullRight( number_format($PriceData['Old']['Costs'],2,',','.').' €' )
 				),
 				array(
 					'Description' => 'BU',
-					'Value' => new PullRight( number_format(26.03,2,',','.').' €' )
+					'Value' => new PullRight( number_format($GrossSales['Old'],2,',','.').' €' )
 				),
 				array(
 					'Description' => 'NU',
-					'Value' => new PullRight( number_format(17.44,2,',','.').' €' )
+					'Value' => new PullRight( number_format($NetSales['Old'],2,',','.').' €' )
 				),
 				array(
 					'Description' => 'Menge aktuell',
-					'Value' => new PullRight( '1'.' Stk.' )
+					'Value' => new PullRight( $PriceData['Old']['Quantity'].' Stk.' )
 				),
 				array(
 					'Description' => 'DB Konzern gesamt',
-					'Value' => new PullRight( number_format(3.33,2,',','.').' €' )
+					'Value' => new PullRight( number_format($TotalCoverageContribution['Old'],2,',','.').' €' )
 				),
 				array(
 					'Description' => 'DB Konzern in %',
-					'Value' => new PullRight( number_format(19.09,2,',','.').' %' )
+					'Value' => new PullRight( number_format($TotalCoverageContributionProportionNetSales['Old'],2,',','.').' %' )
 				),
 				array(
 					'Description' => 'DB Konzern pro Stück',
-					'Value' => new PullRight( number_format(3.33,2,',','.').' €' )
+					'Value' => new PullRight( number_format($CoverageContribution['Old'],2,',','.').' €' )
 				)
 			),
 			null,
@@ -263,147 +276,147 @@ class Frontend extends Extension
 		);
 	}
 
-	private function tableAllocationChanceDiscount() {
-		return
-			new Table(array(
-				array(
-					'Description' => '&nbsp;',
-					'Value' => '&nbsp;'
-				),
-				array(
-					'Description' => '&nbsp;',
-					'Value' => '&nbsp;'
-				),
-				array(
-					'Description' => '&nbsp;',
-					'Value' => '&nbsp;'
-				),
-				array(
-					'Description' => new PullRight( number_format(33.00,2,',','.').' %' ),
-					'Value' => ''
-				),
-				array(
-					'Description' => new PullRight( number_format(17.44,2,',','.').' €' ),
-					'Value' => ''
-				),
-				array(
-					'Description' => new PullRight( number_format(14.11,2,',','.').' €' ),
-					'Value' => ''
-				),
-				array(
-					'Description' => new PullRight( number_format(26.03,2,',','.').' €' ),
-					'Value' => ''
-				),
-				array(
-					'Description' => new PullRight( number_format(17.44,2,',','.').' €' ),
-					'Value' => ''
-				),
-				array(
-					'Description' => new PullRight( '1'.' Stk.' ),
-					'Value' => ''
-				),
-				array(
-					'Description' => new PullRight( number_format(3.33,2,',','.').' €' ),
-					'Value' => ''
-				),
-				array(
-					'Description' => new PullRight( number_format(19.09,2,',','.').' %' ),
-					'Value' => ''
-				),
-				array(
-					'Description' => new PullRight( number_format(3.33,2,',','.').' €' ),
-					'Value' => ''
-				)
-			),
-			null,
-			array('Description'=>'Retaileingang', 'Value'=>'Delta'),
-			array(
-				"columnDefs" => array(
-					array( 'width' => '1%', 'targets' => 0 ),
-					array( 'width' => '1%', 'targets' => 1 )
-				),
-				"paging"         => false, // Deaktivieren Blättern
-			    "iDisplayLength" => -1,    // Alle Einträge zeigen
-			    "searching"      => false, // Deaktivieren Suchen
-			    "info"           => false,  // Deaktivieren Such-Info
-				"sort"           => false   //Deaktivierung Sortierung der Spalten
-			)
-		);
-	}
-
-	private function tableAllocationChanceGrossPrice() {
-		return
-			new Table(array(
-				array(
-					'Description' => '&nbsp;',
-					'Value' => '&nbsp;'
-				),
-				array(
-					'Description' => '&nbsp;',
-					'Value' => '&nbsp;'
-				),
-				array(
-					'Description' => new PullRight( '20' ),
-					'Value' => '&nbsp;'
-				),
-				array(
-					'Description' => new PullRight( number_format(33.00,2,',','.').' %' ),
-					'Value' => ''
-				),
-				array(
-					'Description' => new PullRight( number_format(17.44,2,',','.').' €' ),
-					'Value' => ''
-				),
-				array(
-					'Description' => new PullRight( number_format(14.11,2,',','.').' €' ),
-					'Value' => ''
-				),
-				array(
-					'Description' => new PullRight( number_format(26.03,2,',','.').' €' ),
-					'Value' => ''
-				),
-				array(
-					'Description' => new PullRight( number_format(17.44,2,',','.').' €' ),
-					'Value' => ''
-				),
-				array(
-					'Description' => new PullRight( '1'.' Stk.' ),
-					'Value' => ''
-				),
-				array(
-					'Description' => new PullRight( number_format(3.33,2,',','.').' €' ),
-					'Value' => ''
-				),
-				array(
-					'Description' => new PullRight( number_format(19.09,2,',','.').' %' ),
-					'Value' => ''
-				),
-				array(
-					'Description' => new PullRight( number_format(3.33,2,',','.').' €' ),
-					'Value' => ''
-				)
-			),
-			null,
-			array('Description'=>'&nbsp;', 'Value'=>'Delta'),
-			array(
-				"columnDefs" => array(
-					array( 'width' => '1%', 'targets' => 0 ),
-					array( 'width' => '1%', 'targets' => 1 )
-				),
-				"paging"         => false, // Deaktivieren Blättern
-			    "iDisplayLength" => -1,    // Alle Einträge zeigen
-			    "searching"      => false, // Deaktivieren Suchen
-			    "info"           => false,  // Deaktivieren Such-Info
-				"sort"           => false   //Deaktivierung Sortierung der Spalten
-			)
-		);
-	}
+//	private function tableAllocationChanceDiscount() {
+//		return
+//			new Table(array(
+//				array(
+//					'Description' => '&nbsp;',
+//					'Value' => '&nbsp;'
+//				),
+//				array(
+//					'Description' => '&nbsp;',
+//					'Value' => '&nbsp;'
+//				),
+//				array(
+//					'Description' => '&nbsp;',
+//					'Value' => '&nbsp;'
+//				),
+//				array(
+//					'Description' => new PullRight( number_format(33.00,2,',','.').' %' ),
+//					'Value' => ''
+//				),
+//				array(
+//					'Description' => new PullRight( number_format(17.44,2,',','.').' €' ),
+//					'Value' => ''
+//				),
+//				array(
+//					'Description' => new PullRight( number_format(14.11,2,',','.').' €' ),
+//					'Value' => ''
+//				),
+//				array(
+//					'Description' => new PullRight( number_format(26.03,2,',','.').' €' ),
+//					'Value' => ''
+//				),
+//				array(
+//					'Description' => new PullRight( number_format(17.44,2,',','.').' €' ),
+//					'Value' => ''
+//				),
+//				array(
+//					'Description' => new PullRight( '1'.' Stk.' ),
+//					'Value' => ''
+//				),
+//				array(
+//					'Description' => new PullRight( number_format(3.33,2,',','.').' €' ),
+//					'Value' => ''
+//				),
+//				array(
+//					'Description' => new PullRight( number_format(19.09,2,',','.').' %' ),
+//					'Value' => ''
+//				),
+//				array(
+//					'Description' => new PullRight( number_format(3.33,2,',','.').' €' ),
+//					'Value' => ''
+//				)
+//			),
+//			null,
+//			array('Description'=>'Retaileingang', 'Value'=>'Delta'),
+//			array(
+//				"columnDefs" => array(
+//					array( 'width' => '1%', 'targets' => 0 ),
+//					array( 'width' => '1%', 'targets' => 1 )
+//				),
+//				"paging"         => false, // Deaktivieren Blättern
+//			    "iDisplayLength" => -1,    // Alle Einträge zeigen
+//			    "searching"      => false, // Deaktivieren Suchen
+//			    "info"           => false,  // Deaktivieren Such-Info
+//				"sort"           => false   //Deaktivierung Sortierung der Spalten
+//			)
+//		);
+//	}
+//
+//	private function tableAllocationChanceGrossPrice() {
+//		return
+//			new Table(array(
+//				array(
+//					'Description' => '&nbsp;',
+//					'Value' => '&nbsp;'
+//				),
+//				array(
+//					'Description' => '&nbsp;',
+//					'Value' => '&nbsp;'
+//				),
+//				array(
+//					'Description' => new PullRight( '20' ),
+//					'Value' => '&nbsp;'
+//				),
+//				array(
+//					'Description' => new PullRight( number_format(33.00,2,',','.').' %' ),
+//					'Value' => ''
+//				),
+//				array(
+//					'Description' => new PullRight( number_format(17.44,2,',','.').' €' ),
+//					'Value' => ''
+//				),
+//				array(
+//					'Description' => new PullRight( number_format(14.11,2,',','.').' €' ),
+//					'Value' => ''
+//				),
+//				array(
+//					'Description' => new PullRight( number_format(26.03,2,',','.').' €' ),
+//					'Value' => ''
+//				),
+//				array(
+//					'Description' => new PullRight( number_format(50.50,2,',','.').' €' ),
+//					'Value' => ''
+//				),
+//				array(
+//					'Description' => new PullRight( '1'.' Stk.' ),
+//					'Value' => ''
+//				),
+//				array(
+//					'Description' => new PullRight( number_format(3.33,2,',','.').' €' ),
+//					'Value' => ''
+//				),
+//				array(
+//					'Description' => new PullRight( number_format(19.09,2,',','.').' %' ),
+//					'Value' => ''
+//				),
+//				array(
+//					'Description' => new PullRight( number_format(3.33,2,',','.').' €' ),
+//					'Value' => ''
+//				)
+//			),
+//			null,
+//			array('Description'=>'&nbsp;', 'Value'=>'Delta'),
+//			array(
+//				"columnDefs" => array(
+//					array( 'width' => '1%', 'targets' => 0 ),
+//					array( 'width' => '1%', 'targets' => 1 )
+//				),
+//				"paging"         => false, // Deaktivieren Blättern
+//			    "iDisplayLength" => -1,    // Alle Einträge zeigen
+//			    "searching"      => false, // Deaktivieren Suchen
+//			    "info"           => false,  // Deaktivieren Such-Info
+//				"sort"           => false   //Deaktivierung Sortierung der Spalten
+//			)
+//		);
+//	}
 
 	private function tableBalancingBasicData() {
 		return
 			new Table(array(
 					array(
-						'Description' => 'Menge absolut'
+						'Description' => 'Mehrmenge absolut'
 					),
 					array(
 						'Description' => 'Menge gesamt'
@@ -416,6 +429,8 @@ class Frontend extends Extension
 					),
 					array(
 						'Description' => 'Neu neu'
+					),array(
+						'Description' => new Bold( 'Mehrmenge absolut' )
 					)
 				),
 				null,
@@ -433,183 +448,92 @@ class Frontend extends Extension
 			);
 	}
 
-	private function tableBalancingChanceDiscount() {
-		return
-				new Table(array(
-					array(
-						'Description' => '&nbsp;',
-						'Value' => '&nbsp;'
-					),
-					array(
-						'Description' => '&nbsp;',
-						'Value' => '&nbsp;'
-					),
-					array(
-						'Description' => '&nbsp;',
-						'Value' => '&nbsp;'
-					),
-					array(
-						'Description' => '&nbsp;',
-						'Value' => '&nbsp;'
-					),
-					array(
-						'Description' => '&nbsp;',
-						'Value' => '&nbsp;'
-					)
-				),
-				null,
-				array('Description'=>'Nettoumsatz ', 'Value'=>'DB-Konzern'),
-				array(
-					"columnDefs" => array(
-						array( 'width' => '1%', 'targets' => 0 ),
-						array( 'width' => '1%', 'targets' => 1 )
-					),
-					"paging"         => false, // Deaktivieren Blättern
-				    "iDisplayLength" => -1,    // Alle Einträge zeigen
-				    "searching"      => false, // Deaktivieren Suchen
-				    "info"           => false,  // Deaktivieren Such-Info
-					"sort"           => false   //Deaktivierung Sortierung der Spalten
-				)
-			);
-	}
+//	private function tableBalancingChanceDiscount() {
+//		return
+//				new Table(array(
+//					array(
+//						'Description' => '&nbsp;',
+//						'Value' => '&nbsp;'
+//					),
+//					array(
+//						'Description' => '&nbsp;',
+//						'Value' => '&nbsp;'
+//					),
+//					array(
+//						'Description' => '&nbsp;',
+//						'Value' => '&nbsp;'
+//					),
+//					array(
+//						'Description' => '&nbsp;',
+//						'Value' => '&nbsp;'
+//					),
+//					array(
+//						'Description' => '&nbsp;',
+//						'Value' => '&nbsp;'
+//					),
+//					array(
+//						'Description' => '&nbsp;',
+//						'Value' => '&nbsp;'
+//					)
+//				),
+//				null,
+//				array('Description'=>'Nettoumsatz&nbsp;', 'Value'=>'DB-Konzern'),
+//				array(
+//					"columnDefs" => array(
+//						array( 'width' => '1%', 'targets' => 0 ),
+//						array( 'width' => '1%', 'targets' => 1 )
+//					),
+//					"paging"         => false, // Deaktivieren Blättern
+//				    "iDisplayLength" => -1,    // Alle Einträge zeigen
+//				    "searching"      => false, // Deaktivieren Suchen
+//				    "info"           => false,  // Deaktivieren Such-Info
+//					"sort"           => false   //Deaktivierung Sortierung der Spalten
+//				)
+//			);
+//	}
+//
+//	private function tableBalancingChanceGrossPrice() {
+//		return
+//			new Table(array(
+//				array(
+//					'Description' => '&nbsp;&nbsp;52',
+//					'Value' => '&nbsp;'
+//				),
+//				array(
+//					'Description' => '&nbsp;',
+//					'Value' => '&nbsp;'
+//				),
+//				array(
+//					'Description' => '&nbsp;',
+//					'Value' => '&nbsp;'
+//				),
+//				array(
+//					'Description' => '&nbsp;',
+//					'Value' => '&nbsp;'
+//				),
+//				array(
+//					'Description' => '&nbsp;',
+//					'Value' => '&nbsp;'
+//				),
+//				array(
+//					'Description' => '&nbsp;',
+//					'Value' => '&nbsp;'
+//				)
+//			),
+//			null,
+//			array('Description'=>'Nettoumsatz', 'Value'=>'DB-Konzern'),
+//			array(
+//				"columnDefs" => array(
+//					array( 'width' => '1%', 'targets' => 0 ),
+//					array( 'width' => '1%', 'targets' => 1 )
+//				),
+//				"paging"         => false, // Deaktivieren Blättern
+//			    "iDisplayLength" => -1,    // Alle Einträge zeigen
+//			    "searching"      => false, // Deaktivieren Suchen
+//			    "info"           => false,  // Deaktivieren Such-Info
+//				"sort"           => false   //Deaktivierung Sortierung der Spalten
+//			)
+//		);
+//	}
 
-	private function tableBalancingChanceGrossPrice() {
-		return
-			new Table(array(
-				array(
-					'Description' => '&nbsp;',
-					'Value' => '&nbsp;'
-				),
-				array(
-					'Description' => '&nbsp;',
-					'Value' => '&nbsp;'
-				),
-				array(
-					'Description' => '&nbsp;',
-					'Value' => '&nbsp;'
-				),
-				array(
-					'Description' => '&nbsp;',
-					'Value' => '&nbsp;'
-				),
-				array(
-					'Description' => '&nbsp;',
-					'Value' => '&nbsp;'
-				)
-			),
-			null,
-			array('Description'=>'Nettoumsatz', 'Value'=>'DB-Konzern'),
-			array(
-				"columnDefs" => array(
-					array( 'width' => '1%', 'targets' => 0 ),
-					array( 'width' => '1%', 'targets' => 1 )
-				),
-				"paging"         => false, // Deaktivieren Blättern
-			    "iDisplayLength" => -1,    // Alle Einträge zeigen
-			    "searching"      => false, // Deaktivieren Suchen
-			    "info"           => false,  // Deaktivieren Such-Info
-				"sort"           => false   //Deaktivierung Sortierung der Spalten
-			)
-		);
-	}
-
-	private function tableIncreaseNuChanceDiscount() {
-		return
-			new Table(array(
-				array(
-					'Description' => '0 St.',
-					'Value' => 'Mehrmenge absolut '
-				)
-			),
-				null,
-				array('Description' => 'Nettoumsatz', 'Value' => 'DB-Konzern'),
-				array(
-					"columnDefs" => array(
-						array('width' => '1%', 'targets' => 0),
-						array('width' => '1%', 'targets' => 0),
-						array('width' => '1%', 'targets' => 1)
-					),
-					"paging" => false, // Deaktivieren Blättern
-					"iDisplayLength" => -1,    // Alle Einträge zeigen
-					"searching" => false, // Deaktivieren Suchen
-					"info" => false,  // Deaktivieren Such-Info
-					"sort" => false   //Deaktivierung Sortierung der Spalten
-				)
-			);
-	}
-
-	private function tableIncreaseNuChanceGrossPrice() {
-		return
-			new Table(array(
-				array(
-					'Description' => '0 St.',
-					'Value' => 'Mehrmenge absolut '
-				)
-			),
-				null,
-				array('Description' => 'Nettoumsatz', 'Value' => 'DB-Konzern'),
-				array(
-					"columnDefs" => array(
-						array('width' => '1%', 'targets' => 0),
-						array('width' => '1%', 'targets' => 0),
-						array('width' => '1%', 'targets' => 1)
-					),
-					"paging" => false, // Deaktivieren Blättern
-					"iDisplayLength" => -1,    // Alle Einträge zeigen
-					"searching" => false, // Deaktivieren Suchen
-					"info" => false,  // Deaktivieren Such-Info
-					"sort" => false   //Deaktivierung Sortierung der Spalten
-				)
-			);
-	}
-
-	private function tableIncreaseDbChanceDiscount() {
-		return
-			new Table(array(
-				array(
-					'Description' => 'Mehrmenge absolut',
-					'Value' => '0 St.'
-				)
-			),
-				null,
-				array('Description' => 'Nettoumsatz', 'Value' => 'DB-Konzern '),
-				array(
-					"columnDefs" => array(
-						array('width' => '1%', 'targets' => 0),
-						array('width' => '1%', 'targets' => 0),
-						array('width' => '1%', 'targets' => 1)
-					),
-					"paging" => false, // Deaktivieren Blättern
-					"iDisplayLength" => -1,    // Alle Einträge zeigen
-					"searching" => false, // Deaktivieren Suchen
-					"info" => false,  // Deaktivieren Such-Info
-					"sort" => false   //Deaktivierung Sortierung der Spalten
-				)
-			);
-	}
-
-	private function tableIncreaseDbChanceGrossPrice() {
-		return
-			new Table(array(
-				array(
-					'Description' => 'Mehrmenge absolut',
-					'Value' => '0 St.'
-				)
-			),
-				null,
-				array('Description' => 'Nettoumsatz ', 'Value' => 'DB-Konzern'),
-				array(
-					"columnDefs" => array(
-						array('width' => '1%', 'targets' => 0),
-						array('width' => '1%', 'targets' => 0),
-						array('width' => '1%', 'targets' => 1)
-					),
-					"paging" => false, // Deaktivieren Blättern
-					"iDisplayLength" => -1,    // Alle Einträge zeigen
-					"searching" => false, // Deaktivieren Suchen
-					"info" => false,  // Deaktivieren Such-Info
-					"sort" => false   //Deaktivierung Sortierung der Spalten
-				)
-			);
-	}
 }

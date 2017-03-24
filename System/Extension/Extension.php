@@ -11,6 +11,7 @@ use SPHERE\System\Cache\Handler\MemoryHandler;
 use SPHERE\System\Database\Fitting\Repository;
 use SPHERE\System\Debugger\DebuggerFactory;
 use SPHERE\System\Debugger\Logger\LoggerInterface;
+use SPHERE\System\Extension\Repository\CalculationRules;
 use SPHERE\System\Extension\Repository\DataTables;
 use SPHERE\System\Extension\Repository\Debugger;
 use SPHERE\System\Extension\Repository\ModHex;
@@ -176,5 +177,14 @@ class Extension
             return $Address;
         }
         return false;
+    }
+
+	/**
+     * @return CalculationRules
+     */
+    public function getCalculationRules()
+    {
+
+        return new CalculationRules();
     }
 }

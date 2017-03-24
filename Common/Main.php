@@ -365,7 +365,7 @@ class Main extends Extension
                     , null, array(), false, External::STYLE_LINK)
             );
 //        RROP::registerCluster();
-//        Reporting::registerCluster();
+        Reporting::registerCluster();
         PriceList::registerCluster();
         Statistic::registerCluster();
         Training::registerCluster();

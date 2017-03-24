@@ -8,7 +8,8 @@
 
 namespace SPHERE\Application\Reporting\Utility\ScenarioCalculator;
 
-
+use SPHERE\Application\Api\Reporting\Utility\ScenarioCalculator\ScenarioCalculator As ApiScenarioCalculator;
+use SPHERE\Common\Frontend\Ajax\Receiver\FieldValueReceiver;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Button\Reset;
 use SPHERE\Common\Frontend\Form\Repository\Field\TextField;
@@ -16,7 +17,6 @@ use SPHERE\Common\Frontend\Form\Structure\Form;
 use SPHERE\Common\Frontend\Form\Structure\FormColumn;
 use SPHERE\Common\Frontend\Form\Structure\FormGroup;
 use SPHERE\Common\Frontend\Form\Structure\FormRow;
-use SPHERE\Common\Frontend\Icon\Repository\MoneyEuro;
 use SPHERE\Common\Frontend\Icon\Repository\Search;
 use SPHERE\Common\Frontend\Icon\Repository\Warning;
 use SPHERE\Common\Frontend\Layout\Repository\Panel;
@@ -27,20 +27,16 @@ use SPHERE\Common\Frontend\Layout\Structure\Layout;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
-use SPHERE\Common\Frontend\Link\Repository\Standard;
-use SPHERE\Common\Frontend\Table\Structure\TableContainer;
-use SPHERE\Common\Frontend\Table\Structure\TableBody;
-use SPHERE\Common\Frontend\Table\Structure\TableColumn;
 use SPHERE\Common\Frontend\Table\Structure\Table;
-use SPHERE\Common\Frontend\Table\Structure\TableHead;
-use SPHERE\Common\Frontend\Table\Structure\TableRow;
-use SPHERE\Common\Frontend\Text\Repository\Bold;
-use SPHERE\Common\Window\Navigation\Link\Route;
 use SPHERE\Common\Window\Stage;
 use SPHERE\System\Extension\Extension;
+use SPHERE\System\Extension\Repository\Debugger;
 
 class Frontend extends Extension
 {
+	/** @var null|FieldValueReceiver $ReceiverGrossPrice */
+	public $ReceiverGrossPrice = null;
+
 	public function frontendScenarioCalculator($Search = null, $PriceData = null)
 	{
 		$Stage = new Stage('Szenario-Rechner', 'Simulation von RG-, NLP-, BLP-, Netto- und Brutto-Änderungen');
@@ -52,9 +48,7 @@ class Frontend extends Extension
 		if ($Search) {
 			if (empty($Result)) {
 
-				$this->preloadPriceData();
-
-				$LayoutGroupPartNumberInformation =
+				$LayoutGroupPartNumberInformation = //$this->tablePartNumberInformation();
 					new LayoutGroup(
 						new LayoutRow(
 							new LayoutColumn(
@@ -64,32 +58,51 @@ class Frontend extends Extension
 						, new Title('Teilenummer-Informationen')
 					);
 
-				$LayoutGroupScenarioCalculatorForm =
-					new LayoutGroup(
-						new LayoutRow(
-							new LayoutColumn(
-								$this->formScenarioCalculator($Search), 12
-							)
-						)
-						, new Title('Szenario-Rechner')
-					);
+
+				$Global = $this->getGlobal();
+				$Pipeline = ApiScenarioCalculator::pipelineScenarioCalculator($Search, ((!isset($Global->POST['PriceData']))? true:'0'), $PriceData);
+				$FormReceiver = (ApiScenarioCalculator::BlockReceiver())->setIdentifier('FormReceiver');
+
+				$LayoutGroupScenarioCalculatorForm = new LayoutColumn(
+					$FormReceiver.$Pipeline, 3
+				);
 
 				if($PriceData !== null) {
-					$LayoutGroupScenarioCalculator =
-						new LayoutGroup(
-							new LayoutRow(
-								array(
-									new LayoutColumn(
-										$this->tablePriceViewing(), 6
-									),
-									new LayoutColumn(
-										$this->tableTotalViewing(), 6
-									)
-								)
-							)
-							, new Title('')
+
+					$PriceDataSum = $this->setPriceData( $PriceData );
+
+//					print '<pre>';
+//					var_dump($PriceDataSum);
+//					print '</pre>';
+
+
+					$LayoutViewingColumn1 =
+						new LayoutColumn(
+							$this->tablePriceViewing($PriceDataSum), 5
 						);
+					$LayoutViewingColumn2 =
+						new LayoutColumn(
+							$this->tableTotalViewing($PriceDataSum), 4
+						);
+
 				}
+				else {
+					$LayoutViewingColumn1 = '';
+					$LayoutViewingColumn2 = '';
+				}
+
+				$LayoutGroupScenarioCalculator =
+					new LayoutGroup(
+						new LayoutRow(
+							array(
+								$LayoutGroupScenarioCalculatorForm,
+								$LayoutViewingColumn1,
+								$LayoutViewingColumn2
+							)
+						)
+						, new Title('')
+					);
+
 
 			} else {
 				$Table = new Warning('Die Teilenummer konnte nicht gefunden werden.');
@@ -102,150 +115,24 @@ class Frontend extends Extension
 			new Layout(array(
 				new LayoutGroup(
 					new LayoutRow(
-						new LayoutColumn(
-							array(
+						array(
+							new LayoutColumn(
 								$this->fromSearchPartNumber()
-							)
 							, 4)
+						)
 					)
 				),
 				$LayoutGroupPartNumberInformation,
 				$LayoutGroupScenarioCalculatorForm,
 				$LayoutGroupScenarioCalculator
-//              ,
-//				new LayoutGroup(
-//					new LayoutRow(
-//						new LayoutColumn(
-//							$this->tablePartNumberInformation()
-//						), new Title( 'Teilenummer-Informationen' )
-//					)
-//				)
 			))
 		);
 
 		return $Stage;
 	}
 
-	private function preloadPriceData()
-	{
-		$PriceData = array(
-			array('BLP' => 150.00, 'NLP' => 90.00, 'DiscountNumber' => 5, 'Discount' => 17.00, 'Costs' => 40.00, 'PartsAndMore' => 5.00, 'Quantity' => 20, 'SalesGross' => 500, 'SalesNet' => 400)
-		);
-		$PriceData = $PriceData[0];
-
-		$Global = $this->getGlobal();
-		if (!isset($Global->POST['PriceData']['BLP'])) {
-			$Global->POST['PriceData']['BLP'] = $PriceData['BLP'];
-		}
-		if (!isset($Global->POST['PriceData']['NLP'])) {
-			$Global->POST['PriceData']['NLP'] = $PriceData['NLP'];
-		}
-		if (!isset($Global->POST['PriceData']['DiscountNumber'])) {
-			$Global->POST['PriceData']['DiscountNumber'] = $PriceData['DiscountNumber'];
-		}
-		if (!isset($Global->POST['PriceData']['Discount'])) {
-			$Global->POST['PriceData']['Discount'] = $PriceData['Discount'];
-		}
-		if (!isset($Global->POST['PriceData']['Costs'])) {
-			$Global->POST['PriceData']['Costs'] = $PriceData['Costs'];
-		}
-		if (!isset($Global->POST['PriceData']['PartsAndMore'])) {
-			$Global->POST['PriceData']['PartsAndMore'] = $PriceData['PartsAndMore'];
-		}
-		if (!isset($Global->POST['PriceData']['Quantity'])) {
-			$Global->POST['PriceData']['Quantity'] = $PriceData['Quantity'];
-		}
-		if (!isset($Global->POST['PriceData']['SalesGross'])) {
-			$Global->POST['PriceData']['SalesGross'] = $PriceData['SalesGross'];
-		}
-		if (!isset($Global->POST['PriceData']['SalesNet'])) {
-			$Global->POST['PriceData']['SalesNet'] = $PriceData['SalesNet'];
-		}
-		$Global->savePost();
-	}
-
 	private function tablePartNumberInformation()
 	{
-
-//		new Panel('', array(
-//
-//		), Panel::PANEL_TYPE_INFO);
-
-		//Tabelle: Teilenummer-Informationen
-//		print '<table class="list" style="width: 220px; position: absolute; left: 400px; top: 80px;">
-//					<tr class="head"><td colspan="2">Teilenummer-Informationen</td></tr>
-//					<tr><td><b>Teilenummer:</b></td><td>'.$SQLTeilenummer[0]["tnr"].'</td></tr>
-//					<tr><td><b>Bezeichnung:</b></td><td>'.$SQLTeilenummer[0]["tnr_name"].'</td></tr>
-//					<tr><td><b>Marketingcode:</b></td><td>'.$SQLTeilenummer[0]["mc_nummer"].'</td></tr>
-//				</table>';
-//		print '</div>';
-//
-//		$Table = new TableData(
-//			array(
-//				array(
-//					'A' => 'Teilenummer',
-//					'B' => '123'
-//				),
-//				array(
-//					'A' => 'Bezeichnung',
-//					'B' => 'abc'
-//				),
-//				array(
-//					'A' => 'Marketingcode',
-//					'B' => 'xyz'
-//				)
-//			)
-//		, null, array(
-//			'A' => '',
-//			'B' => ''
-//		), false);
-
-//		$Table = new Table(
-//			new TableHead(),
-//			new TableBody(array(
-//				new TableRow(array(
-//					new TableColumn(new Bold('Teilenummer'), 1, '1%'),
-//					new TableColumn('A432323123'),
-//				)),
-//				new TableRow(array(
-//					new TableColumn(new Bold('Bezeichnung')),
-//					new TableColumn('Motor'),
-//				)),
-//				new TableRow(array(
-//					new TableColumn(new Bold('Marketingcode')),
-//					new TableColumn('1P123'),
-//				))
-//			))
-//		);
-		/*
-				$Table = new Panel('',
-					new Layout(
-						new LayoutGroup(array(
-							new LayoutRow(array(
-								new LayoutColumn('Teilenummer', 7),
-								new LayoutColumn('123', 5),
-							)),
-							new LayoutRow(array(
-								new LayoutColumn('Bezeichnung', 7),
-								new LayoutColumn('abc', 5),
-							)),
-							new LayoutRow(array(
-								new LayoutColumn('Marketingcode', 7),
-								new LayoutColumn('xyz', 5),
-							))
-						))
-					)
-				);
-		*/
-//		$Table = '';
-//		$Table = new TableData(
-//							array(
-//								array( 'A' => ':)' )
-//							), null, array(
-//								'A' => 'Lach ne'
-//							)
-//						, false);
-//		return $Table;
 		return new Table(
 			array(
 				array(
@@ -277,153 +164,6 @@ class Frontend extends Extension
 		);
 	}
 
-	private function formScenarioCalculator($Search)
-	{
-//		print '<pre>';
-//		var_dump($PriceData);
-//		print '</pre>';
-		$PriceData = array(
-			array('BLP' => 150.00, 'NLP' => 90.00, 'DiscountNumber' => 5, 'Discount' => 17.00, 'Costs' => 40.00, 'PartsAndMore' => 5.00, 'Quantity' => 20, 'SalesGross' => 500, 'SalesNet' => 400)
-		);
-		$PriceData = $PriceData[0];
-		$Per = '10/2016';
-
-		return new Form(
-			new FormGroup(
-				new FormRow(
-					new FormColumn(
-
-						new Table(
-							array(
-								array(
-									'' => 'Alt:',
-									'BLP' => new PullRight( number_format($PriceData['BLP'],2,',','.').' €' ),
-									'NLP' => new PullRight( $PriceData['NLP'].' €' ),
-									'DiscountNumber' => new PullRight( $PriceData['DiscountNumber'] ),
-									'Discount' => new PullRight( $PriceData['Discount'].' %' ),
-									'Costs' => new PullRight( $PriceData['Costs'].' €' ),
-									'PartsAndMore' => new PullRight( $PriceData['PartsAndMore'].' %' ),
-									'Quantity' => new PullRight( $PriceData['Quantity'].' Stk.' ),
-									'SalesGross' => new PullRight( $PriceData['SalesGross'].' €' ),
-									'SalesNet' => new PullRight( $PriceData['SalesNet'].' €' )
-								),
-								array(
-									'' => 'Neu:',
-									'BLP' => new Layout(
-												new LayoutGroup(
-													new LayoutRow(array(
-														new LayoutColumn(
-															new Standard('&nbsp;', '', new Search()), 2
-														),
-														new LayoutColumn(
-															new TextField( 'PriceData[BLP]', 'BLP'), 10
-														)
-													))
-												)
-											),  //->setDefaultValue('12,35')
-									'NLP' => new Layout(
-												new LayoutGroup(
-													new LayoutRow(array(
-														new LayoutColumn(
-															new Standard('&nbsp;', '', new Search()), 2
-														),
-														new LayoutColumn(
-															new TextField('PriceData[NLP]', 'NLP'), 10
-														)
-													))
-												)
-											),
-									'DiscountNumber' => new TextField('PriceData[DiscountNumber]', 'RG-Nr'),
-									'Discount' => new TextField('PriceData[Discount]', 'Rabattsatz'),
-									'Costs' => new TextField('PriceData[Costs]', 'variable Kosten'),
-									'PartsAndMore' => new TextField('PriceData[PartsAndMore]', 'PartsAndMore'),
-									'Quantity' => new Layout(
-													new LayoutGroup(
-														new LayoutRow(array(
-															new LayoutColumn(
-																new Standard('&nbsp;', '', new Search()), 2
-															),
-															new LayoutColumn(
-																new TextField('PriceData[NLP]', 'NLP'), 10
-															)
-														))
-													)
-												),
-									'SalesGross' => new Layout(
-														new LayoutGroup(
-															new LayoutRow(array(
-																new LayoutColumn(
-																	new Standard('&nbsp;', '', new Search()), 2
-																),
-																new LayoutColumn(
-																	new TextField('PriceData[NLP]', 'NLP'), 10
-																)
-															))
-														)
-													),
-									'SalesNet' => new Layout(
-													new LayoutGroup(
-														new LayoutRow(array(
-															new LayoutColumn(
-																new Standard('&nbsp;', '', new Search()), 2
-															),
-															new LayoutColumn(
-																new TextField('PriceData[NLP]', 'NLP'), 10
-															)
-														))
-													)
-												)
-								)
-							),
-							null,
-
-							array(
-								'' => '',
-								'BLP' => 'BLP',
-								'NLP' => 'NLP',
-								'DiscountNumber' => 'RG-Nr',
-								'Discount' => 'Rabattsatz',
-								'Costs' => 'variable Kosten',
-								'PartsAndMore' => 'P&M',
-								'Quantity' => 'Menge',
-								'SalesGross' => 'Bruttoumsaatz <br/>'.$Per,
-								'SalesNet' => 'Nettoumsaatz <br/>'.$Per
-							),
-							array(
-								//'order' => array(array(0, 'asc'), array(1, 'asc'), array(2, 'asc')),
-							    'columnDefs' => array(
-							        array('width' => '5%', 'targets' => array(0,3)),
-							    ),
-								"paging"         => false, // Deaktivieren Blättern
-							    "iDisplayLength" => -1,    // Alle Einträge zeigen
-							    "searching"      => false, // Deaktivieren Suchen
-							    "info"           => false,  // Deaktivieren Such-Info
-								"sort"           => false   //Deaktivierung Sortierung der Spalten
-							)
-						)
-					)
-				)
-			),
-			array(
-				new Primary('berechnen'),
-				new Reset('zurücksetzen')
-			),
-			new Route('SPHERE\Application\Reporting\Controlling\ScenarioCalculator'),
-			array('Search' => $Search)
-		);
-//		<td></td>
-//					<td>BLP</td>
-//					<td>NLP</td>
-//					<td>RG-Nr</td>
-//					<td>RG-Satz</td>
-//					<td>Variable<br> Kosten</td>
-//					<td>P&M</td>
-//					<td>Menge per<br> '.$per.'</td>
-//					<td>Bruttoumsatz<br>per '.$per.'</td>
-//					<td>Nettoumsatz<br>per '.$per.'</td>
-//					<td></td>
-	}
-
 	private function fromSearchPartNumber()
 	{
 		return new Form(
@@ -434,7 +174,7 @@ class Frontend extends Extension
 							new Panel('Suche', array(
 								(new TextField('Search[PartNumber]', 'Teilenummer', 'Teilenummer eingeben', new Search()))
 									->setRequired()
-							), Panel::PANEL_TYPE_INFO)
+							), Panel::PANEL_TYPE_DEFAULT)
 						),
 					)
 				)
@@ -446,57 +186,186 @@ class Frontend extends Extension
 		);
 	}
 
-	private function tablePriceViewing() {
+	private function setPriceData( $PriceData ) {
+
+		$CalcRules = $this->getCalculationRules();
+
+		$PriceDataOld = array(
+			array('BLP' => 150.00, 'DiscountNumber' => 5, 'Discount' => 17.00, 'Costs' => 40.00, 'PartsAndMore' => 5.00, 'Quantity' => 1)
+		);
+		$PriceDataOld = $PriceDataOld[0];
+
+		//Berechnungen
+		$PriceDataOld['NLP'] = $CalcRules->calcNetPrice( $PriceDataOld['BLP'], $PriceDataOld['Discount'], 0, 0, 0, 0 );
+		$PriceDataOld['GrossSales'] = $CalcRules->calcGrossSales( $PriceDataOld['BLP'], $PriceDataOld['Quantity'] );
+		$PriceDataOld['NetSales'] = $CalcRules->calcNetSales( $PriceDataOld['NLP'], $PriceDataOld['Quantity'] );
+
+		//var_dump($PriceDataOld);
+
+
+		$PriceDataNew = null;
+		$NetPriceNew = $CalcRules->calcNetPrice( $PriceData['BLP'], $PriceData['Discount'], 0, 0, 0, 0 );
+		$QuantityNew = $PriceData['Quantity'];
+		$GrossSalesNew = $CalcRules->calcGrossSales( $PriceData['BLP'], $QuantityNew);
+		$NetSalesNew = $CalcRules->calcGrossSales( $NetPriceNew, $QuantityNew);
+
+		//var_dump($PriceData);
+
+		$PriceDataNew = array_merge(
+			$PriceData,  // aus der DB
+			array(       // berechnete Werte
+				'NLP' => $NetPriceNew,
+				'Quantity' => $QuantityNew,
+				'GrossSales' => $GrossSalesNew,
+				'NetSales' => $NetSalesNew
+			)
+		);
+
+		//var_dump($PriceDataNew);
+
+		//### Berechnungen ###
+
+		//Rabatt in Euro
+		$DiscountEuro['Old'] = $CalcRules->calcDiscount( $PriceDataOld['BLP'], $PriceDataOld['Discount'] );
+		$DiscountEuro['New'] = $CalcRules->calcDiscount( $PriceDataNew['BLP'], $PriceDataNew['Discount'] );
+		$DiscountEuro['Delta'] = $CalcRules->calcDelta( $DiscountEuro['New'], $DiscountEuro['Old'] );
+
+		//NLP abzüglich P+M
+		$NetPricePartsMore['Old'] = $CalcRules->calcNetPrice( $PriceDataOld['BLP'], $PriceDataOld['Discount'], 0, $PriceDataOld['PartsAndMore'] );
+		$NetPricePartsMore['New'] = $CalcRules->calcNetPrice( $PriceDataNew['BLP'], $PriceDataNew['Discount'], 0, $PriceDataNew['PartsAndMore'] );
+		$NetPricePartsMore['Delta'] = $CalcRules->calcDelta( $NetPricePartsMore['New'], $NetPricePartsMore['Old'] );
+
+		//Konzerndeckungsbeitrag ohne Rw, ohne P+M
+		$CoverageContribution['Old'] = $CalcRules->calcCoverageContribution( $PriceDataOld['NLP'], $PriceDataOld['Costs'] );
+		$CoverageContribution['New'] = $CalcRules->calcCoverageContribution( $PriceDataNew['NLP'], $PriceDataNew['Costs'] );
+		$CoverageContribution['Delta'] = $CalcRules->calcDelta( $CoverageContribution['New'], $CoverageContribution['Old'] );
+
+		//Konzerndeckungsbeitrag ohne Rw mit P+M
+		$CoverageContributionPartsMore['Old'] = $CalcRules->calcCoverageContribution( $NetPricePartsMore['Old'], $PriceDataOld['Costs'] );
+		$CoverageContributionPartsMore['New'] = $CalcRules->calcCoverageContribution( $NetPricePartsMore['New'], $PriceDataNew['Costs'] );
+		$CoverageContributionPartsMore['Delta'] = $CalcRules->calcDelta( $CoverageContributionPartsMore['New'], $CoverageContributionPartsMore['Old'] );
+
+		//Nettoumsatz abzüglich P+M
+		$NetSalesPartsMore['Old'] = $NetPricePartsMore['Old'] * $PriceDataOld['Quantity'];
+		$NetSalesPartsMore['New'] = $NetPricePartsMore['New'] * $PriceDataNew['Quantity'];
+		$NetSalesPartsMore['Delta'] = $CalcRules->calcDelta( $NetSalesPartsMore['New'], $NetSalesPartsMore['Old'] );
+
+		//Gesamt-Rabatt in Euro
+		$TotalDiscountEuro['Old'] = $DiscountEuro['Old'] * $PriceDataOld['Quantity'];
+		$TotalDiscountEuro['New'] = $DiscountEuro['New'] * $PriceDataNew['Quantity'];
+		$TotalDiscountEuro['Delta'] = $CalcRules->calcDelta( $TotalDiscountEuro['New'], $TotalDiscountEuro['Old'] );
+
+		//Konzerndeckungsbeitrag ohne Rw, ohne P+M
+		$TotalCoverageContribution['Old'] = $CoverageContribution['Old'] * $PriceDataOld['Quantity'];
+		$TotalCoverageContribution['New'] = $CoverageContribution['New'] * $PriceDataNew['Quantity'];
+		$TotalCoverageContribution['Delta'] = $CalcRules->calcDelta( $TotalCoverageContribution['New'], $TotalCoverageContribution['Old'] );
+
+		//Konzerndeckungsbeitrag ohne Rw mit P+M
+		$TotalCoverageContributionPartsMore['Old'] = $CoverageContributionPartsMore['Old'] * $PriceDataOld['Quantity'];
+		$TotalCoverageContributionPartsMore['New'] = $CoverageContributionPartsMore['New'] * $PriceDataNew['Quantity'];
+		$TotalCoverageContributionPartsMore['Delta'] = $CalcRules->calcDelta( $TotalCoverageContributionPartsMore['New'], $TotalCoverageContributionPartsMore['Old'] );
+
+		$PriceDataNew = array_merge(
+			$PriceDataNew,
+			array(
+				'DiscountEuro' => $DiscountEuro['New'],
+				'NetPricePartsMore' => $NetPricePartsMore['New'],
+				'CoverageContribution' => $CoverageContribution['New'],
+				'CoverageContributionPartsMore' => $CoverageContributionPartsMore['New'],
+				'TotalDiscountEuro' => $TotalDiscountEuro['New'],
+				'NetSalesPartsMore' => $NetSalesPartsMore['New'],
+				'TotalCoverageContribution' => $TotalCoverageContribution['New'],
+				'TotalCoverageContributionPartsMore' => $TotalCoverageContributionPartsMore['New']
+			)
+		);
+
+		$PriceDataOld = array_merge(
+			$PriceDataOld,
+			array(
+				'DiscountEuro' => $DiscountEuro['Old'],
+				'NetPricePartsMore' => $NetPricePartsMore['Old'],
+				'CoverageContribution' => $CoverageContribution['Old'],
+				'CoverageContributionPartsMore' => $CoverageContributionPartsMore['Old'],
+				'TotalDiscountEuro' => $TotalDiscountEuro['Old'],
+				'NetSalesPartsMore' => $NetSalesPartsMore['Old'],
+				'TotalCoverageContribution' => $TotalCoverageContribution['Old'],
+				'TotalCoverageContributionPartsMore' => $TotalCoverageContributionPartsMore['Old']
+			)
+		);
+
+		$PriceDataSum = array_merge(
+			array( 'Old' => $PriceDataOld),
+			array( 'New' => $PriceDataNew ),
+			array( 'Delta' => array(
+					'DiscountEuro' => $DiscountEuro['Delta'],
+					'NetPricePartsMore' => $NetPricePartsMore['Delta'],
+					'CoverageContribution' => $CoverageContribution['Delta'],
+					'CoverageContributionPartsMore' => $CoverageContributionPartsMore['Delta'],
+					'TotalDiscountEuro' => $TotalDiscountEuro['Delta'],
+					'NetSalesPartsMore' => $NetSalesPartsMore['Delta'],
+					'TotalCoverageContribution' => $TotalCoverageContribution['Delta'],
+					'TotalCoverageContributionPartsMore' => $TotalCoverageContributionPartsMore['Delta']
+				)
+			)
+		);
+
+		return $PriceDataSum;
+	}
+
+
+	private function tablePriceViewing( $PriceData ) {
+		$CalcRules = $this->getCalculationRules();
+
 		return
 			new Table(
 				array(
 					array(
 						'Bezeichnung' => 'BLP in €',
-						'Alt' => new PullRight( number_format('100', 2, ',', '.') ),
-						'Neu' => new PullRight( number_format('120', 2, ',', '.') ),
-						'Delta' => new PullRight( number_format('20', 2, ',', '.') )
+						'Alt' => new PullRight( number_format($PriceData['Old']['BLP'], 2, ',', '.') ),
+						'Neu' => new PullRight( number_format($PriceData['New']['BLP'], 2, ',', '.') ),
+						'Delta' => new PullRight( number_format($CalcRules->calcDelta( $PriceData['New']['BLP'], $PriceData['Old']['BLP'] ), 2, ',', '.') )
 					),
 					array(
 						'Bezeichnung' => 'RG-Satz in %',
-						'Alt' => new PullRight( number_format('17', 2, ',', '.') ),
-						'Neu' => new PullRight( number_format('10', 2, ',', '.') ),
-						'Delta' => new PullRight( number_format('7', 2, ',', '.') )
+						'Alt' => new PullRight( number_format($PriceData['Old']['Discount'], 2, ',', '.') ),
+						'Neu' => new PullRight( number_format($PriceData['New']['Discount'], 2, ',', '.') ),
+						'Delta' => new PullRight( number_format($CalcRules->calcDelta( $PriceData['New']['Discount'], $PriceData['Old']['Discount'] ), 2, ',', '.') )
 					),
 					array(
 						'Bezeichnung' => 'RG-Satz in €',
-						'Alt' => new PullRight( number_format('17', 2, ',', '.') ),
-						'Neu' => new PullRight( number_format('10', 2, ',', '.') ),
-						'Delta' => new PullRight( number_format('7', 2, ',', '.') )
+						'Alt' => new PullRight( number_format($PriceData['Old']['DiscountEuro'], 2, ',', '.') ),
+						'Neu' => new PullRight( number_format($PriceData['New']['DiscountEuro'], 2, ',', '.') ),
+						'Delta' => new PullRight( number_format($PriceData['Delta']['DiscountEuro'], 2, ',', '.') )
 					),
 					array(
 						'Bezeichnung' => 'NLP in €',
-						'Alt' => new PullRight( number_format('17', 2, ',', '.') ),
-						'Neu' => new PullRight( number_format('10', 2, ',', '.') ),
-						'Delta' => new PullRight( number_format('7', 2, ',', '.') )
+						'Alt' => new PullRight( number_format($PriceData['Old']['NLP'], 2, ',', '.') ),
+						'Neu' => new PullRight( number_format($PriceData['New']['NLP'], 2, ',', '.') ),
+						'Delta' => new PullRight( number_format($CalcRules->calcDelta( $PriceData['New']['NLP'], $PriceData['Old']['NLP'] ), 2, ',', '.') )
 					),
 					array(
 						'Bezeichnung' => 'NLP abzügl. P&M in €',
-						'Alt' => new PullRight( number_format('17', 2, ',', '.') ),
-						'Neu' => new PullRight( number_format('10', 2, ',', '.') ),
-						'Delta' => new PullRight( number_format('7', 2, ',', '.') )
+						'Alt' => new PullRight( number_format($PriceData['Old']['NetPricePartsMore'], 2, ',', '.') ),
+						'Neu' => new PullRight( number_format($PriceData['New']['NetPricePartsMore'], 2, ',', '.') ),
+						'Delta' => new PullRight( number_format($PriceData['Delta']['NetPricePartsMore'], 2, ',', '.') )
 					),
 					array(
 						'Bezeichnung' => 'Variable Kosten in €',
-						'Alt' => new PullRight( number_format('17', 2, ',', '.') ),
-						'Neu' => new PullRight( number_format('10', 2, ',', '.') ),
-						'Delta' => new PullRight( number_format('7', 2, ',', '.') )
+						'Alt' => new PullRight( number_format($PriceData['Old']['Costs'], 2, ',', '.') ),
+						'Neu' => new PullRight( number_format($PriceData['New']['Costs'], 2, ',', '.') ),
+						'Delta' => new PullRight( number_format($CalcRules->calcDelta( $PriceData['New']['Costs'], $PriceData['Old']['Costs'] ), 2, ',', '.') )
 					),
 					array(
 						'Bezeichnung' => 'Konzern-DB in €',
-						'Alt' => new PullRight( number_format('17', 2, ',', '.') ),
-						'Neu' => new PullRight( number_format('10', 2, ',', '.') ),
-						'Delta' => new PullRight( number_format('7', 2, ',', '.') )
+						'Alt' => new PullRight( number_format($PriceData['Old']['CoverageContribution'], 2, ',', '.') ),
+						'Neu' => new PullRight( number_format($PriceData['New']['CoverageContribution'], 2, ',', '.') ),
+						'Delta' => new PullRight( number_format($PriceData['Delta']['CoverageContribution'], 2, ',', '.') )
 					),
 					array(
 						'Bezeichnung' => 'Konzern-DB abzügl. P&M in €',
-						'Alt' => new PullRight( number_format('17', 2, ',', '.') ),
-						'Neu' => new PullRight( number_format('10', 2, ',', '.') ),
-						'Delta' => new PullRight( number_format('7', 2, ',', '.') )
+						'Alt' => new PullRight( number_format($PriceData['Old']['CoverageContributionPartsMore'], 2, ',', '.') ),
+						'Neu' => new PullRight( number_format($PriceData['New']['CoverageContributionPartsMore'], 2, ',', '.') ),
+						'Delta' => new PullRight( number_format($PriceData['Delta']['CoverageContributionPartsMore'], 2, ',', '.') )
 					)
 				),
 				new TableTitle('Stückbetrachtung'),
@@ -517,67 +386,69 @@ class Frontend extends Extension
 		);
 	}
 
-	private function tableTotalViewing() {
+	private function tableTotalViewing( $PriceData ) {
+		$CalcRules = $this->getCalculationRules();
+		$DiscountEuro = array('Old' => 0, 'New' => 0, 'Delta' => 0);
 		return
 			new Table(
 				array(
 					array(
 						'Bezeichnung' => 'Bruttoumsatz in €',
-						'Alt' => new PullRight( number_format('100', 2, ',', '.') ),
-						'Neu' => new PullRight( number_format('120', 2, ',', '.') ),
-						'Delta' => new PullRight( number_format('20', 2, ',', '.') )
+						'Alt' => new PullRight( number_format($PriceData['Old']['GrossSales'], 2, ',', '.') ),
+						'Neu' => new PullRight( number_format($PriceData['New']['GrossSales'], 2, ',', '.') ),
+						'Delta' => new PullRight( number_format($CalcRules->calcDelta( $PriceData['New']['GrossSales'], $PriceData['Old']['GrossSales'] ), 2, ',', '.') )
 					),
 					array(
 						'Bezeichnung' => 'Anzeff in Stück',
-						'Alt' => new PullRight( number_format('100', 0, '', '.') ),
-						'Neu' => new PullRight( number_format('120', 0, '', '.') ),
-						'Delta' => new PullRight( number_format('20', 0, '', '.') )
+						'Alt' => new PullRight( number_format($PriceData['Old']['Quantity'], 0, '', '.') ),
+						'Neu' => new PullRight( number_format($PriceData['New']['Quantity'], 0, '', '.') ),
+						'Delta' => new PullRight( number_format($CalcRules->calcDelta( $PriceData['New']['Quantity'], $PriceData['Old']['Quantity'] ), 0, '', '.') )
 					),
 					array(
 						'Bezeichnung' => 'RG-Satz in %',
-						'Alt' => new PullRight( number_format('17', 2, ',', '.') ),
-						'Neu' => new PullRight( number_format('10', 2, ',', '.') ),
-						'Delta' => new PullRight( number_format('7', 2, ',', '.') )
+						'Alt' => new PullRight( number_format($PriceData['Old']['Discount'], 2, ',', '.') ),
+						'Neu' => new PullRight( number_format($PriceData['New']['Discount'], 2, ',', '.') ),
+						'Delta' => new PullRight( number_format($CalcRules->calcDelta( $PriceData['New']['Discount'], $PriceData['Old']['Discount'] ), 2, ',', '.') )
 					),
 					array(
 						'Bezeichnung' => 'RG-Satz in €',
-						'Alt' => new PullRight( number_format('17', 2, ',', '.') ),
-						'Neu' => new PullRight( number_format('10', 2, ',', '.') ),
-						'Delta' => new PullRight( number_format('7', 2, ',', '.') )
+						'Alt' => new PullRight( number_format($PriceData['Old']['TotalDiscountEuro'], 2, ',', '.') ),
+						'Neu' => new PullRight( number_format($PriceData['New']['TotalDiscountEuro'], 2, ',', '.') ),
+						'Delta' => new PullRight( number_format($PriceData['Delta']['TotalDiscountEuro'], 2, ',', '.') )
 					),
 					array(
 						'Bezeichnung' => 'Nettoumsatz in €',
-						'Alt' => new PullRight( number_format('17', 2, ',', '.') ),
-						'Neu' => new PullRight( number_format('10', 2, ',', '.') ),
-						'Delta' => new PullRight( number_format('7', 2, ',', '.') )
+						'Alt' => new PullRight( number_format($PriceData['Old']['NetSales'], 2, ',', '.') ),
+						'Neu' => new PullRight( number_format($PriceData['New']['NetSales'], 2, ',', '.') ),
+						'Delta' => new PullRight( number_format($CalcRules->calcDelta( $PriceData['New']['NetSales'], $PriceData['Old']['NetSales'] ), 2, ',', '.') )
 					),
 					array(
 						'Bezeichnung' => 'Nettoumsatz abzügl. P&M',
-						'Alt' => new PullRight( number_format('17', 2, ',', '.') ),
-						'Neu' => new PullRight( number_format('10', 2, ',', '.') ),
-						'Delta' => new PullRight( number_format('7', 2, ',', '.') )
+						'Alt' => new PullRight( number_format($PriceData['Old']['NetSalesPartsMore'], 2, ',', '.') ),
+						'Neu' => new PullRight( number_format($PriceData['New']['NetSalesPartsMore'], 2, ',', '.') ),
+						'Delta' => new PullRight( number_format($PriceData['Delta']['NetSalesPartsMore'], 2, ',', '.') )
 					),
 					array(
 						'Bezeichnung' => 'Variable Kosten',
-						'Alt' => new PullRight( number_format('17', 2, ',', '.') ),
-						'Neu' => new PullRight( number_format('10', 2, ',', '.') ),
-						'Delta' => new PullRight( number_format('7', 2, ',', '.') )
+						'Alt' => new PullRight( number_format($PriceData['Old']['Costs'], 2, ',', '.') ),
+						'Neu' => new PullRight( number_format($PriceData['New']['Costs'], 2, ',', '.') ),
+						'Delta' => new PullRight( number_format($CalcRules->calcDelta( $PriceData['New']['Costs'], $PriceData['Old']['Costs'] ), 2, ',', '.') )
 					),
 					array(
 						'Bezeichnung' => 'Konzern-DB',
-						'Alt' => new PullRight( number_format('17', 2, ',', '.') ),
-						'Neu' => new PullRight( number_format('10', 2, ',', '.') ),
-						'Delta' => new PullRight( number_format('7', 2, ',', '.') )
+						'Alt' => new PullRight( number_format($PriceData['Old']['TotalCoverageContribution'], 2, ',', '.') ),
+						'Neu' => new PullRight( number_format($PriceData['New']['TotalCoverageContribution'], 2, ',', '.') ),
+						'Delta' => new PullRight( number_format($PriceData['Delta']['TotalCoverageContribution'], 2, ',', '.') )
 					),
 					array(
 						'Bezeichnung' => 'Konzern-DB abzügl. P&M',
-						'Alt' => new PullRight( number_format('17', 2, ',', '.') ),
-						'Neu' => new PullRight( number_format('10', 2, ',', '.') ),
-						'Delta' => new PullRight( number_format('7', 2, ',', '.') )
+						'Alt' => new PullRight( number_format($PriceData['Old']['TotalCoverageContributionPartsMore'], 2, ',', '.') ),
+						'Neu' => new PullRight( number_format($PriceData['New']['TotalCoverageContributionPartsMore'], 2, ',', '.') ),
+						'Delta' => new PullRight( number_format($PriceData['Delta']['TotalCoverageContributionPartsMore'], 2, ',', '.') )
 					)
 				),
 				new TableTitle('Gesamtbetrachtung'),
-				array('Bezeichnung'=>'Bezeichnung', 'Alt'=>'Alt', 'Neu' => 'Neu', 'Delta' => 'Delta'),
+				array('Bezeichnung'=>'Bezeichnung', 'Alt'=>'Alt ', 'Neu' => 'Neu ', 'Delta' => 'Delta '),
 				array(
 					"columnDefs" => array(
 				        array('width' => '40%', 'targets' => '0' ),

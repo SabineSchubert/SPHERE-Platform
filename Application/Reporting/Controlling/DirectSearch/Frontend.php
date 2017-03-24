@@ -462,7 +462,7 @@ class Frontend extends Extension
 					array(
 						new FormColumn(
 							new Panel('Suche', array(
-								(new TextField('Search[PartNumber]', 'Teilenummer', 'Teilenummer eingeben', new Search()))
+								(new TextField('Search[PartNumber]', 'Teilenummer', 'Teilenummer eingeben', new Search()))//->ajaxPipelineOnKeyUp(  )
 								->setRequired()
 							), Panel::PANEL_TYPE_INFO)
 						),

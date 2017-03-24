@@ -86,7 +86,6 @@ class Favorite extends Extension implements IApiInterface
      */
     public static function receiverFavorite()
     {
-
         return new InlineBlockReceiver();
     }
 
