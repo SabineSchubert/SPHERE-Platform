@@ -79,6 +79,7 @@ class Script extends Extension
 
             $this->setLibrary((new ScriptLibrary('Raphael.js', '2.2.0'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Morris.js', '0.5.1'))->getLibrary());
+            $this->setLibrary((new ScriptLibrary('Chart.js', '2.5.0'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Baron.js', '2.2.9'))->getLibrary());
 
         } catch (\Exception $Exception) {
@@ -285,6 +286,12 @@ class Script extends Extension
             'ModMorris', array(
                 'Morris.js',
                 'Raphael.js',
+                'jQuery'
+            )
+        );
+        $this->setModule(
+            'ModChartJs', array(
+                'Chart.js',
                 'jQuery'
             )
         );

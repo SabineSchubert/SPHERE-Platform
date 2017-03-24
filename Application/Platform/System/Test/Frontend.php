@@ -6,6 +6,7 @@ use SPHERE\Application\Platform\System\Protocol\Service\Entity\TblProtocol;
 use SPHERE\Common\Frontend\Ajax\{
     Emitter\ClientEmitter, Emitter\ServerEmitter, Pipeline, Receiver\BlockReceiver, Receiver\FieldValueReceiver, Receiver\InlineReceiver, Receiver\ModalReceiver
 };
+use SPHERE\Common\Frontend\Chart\Repository\BarChart;
 use SPHERE\Common\Frontend\Chart\Repository\LineChart;
 use SPHERE\Common\Frontend\Form\Repository\Button\{
     Danger, Primary, Reset, Standard as BtnStandard, Success
@@ -186,7 +187,8 @@ class Frontend extends Extension implements IFrontendInterface
                         ), 3),
                         new LayoutColumn(array(
                             new Listing(array('Listing', 'Listing 2')),
-                            new LineChart()
+                            new LineChart(),
+                            new BarChart()
                         ), 3),
                         new LayoutColumn(array(
                             new Panel('Panel', array('Content 1', 'Content 2', 'Content 3'),
