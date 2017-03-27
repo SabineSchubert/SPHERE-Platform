@@ -6,25 +6,24 @@
  * Time: 13:33
  */
 
-namespace SPHERE\Application\PriceList\Truck;
+namespace SPHERE\Application\Product\Trapo;
 
 
 use SPHERE\Application\IApplicationInterface;
-use SPHERE\Application\IModuleInterface;
 use SPHERE\Application\IServiceInterface;
 use SPHERE\Common\Frontend\Icon\Repository\Calculator;
 use SPHERE\Common\Main;
 use SPHERE\Common\Window\Navigation\Link;
 
-class Truck implements IApplicationInterface
+class Trapo implements IApplicationInterface
 {
 	public static function registerApplication()
 	{
 		Main::getDisplay()->addApplicationNavigation(
-            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Lkw'), new Link\Icon(new \SPHERE\Common\Frontend\Icon\Repository\Truck()))
+            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Transporter'), new Link\Icon(new Calculator()))
         );
         Main::getDispatcher()->registerRoute(
-            Main::getDispatcher()->createRoute(__NAMESPACE__, __NAMESPACE__ . '\Frontend::frontendTruck')
+            Main::getDispatcher()->createRoute(__NAMESPACE__, __NAMESPACE__ . '\Frontend::frontendTrapo')
         );
 	}
 

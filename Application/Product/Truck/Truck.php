@@ -6,26 +6,23 @@
  * Time: 13:33
  */
 
-namespace SPHERE\Application\PriceList\Classic;
+namespace SPHERE\Application\Product\Truck;
 
 
 use SPHERE\Application\IApplicationInterface;
-use SPHERE\Application\IModuleInterface;
 use SPHERE\Application\IServiceInterface;
-use SPHERE\Common\Frontend\Icon\Repository\Calculator;
-use SPHERE\Common\Frontend\Icon\Repository\Car;
 use SPHERE\Common\Main;
 use SPHERE\Common\Window\Navigation\Link;
 
-class Classic implements IApplicationInterface
+class Truck implements IApplicationInterface
 {
 	public static function registerApplication()
 	{
 		Main::getDisplay()->addApplicationNavigation(
-            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Classic'), new Link\Icon(new Car()))
+            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Lkw'), new Link\Icon(new \SPHERE\Common\Frontend\Icon\Repository\Truck()))
         );
         Main::getDispatcher()->registerRoute(
-            Main::getDispatcher()->createRoute(__NAMESPACE__, __NAMESPACE__ . '\Frontend::frontendClassic')
+            Main::getDispatcher()->createRoute(__NAMESPACE__, __NAMESPACE__ . '\Frontend::frontendTruck')
         );
 	}
 

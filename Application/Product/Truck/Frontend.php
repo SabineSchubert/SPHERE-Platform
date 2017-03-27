@@ -6,7 +6,7 @@
  * Time: 14:58
  */
 
-namespace SPHERE\Application\PriceList\Truck;
+namespace SPHERE\Application\Product\Truck;
 
 
 use SPHERE\Common\Frontend\Table\Structure\Table;

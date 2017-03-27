@@ -6,7 +6,7 @@
  * Time: 14:58
  */
 
-namespace SPHERE\Application\PriceList\Trapo;
+namespace SPHERE\Application\Product\Trapo;
 
 
 use SPHERE\Common\Window\Stage;
