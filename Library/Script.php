@@ -251,6 +251,14 @@ class Script
             $Location . '/Morris.Js/0.5.1/morris.min.js',
             "'undefined' !== typeof Morris"
         ));
+        $this->addLibrary(new Library( 'Chart.js', '2.5.0',
+            $Location . '/Chart.js/2.5.0/Chart.bundle.min.js',
+            "'undefined' !== typeof Chart"
+        ));
+        $this->addLibrary(new Library( 'D3.js', '4.7.3',
+            $Location . '/D3/4.7.3/d3.min.js',
+            "'undefined' !== typeof d3"
+        ));
 
         $this->addLibrary(new Library('Bootbox.js', '4.4.0',
             $Location . '/Bootbox.js/4.4.0/js/bootbox.min.js',
