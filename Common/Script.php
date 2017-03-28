@@ -58,6 +58,7 @@ class Script extends Extension
             $this->setLibrary((new ScriptLibrary('jQuery.iCheck', '1.0.2'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('jQuery.deparam', '1.3pre'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('jQuery.DetectElementResize', '0.5.3'))->getLibrary());
+            $this->setLibrary((new ScriptLibrary('jQuery.Select2', '4.0.3'))->getLibrary());
 
             $this->setLibrary((new ScriptLibrary('Bootstrap', '3.3.5'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Tether', '1.4.0'))->getLibrary());
@@ -159,6 +160,13 @@ class Script extends Extension
         $this->setModule(
             'ModSlick', array(
                 'Slick',
+                'jQuery'
+            )
+        );
+
+        $this->setModule(
+            'ModSelect2', array(
+                'jQuery.Select2',
                 'jQuery'
             )
         );

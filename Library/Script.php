@@ -233,6 +233,10 @@ class Script
             $Location . '/DetectElementResize/0.5.3/jquery.resize.js',
             "'undefined' !== typeof jQuery.fn.removeResize"
         ));
+        $this->addLibrary(new Library('jQuery.Select2', '4.0.3',
+            $Location . '/jQuery.Select2/4.0.3/dist/js/select2.full.min.js',
+            "'undefined' !== typeof jQuery.fn.select2"
+        ));
 
         $this->addLibrary(new Library('Highlight.js', '8.8.0',
             $Location . '/Highlight.js/8.8.0/highlight.pack.js',

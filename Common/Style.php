@@ -49,6 +49,8 @@ class Style extends Extension
 
             $this->setLibrary((new StyleLibrary('jQuery.Formstone.Selecter', '3.2.4'))->getLibrary(), false, true);
             $this->setLibrary((new StyleLibrary('jQuery.Formstone.Stepper', '3.0.8'))->getLibrary(), false, true);
+            $this->setLibrary((new StyleLibrary('jQuery.Select2', '4.0.3'))->getLibrary(), false, true);
+            $this->setLibrary((new StyleLibrary('jQuery.Select2.Theme', '0.1.0.9'))->getLibrary(), false, true);
             $this->setSource((new ScriptLibrary('jQuery.Gridster', '0.6.10'))->getLibrary()->getLocation() . '/dist/jquery.gridster.min.css', false, true);
             $this->setSource((new StyleLibrary('Bootstrap.Checkbox', '0.3.3'))->getLibrary()->getLocation() . '/awesome-bootstrap-checkbox.css', false, true);
 
