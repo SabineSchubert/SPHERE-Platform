@@ -3,28 +3,57 @@ namespace SPHERE\Application\Platform\System\Test;
 
 use MOC\V\Core\FileSystem\FileSystem;
 use SPHERE\Application\Platform\System\Protocol\Service\Entity\TblProtocol;
-use SPHERE\Common\Frontend\Ajax\{
-    Emitter\ClientEmitter, Emitter\ServerEmitter, Pipeline, Receiver\BlockReceiver, Receiver\FieldValueReceiver, Receiver\InlineReceiver, Receiver\ModalReceiver
-};
+use SPHERE\Common\Frontend\Ajax\Emitter\ClientEmitter;
+use SPHERE\Common\Frontend\Ajax\Emitter\ServerEmitter;
+use SPHERE\Common\Frontend\Ajax\Pipeline;
+use SPHERE\Common\Frontend\Ajax\Receiver\BlockReceiver;
+use SPHERE\Common\Frontend\Ajax\Receiver\FieldValueReceiver;
+use SPHERE\Common\Frontend\Ajax\Receiver\InlineReceiver;
+use SPHERE\Common\Frontend\Ajax\Receiver\ModalReceiver;
 use SPHERE\Common\Frontend\Chart\Repository\BarChart;
 use SPHERE\Common\Frontend\Chart\Repository\LineChart;
-use SPHERE\Common\Frontend\Form\Repository\Button\{
-    Danger, Primary, Reset, Standard as BtnStandard, Success
-};
-use SPHERE\Common\Frontend\Form\Repository\Field\{
-    AutoCompleter, CheckBox, DatePicker, FileUpload, HiddenField, NumberField, PasswordField, RadioBox, SelectBox, TextArea, TextCaptcha, TextField
-};
-use SPHERE\Common\Frontend\Form\Structure\{
-    Form, FormColumn, FormGroup, FormRow
-};
+use SPHERE\Common\Frontend\Form\Repository\Button\Danger;
+use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
+use SPHERE\Common\Frontend\Form\Repository\Button\Reset;
+use SPHERE\Common\Frontend\Form\Repository\Button\Standard as BtnStandard;
+use SPHERE\Common\Frontend\Form\Repository\Button\Success;
+use SPHERE\Common\Frontend\Form\Repository\Field\AutoCompleter;
+use SPHERE\Common\Frontend\Form\Repository\Field\CheckBox;
+use SPHERE\Common\Frontend\Form\Repository\Field\DatePicker;
+use SPHERE\Common\Frontend\Form\Repository\Field\FileUpload;
+use SPHERE\Common\Frontend\Form\Repository\Field\NumberField;
+use SPHERE\Common\Frontend\Form\Repository\Field\PasswordField;
+use SPHERE\Common\Frontend\Form\Repository\Field\RadioBox;
+use SPHERE\Common\Frontend\Form\Repository\Field\SelectBox;
+use SPHERE\Common\Frontend\Form\Repository\Field\TextArea;
+use SPHERE\Common\Frontend\Form\Repository\Field\TextCaptcha;
+use SPHERE\Common\Frontend\Form\Repository\Field\TextField;
+use SPHERE\Common\Frontend\Form\Structure\Form;
+use SPHERE\Common\Frontend\Form\Structure\FormColumn;
+use SPHERE\Common\Frontend\Form\Structure\FormGroup;
+use SPHERE\Common\Frontend\Form\Structure\FormRow;
 use SPHERE\Common\Frontend\Icon\Repository\Time;
 use SPHERE\Common\Frontend\IFrontendInterface;
-use SPHERE\Common\Frontend\Layout\Repository\{
-    Badge, Container, Header, Label, Listing, Panel, Paragraph, PullLeft, PullRight, Thumbnail, Title, Well
-};
-use SPHERE\Common\Frontend\Layout\Structure\{
-    Layout, LayoutColumn, LayoutGroup, LayoutRow, LayoutSocial, LayoutTab, LayoutTabs, Slick
-};
+use SPHERE\Common\Frontend\Layout\Repository\Badge;
+use SPHERE\Common\Frontend\Layout\Repository\Container;
+use SPHERE\Common\Frontend\Layout\Repository\Header;
+use SPHERE\Common\Frontend\Layout\Repository\Label;
+use SPHERE\Common\Frontend\Layout\Repository\Listing;
+use SPHERE\Common\Frontend\Layout\Repository\Panel;
+use SPHERE\Common\Frontend\Layout\Repository\Paragraph;
+use SPHERE\Common\Frontend\Layout\Repository\PullLeft;
+use SPHERE\Common\Frontend\Layout\Repository\PullRight;
+use SPHERE\Common\Frontend\Layout\Repository\Thumbnail;
+use SPHERE\Common\Frontend\Layout\Repository\Title;
+use SPHERE\Common\Frontend\Layout\Repository\Well;
+use SPHERE\Common\Frontend\Layout\Structure\Layout;
+use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
+use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
+use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
+use SPHERE\Common\Frontend\Layout\Structure\LayoutSocial;
+use SPHERE\Common\Frontend\Layout\Structure\LayoutTab;
+use SPHERE\Common\Frontend\Layout\Structure\LayoutTabs;
+use SPHERE\Common\Frontend\Layout\Structure\Slick;
 use SPHERE\Common\Frontend\Link\Repository\External;
 use SPHERE\Common\Frontend\Link\Repository\Standard;
 use SPHERE\Common\Frontend\Message\Repository\Info;
@@ -114,9 +143,6 @@ class Frontend extends Extension implements IFrontendInterface
                             , 3),
                     )),
                     new FormRow(array(
-                        new FormColumn(
-                            new HiddenField('HiddenField', 'HiddenField', 'HiddenField')
-                            , 3),
                         new FormColumn(
                             new NumberField('NumberField', 'NumberField', 'NumberField')
                             , 3),
