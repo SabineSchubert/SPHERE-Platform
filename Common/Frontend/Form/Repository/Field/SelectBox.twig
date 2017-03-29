@@ -27,7 +27,6 @@
         Client.Use('ModSelecter', function()
         {
             var guiSelect = jQuery('select[name="{{ ElementName }}"]');
-            guiSelect.find('option[value="{{ ElementValue }}"]').attr('selected', 'selected');
             guiSelect.on('change keyup blur', function(Event)
             {
                 var noSelection = jQuery(Event.currentTarget);
@@ -39,7 +38,7 @@
                     useColor.css('color', '');
                 }
             });
-            guiSelect.ModSelecter();
+            guiSelect.ModSelecter({{ ElementConfiguration }});
 
             var noSelection = guiSelect;
                 var useColor = noSelection.parent().find('span.selecter-selected');

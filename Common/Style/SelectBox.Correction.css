@@ -1,14 +1,12 @@
-.select2,
 .selecter {
-    /*font-family: "CorporateSDemi";*/
+    font-family: "CorporateSDemi";
     font-size: 16px;
     max-width: inherit;
     margin: inherit;
 }
 
-.select2-selection.select2-selection--single,
 .selecter-selected {
-    /*font-family: "CorporateSDemi";*/
+    font-family: "CorporateSDemi";
     font-size: 16px;
     padding: 6px 12px;
     border-top-left-radius: 0;
@@ -18,14 +16,7 @@
 }
 
 .selecter-item {
-    /*font-family: "CorporateSDemi";*/
+    font-family: "CorporateSDemi";
     font-size: 16px;
     padding: 6px 12px;
-}
-
-.select2.select2-container {
-    width: auto !important;
-}
-.select2-dropdown {
-    color: #333;
 }

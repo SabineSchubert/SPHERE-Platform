@@ -14,7 +14,7 @@ use SPHERE\System\Database\Fitting\Element;
  */
 class SelectBox extends AbstractField implements IFieldInterface
 {
-    const LIBRARY_DEFAULT = 0;
+    const LIBRARY_SELECTER = 0;
     const LIBRARY_SELECT2 = 1;
 
     /** @var int $Library */
@@ -25,6 +25,8 @@ class SelectBox extends AbstractField implements IFieldInterface
     private $Data = array();
     /** @var null|IIconInterface $Icon */
     private $Icon = null;
+    /** @var array $Configuration */
+    private $Configuration = array();
 
     /**
      * @param string $Name
@@ -42,6 +44,7 @@ class SelectBox extends AbstractField implements IFieldInterface
         $this->Name = $Name;
         $this->Label = $Label;
         $this->Icon = $Icon;
+        $this->Configuration = json_encode( array(), JSON_FORCE_OBJECT );
 
         // Sanitize (wrong) entity list parameter (e.g. bool instead of entities or empty
         if (count($Data) == 1 && is_numeric(key($Data)) === false && current($Data) === false) {
@@ -158,9 +161,10 @@ class SelectBox extends AbstractField implements IFieldInterface
      * @param int $Library LIBRARY_DEFAULT|LIBRARY_SELECT2
      * @return SelectBox
      */
-    public function switchLibrary($Library = self::LIBRARY_DEFAULT)
+    public function configureLibrary($Library = self::LIBRARY_SELECTER, $Configuration = array())
     {
         $this->Library = $Library;
+        $this->Configuration = json_encode( $Configuration, JSON_FORCE_OBJECT );
         return $this;
     }
 
@@ -182,6 +186,7 @@ class SelectBox extends AbstractField implements IFieldInterface
         $this->Template->setVariable('ElementName', $this->Name);
         $this->Template->setVariable('ElementLabel', $this->Label);
         $this->Template->setVariable('ElementData', $this->Data);
+        $this->Template->setVariable('ElementConfiguration', $this->Configuration);
         if (null !== $this->Icon) {
             $this->Template->setVariable('ElementIcon', $this->Icon);
         }

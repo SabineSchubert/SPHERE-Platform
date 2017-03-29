@@ -15,6 +15,7 @@ session_start();
 session_write_close();
 set_time_limit(240);
 ob_implicit_flush();
+ini_set('display_errors',1);
 
 /**
  * Setup: Loader
@@ -22,6 +23,20 @@ ob_implicit_flush();
 require_once(__DIR__ . '/../../Library/MOC-V/Core/AutoLoader/AutoLoader.php');
 AutoLoader::getNamespaceAutoLoader('MOC\V', __DIR__ . '/../../Library/MOC-V');
 AutoLoader::getNamespaceAutoLoader('SPHERE', __DIR__ . '/../../', 'SPHERE');
+
+/**
+ * Bootstrap 3 Only
+ */
+require_once(__DIR__ . '/../../Library/LessPhp/1.7.0.5/lessc.inc.php');
+$Parser = array('cache_dir' => __DIR__ . '/LessCache', 'compress' => false);
+$Less = new \Less_Parser($Parser);
+$Less->parseFile(__DIR__ . DIRECTORY_SEPARATOR . 'Select2.Correction.less');
+$Style = FileSystem::getFileWriter(__DIR__ . '/Select2.Correction.css')->getLocation();
+file_put_contents($Style, $Less->getCss());
+
+/**
+ * Bootstrap Style
+ */
 
 $Style = FileSystem::getFileWriter(__DIR__ . '/Bootstrap.css')->getLocation();
 

@@ -136,7 +136,7 @@ class Frontend extends Extension implements IFrontendInterface
                             ),
                             (new SelectBox('SelectBox2', 'SelectBox - jQuery Select2',
                                 array('{{ Id }}{{ Name }}{{ Name }} {{ Id }}{{ Name }}{{ Name }}' => $Check)
-                            ))->switchLibrary( SelectBox::LIBRARY_SELECT2 ),
+                            ))->configureLibrary( SelectBox::LIBRARY_SELECT2 ),
                         ), 3),
                         new FormColumn(
                             new TextArea('TextArea', 'TextArea', 'TextArea')

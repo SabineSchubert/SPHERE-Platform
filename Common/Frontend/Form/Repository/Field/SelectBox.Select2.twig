@@ -1,6 +1,7 @@
 <div class="form-group {{ ElementGroup }}">
     {% if( ElementLabel is not empty ) %}
-        <label for="{{ ElementName }}">{{ ElementLabel }}{% if( Required is not empty ) %}<span class="text-danger"> *</span>{% endif %}</label>
+        <label for="{{ ElementName }}">{{ ElementLabel }}{% if( Required is not empty ) %}<span
+                    class="text-danger"> *</span>{% endif %}</label>
     {% endif %}
     {% if( ElementIcon is not empty ) %}
     <div class="input-group">
@@ -22,31 +23,21 @@
 </div>
 <script type="text/javascript">
     //noinspection JSUnresolvedFunction
-    executeScript(function()
-    {
-        Client.Use('ModSelect2', function()
-        {
+    executeScript(function () {
+        Client.Use('ModSelect2', function () {
             var guiSelect = jQuery('select[name="{{ ElementName }}"]');
-            {#guiSelect.find('option[value="{{ ElementValue }}"]').attr('selected', 'selected');#}
-            {#guiSelect.on('change keyup blur', function(Event)#}
-            {#{#}
-                {#var noSelection = jQuery(Event.currentTarget);#}
-                {#var useColor = noSelection.parent().find('span.selecter-selected');#}
-                {#var useValue = noSelection.parent().find('span.selecter-item.selected');#}
-                {#if (useValue.attr('data-value') == 0) {#}
-                    {#useColor.css('color', 'silver');#}
-                {#} else {#}
-                    {#useColor.css('color', '');#}
-                {#}#}
-            {#});#}
-            guiSelect.ModSelect2();
-
-//            var noSelection = guiSelect;
-//                var useColor = noSelection.parent().find('span.selecter-selected');
-//                var useValue = noSelection.parent().find('span.selecter-item.selected');
-//                if (useValue.attr('data-value') == 0) {
-//                    useColor.css('color', 'silver');
-//                }
+            guiSelect.ModSelect2({{ ElementConfiguration }});
+            guiSelect.on('change keyup blur', function () {
+                if( guiSelect.val() == 0 ) {
+                    guiSelect.next().find('span.select2-selection__rendered').css('color','silver');
+                } else {
+                    guiSelect.next().find('span.select2-selection__rendered').css('color','');
+                }
             });
+            if( guiSelect.val() == 0 ) {
+                guiSelect.next().find('span.select2-selection__rendered').css('color','silver');
+            }
+            guiSelect.next().find('span.select2-selection__arrow b').css('border-top-color','silver');
+        });
     });
 </script>
