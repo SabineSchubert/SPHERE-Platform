@@ -159,6 +159,7 @@ class SelectBox extends AbstractField implements IFieldInterface
 
     /**
      * @param int $Library LIBRARY_DEFAULT|LIBRARY_SELECT2
+     * @param array $Configuration
      * @return SelectBox
      */
     public function configureLibrary($Library = self::LIBRARY_SELECTER, $Configuration = array())
