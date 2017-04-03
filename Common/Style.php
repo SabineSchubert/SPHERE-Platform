@@ -6,6 +6,7 @@ use MOC\V\Core\HttpKernel\Vendor\Universal\Request;
 use SPHERE\Library\Script as ScriptLibrary;
 use SPHERE\Library\Style as StyleLibrary;
 use SPHERE\Library\Style\Library;
+use SPHERE\System\Cache\Handler\APCuHandler;
 use SPHERE\System\Debugger\Logger\ErrorLogger;
 use SPHERE\System\Extension\Extension;
 
@@ -284,23 +285,28 @@ class Style extends Extension
      */
     public function __toString()
     {
+        $Key = serialize( self::$CombinedList + self::$SourceList + self::$AdditionalList );
+        $Cache = $this->getCache( new APCuHandler() );
+        if( !($Result = $Cache->getValue( $Key, __METHOD__ )) ) {
 
-        $Content = $this->parseCombinedStyle(self::$CombinedList);
+            $Content = $this->parseCombinedStyle(self::$CombinedList);
+            $StyleList = array_merge(self::$SourceList, self::$AdditionalList);
+            array_walk($StyleList, function (&$Location) {
 
-        $StyleList = array_merge(self::$SourceList, self::$AdditionalList);
+                $RealPath = FileSystem::getFileLoader($Location)->getRealPath();
+                if (!empty($RealPath)) {
+                    $cTag = '?cTAG-' . hash_file('md5', $RealPath);
+                } else {
+                    $cTag = '?cTAG-' . 'MISS-' . time();
+                }
 
-        array_walk($StyleList, function (&$Location) {
+                $Location = '<link rel="stylesheet" href="' . $Location . $cTag . '">';
+            });
+            array_unshift($StyleList, $this->getCombinedStyleTag($Content));
+            $Result = implode("\n", $StyleList);
 
-            $RealPath = FileSystem::getFileLoader($Location)->getRealPath();
-            if (!empty($RealPath)) {
-                $cTag = '?cTAG-' . md5_file($RealPath);
-            } else {
-                $cTag = '?cTAG-' . 'MISS-' . time();
-            }
-
-            $Location = '<link rel="stylesheet" href="' . $Location . $cTag . '">';
-        });
-        array_unshift($StyleList, $this->getCombinedStyleTag($Content));
-        return implode("\n", $StyleList);
+            $Cache->setValue( $Key, $Result, 0, __METHOD__);
+        }
+        return $Result;
     }
 }
