@@ -11,6 +11,7 @@ namespace SPHERE\Application\Reporting\DataWareHouse\Service;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\Table;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_AssortmentGroup;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Brand;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_MarketingCode;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part_AssortmentGroup;
@@ -18,6 +19,7 @@ use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part_
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part_Section;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_PartsMore;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_ProductGroup;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_ProductManager;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_ProductManager_Brand;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_ProductManager_MarketingCode;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_ProductManager_ProductGroup;
@@ -42,7 +44,7 @@ class Setup extends AbstractSetup
         $TableProductManager = $this->setTableProductManager( $Schema );
         $this->setTableProductManagerBrand( $Schema, $TableProductManager, $TableBrand );
 
-        $TableProductManagerGroup = $this->setTableProductGroup( $Schema );
+        $TableProductManagerGroup = $this->setTableProductManagerGroup( $Schema );
         $this->setTableProductManagerProductManagerGroup( $Schema, $TableProductManager, $TableProductManagerGroup );
 
 
@@ -68,6 +70,10 @@ class Setup extends AbstractSetup
         return $this->saveSchema($Schema, $Simulate);
     }
 
+    /**
+     * @param Schema $Schema
+     * @return Table
+     */
     private function setTableBrand( Schema &$Schema ) {
         $TableBrand = new TblReporting_Brand();
         $Table = $this->createTable( $Schema, $TableBrand->getEntityShortName() );
@@ -76,6 +82,10 @@ class Setup extends AbstractSetup
         return $Table;
     }
 
+    /**
+     * @param Schema $Schema
+     * @return Table
+     */
     private function setTableProductManager( Schema &$Schema ) {
         $TableProductManager = new TblReporting_ProductManager();
         $Table = $this->createTable( $Schema, $TableProductManager->getEntityShortName() );
@@ -84,6 +94,12 @@ class Setup extends AbstractSetup
         return $Table;
     }
 
+    /**
+     * @param Schema $Schema
+     * @param Table $TableProductManager
+     * @param Table $TableBrand
+     * @return Table
+     */
     private function setTableProductManagerBrand( Schema &$Schema, Table $TableProductManager, Table $TableBrand ) {
         $TableProductManagerBrand = new TblReporting_ProductManager_Brand();
         $Table = $this->createTable( $Schema, $TableProductManagerBrand->getEntityShortName() );
@@ -210,8 +226,8 @@ class Setup extends AbstractSetup
         $this->createColumn( $Table, $TableSales::ATTR_MONTH, self::FIELD_TYPE_INTEGER, false);
         $this->createColumn( $Table, $TableSales::ATTR_YEAR, self::FIELD_TYPE_INTEGER, false);
         $this->createColumn( $Table, $TableSales::ATTR_QUANTITY, self::FIELD_TYPE_INTEGER, false);
-        $this->createColumn( $Table, $TableSales::ATTR_SALES_GROSS, 'float', false);
-        $this->createColumn( $Table, $TableSales::ATTR_SALES_NET, 'float', false);
+        $this->createColumn( $Table, $TableSales::ATTR_SALES_GROSS, self::FIELD_TYPE_FLOAT, false);
+        $this->createColumn( $Table, $TableSales::ATTR_SALES_NET, self::FIELD_TYPE_FLOAT, false);
         return $Table;
     }
 

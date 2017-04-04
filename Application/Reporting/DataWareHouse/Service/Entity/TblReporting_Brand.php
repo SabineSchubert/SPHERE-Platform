@@ -19,7 +19,7 @@ use SPHERE\System\Database\Fitting\Element;
  * @Table(name="TblReporting_Brand")
  * @Cache(usage="READ_ONLY")
  */
-class tblReporting_Brand extends Element
+class TblReporting_Brand extends Element
 {
     const ATTR_ALIAS = 'Alias';
     const ATTR_NAME = 'Name';

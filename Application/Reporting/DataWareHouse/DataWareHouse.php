@@ -9,25 +9,31 @@
 namespace SPHERE\Application\Reporting\DataWareHouse;
 
 use SPHERE\Application\IApplicationInterface;
+use SPHERE\Application\IModuleInterface;
 use SPHERE\Application\Platform\Gatekeeper\Consumer\Consumer;
 use SPHERE\System\Database\Link\Identifier;
 
-class DataWareHouse extends Service implements IApplicationInterface
+class DataWareHouse implements IApplicationInterface, IModuleInterface
 {
 
 	public static function registerApplication()
 	{
 	}
 
-//    /**
-//     * @return mixed
-//     */
-//    public static function useService()
-//    {
-//        return new Service(new Identifier('Reporting', 'DataWareHouse', null, null, Consumer::useService()->getConsumerBySession()),
-//            __DIR__ . '/Service/Entity', __NAMESPACE__ . '\Service\Entity'
-//        );
-//    }
+    public static function registerModule()
+    {
+        // TODO: Implement registerModule() method.
+    }
+
+    /**
+     * @return mixed
+     */
+    public static function useService()
+    {
+        return new Service(new Identifier('Reporting', 'DataWareHouse', null, null, Consumer::useService()->getConsumerBySession()),
+            __DIR__ . '/Service/Entity', __NAMESPACE__ . '\Service\Entity'
+        );
+    }
 
     /**
      * @return mixed

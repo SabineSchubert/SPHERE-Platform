@@ -17,7 +17,6 @@ class Api implements IClusterInterface
     public static function registerCluster()
     {
         Platform::registerApplication();
-        TestAjax::registerApi();
         Reporting::registerApplication();
     }
 }

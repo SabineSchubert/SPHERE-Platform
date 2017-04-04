@@ -21,7 +21,7 @@ use SPHERE\System\Database\Fitting\Element;
  * @Table(name="TblReporting_ProductManager")
  * @Cache(usage="READ_ONLY")
  */
-class tblReporting_ProductManager extends Element
+class TblReporting_ProductManager extends Element
 {
     const ATTR_NAME = 'Name';
     const ATTR_DEPARTMENT = 'Department';
