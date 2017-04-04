@@ -47,9 +47,13 @@ class APCuHandler extends AbstractHandler implements HandlerInterface
     public function setValue($Key, $Value, $Timeout = 0, $Region = 'Default')
     {
 
-        // MUST NOT USE
-        (new DebuggerFactory())->createLogger(new ErrorLogger())
-            ->addLog(__METHOD__.' Error: SET - MUST NOT BE USED!');
+        if( function_exists('apcu_store') ) {
+            apcu_store( (string)crc32($Region.$Key), $Value, $Timeout );
+        } else {
+            // MUST NOT USE
+            (new DebuggerFactory())->createLogger(new ErrorLogger())
+                ->addLog(__METHOD__ . ' Error: SET - MUST NOT BE USED!');
+        }
         return $this;
     }
 
@@ -62,10 +66,19 @@ class APCuHandler extends AbstractHandler implements HandlerInterface
     public function getValue($Key, $Region = 'Default')
     {
 
-        // MUST NOT USE
-        (new DebuggerFactory())->createLogger(new ErrorLogger())
-            ->addLog(__METHOD__.' Error: GET - MUST NOT BE USED!');
-        return null;
+        if( function_exists('apcu_fetch') ) {
+            $Value = apcu_fetch( crc32($Region.$Key), $Success );
+            if( $Success ) {
+                return $Value;
+            } else {
+                return null;
+            }
+        } else {
+            // MUST NOT USE
+            (new DebuggerFactory())->createLogger(new ErrorLogger())
+                ->addLog(__METHOD__ . ' Error: GET - MUST NOT BE USED!');
+            return null;
+        }
     }
 
     /**

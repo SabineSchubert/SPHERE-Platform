@@ -233,6 +233,10 @@ class Script
             $Location . '/DetectElementResize/0.5.3/jquery.resize.js',
             "'undefined' !== typeof jQuery.fn.removeResize"
         ));
+        $this->addLibrary(new Library('jQuery.Select2', '4.0.3',
+            $Location . '/jQuery.Select2/4.0.3/dist/js/select2.full.min.js',
+            "'undefined' !== typeof jQuery.fn.select2"
+        ));
 
         $this->addLibrary(new Library('Highlight.js', '8.8.0',
             $Location . '/Highlight.js/8.8.0/highlight.pack.js',
@@ -250,6 +254,14 @@ class Script
         $this->addLibrary(new Library( 'Morris.js', '0.5.1',
             $Location . '/Morris.Js/0.5.1/morris.min.js',
             "'undefined' !== typeof Morris"
+        ));
+        $this->addLibrary(new Library( 'Chart.js', '2.5.0',
+            $Location . '/Chart.js/2.5.0/Chart.bundle.min.js',
+            "'undefined' !== typeof Chart"
+        ));
+        $this->addLibrary(new Library( 'D3.js', '4.7.3',
+            $Location . '/D3/4.7.3/d3.min.js',
+            "'undefined' !== typeof d3"
         ));
 
         $this->addLibrary(new Library('Bootbox.js', '4.4.0',

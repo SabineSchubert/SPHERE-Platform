@@ -6,6 +6,7 @@ use MOC\V\Core\HttpKernel\Vendor\Universal\Request;
 use SPHERE\Library\Script as ScriptLibrary;
 use SPHERE\Library\Style as StyleLibrary;
 use SPHERE\Library\Style\Library;
+use SPHERE\System\Cache\Handler\APCuHandler;
 use SPHERE\System\Debugger\Logger\ErrorLogger;
 use SPHERE\System\Extension\Extension;
 
@@ -49,6 +50,11 @@ class Style extends Extension
 
             $this->setLibrary((new StyleLibrary('jQuery.Formstone.Selecter', '3.2.4'))->getLibrary(), false, true);
             $this->setLibrary((new StyleLibrary('jQuery.Formstone.Stepper', '3.0.8'))->getLibrary(), false, true);
+
+            $this->setLibrary((new StyleLibrary('jQuery.Select2', '4.0.3'))->getLibrary(), false, true);
+            $this->setLibrary((new StyleLibrary('jQuery.Select2.Theme', '0.1.0.9'))->getLibrary(), false, true);
+
+
             $this->setSource((new ScriptLibrary('jQuery.Gridster', '0.6.10'))->getLibrary()->getLocation() . '/dist/jquery.gridster.min.css', false, true);
             $this->setSource((new StyleLibrary('Bootstrap.Checkbox', '0.3.3'))->getLibrary()->getLocation() . '/awesome-bootstrap-checkbox.css', false, true);
 
@@ -102,6 +108,7 @@ class Style extends Extension
         $this->setSource('/Common/Style/CheckBox.Correction.css', false, true);
         $this->setSource('/Common/Style/RadioBox.Correction.css', false, true);
         $this->setSource('/Common/Style/SelectBox.Correction.css', false, true);
+        $this->setSource('/Common/Style/Select2.Correction.css', false, true);
         $this->setSource('/Common/Style/TypeAHead.Correction.css', false, true);
         $this->setSource('/Common/Style/Button.Correction.css', false, true);
         $this->setSource('/Common/Style/Teaser.Correction.css', false, true);
@@ -278,23 +285,28 @@ class Style extends Extension
      */
     public function __toString()
     {
+        $Key = serialize( self::$CombinedList + self::$SourceList + self::$AdditionalList );
+        $Cache = $this->getCache( new APCuHandler() );
+        if( !($Result = $Cache->getValue( $Key, __METHOD__ )) ) {
 
-        $Content = $this->parseCombinedStyle(self::$CombinedList);
+            $Content = $this->parseCombinedStyle(self::$CombinedList);
+            $StyleList = array_merge(self::$SourceList, self::$AdditionalList);
+            array_walk($StyleList, function (&$Location) {
 
-        $StyleList = array_merge(self::$SourceList, self::$AdditionalList);
+                $RealPath = FileSystem::getFileLoader($Location)->getRealPath();
+                if (!empty($RealPath)) {
+                    $cTag = '?cTAG-' . hash_file('md5', $RealPath);
+                } else {
+                    $cTag = '?cTAG-' . 'MISS-' . time();
+                }
 
-        array_walk($StyleList, function (&$Location) {
+                $Location = '<link rel="stylesheet" href="' . $Location . $cTag . '">';
+            });
+            array_unshift($StyleList, $this->getCombinedStyleTag($Content));
+            $Result = implode("\n", $StyleList);
 
-            $RealPath = FileSystem::getFileLoader($Location)->getRealPath();
-            if (!empty($RealPath)) {
-                $cTag = '?cTAG-' . md5_file($RealPath);
-            } else {
-                $cTag = '?cTAG-' . 'MISS-' . time();
-            }
-
-            $Location = '<link rel="stylesheet" href="' . $Location . $cTag . '">';
-        });
-        array_unshift($StyleList, $this->getCombinedStyleTag($Content));
-        return implode("\n", $StyleList);
+            $Cache->setValue( $Key, $Result, 0, __METHOD__);
+        }
+        return $Result;
     }
 }
