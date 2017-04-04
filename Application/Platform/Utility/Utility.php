@@ -4,6 +4,7 @@ namespace SPHERE\Application\Platform\Utility;
 use SPHERE\Application\AppTrait;
 use SPHERE\Application\IApplicationInterface;
 use SPHERE\Application\Platform\Utility\Favorite\Favorite;
+use SPHERE\Application\Platform\Utility\Transfer\Transfer;
 use SPHERE\Application\Platform\Utility\Translation\Translation;
 use SPHERE\Common\Frontend\Icon\Repository\Wrench;
 use SPHERE\Common\Window\Stage;
@@ -20,6 +21,7 @@ class Utility implements IApplicationInterface
     {
         Translation::registerModule();
         Favorite::registerModule();
+        Transfer::registerModule();
 
         self::createApplication( __NAMESPACE__, __CLASS__, 'frontendDashboard', 'Dienstprogramm', new Wrench() );
     }
