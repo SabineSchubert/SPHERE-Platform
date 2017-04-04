@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use SPHERE\System\Database\Fitting\Element;
 
+
 /**
  * @Entity
  * @Table(name="TblGroup")

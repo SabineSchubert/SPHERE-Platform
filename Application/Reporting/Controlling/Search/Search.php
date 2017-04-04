@@ -17,7 +17,20 @@ class Search implements IModuleInterface
             new Link(new Link\Route(__NAMESPACE__), new Link\Name('Suche'), new Link\Icon(new SearchIcon()))
         );
         Main::getDispatcher()->registerRoute(
-            Main::getDispatcher()->createRoute(__NAMESPACE__, __NAMESPACE__ . '\Frontend::frontendSearch')
+            Main::getDispatcher()->createRoute(__NAMESPACE__, __NAMESPACE__ . '\Frontend::frontendSearchPartNumber')
+        );
+
+		Main::getDispatcher()->registerRoute(
+			Main::getDispatcher()->createRoute(__NAMESPACE__.'/PartNumber', __NAMESPACE__ . '\Frontend::frontendSearchPartNumber')
+        );
+		Main::getDispatcher()->registerRoute(
+			Main::getDispatcher()->createRoute(__NAMESPACE__.'/ProductManager', __NAMESPACE__ . '\Frontend::frontendSearchProductManager')
+        );
+		Main::getDispatcher()->registerRoute(
+			Main::getDispatcher()->createRoute(__NAMESPACE__.'/MarketingCode', __NAMESPACE__ . '\Frontend::frontendSearchMarketingCode')
+        );
+		Main::getDispatcher()->registerRoute(
+			Main::getDispatcher()->createRoute(__NAMESPACE__.'/Competition', __NAMESPACE__ . '\Frontend::frontendSearchCompetition')
         );
 	}
 
@@ -30,7 +43,7 @@ class Search implements IModuleInterface
 	}
 
 	/**
-	 * @return IFrontendInterface
+	 * @return Frontend
 	 */
 	public static function useFrontend()
 	{

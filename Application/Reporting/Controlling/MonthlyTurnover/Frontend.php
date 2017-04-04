@@ -278,4 +278,12 @@ class Frontend extends Extension
 			)
 		);
 	}
+
+	private function tableMonthlyTurnover( $MonthlyTurnoverData ) {
+//		$MonthlyTurnoverData = array(
+//			array(
+//				'Month' =>
+//			)
+//		);
+	}
 }

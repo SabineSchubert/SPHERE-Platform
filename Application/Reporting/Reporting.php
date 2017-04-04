@@ -3,7 +3,7 @@ namespace SPHERE\Application\Reporting;
 
 use SPHERE\Application\IClusterInterface;
 use SPHERE\Application\Reporting\Controlling\Controlling;
-use SPHERE\Application\Reporting\Transfer\Transfer;
+use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\Application\Reporting\Utility\Utility;
 use SPHERE\Common\Frontend\Icon\Repository\Calendar;
 use SPHERE\Common\Frontend\Icon\Repository\CogWheels;
@@ -39,7 +39,7 @@ class Reporting implements IClusterInterface
 
         Controlling::registerApplication();
         Utility::registerApplication();
-        Transfer::registerApplication();
+	    DataWareHouse::registerApplication();
     }
 
     /**

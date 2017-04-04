@@ -9,6 +9,7 @@
 namespace SPHERE\Application\Reporting\Controlling\DirectSearch;
 
 
+use SPHERE\Application\Reporting\DataWareHouse\Parts\Parts;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Button\Reset;
 use SPHERE\Common\Frontend\Form\Repository\Field\AutoCompleter;
@@ -21,13 +22,13 @@ use SPHERE\Common\Frontend\Form\Structure\FormRow;
 use SPHERE\Common\Frontend\Icon\Repository\Search;
 use SPHERE\Common\Frontend\Layout\Repository\Panel;
 use SPHERE\Common\Frontend\Layout\Repository\Title;
-use SPHERE\Common\Frontend\Table\Repository\Title as TableTitle;
 use SPHERE\Common\Frontend\Layout\Structure\Layout;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
 use SPHERE\Common\Frontend\Link\Repository\Standard;
 use SPHERE\Common\Frontend\Message\Repository\Warning;
+use SPHERE\Common\Frontend\Table\Repository\Title as TableTitle;
 use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Frontend\Text\Repository\Bold;
 use SPHERE\Common\Window\Navigation\Link\Route;
@@ -127,7 +128,7 @@ class Frontend extends Extension
 								)
 							)
 						),
-						new Title('Wettbewerbsdaten')
+						new Title('Angebotsdaten')
 					);
 
 			} else {
@@ -313,144 +314,6 @@ class Frontend extends Extension
 		return $Stage;
 	}
 
-//	public function frontendDirectSearch($PartNumber = null, $ProductManager = null, $MarketingCode = null)
-//	{
-//		//$this->getDebugger()->screenDump($PartNumber);
-//		$Stage = new Stage('Direktsuche');
-//		$Stage->setMessage('');
-//
-//
-//		$Text = array();
-//		if (!empty($PartNumber)) {
-//			$Text = array(
-//				new LayoutRow(
-//					array(
-//						new LayoutColumn(
-//							'Stammdaten', 6
-//						),
-//						new LayoutColumn(
-//							'Preisdaten', 6
-//						)
-//					)
-//				)
-//			);
-//		}
-//
-//		//Debugger::screenDump();
-//
-//		$Stage->setContent(
-//			$this->FormSearch($PartNumber, $ProductManager, $MarketingCode)
-//		);
-////		$Stage->setContent(new Layout(
-////							array(
-////
-////								new LayoutGroup(
-////									$Text
-////								)
-////							)
-////						));
-//		$Stage1 = new Stage('Test');
-//		$Stage1->setContent(new Layout(
-//			new LayoutGroup(
-//				new LayoutRow(
-//					array(
-//						new LayoutColumn(
-//							(
-//							new Form(
-//								new FormGroup(
-//									new FormRow(
-//										array(
-//											new FormColumn(
-//												new TextField('PartNumber', 'Teilenummer', 'Teilenummer eingeben', new Search()), 4
-//											),
-//											new FormColumn(
-//												new SelectBox('ProductManager', 'Produktmanager', array('0' => '-[ Nicht ausgewählt ]-', 'AS' => 'Andreas Schneider', 'SK' => 'Stefan Klinke', 'SH' => 'Stefan Hahn')), 4
-//											),
-//											new FormColumn(
-//												new AutoCompleter('MarketingCode', 'Marketingcode', 'Marketingcode eingeben', array('1P123')), 4
-//											)
-//										)
-//									)
-//								)
-//							)
-//							)->appendFormButton(new Primary('anzeigen', new Search()))
-//						)
-//					)
-//				)
-//			)
-//		));
-//		return $Stage . $Stage1;
-//	}
-
-//	private function FormSearch($PartNumber = null, $ProductManager = null, $MarketingCode = null)
-//	{
-//		$this->getDebugger()->screenDump($PartNumber, $ProductManager);
-//		return new Layout(
-//			new LayoutGroup(
-//				new LayoutRow(
-//					array(
-//						new LayoutColumn(
-//
-//							new Form(
-//								new FormGroup(
-//									new FormRow(
-//										array(
-//											new FormColumn(
-//												new TextField('PartNumber', 'Teilenummer', 'Teilenummer eingeben', new Search()), 4
-//											),
-//											new FormColumn(
-//												new SelectBox('ProductManager', 'Produktmanager', array('0' => '-[ Nicht ausgewählt ]-', 'AS' => 'Andreas Schneider', 'SK' => 'Stefan Klinke', 'SH' => 'Stefan Hahn')), 4
-//											),
-//											new FormColumn(
-//												new AutoCompleter('MarketingCode', 'Marketingcode', 'Marketingcode eingeben', array('1P123')), 4
-//											)
-//										)
-//									)
-//								)
-//								, new Primary('anzeigen', new Search()))
-//
-//						)
-//					)
-//				)
-//			)
-//		);
-//,
-//						new LayoutColumn(
-//							(
-//								new Form(
-//									new FormGroup(
-//										new FormRow(
-//											new FormColumn(
-//												new SelectBox('ProductManager', 'Produktmanager', array( '0' => '-[ Nicht ausgewählt ]-', 'AS' => 'Andreas Schneider', 'SK' => 'Stefan Klinke', 'SH' => 'Stefan Hahn' )),
-//												12
-//											)
-//										)
-//									), $ProductManager
-//								)
-//							)->appendFormButton(new Primary('anzeigen', new Search()))
-//							, 4
-//						),
-//						new LayoutColumn(
-//							(
-//								new Form(
-//									new FormGroup(
-//										new FormRow(
-//											new FormColumn(
-//												new AutoCompleter('MarketingCode', 'Marketingcode', 'Marketingcode eingeben', array('1P123')),
-//												12
-//											)
-//										)
-//									), $MarketingCode
-//								)
-//							)->appendFormButton(new Primary('anzeigen', new Search()))
-//							, 4
-//						)
-//					)
-//				)
-//			)
-//		);
-//	}
-//
 	/**
 	 * @return Form
 	 */
@@ -462,7 +325,7 @@ class Frontend extends Extension
 					array(
 						new FormColumn(
 							new Panel('Suche', array(
-								(new TextField('Search[PartNumber]', 'Teilenummer', 'Teilenummer eingeben', new Search()))//->ajaxPipelineOnKeyUp(  )
+								(new TextField('Search[PartNumber]', 'Teilenummer', 'Teilenummer eingeben', new Search()))
 								->setRequired()
 							), Panel::PANEL_TYPE_INFO)
 						),
@@ -523,6 +386,9 @@ class Frontend extends Extension
 	}
 
 	private function tableMasterDataPartNumber() {
+
+		$Test = (Parts::useService()->getMarketingCodeById(1));
+
 		return new Table(
 			array(
 				array(
@@ -535,7 +401,7 @@ class Frontend extends Extension
 				),
 				array(
 					'Description' => 'Marketingcode',
-					'Value' => '1P23'
+					'Value' => $Test->getMcName()
 				),
 				array(
 					'Description' => 'Warengruppe',
@@ -652,16 +518,21 @@ class Frontend extends Extension
 
 	private function tablePriceDataPartNumber() {
 		$Rw = 0;
-//		$CalcRules = $this->getCalculationRules();
-//		$CalcRules->calcExpansionFactor()
+		$GrossPrice = 100;
+		$DiscountNumber = 5;
+		$Discount = 10;
+		$PartsMoreDiscount = 5;
+		$Costs = 20;
+		$CalcRules = $this->getCalculationRules();
 
 		if( $Rw != 0 ) {
 			$PriceDescription = 'BLP / VP<br/>BLP / TP<br/>NLP / VP<br/>NLP / TP';
-			$PriceValue = '';
+			$PriceValue = number_format( $CalcRules->calcGrossPrice( 0, 0, $Rw, 0, 0, $GrossPrice ), 2, ',', '.' ).' €<br/>'.number_format( $GrossPrice, 2, ',', '.').' €<br/>'
+				.number_format( $CalcRules->calcNetPrice( $GrossPrice, $Discount, $Rw ), 2, ',', '.').' €<br/>'.number_format( $CalcRules->calcNetPrice( $GrossPrice, $Discount ), 2, ',', '.').' €';
 		}
 		else {
 			$PriceDescription = 'BLP / VP<br/>NLP / VP';
-			$PriceValue = '';
+			$PriceValue = number_format( $GrossPrice, 2, ',', '.').' €<br/>'.number_format( $CalcRules->calcNetPrice( $GrossPrice, $Discount ), 2, ',', '.').' €';
 		}
 
 		return new Table(
@@ -672,27 +543,32 @@ class Frontend extends Extension
 				),
 				array(//PartsMoreProzent'
 					'Description' => 'P+M '.number_format(0, 2, ',', '.').'%<br>NLP / P+M',
-					'Value' => '123'
+					'Value' => number_format( $CalcRules->calcPartsMoreEuro( $GrossPrice, $PartsMoreDiscount ), 2, ',', '.').' €<br/>'
+						.number_format( $CalcRules->calcNetPrice( $GrossPrice, $Discount, 0, $PartsMoreDiscount, 0, 0 ) ).' €'
 				),
 				array(
 					'Description' => 'Rabattgruppe',
-					'Value' => '1P23'
+					'Value' => $DiscountNumber.'<br/>'.$Discount. '%'
 				),
 				array(
 					'Description' => 'variable Kosten',
-					'Value' => '1P23'
+					'Value' => number_format( $Costs, 2, ',', '.' ).' €'
 				),
 				array(
 					'Description' => 'Preis gültig ab<br/>TNR-Status',
-					'Value' => 'Pkw'
+					'Value' => 'Gültig<br/>Status'
 				),
 				array(
 					'Description' => 'Konzern-DB',
-					'Value' => 'Andreas Schneider'
+					'Value' => number_format( $CalcRules->calcCoverageContribution(
+							$CalcRules->calcNetPrice( $GrossPrice, $Discount, $Rw, $PartsMoreDiscount, 0, 0  )
+							, $Costs
+						) , 2, ',', '.' ).' €'
 				),
 				array(
-					'Description' => 'FC-Grenze',
-					'Value' => 'unbekannt'
+					'Description' => 'FC-Grenze ohne P+M<br/>FC-Grenze mit P+M',
+					'Value' => number_format( $CalcRules->calcFinancialManagementLimit( $CalcRules->calcGrossPrice( 0, 0, 0, $PartsMoreDiscount, 0, 0, $GrossPrice ), $Costs ), 2, ',', '.' ).' €<br/>'
+						.number_format( $CalcRules->calcFinancialManagementLimit( $GrossPrice, $Costs ), 2, ',', '.' ).' €'
 				),
 			),
 			new TableTitle('Preis- und Kosteninformationen'),

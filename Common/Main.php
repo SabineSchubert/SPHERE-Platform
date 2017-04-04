@@ -6,6 +6,7 @@ use Doctrine\DBAL\Exception\InvalidFieldNameException;
 use Doctrine\DBAL\Exception\TableNotFoundException;
 use MOC\V\Component\Router\Component\Bridge\Repository\UniversalRouter;
 use SPHERE\Application\Api\Api;
+use SPHERE\Application\Competition\Competition;
 use SPHERE\Application\Dispatcher;
 use SPHERE\Application\Eila\Eila;
 use SPHERE\Application\OtherApplication\OtherApplication;
@@ -366,10 +367,11 @@ class Main extends Extension
             );
 //        RROP::registerCluster();
         Reporting::registerCluster();
-        PriceList::registerCluster();
-        Statistic::registerCluster();
-        Training::registerCluster();
-        Eila::registerCluster();
-        OtherApplication::registerCluster();
+        Competition::registerCluster();
+//        PriceList::registerCluster();
+//        Statistic::registerCluster();
+//        Training::registerCluster();
+//        Eila::registerCluster();
+//        OtherApplication::registerCluster();
     }
 }
