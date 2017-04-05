@@ -11,13 +11,18 @@ namespace SPHERE\Application\Reporting\DataWareHouse\Service;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\Table;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_AssortmentGroup;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Brand;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_DiscountGroup;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_MarketingCode;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_MarketingCode_PartsMore;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part_AssortmentGroup;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part_MarketingCode;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part_Section;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_PartsMore;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Price;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_ProductGroup;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_ProductManager;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_ProductManager_Brand;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_ProductManager_MarketingCode;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_ProductManager_ProductGroup;
@@ -42,7 +47,7 @@ class Setup extends AbstractSetup
         $TableProductManager = $this->setTableProductManager( $Schema );
         $this->setTableProductManagerBrand( $Schema, $TableProductManager, $TableBrand );
 
-        $TableProductManagerGroup = $this->setTableProductGroup( $Schema );
+        $TableProductManagerGroup = $this->setTableProductManagerGroup( $Schema );
         $this->setTableProductManagerProductManagerGroup( $Schema, $TableProductManager, $TableProductManagerGroup );
 
 
@@ -51,6 +56,9 @@ class Setup extends AbstractSetup
 
         $TableMarketingCode = $this->setTableMarketingCode( $Schema );
         $this->setTableProductManagerMarketingCode( $Schema, $TableProductManager, $TableMarketingCode );
+
+        $TablePartsMore = $this->setTablePartsMore( $Schema );
+        $this->setTableMarketingCodePartsMore( $Schema, $TableMarketingCode, $TablePartsMore );
 
         $TablePart = $this->setTablePart( $Schema );
         $this->setTablePartMarketingCode( $Schema, $TablePart, $TableMarketingCode );
@@ -61,8 +69,9 @@ class Setup extends AbstractSetup
         $TableAssortmentGroup = $this->setTableAssortmentGroup( $Schema );
         $this->setTablePartAssortmentGroup( $Schema, $TablePart, $TableAssortmentGroup );
 
-        $TablePartsMore = $this->setTablePartsMore( $Schema );
+        $TableDiscountGroup = $this->setTableDiscountGroup( $Schema );
 
+        $TablePrice = $this->setTablePrice( $Schema, $TablePart, $TableDiscountGroup );
 
         $this->setTableSales( $Schema, $TablePart );
         return $this->saveSchema($Schema, $Simulate);
@@ -142,6 +151,26 @@ class Setup extends AbstractSetup
         return $Table;
     }
 
+    private function setTablePartsMore( Schema &$Schema ) {
+        $TablePartsMore = new TblReporting_PartsMore();
+        $Table = $this->createTable( $Schema, $TablePartsMore->getEntityShortName() );
+        $this->createColumn( $Table, $TablePartsMore::ATTR_NAME, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePartsMore::ATTR_DESCRIPTION, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePartsMore::ATTR_TYPE, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePartsMore::ATTR_VALUE, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePartsMore::ATTR_VALID_FROM, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePartsMore::ATTR_VALID_TO, self::FIELD_TYPE_STRING, false );
+        return $Table;
+    }
+
+    private function setTableMarketingCodePartsMore( Schema &$Schema, Table $TableMarketingCode, Table $TablePartsMore ) {
+        $TableMarketingCodePartsMore = new TblReporting_MarketingCode_PartsMore();
+        $Table = $this->createTable( $Schema, $TableMarketingCodePartsMore->getEntityShortName() );
+        $this->createForeignKey( $Table, $TableMarketingCode );
+        $this->createForeignKey( $Table, $TablePartsMore );
+        return $Table;
+    }
+
     private function setTablePart( Schema &$Schema ) {
         $TablePart = new TblReporting_Part();
         $Table = $this->createTable( $Schema, $TablePart->getEntityShortName() );
@@ -191,15 +220,23 @@ class Setup extends AbstractSetup
         return $Table;
     }
 
-    private function setTablePartsMore( Schema &$Schema ) {
-        $TablePartsMore = new TblReporting_PartsMore();
-        $Table = $this->createTable( $Schema, $TablePartsMore->getEntityShortName() );
-        $this->createColumn( $Table, $TablePartsMore::ATTR_NAME, self::FIELD_TYPE_STRING, false );
-        $this->createColumn( $Table, $TablePartsMore::ATTR_DESCRIPTION, self::FIELD_TYPE_STRING, false );
-        $this->createColumn( $Table, $TablePartsMore::ATTR_TYPE, self::FIELD_TYPE_STRING, false );
-        $this->createColumn( $Table, $TablePartsMore::ATTR_VALUE, self::FIELD_TYPE_STRING, false );
-        $this->createColumn( $Table, $TablePartsMore::ATTR_DATE_FROM, self::FIELD_TYPE_STRING, false );
-        $this->createColumn( $Table, $TablePartsMore::ATTR_DATE_TO, self::FIELD_TYPE_STRING, false );
+    private function setTableDiscountGroup( Schema &$Schema ) {
+        $TableDiscountGroup = new TblReporting_DiscountGroup();
+        $Table = $this->createTable( $Schema, $TableDiscountGroup->getEntityShortName() );
+        $this->createColumn( $Table, $TableDiscountGroup::ATTR_NUMBER, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TableDiscountGroup::ATTR_NAME, self::FIELD_TYPE_STRING, false );
+        return $Table;
+    }
+
+    private function setTablePrice( Schema &$Schema, Table $TablePart, Table $TableDiscountGroup ) {
+        $TablePrice = new TblReporting_Price();
+        $Table = $this->createTable( $Schema, $TablePrice->getEntityShortName() );
+        $this->createForeignKey( $Table, $TablePart );
+        $this->createForeignKey( $Table, $TableDiscountGroup );
+        $this->createColumn( $Table, $TablePrice::ATTR_PRICE_GROSS, 'float', false );
+        $this->createColumn( $Table, $TablePrice::ATTR_BACK_VALUE, 'float', false );
+        $this->createColumn( $Table, $TablePrice::ATTR_COSTS_VARIABLE, 'float', false );
+        $this->createColumn( $Table, $TablePrice::ATTR_VALID_FROM, 'float', false );
         return $Table;
     }
 

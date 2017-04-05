@@ -26,8 +26,8 @@ class TblReporting_PartsMore extends Element
     const ATTR_DESCRIPTION = 'Description';
     const ATTR_TYPE = 'Type';
     const ATTR_VALUE = 'Value';
-    const ATTR_DATE_FROM = 'DateFrom';
-    const ATTR_DATE_TO = 'DateTo';
+    const ATTR_VALID_FROM = 'ValidFrom';
+    const ATTR_VALID_TO = 'ValidTo';
 
     /**
      * @Column(type="string")
@@ -52,12 +52,12 @@ class TblReporting_PartsMore extends Element
     /**
      * @Column(type="datetime")
      */
-    protected $DateFrom;
+    protected $ValidFrom;
 
     /**
      * @Column(type="datetime")
      */
-    protected $DateTo;
+    protected $ValidTo;
 
     /**
      * @return mixed
@@ -126,33 +126,33 @@ class TblReporting_PartsMore extends Element
     /**
      * @return mixed
      */
-    public function getDateFrom()
+    public function getValidFrom()
     {
-        return $this->DateFrom;
+        return $this->ValidFrom;
     }
 
     /**
-     * @param mixed $DateFrom
+     * @param mixed $ValidFrom
      */
-    public function setDateFrom($DateFrom)
+    public function setValidFrom($ValidFrom)
     {
-        $this->DateFrom = $DateFrom;
+        $this->ValidFrom = $ValidFrom;
     }
 
     /**
      * @return mixed
      */
-    public function getDateTo()
+    public function getValidTo()
     {
-        return $this->DateTo;
+        return $this->ValidTo;
     }
 
     /**
-     * @param mixed $DateTo
+     * @param mixed $ValidTo
      */
-    public function setDateTo($DateTo)
+    public function setValidTo($ValidTo)
     {
-        $this->DateTo = $DateTo;
+        $this->ValidTo = $ValidTo;
     }
 
 

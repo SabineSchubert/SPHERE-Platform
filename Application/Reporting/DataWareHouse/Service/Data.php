@@ -15,7 +15,7 @@ use SPHERE\System\Database\Binding\AbstractData;
 
 /**
  * Class Data
- * @package SPHERE\Application\Reporting\DataWareHouse\Sales\Service
+ * @package SPHERE\Application\Reporting\DataWareHouse\Service
  */
 class Data extends AbstractData
 {

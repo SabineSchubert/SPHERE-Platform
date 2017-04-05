@@ -10,7 +10,6 @@ namespace SPHERE\Application\Reporting\DataWareHouse;
 
 
 use SPHERE\Application\Reporting\DataWareHouse\Service\Data;
-use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_MarketingCode;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Setup;
 use SPHERE\System\Database\Binding\AbstractService;
 
@@ -32,14 +31,14 @@ class Service extends AbstractService
         return $Protocol;
     }
 
-	/**
-	 * @param $Id
-	 * @return null|TblReporting_MarketingCode
-	 */
-	public function getMarketingCodeById($Id)
-	{
-		return (new Data($this->getBinding()))->getMarketingCodeById($Id);
-	}
+//	/**
+//	 * @param $Id
+//	 * @return null|TblReporting_MarketingCode
+//	 */
+//	public function getMarketingCodeById($Id)
+//	{
+//		return (new Data($this->getBinding()))->getMarketingCodeById($Id);
+//	}
 
 //	public function getMarketingCodeById($Id)
 //	{
