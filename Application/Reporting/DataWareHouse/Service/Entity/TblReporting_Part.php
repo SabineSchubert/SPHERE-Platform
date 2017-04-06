@@ -8,6 +8,7 @@
 
 namespace SPHERE\Application\Reporting\DataWareHouse\Service\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Cache;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -22,7 +23,9 @@ use SPHERE\System\Database\Fitting\Element;
 class TblReporting_Part extends Element
 {
     const ATTR_NUMBER = 'Number';
+    const ATTR_NUMBER_DISPLAY = 'NumberDisplay';
     const ATTR_NAME = 'Name';
+    const ATTR_STATUS_ACTIVE = 'StatusActive';
 
     /**
      * @Column(type="string")
@@ -32,7 +35,21 @@ class TblReporting_Part extends Element
     /**
      * @Column(type="string")
      */
+    protected $NumberDisplay;
+
+    /**
+     * @Column(type="string")
+     */
     protected $Name;
+
+    /**
+     * @Column(type="boolean")
+     */
+    protected $StatusActive;
+
+    //Vorgänger
+    //Nachfolger
+    //Wahlweise
 
     /**
      * @return mixed
@@ -53,6 +70,22 @@ class TblReporting_Part extends Element
     /**
      * @return mixed
      */
+    public function getNumberDisplay()
+    {
+        return $this->NumberDisplay;
+    }
+
+    /**
+     * @param mixed $NumberDisplay
+     */
+    public function setNumberDisplay($NumberDisplay)
+    {
+        $this->NumberDisplay = $NumberDisplay;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getName()
     {
         return $this->Name;
@@ -65,6 +98,23 @@ class TblReporting_Part extends Element
     {
         $this->Name = $Name;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getStatusActive()
+    {
+        return $this->StatusActive;
+    }
+
+    /**
+     * @param mixed $StatusActive
+     */
+    public function setStatusActive($StatusActive)
+    {
+        $this->StatusActive = $StatusActive;
+    }
+
 
 
 }

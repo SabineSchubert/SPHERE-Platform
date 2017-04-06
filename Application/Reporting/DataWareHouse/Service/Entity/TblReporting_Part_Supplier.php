@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: schubert
- * Date: 03.04.2017
- * Time: 15:15
+ * Date: 05.04.2017
+ * Time: 11:42
  */
 
 namespace SPHERE\Application\Reporting\DataWareHouse\Service\Entity;
@@ -17,14 +17,11 @@ use SPHERE\System\Database\Fitting\Element;
 
 /**
  * @Entity
- * @Table(name="TblReporting_Part_MarketingCode")
+ * @Table(name="TblReporting_Part_Supplier")
  * @Cache(usage="READ_ONLY")
  */
-class TblReporting_Part_MarketingCode extends Element
+class TblReporting_Part_Supplier extends Element
 {
-    const TBL_REPORTING_PART = 'TblReporting_Part';
-    const TBL_REPORTING_MARKETING_CODE = 'TblReporting_MarketingCode';
-
     /**
      * @Column(type="bigint")
      */
@@ -33,7 +30,7 @@ class TblReporting_Part_MarketingCode extends Element
     /**
      * @Column(type="bigint")
      */
-    protected $TblReporting_MarketingCode;
+    protected $TblReporting_Supplier;
 
     /**
      * @return mixed
@@ -54,17 +51,18 @@ class TblReporting_Part_MarketingCode extends Element
     /**
      * @return mixed
      */
-    public function getTblReportingMarketingCode()
+    public function getTblReportingSupplier()
     {
-        return $this->TblReporting_MarketingCode;
+        return $this->TblReporting_Supplier;
     }
 
     /**
-     * @param mixed $TblReporting_MarketingCode
+     * @param mixed $TblReporting_Supplier
      */
-    public function setTblReportingMarketingCode($TblReporting_MarketingCode)
+    public function setTblReportingSupplier($TblReporting_Supplier)
     {
-        $this->TblReporting_MarketingCode = $TblReporting_MarketingCode;
+        $this->TblReporting_Supplier = $TblReporting_Supplier;
     }
+
 
 }

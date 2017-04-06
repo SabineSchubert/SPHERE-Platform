@@ -3,27 +3,27 @@
  * Created by PhpStorm.
  * User: schubert
  * Date: 03.04.2017
- * Time: 15:15
+ * Time: 15:11
  */
 
 namespace SPHERE\Application\Reporting\DataWareHouse\Service\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Cache;
+use Doctrine\ORM\Mapping\Entity;
 use SPHERE\System\Database\Fitting\Element;
 
 /**
  * @Entity
- * @Table(name="TblReporting_Part_MarketingCode")
+ * @Table(name="TblReporting_Part_Brand")
  * @Cache(usage="READ_ONLY")
  */
-class TblReporting_Part_MarketingCode extends Element
+class TblReporting_Part_Brand extends Element
 {
-    const TBL_REPORTING_PART = 'TblReporting_Part';
-    const TBL_REPORTING_MARKETING_CODE = 'TblReporting_MarketingCode';
+    const REPORTING_PART = 'TblReporting_Part';
+    const REPORTING_BRAND = 'TblReporting_Brand';
 
     /**
      * @Column(type="bigint")
@@ -33,7 +33,7 @@ class TblReporting_Part_MarketingCode extends Element
     /**
      * @Column(type="bigint")
      */
-    protected $TblReporting_MarketingCode;
+    protected $TblReporting_Brand;
 
     /**
      * @return mixed
@@ -54,17 +54,17 @@ class TblReporting_Part_MarketingCode extends Element
     /**
      * @return mixed
      */
-    public function getTblReportingMarketingCode()
+    public function getTblReportingBrand()
     {
-        return $this->TblReporting_MarketingCode;
+        return $this->TblReporting_Brand;
     }
 
     /**
-     * @param mixed $TblReporting_MarketingCode
+     * @param mixed $TblReporting_Brand
      */
-    public function setTblReportingMarketingCode($TblReporting_MarketingCode)
+    public function setTblReportingBrand($TblReporting_Brand)
     {
-        $this->TblReporting_MarketingCode = $TblReporting_MarketingCode;
+        $this->TblReporting_Brand = $TblReporting_Brand;
     }
 
 }

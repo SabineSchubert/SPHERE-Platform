@@ -9,9 +9,10 @@
 namespace SPHERE\Application\Reporting\DataWareHouse\Service;
 
 
-use SPHERE\Application\Reporting\DataWareHouse\Sales\Service\Entity\TblReporting_Sales;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Sales;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part;
 use SPHERE\System\Database\Binding\AbstractData;
+use SPHERE\System\Database\Fitting\Element;
 
 /**
  * Class Data
@@ -30,21 +31,26 @@ class Data extends AbstractData
 
     /**
      * @param TblReporting_Part $TblReporting_Part
-     * @return array|null|\SPHERE\System\Database\Fitting\Element[]
+     * @return array|null|Element[]
      */
-    public function getSalesByPartNumber( TblReporting_Part $TblReporting_Part ) {
-        return $this->getCachedEntityListBy( __METHOD__, $this->getEntityManager(), 'TblReporting_Sales', array(
-            TblReporting_Sales::ATTR_Part_Id => $TblReporting_Part->getId()
+    public function getSalesAll( TblReporting_Part $TblReporting_Part = null ) {
+        $TableSales = new TblReporting_Sales();
+        if( !$TblReporting_Part ) {
+            return $this->getCachedEntityList( __METHOD__, $this->getEntityManager(), $TableSales->getEntityShortName() );
+        }
+        return $this->getCachedEntityListBy( __METHOD__, $this->getEntityManager(), $TableSales->getEntityShortName(), array(
+            TblReporting_Sales::TBL_REPORTING_PART => $TblReporting_Part->getId()
         ) );
     }
 
     /**
-     * @param $Year
-     * @return \SPHERE\System\Database\Fitting\Element[]
+     * @param int $Year
+     * @return null|Element[]|TblReporting_Sales[]
      */
-    public function getSalesByYear( $Year ) {
-        return $this->getCachedEntityListBy( __METHOD__, $this->getEntityManager(), 'TblReporting_Sales', array(
-            TblReporting_Sales::ATTR_Year => $Year
+    public function getSalesAllByYear( $Year ) {
+        $TableSales = new TblReporting_Sales();
+        return $this->getCachedEntityListBy( __METHOD__, $this->getEntityManager(), $TableSales->getEntityShortName(), array(
+            TblReporting_Sales::ATTR_YEAR => (int)$Year
         ) );
     }
 }

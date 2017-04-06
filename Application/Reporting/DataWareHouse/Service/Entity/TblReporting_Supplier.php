@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: schubert
- * Date: 03.04.2017
- * Time: 08:49
+ * Date: 05.04.2017
+ * Time: 09:42
  */
 
 namespace SPHERE\Application\Reporting\DataWareHouse\Service\Entity;
@@ -17,10 +17,10 @@ use SPHERE\System\Database\Fitting\Element;
 
 /**
  * @Entity
- * @Table(name="TblReporting_ProductLevel")
+ * @Table(name="TblReporting_Supplier")
  * @Cache(usage="READ_ONLY")
  */
-class TblReporting_ProductLevel extends Element
+class TblReporting_Supplier extends Element
 {
     const ATTR_NUMBER = 'Number';
     const ATTR_NAME = 'Name';

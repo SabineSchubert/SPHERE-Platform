@@ -17,16 +17,16 @@ use SPHERE\System\Database\Fitting\Element;
 
 /**
  * @Entity
- * @Table(name="TblReporting_ProductManager_ProductGroup")
+ * @Table(name="TblReporting_MarketingCode_ProductGroup")
  * @Cache(usage="READ_ONLY")
  */
-class TblReporting_ProductManager_ProductGroup extends Element
+class TblReporting_MarketingCode_ProductGroup extends Element
 {
 
     /**
      * @Column(type="bigint")
      */
-    protected $TblReporting_ProductManager;
+    protected $TblReporting_MarketingCode;
 
     /**
      * @Column(type="bigint")
@@ -36,17 +36,17 @@ class TblReporting_ProductManager_ProductGroup extends Element
     /**
      * @return mixed
      */
-    public function getTblReportingProductManager()
+    public function getTblReportingMarketingCode()
     {
-        return $this->TblReporting_ProductManager;
+        return $this->TblReporting_MarketingCode;
     }
 
     /**
-     * @param mixed $TblReporting_ProductManager
+     * @param mixed $TblReporting_MarketingCode
      */
-    public function setTblReportingProductManager($TblReporting_ProductManager)
+    public function setTblReportingMarketingCode($TblReporting_MarketingCode)
     {
-        $this->TblReporting_ProductManager = $TblReporting_ProductManager;
+        $this->TblReporting_MarketingCode = $TblReporting_MarketingCode;
     }
 
     /**
@@ -64,4 +64,5 @@ class TblReporting_ProductManager_ProductGroup extends Element
     {
         $this->TblReporting_ProductGroup = $TblReporting_ProductGroup;
     }
+
 }
