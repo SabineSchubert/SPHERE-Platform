@@ -58,6 +58,7 @@ class Script extends Extension
             $this->setLibrary((new ScriptLibrary('jQuery.iCheck', '1.0.2'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('jQuery.deparam', '1.3pre'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('jQuery.DetectElementResize', '0.5.3'))->getLibrary());
+            $this->setLibrary((new ScriptLibrary('jQuery.Select2', '4.0.3'))->getLibrary());
 
             $this->setLibrary((new ScriptLibrary('Bootstrap', '3.3.5'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Tether', '1.4.0'))->getLibrary());
@@ -79,6 +80,7 @@ class Script extends Extension
 
             $this->setLibrary((new ScriptLibrary('Raphael.js', '2.2.0'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Morris.js', '0.5.1'))->getLibrary());
+            $this->setLibrary((new ScriptLibrary('Chart.js', '2.5.0'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Baron.js', '2.2.9'))->getLibrary());
 
         } catch (\Exception $Exception) {
@@ -158,6 +160,13 @@ class Script extends Extension
         $this->setModule(
             'ModSlick', array(
                 'Slick',
+                'jQuery'
+            )
+        );
+
+        $this->setModule(
+            'ModSelect2', array(
+                'jQuery.Select2',
                 'jQuery'
             )
         );
@@ -288,6 +297,12 @@ class Script extends Extension
                 'jQuery'
             )
         );
+        $this->setModule(
+            'ModChartJs', array(
+                'Chart.js',
+                'jQuery'
+            )
+        );
     }
 
     /**
@@ -310,7 +325,7 @@ class Script extends Extension
         if (!in_array($Alias, self::$SourceList)) {
             $RealPath = FileSystem::getFileLoader($Location)->getRealPath();
             if (!empty($RealPath)) {
-                $cTag = '?cTAG-' . md5_file($RealPath);
+                $cTag = '?cTAG-' . hash_file('crc32',$RealPath);
             } else {
                 $cTag = '?cTAG-' . 'MISS-' . time();
             }
@@ -328,7 +343,7 @@ class Script extends Extension
         if (!in_array($Alias, self::$ModuleList)) {
             $RealPath = FileSystem::getFileLoader('/Common/Script/' . $Alias . '.js')->getRealPath();
             if (!empty($RealPath)) {
-                $cTag = '?cTAG-' . md5_file($RealPath);
+                $cTag = '?cTAG-' . hash_file('crc32',$RealPath);
             } else {
                 $cTag = '?cTAG-' . 'MISS-' . time();
             }

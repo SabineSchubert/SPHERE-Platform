@@ -14,13 +14,11 @@ use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Access;
 use SPHERE\Application\Platform\Gatekeeper\Consumer\Consumer;
 use SPHERE\Application\Platform\Platform;
 use SPHERE\Application\Platform\System;
-use SPHERE\Application\PriceList\PriceList;
+use SPHERE\Application\Product\Product;
 use SPHERE\Application\Reporting\Reporting;
-use SPHERE\Application\RROP\RROP;
 use SPHERE\Application\Statistic\Statistic;
 use SPHERE\Application\Training\Training;
 use SPHERE\Common\Frontend\Icon\Repository\HazardSign;
-use SPHERE\Common\Frontend\Icon\Repository\Home;
 use SPHERE\Common\Frontend\Icon\Repository\Hospital;
 use SPHERE\Common\Frontend\Icon\Repository\Info;
 use SPHERE\Common\Frontend\Icon\Repository\Shield;
@@ -339,7 +337,6 @@ class Main extends Extension
     public static function registerGuiPlatform()
     {
 
-
         Main::getDisplay()
             ->addFooterNavigation(new External(
                     'Anbieter',
@@ -365,13 +362,13 @@ class Main extends Extension
                     'http://www.daimler.com/'
                     , null, array(), false, External::STYLE_LINK)
             );
-//        RROP::registerCluster();
+
+        Product::registerCluster();
+        Statistic::registerCluster();
+        Training::registerCluster();
+        Eila::registerCluster();
+        OtherApplication::registerCluster();
         Reporting::registerCluster();
         Competition::registerCluster();
-//        PriceList::registerCluster();
-//        Statistic::registerCluster();
-//        Training::registerCluster();
-//        Eila::registerCluster();
-//        OtherApplication::registerCluster();
     }
 }

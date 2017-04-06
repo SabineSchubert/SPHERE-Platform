@@ -7,7 +7,7 @@ use SPHERE\Common\Frontend\Table\Repository\Title;
 use SPHERE\System\Extension\Extension;
 
 /**
- * Class Table
+ * Class TableContainer
  *
  * @package SPHERE\Common\Frontend\Table\Structure
  */

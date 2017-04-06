@@ -20,6 +20,8 @@ abstract class AbstractSetup
     const FIELD_TYPE_INTEGER = 'integer';
     const FIELD_TYPE_BOOLEAN = 'boolean';
     const FIELD_TYPE_DATETIME = 'datetime';
+    const FIELD_TYPE_BINARY = 'blob';
+    const FIELD_TYPE_FLOAT = 'float';
 
     /** @var null|Structure $Connection */
     private $Connection = null;

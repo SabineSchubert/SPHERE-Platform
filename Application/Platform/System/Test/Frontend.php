@@ -10,16 +10,17 @@ use SPHERE\Common\Frontend\Ajax\Receiver\BlockReceiver;
 use SPHERE\Common\Frontend\Ajax\Receiver\FieldValueReceiver;
 use SPHERE\Common\Frontend\Ajax\Receiver\InlineReceiver;
 use SPHERE\Common\Frontend\Ajax\Receiver\ModalReceiver;
+use SPHERE\Common\Frontend\Chart\Repository\BarChart;
 use SPHERE\Common\Frontend\Chart\Repository\LineChart;
 use SPHERE\Common\Frontend\Form\Repository\Button\Danger;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Button\Reset;
+use SPHERE\Common\Frontend\Form\Repository\Button\Standard as BtnStandard;
 use SPHERE\Common\Frontend\Form\Repository\Button\Success;
 use SPHERE\Common\Frontend\Form\Repository\Field\AutoCompleter;
 use SPHERE\Common\Frontend\Form\Repository\Field\CheckBox;
 use SPHERE\Common\Frontend\Form\Repository\Field\DatePicker;
 use SPHERE\Common\Frontend\Form\Repository\Field\FileUpload;
-use SPHERE\Common\Frontend\Form\Repository\Field\HiddenField;
 use SPHERE\Common\Frontend\Form\Repository\Field\NumberField;
 use SPHERE\Common\Frontend\Form\Repository\Field\PasswordField;
 use SPHERE\Common\Frontend\Form\Repository\Field\RadioBox;
@@ -72,6 +73,7 @@ class Frontend extends Extension implements IFrontendInterface
 
     /**
      * @return Stage
+     * @throws \MOC\V\Core\FileSystem\Exception\FileSystemException
      */
     public function frontendPlatform()
     {
@@ -142,9 +144,6 @@ class Frontend extends Extension implements IFrontendInterface
                     )),
                     new FormRow(array(
                         new FormColumn(
-                            new HiddenField('HiddenField', 'HiddenField', 'HiddenField')
-                            , 3),
-                        new FormColumn(
                             new NumberField('NumberField', 'NumberField', 'NumberField')
                             , 3),
                         new FormColumn(
@@ -158,12 +157,12 @@ class Frontend extends Extension implements IFrontendInterface
                     )),
                     new FormRow(array(
                         new FormColumn(array(
-                            new SelectBox('SelectBox1', 'SelectBox',
+                            new SelectBox('SelectBox1', 'SelectBox - Bootstrap Default',
                                 array('0' => 'A', '2' => '1', '3' => '2', '4' => '3')
                             ),
-                            new SelectBox('SelectBox2', 'SelectBox',
+                            (new SelectBox('SelectBox2', 'SelectBox - jQuery Select2',
                                 array('{{ Id }}{{ Name }}{{ Name }} {{ Id }}{{ Name }}{{ Name }}' => $Check)
-                            ),
+                            ))->configureLibrary( SelectBox::LIBRARY_SELECT2 ),
                         ), 3),
                         new FormColumn(
                             new TextArea('TextArea', 'TextArea', 'TextArea')
@@ -188,7 +187,8 @@ class Frontend extends Extension implements IFrontendInterface
                     new Primary('Primary'),
                     new Danger('Danger'),
                     new Success('Success'),
-                    new Reset('Reset')
+                    new Reset('Reset'),
+                    new BtnStandard('Standard')
                 )
             ))->setConfirm('Wirklich?')
             . new Layout(array(
@@ -213,7 +213,8 @@ class Frontend extends Extension implements IFrontendInterface
                         ), 3),
                         new LayoutColumn(array(
                             new Listing(array('Listing', 'Listing 2')),
-                            new LineChart()
+                            new LineChart(),
+                            new BarChart()
                         ), 3),
                         new LayoutColumn(array(
                             new Panel('Panel', array('Content 1', 'Content 2', 'Content 3'),
@@ -301,6 +302,9 @@ class Frontend extends Extension implements IFrontendInterface
         return $Stage;
     }
 
+    /**
+     * @return Stage
+     */
     public function frontendSandbox()
     {
 //        $this->getCache(new TwigHandler())->clearCache();

@@ -4,7 +4,7 @@ namespace SPHERE\Common\Frontend\Table\Structure;
 use SPHERE\Common\Frontend\Table\Repository\Title;
 
 /**
- * Class TableData
+ * Class Table
  *
  * @package SPHERE\Common\Frontend\Table\Structure
  */

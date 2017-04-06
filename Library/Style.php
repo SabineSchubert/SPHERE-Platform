@@ -123,6 +123,14 @@ class Style
         $this->addLibrary(new Library('Highlight.js-Darcula', '9.10.0',
             $Location . '/Highlight.js/9.10.0/styles/darcula.css'
         ));
+
+        $this->addLibrary(new Library('jQuery.Select2', '4.0.3',
+            $Location . '/jQuery.Select2/4.0.3/dist/css/select2.min.css'
+        ));
+        $this->addLibrary(new Library('jQuery.Select2.Theme', '0.1.0.9',
+            $Location . '/jQuery.Select2.Theme/0.1.0.9/dist/select2-bootstrap.min.css'
+        ));
+
     }
 
     /**
