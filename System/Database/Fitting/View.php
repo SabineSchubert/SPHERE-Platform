@@ -195,7 +195,8 @@ class View
     private function convertWordCase($TableName)
     {
 
-        return preg_replace('!^Tbl!', 'tbl', $TableName);
+        return $TableName;
+        // TODO: Bypass: return preg_replace('!^Tbl!', 'tbl', $TableName);
     }
 
     /**
