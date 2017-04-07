@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Cache;
+use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\System\Database\Fitting\Element;
 
 /**
@@ -58,87 +59,87 @@ class TblReporting_Price extends Element
     protected $ValidFrom;
 
     /**
-     * @return mixed
+     * @return null|TblReporting_Part
      */
     public function getTblReportingPart()
     {
-        return $this->TblReporting_Part;
+        return ( $this->TblReporting_Part ? DataWareHouse::useService()->getPartById( $this->TblReporting_Part ) : null );
     }
 
     /**
-     * @param mixed $TblReporting_Part
+     * @param null|TblReporting_Part $TblReporting_Part
      */
-    public function setTblReportingPart($TblReporting_Part)
+    public function setTblReportingPart(TblReporting_Part $TblReporting_Part)
     {
-        $this->TblReporting_Part = $TblReporting_Part;
+        $this->TblReporting_Part = ( $TblReporting_Part ? $TblReporting_Part->getId() : null );
     }
 
     /**
-     * @return mixed
+     * @return null|TblReporting_DiscountGroup
      */
     public function getTblReportingDiscountGroup()
     {
-        return $this->TblReporting_DiscountGroup;
+        return ( $this->TblReporting_DiscountGroup ? DataWareHouse::useService()->getDiscountGroupById( $this->TblReporting_DiscountGroup ) : null );
     }
 
     /**
-     * @param mixed $TblReporting_DiscountGroup
+     * @param null|TblReporting_DiscountGroup $TblReporting_DiscountGroup
      */
-    public function setTblReportingDiscountGroup($TblReporting_DiscountGroup)
+    public function setTblReportingDiscountGroup(TblReporting_DiscountGroup $TblReporting_DiscountGroup)
     {
-        $this->TblReporting_DiscountGroup = $TblReporting_DiscountGroup;
+        $this->TblReporting_DiscountGroup = ( $TblReporting_DiscountGroup ? $TblReporting_DiscountGroup->getId() : null );
     }
 
     /**
-     * @return mixed
+     * @return float
      */
     public function getPriceGross()
     {
-        return $this->PriceGross;
+        return (float)$this->PriceGross;
     }
 
     /**
-     * @param mixed $PriceGross
+     * @param float $PriceGross
      */
     public function setPriceGross($PriceGross)
     {
-        $this->PriceGross = $PriceGross;
+        $this->PriceGross = (float)$PriceGross;
     }
 
     /**
-     * @return mixed
+     * @return float
      */
     public function getBackValue()
     {
-        return $this->BackValue;
+        return (float)$this->BackValue;
     }
 
     /**
-     * @param mixed $BackValue
+     * @param float $BackValue
      */
     public function setBackValue($BackValue)
     {
-        $this->BackValue = $BackValue;
+        $this->BackValue = (float)$BackValue;
     }
 
     /**
-     * @return mixed
+     * @return float
      */
     public function getCostsVariable()
     {
-        return $this->CostsVariable;
+        return (float)$this->CostsVariable;
     }
 
     /**
-     * @param mixed $CostsVariable
+     * @param float $CostsVariable
      */
     public function setCostsVariable($CostsVariable)
     {
-        $this->CostsVariable = $CostsVariable;
+        $this->CostsVariable = (float)$CostsVariable;
     }
 
     /**
-     * @return mixed
+     * @return \DateTime
      */
     public function getValidFrom()
     {
@@ -146,7 +147,7 @@ class TblReporting_Price extends Element
     }
 
     /**
-     * @param mixed $ValidFrom
+     * @param \DateTime $ValidFrom
      */
     public function setValidFrom($ValidFrom)
     {

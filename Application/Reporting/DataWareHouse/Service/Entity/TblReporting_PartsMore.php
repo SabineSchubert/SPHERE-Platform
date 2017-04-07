@@ -60,7 +60,7 @@ class TblReporting_PartsMore extends Element
     protected $ValidTo;
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getName()
     {
@@ -68,7 +68,7 @@ class TblReporting_PartsMore extends Element
     }
 
     /**
-     * @param mixed $Name
+     * @param string $Name
      */
     public function setName($Name)
     {
@@ -76,7 +76,7 @@ class TblReporting_PartsMore extends Element
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getDescription()
     {
@@ -84,7 +84,7 @@ class TblReporting_PartsMore extends Element
     }
 
     /**
-     * @param mixed $Description
+     * @param string $Description
      */
     public function setDescription($Description)
     {
@@ -92,7 +92,7 @@ class TblReporting_PartsMore extends Element
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getType()
     {
@@ -100,7 +100,7 @@ class TblReporting_PartsMore extends Element
     }
 
     /**
-     * @param mixed $Type
+     * @param string $Type
      */
     public function setType($Type)
     {
@@ -108,7 +108,7 @@ class TblReporting_PartsMore extends Element
     }
 
     /**
-     * @return mixed
+     * @return float
      */
     public function getValue()
     {
@@ -116,7 +116,7 @@ class TblReporting_PartsMore extends Element
     }
 
     /**
-     * @param mixed $Value
+     * @param float $Value
      */
     public function setValue($Value)
     {
@@ -124,7 +124,7 @@ class TblReporting_PartsMore extends Element
     }
 
     /**
-     * @return mixed
+     * @return \DateTime
      */
     public function getValidFrom()
     {
@@ -132,7 +132,7 @@ class TblReporting_PartsMore extends Element
     }
 
     /**
-     * @param mixed $ValidFrom
+     * @param \DateTime $ValidFrom
      */
     public function setValidFrom($ValidFrom)
     {
@@ -140,7 +140,7 @@ class TblReporting_PartsMore extends Element
     }
 
     /**
-     * @return mixed
+     * @return \DateTime
      */
     public function getValidTo()
     {
@@ -148,7 +148,7 @@ class TblReporting_PartsMore extends Element
     }
 
     /**
-     * @param mixed $ValidTo
+     * @param \DateTime $ValidTo
      */
     public function setValidTo($ValidTo)
     {

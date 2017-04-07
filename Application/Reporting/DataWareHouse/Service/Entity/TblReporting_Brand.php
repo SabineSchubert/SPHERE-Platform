@@ -35,7 +35,7 @@ class TblReporting_Brand extends Element
     protected $Name;
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getAlias()
     {
@@ -43,7 +43,7 @@ class TblReporting_Brand extends Element
     }
 
     /**
-     * @param mixed $Alias
+     * @param string $Alias
      */
     public function setAlias($Alias)
     {
@@ -51,7 +51,7 @@ class TblReporting_Brand extends Element
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getName()
     {
@@ -59,7 +59,7 @@ class TblReporting_Brand extends Element
     }
 
     /**
-     * @param mixed $Name
+     * @param string $Name
      */
     public function setName($Name)
     {

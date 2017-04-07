@@ -36,7 +36,7 @@ class TblReporting_ProductLevel extends Element
     protected $Name;
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getNumber()
     {
@@ -44,7 +44,7 @@ class TblReporting_ProductLevel extends Element
     }
 
     /**
-     * @param mixed $Number
+     * @param mixed $string
      */
     public function setNumber($Number)
     {
@@ -52,7 +52,7 @@ class TblReporting_ProductLevel extends Element
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getName()
     {
@@ -60,7 +60,7 @@ class TblReporting_ProductLevel extends Element
     }
 
     /**
-     * @param mixed $Name
+     * @param mixed $string
      */
     public function setName($Name)
     {

@@ -36,7 +36,7 @@ class TblReporting_DiscountGroup extends Element
     protected $Discount;
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getNumber()
     {
@@ -44,7 +44,7 @@ class TblReporting_DiscountGroup extends Element
     }
 
     /**
-     * @param mixed $Number
+     * @param string $Number
      */
     public function setNumber($Number)
     {
@@ -52,7 +52,7 @@ class TblReporting_DiscountGroup extends Element
     }
 
     /**
-     * @return mixed
+     * @return float
      */
     public function getDiscount()
     {
@@ -60,7 +60,7 @@ class TblReporting_DiscountGroup extends Element
     }
 
     /**
-     * @param mixed $Discount
+     * @param float $Discount
      */
     public function setDiscount($Discount)
     {

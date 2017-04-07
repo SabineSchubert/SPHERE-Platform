@@ -37,7 +37,7 @@ class TblReporting_ProductManager extends Element
     protected $Department;
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getName()
     {
@@ -45,7 +45,7 @@ class TblReporting_ProductManager extends Element
     }
 
     /**
-     * @param mixed $Name
+     * @param string $Name
      */
     public function setName($Name)
     {
@@ -53,7 +53,7 @@ class TblReporting_ProductManager extends Element
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getDepartment()
     {
@@ -61,7 +61,7 @@ class TblReporting_ProductManager extends Element
     }
 
     /**
-     * @param mixed $Department
+     * @param string $Department
      */
     public function setDepartment($Department)
     {

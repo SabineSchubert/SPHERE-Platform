@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Cache;
+use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\System\Database\Fitting\Element;
 
 /**
@@ -22,6 +23,9 @@ use SPHERE\System\Database\Fitting\Element;
  */
 class TblReporting_Part_Supplier extends Element
 {
+    const TBL_REPORTING_PART = 'TblReporting_Part';
+    const TBL_REPORTING_SUPPLIER = 'TblReporting_Supplier';
+
     /**
      * @Column(type="bigint")
      */
@@ -33,35 +37,35 @@ class TblReporting_Part_Supplier extends Element
     protected $TblReporting_Supplier;
 
     /**
-     * @return mixed
+     * @return null|TblReporting_Part
      */
     public function getTblReportingPart()
     {
-        return $this->TblReporting_Part;
+        return ( $this->TblReporting_Part ? DataWareHouse::useService()->getPartById( $this->TblReporting_Part ) : null );
     }
 
     /**
-     * @param mixed $TblReporting_Part
+     * @param null|TblReporting_Part $TblReporting_Part
      */
-    public function setTblReportingPart($TblReporting_Part)
+    public function setTblReportingPart(TblReporting_Part $TblReporting_Part)
     {
-        $this->TblReporting_Part = $TblReporting_Part;
+        $this->TblReporting_Part = ( $TblReporting_Part ? $TblReporting_Part : null );
     }
 
     /**
-     * @return mixed
+     * @return null|TblReporting_Supplier
      */
     public function getTblReportingSupplier()
     {
-        return $this->TblReporting_Supplier;
+        return ( $this->TblReporting_Supplier ? DataWareHouse::useService()->getSupplierById( $this->TblReporting_Supplier ) : null );
     }
 
     /**
-     * @param mixed $TblReporting_Supplier
+     * @param null|TblReporting_Supplier $TblReporting_Supplier
      */
-    public function setTblReportingSupplier($TblReporting_Supplier)
+    public function setTblReportingSupplier(TblReporting_Supplier $TblReporting_Supplier)
     {
-        $this->TblReporting_Supplier = $TblReporting_Supplier;
+        $this->TblReporting_Supplier = ( $TblReporting_Supplier ? $TblReporting_Supplier->getId() : null );
     }
 
 

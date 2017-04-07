@@ -40,7 +40,7 @@ class TblReporting_Section extends Element
     protected $Name;
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getAlias()
     {
@@ -48,7 +48,7 @@ class TblReporting_Section extends Element
     }
 
     /**
-     * @param mixed $Alias
+     * @param string $Alias
      */
     public function setAlias($Alias)
     {
@@ -56,7 +56,7 @@ class TblReporting_Section extends Element
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getNumber()
     {
@@ -64,7 +64,7 @@ class TblReporting_Section extends Element
     }
 
     /**
-     * @param mixed $Number
+     * @param string $Number
      */
     public function setNumber($Number)
     {
@@ -72,7 +72,7 @@ class TblReporting_Section extends Element
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getName()
     {
@@ -80,7 +80,7 @@ class TblReporting_Section extends Element
     }
 
     /**
-     * @param mixed $Name
+     * @param string $Name
      */
     public function setName($Name)
     {

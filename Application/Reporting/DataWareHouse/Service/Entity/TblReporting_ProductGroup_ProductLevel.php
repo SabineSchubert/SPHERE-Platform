@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Cache;
+use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\System\Database\Fitting\Element;
 
 /**
@@ -22,6 +23,9 @@ use SPHERE\System\Database\Fitting\Element;
  */
 class TblReporting_ProductGroup_ProductLevel extends Element
 {
+    const TBL_REPORTING_PRODUCT_GROUP = 'TblReporting_ProductGroup';
+    const TBL_REPORTING_PRODUCT_LEVEL = 'TblReporting_ProductLevel';
+
     /**
      * @Column(type="bigint")
      */
@@ -33,35 +37,35 @@ class TblReporting_ProductGroup_ProductLevel extends Element
     protected $TblReporting_ProductLevel;
 
     /**
-     * @return mixed
+     * @return null|TblReporting_ProductGroup
      */
     public function getTblReportingProductGroup()
     {
-        return $this->TblReporting_ProductGroup;
+        return ( $this->TblReporting_ProductGroup ? DataWareHouse::useService()->getProductGroupById( $this->TblReporting_ProductGroup ) : null );
     }
 
     /**
-     * @param mixed $TblReporting_ProductGroup
+     * @param null|TblReporting_ProductGroup $TblReporting_ProductGroup
      */
     public function setTblReportingProductGroup($TblReporting_ProductGroup)
     {
-        $this->TblReporting_ProductGroup = $TblReporting_ProductGroup;
+        $this->TblReporting_ProductGroup = ( $TblReporting_ProductGroup ? $TblReporting_ProductGroup->getId() : null );
     }
 
     /**
-     * @return mixed
+     * @return null|TblReporting_ProductLevel
      */
     public function getTblReportingProductLevel()
     {
-        return $this->TblReporting_ProductLevel;
+        return ( $this->TblReporting_ProductLevel ? DataWareHouse::useService()->getProductLevelById( $this->TblReporting_ProductLevel ) : null );
     }
 
     /**
-     * @param mixed $TblReporting_ProductLevel
+     * @param null|TblReporting_ProductLevel $TblReporting_ProductLevel
      */
     public function setTblReportingProductLevel($TblReporting_ProductLevel)
     {
-        $this->TblReporting_ProductLevel = $TblReporting_ProductLevel;
+        $this->TblReporting_ProductLevel = ( $TblReporting_ProductLevel ? $TblReporting_ProductLevel->getId() : null );
     }
 
 }

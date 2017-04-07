@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Cache;
+use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\System\Database\Fitting\Element;
 
 /**
@@ -22,6 +23,9 @@ use SPHERE\System\Database\Fitting\Element;
  */
 class TblReporting_MarketingCode_PartsMore extends Element
 {
+    const TBL_REPORTING_MARKETING_CODE = 'TblReporting_MarketingCode';
+    const TBL_REPORTING_PARTS_MORE = 'TblReporting_PartsMore';
+
     /**
      * @Column(type="bigint")
      */
@@ -33,35 +37,35 @@ class TblReporting_MarketingCode_PartsMore extends Element
     protected $TblReporting_PartsMore;
 
     /**
-     * @return mixed
+     * @return null|TblReporting_MarketingCode
      */
     public function getTblReportingMarketingCode()
     {
-        return $this->TblReporting_MarketingCode;
+        return ( $this->TblReporting_MarketingCode ? DataWareHouse::useService()->getMarketingCodeById( $this->TblReporting_MarketingCode ) : null );
     }
 
     /**
-     * @param mixed $TblReporting_MarketingCode
+     * @param null|TblReporting_MarketingCode $TblReporting_MarketingCode
      */
-    public function setTblReportingMarketingCode($TblReporting_MarketingCode)
+    public function setTblReportingMarketingCode(TblReporting_MarketingCode $TblReporting_MarketingCode)
     {
-        $this->TblReporting_MarketingCode = $TblReporting_MarketingCode;
+        $this->TblReporting_MarketingCode = ( $TblReporting_MarketingCode ? $TblReporting_MarketingCode->getId() : null );
     }
 
     /**
-     * @return mixed
+     * @return null|TblReporting_PartsMore
      */
     public function getTblReportingPartsMore()
     {
-        return $this->TblReporting_PartsMore;
+        return ( $this->TblReporting_PartsMore ? DataWareHouse::useService()->getPartsMoreById( $this->TblReporting_PartsMore ) : null ) ;
     }
 
     /**
-     * @param mixed $TblReporting_PartsMore
+     * @param null|TblReporting_PartsMore $TblReporting_PartsMore
      */
-    public function setTblReportingPartsMore($TblReporting_PartsMore)
+    public function setTblReportingPartsMore(TblReporting_PartsMore $TblReporting_PartsMore)
     {
-        $this->TblReporting_PartsMore = $TblReporting_PartsMore;
+        $this->TblReporting_PartsMore = ( $TblReporting_PartsMore ? $TblReporting_PartsMore : null );
     }
 
 

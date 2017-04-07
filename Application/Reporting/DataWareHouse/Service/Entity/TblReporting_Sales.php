@@ -93,35 +93,35 @@ class TblReporting_Sales extends Element
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getYear()
     {
-        return $this->Year;
+        return (int)$this->Year;
     }
 
     /**
-     * @param mixed $Year
+     * @param int $Year
      */
     public function setYear($Year)
     {
-        $this->Year = $Year;
+        $this->Year = (int)$Year;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getQuantity()
     {
-        return $this->Quantity;
+        return (int)$this->Quantity;
     }
 
     /**
-     * @param mixed $Quantity
+     * @param int $Quantity
      */
     public function setQuantity($Quantity)
     {
-        $this->Quantity = $Quantity;
+        $this->Quantity = (int)$Quantity;
     }
 
     /**
@@ -141,7 +141,7 @@ class TblReporting_Sales extends Element
     }
 
     /**
-     * @return mixed
+     * @return float
      */
     public function getSalesNet()
     {
@@ -149,11 +149,11 @@ class TblReporting_Sales extends Element
     }
 
     /**
-     * @param mixed $SalesNet
+     * @param float $SalesNet
      */
     public function setSalesNet($SalesNet)
     {
-        $this->SalesNet = $SalesNet;
+        $this->SalesNet = round((float)$SalesNet, 4);
     }
 
 

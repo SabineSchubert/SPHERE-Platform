@@ -35,7 +35,7 @@ class TblReporting_AssortmentGroup extends Element
     protected $Name;
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getNumber()
     {
@@ -43,7 +43,7 @@ class TblReporting_AssortmentGroup extends Element
     }
 
     /**
-     * @param mixed $Number
+     * @param string $Number
      */
     public function setNumber($Number)
     {
@@ -51,7 +51,7 @@ class TblReporting_AssortmentGroup extends Element
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getName()
     {
@@ -59,7 +59,7 @@ class TblReporting_AssortmentGroup extends Element
     }
 
     /**
-     * @param mixed $Name
+     * @param string $Name
      */
     public function setName($Name)
     {

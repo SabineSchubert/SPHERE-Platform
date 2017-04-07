@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Cache;
+use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\System\Database\Fitting\Element;
 
 /**
@@ -21,6 +22,9 @@ use SPHERE\System\Database\Fitting\Element;
  */
 class TblReporting_Part_AssortmentGroup extends Element
 {
+    const TBL_REPORTING_PART = 'TblReporting_Part';
+    const TBL_REPORTING_ASSORTMENT_GROUP = 'TblReporting_AssortmentGroup';
+
     /**
      * @Column(type="bigint")
      */
@@ -32,34 +36,34 @@ class TblReporting_Part_AssortmentGroup extends Element
     protected $TblReporting_AssortmentGroup;
 
     /**
-     * @return mixed
+     * @return null|TblReporting_Part
      */
     public function getTblReportingPart()
     {
-        return $this->TblReporting_Part;
+        return ( $this->TblReporting_Part ? DataWareHouse::useService()->getPartById( $this->TblReporting_Part ) : null );
     }
 
     /**
-     * @param mixed $TblReporting_Part
+     * @param null|TblReporting_Part $TblReporting_Part
      */
-    public function setTblReportingPart($TblReporting_Part)
+    public function setTblReportingPart(TblReporting_Part $TblReporting_Part)
     {
-        $this->TblReporting_Part = $TblReporting_Part;
+        $this->TblReporting_Part = ($TblReporting_Part ? $TblReporting_Part->getId() : null );
     }
 
     /**
-     * @return mixed
+     * @return null|TblReporting_AssortmentGroup
      */
     public function getTblReportingAssortmentGroup()
     {
-        return $this->TblReporting_AssortmentGroup;
+        return ( $this->TblReporting_AssortmentGroup ? DataWareHouse::useService()->getPartById( $this->TblReporting_AssortmentGroup ) : null );
     }
 
     /**
-     * @param mixed $TblReporting_AssortmentGroup
+     * @param null|TblReporting_AssortmentGroup $TblReporting_AssortmentGroup
      */
-    public function setTblReportingAssortmentGroup($TblReporting_AssortmentGroup)
+    public function setTblReportingAssortmentGroup(TblReporting_AssortmentGroup $TblReporting_AssortmentGroup)
     {
-        $this->TblReporting_AssortmentGroup = $TblReporting_AssortmentGroup;
+        $this->TblReporting_AssortmentGroup = ( $TblReporting_AssortmentGroup ? $TblReporting_AssortmentGroup->getId() : null );
     }
 }

@@ -43,6 +43,11 @@ class TblReporting_Part extends Element
     protected $Name;
 
     /**
+     * @Column(type="string")
+     */
+    protected $SparePartDesign;
+
+    /**
      * @Column(type="boolean")
      */
     protected $StatusActive;
@@ -52,7 +57,7 @@ class TblReporting_Part extends Element
     //Wahlweise
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getNumber()
     {
@@ -60,7 +65,7 @@ class TblReporting_Part extends Element
     }
 
     /**
-     * @param mixed $Number
+     * @param string $Number
      */
     public function setNumber($Number)
     {
@@ -68,7 +73,7 @@ class TblReporting_Part extends Element
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getNumberDisplay()
     {
@@ -76,7 +81,7 @@ class TblReporting_Part extends Element
     }
 
     /**
-     * @param mixed $NumberDisplay
+     * @param string $NumberDisplay
      */
     public function setNumberDisplay($NumberDisplay)
     {
@@ -84,7 +89,7 @@ class TblReporting_Part extends Element
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getName()
     {
@@ -92,7 +97,7 @@ class TblReporting_Part extends Element
     }
 
     /**
-     * @param mixed $Name
+     * @param string $Name
      */
     public function setName($Name)
     {
@@ -100,7 +105,23 @@ class TblReporting_Part extends Element
     }
 
     /**
-     * @return mixed
+     * @return string
+     */
+    public function getSparePartDesign()
+    {
+        return $this->SparePartDesign;
+    }
+
+    /**
+     * @param string $SparePartDesign
+     */
+    public function setSparePartDesign($SparePartDesign)
+    {
+        $this->SparePartDesign = $SparePartDesign;
+    }
+
+    /**
+     * @return boolean
      */
     public function getStatusActive()
     {
@@ -108,7 +129,7 @@ class TblReporting_Part extends Element
     }
 
     /**
-     * @param mixed $StatusActive
+     * @param boolean $StatusActive
      */
     public function setStatusActive($StatusActive)
     {

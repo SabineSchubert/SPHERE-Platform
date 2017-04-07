@@ -152,6 +152,10 @@ class Setup extends AbstractSetup
         return $this->saveSchema($Schema, $Simulate);
     }
 
+    /**
+     * @param Schema $Schema
+     * @return Table
+     */
     private function setTableProductManager( Schema &$Schema ) {
         $TableProductManager = new TblReporting_ProductManager();
         $Table = $this->createTable( $Schema, $TableProductManager->getEntityShortName() );
@@ -160,6 +164,10 @@ class Setup extends AbstractSetup
         return $Table;
     }
 
+    /**
+     * @param Schema $Schema
+     * @return Table
+     */
     private function setTableProductManagerGroup( Schema &$Schema ) {
         $TableProductManagerGroup = new TblReporting_ProductManagerGroup();
         $Table = $this->createTable( $Schema, $TableProductManagerGroup->getEntityShortName() );
@@ -168,7 +176,10 @@ class Setup extends AbstractSetup
         return $Table;
     }
 
-    //ToDO: Produktebene ProductLevel Beziehung
+    /**
+     * @param Schema $Schema
+     * @return Table
+     */
     private function setTableProductLevel( Schema &$Schema ) {
         $TableProductLevel = new TblReporting_ProductLevel();
         $Table = $this->createTable( $Schema, $TableProductLevel->getEntityShortName() );
@@ -177,6 +188,12 @@ class Setup extends AbstractSetup
         return $Table;
     }
 
+    /**
+     * @param Schema $Schema
+     * @param Table $TableProductGroup
+     * @param Table $TableProductLevel
+     * @return Table
+     */
     private function setTableProductGroupProductLevel( Schema &$Schema, Table $TableProductGroup, Table $TableProductLevel ) {
         $TableProductGroupProductLevel = new TblReporting_ProductGroup_ProductLevel();
         $Table = $this->createTable( $Schema, $TableProductGroupProductLevel->getEntityShortName() );
@@ -185,6 +202,12 @@ class Setup extends AbstractSetup
         return $Table;
     }
 
+    /**
+     * @param Schema $Schema
+     * @param Table $TableProductManager
+     * @param Table $TableProductManagerGroup
+     * @return Table
+     */
     private function setTableProductManagerProductManagerGroup( Schema &$Schema, Table $TableProductManager, Table $TableProductManagerGroup ) {
         $TableProductManagerProductManagerGroup = new TblReporting_ProductManager_ProductManagerGroup();
         $Table = $this->createTable( $Schema, $TableProductManagerProductManagerGroup->getEntityShortName() );
@@ -193,6 +216,10 @@ class Setup extends AbstractSetup
         return $Table;
     }
 
+    /**
+     * @param Schema $Schema
+     * @return Table
+     */
     private function setTableMarketingCode( Schema &$Schema ) {
         $TableMarketingCode = new TblReporting_MarketingCode();
         $Table = $this->createTable( $Schema, $TableMarketingCode->getEntityShortName() );
@@ -201,6 +228,12 @@ class Setup extends AbstractSetup
         return $Table;
     }
 
+    /**
+     * @param Schema $Schema
+     * @param Table $TableProductManager
+     * @param Table $TableMarketingCode
+     * @return Table
+     */
     private function setTableProductManagerMarketingCode( Schema &$Schema, Table $TableProductManager, Table $TableMarketingCode ) {
         $TableProductManagerMarketingCode = new TblReporting_ProductManager_MarketingCode();
         $Table = $this->createTable( $Schema, $TableProductManagerMarketingCode->getEntityShortName() );
@@ -209,6 +242,10 @@ class Setup extends AbstractSetup
         return $Table;
     }
 
+    /**
+     * @param Schema $Schema
+     * @return Table
+     */
     private function setTableProductGroup( Schema &$Schema ) {
         $TableProductGroup = new TblReporting_ProductGroup();
         $Table = $this->createTable( $Schema, $TableProductGroup->getEntityShortName() );
@@ -217,6 +254,12 @@ class Setup extends AbstractSetup
         return $Table;
     }
 
+    /**
+     * @param Schema $Schema
+     * @param Table $TableMarketingCode
+     * @param Table $TableProductGroup
+     * @return Table
+     */
     private function setTableMarketingCodeProductGroup( Schema &$Schema, Table $TableMarketingCode, Table $TableProductGroup ) {
         $TableMarketingCodeProductGroup = new TblReporting_MarketingCode_ProductGroup();
         $Table = $this->createTable( $Schema, $TableMarketingCodeProductGroup->getEntityShortName() );
@@ -237,6 +280,12 @@ class Setup extends AbstractSetup
         return $Table;
     }
 
+    /**
+     * @param Schema $Schema
+     * @param Table $TableMarketingCode
+     * @param Table $TablePartsMore
+     * @return Table
+     */
     private function setTableMarketingCodePartsMore( Schema &$Schema, Table $TableMarketingCode, Table $TablePartsMore ) {
         $TableMarketingCodePartsMore = new TblReporting_MarketingCode_PartsMore();
         $Table = $this->createTable( $Schema, $TableMarketingCodePartsMore->getEntityShortName() );
@@ -245,6 +294,10 @@ class Setup extends AbstractSetup
         return $Table;
     }
 
+    /**
+     * @param Schema $Schema
+     * @return Table
+     */
     private function setTablePart( Schema &$Schema ) {
         $TablePart = new TblReporting_Part();
         $Table = $this->createTable( $Schema, $TablePart->getEntityShortName() );
@@ -255,6 +308,12 @@ class Setup extends AbstractSetup
         return $Table;
     }
 
+    /**
+     * @param Schema $Schema
+     * @param Table $TablePart
+     * @param Table $TableMarketingCode
+     * @return Table
+     */
     private function setTablePartMarketingCode( Schema &$Schema, Table $TablePart, Table $TableMarketingCode ) {
         $TablePartMarketingCode = new TblReporting_Part_MarketingCode();
         $Table = $this->createTable( $Schema, $TablePartMarketingCode->getEntityShortName() );
@@ -263,6 +322,10 @@ class Setup extends AbstractSetup
         return $Table;
     }
 
+    /**
+     * @param Schema $Schema
+     * @return Table
+     */
     private function setTableSection( Schema &$Schema ) {
         $TableSection = new TblReporting_Section();
         $Table = $this->createTable( $Schema, $TableSection->getEntityShortName() );
@@ -272,6 +335,12 @@ class Setup extends AbstractSetup
         return $Table;
     }
 
+    /**
+     * @param Schema $Schema
+     * @param Table $TablePart
+     * @param Table $TableSection
+     * @return Table
+     */
     private function setTablePartSection( Schema &$Schema, Table $TablePart, Table $TableSection ) {
         $TablePartSection = new TblReporting_Part_Section();
         $Table = $this->createTable( $Schema, $TablePartSection->getEntityShortName() );
@@ -280,6 +349,10 @@ class Setup extends AbstractSetup
         return $Table;
     }
 
+    /**
+     * @param Schema $Schema
+     * @return Table
+     */
     private function setTableBrand( Schema &$Schema ) {
          $TableBrand = new TblReporting_Brand();
          $Table = $this->createTable( $Schema, $TableBrand->getEntityShortName() );
@@ -288,6 +361,12 @@ class Setup extends AbstractSetup
          return $Table;
      }
 
+    /**
+     * @param Schema $Schema
+     * @param Table $TablePart
+     * @param Table $TableBrand
+     * @return Table
+     */
     private function setTablePartBrand( Schema &$Schema, Table $TablePart, Table $TableBrand ) {
         $TablePartBrand = new TblReporting_Part_Brand();
         $Table = $this->createTable( $Schema, $TablePartBrand->getEntityShortName() );
@@ -296,6 +375,10 @@ class Setup extends AbstractSetup
         return $Table;
     }
 
+    /**
+     * @param Schema $Schema
+     * @return Table
+     */
     private function setTableAssortmentGroup( Schema &$Schema ) {
         $TableAssortmentGroup = new TblReporting_AssortmentGroup();
         $Table = $this->createTable( $Schema, $TableAssortmentGroup->getEntityShortName() );
@@ -304,6 +387,12 @@ class Setup extends AbstractSetup
         return $Table;
     }
 
+    /**
+     * @param Schema $Schema
+     * @param Table $TablePart
+     * @param Table $TableAssortmentGroup
+     * @return Table
+     */
     private function setTablePartAssortmentGroup( Schema &$Schema, Table $TablePart, Table $TableAssortmentGroup ) {
         $TablePartAssortmentGroup = new TblReporting_Part_AssortmentGroup();
         $Table = $this->createTable( $Schema, $TablePartAssortmentGroup->getEntityShortName() );
@@ -312,6 +401,10 @@ class Setup extends AbstractSetup
         return $Table;
     }
 
+    /**
+     * @param Schema $Schema
+     * @return Table
+     */
     private function setTableDiscountGroup( Schema &$Schema ) {
         $TableDiscountGroup = new TblReporting_DiscountGroup();
         $Table = $this->createTable( $Schema, $TableDiscountGroup->getEntityShortName() );
@@ -320,6 +413,12 @@ class Setup extends AbstractSetup
         return $Table;
     }
 
+    /**
+     * @param Schema $Schema
+     * @param Table $TablePart
+     * @param Table $TableDiscountGroup
+     * @return Table
+     */
     private function setTablePrice( Schema &$Schema, Table $TablePart, Table $TableDiscountGroup ) {
         $TablePrice = new TblReporting_Price();
         $Table = $this->createTable( $Schema, $TablePrice->getEntityShortName() );
@@ -332,6 +431,10 @@ class Setup extends AbstractSetup
         return $Table;
     }
 
+    /**
+     * @param Schema $Schema
+     * @return Table
+     */
     private function setTableSupplier( Schema &$Schema ) {
         $TableSupplier = new TblReporting_Supplier();
         $Table = $this->createTable( $Schema, $TableSupplier->getEntityShortName() );
@@ -340,6 +443,12 @@ class Setup extends AbstractSetup
         return $Table;
     }
 
+    /**
+     * @param Schema $Schema
+     * @param Table $TablePart
+     * @param Table $TableSupplier
+     * @return Table
+     */
     private function setTablePartSupplier( Schema &$Schema, Table $TablePart, Table $TableSupplier ) {
         $TablePartSupplier = new TblReporting_Part_Supplier();
         $Table = $this->createTable( $Schema, $TablePartSupplier->getEntityShortName() );
@@ -348,6 +457,11 @@ class Setup extends AbstractSetup
         return $Table;
     }
 
+    /**
+     * @param Schema $Schema
+     * @param Table $TablePart
+     * @return Table
+     */
     private function setTableSales( Schema &$Schema, Table $TablePart ) {
         $TableSales = new TblReporting_Sales();
         $Table = $this->createTable( $Schema, $TableSales->getEntityShortName() );

@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Cache;
+use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\System\Database\Fitting\Element;
 
 /**
@@ -22,6 +23,8 @@ use SPHERE\System\Database\Fitting\Element;
  */
 class TblReporting_MarketingCode_ProductGroup extends Element
 {
+    const TBL_REPORTING_MARKETING_CODE = 'TblReporting_MarketingCode';
+    const TBL_REPORTING_PRODUCT_GROUP = 'TblReporting_ProductGroup';
 
     /**
      * @Column(type="bigint")
@@ -34,35 +37,35 @@ class TblReporting_MarketingCode_ProductGroup extends Element
     protected $TblReporting_ProductGroup;
 
     /**
-     * @return mixed
+     * @return null|TblReporting_MarketingCode
      */
     public function getTblReportingMarketingCode()
     {
-        return $this->TblReporting_MarketingCode;
+        return ( $this->TblReporting_MarketingCode ? DataWareHouse::useService()->getMarketingCodeById( $this->TblReporting_MarketingCode ) : null );
     }
 
     /**
-     * @param mixed $TblReporting_MarketingCode
+     * @param null|TblReporting_MarketingCode $TblReporting_MarketingCode
      */
-    public function setTblReportingMarketingCode($TblReporting_MarketingCode)
+    public function setTblReportingMarketingCode(TblReporting_MarketingCode $TblReporting_MarketingCode)
     {
-        $this->TblReporting_MarketingCode = $TblReporting_MarketingCode;
+        $this->TblReporting_MarketingCode = ( $TblReporting_MarketingCode ? $TblReporting_MarketingCode : null );
     }
 
     /**
-     * @return mixed
+     * @return null|TblReporting_ProductGroup
      */
     public function getTblReportingProductGroup()
     {
-        return $this->TblReporting_ProductGroup;
+        return ( $this->TblReporting_ProductGroup ? DataWareHouse::useService()->getProductGroupById( $this->TblReporting_ProductGroup ) : null );
     }
 
     /**
-     * @param mixed $TblReporting_ProductGroup
+     * @param null|TblReporting_ProductGroup $TblReporting_ProductGroup
      */
-    public function setTblReportingProductGroup($TblReporting_ProductGroup)
+    public function setTblReportingProductGroup(TblReporting_ProductGroup $TblReporting_ProductGroup)
     {
-        $this->TblReporting_ProductGroup = $TblReporting_ProductGroup;
+        $this->TblReporting_ProductGroup = ( $TblReporting_ProductGroup ? $TblReporting_ProductGroup : null );
     }
 
 }
