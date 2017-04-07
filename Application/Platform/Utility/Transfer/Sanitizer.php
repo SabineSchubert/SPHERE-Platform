@@ -77,6 +77,20 @@ class Sanitizer extends Extension
      * @return bool|string
      * @throws \Exception
      */
+    protected function sanitizeDateTime($Value)
+    {
+//        return date('d.m.Y H:i:s', \PHPExcel_Shared_Date::ExcelToPHP($Value));
+        /** @var \DateTime $DateTime */
+        $DateTime = \PHPExcel_Shared_Date::ExcelToPHPObject($Value);
+        return $DateTime->format('d.m.Y H:i:s');
+    }
+
+    /**
+     * @param $Value
+     *
+     * @return bool|string
+     * @throws \Exception
+     */
     protected function sanitizeMailAddress($Value)
     {
 
