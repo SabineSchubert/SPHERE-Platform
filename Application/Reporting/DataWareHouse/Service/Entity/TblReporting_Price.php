@@ -23,6 +23,8 @@ use SPHERE\System\Database\Fitting\Element;
  */
 class TblReporting_Price extends Element
 {
+    const TBL_REPORTING_PART = 'TblReporting_Part';
+    const TBL_REPORTING_DISCOUNT_GROUP = 'TblReporting_DiscountGroup';
     const ATTR_PRICE_GROSS = 'PriceGross';
     const ATTR_BACK_VALUE = 'BackValue';
     const ATTR_COSTS_VARIABLE = 'CostsVariable';
@@ -143,15 +145,23 @@ class TblReporting_Price extends Element
      */
     public function getValidFrom()
     {
-        return $this->ValidFrom;
+        /** @var \DateTime $DateTime */
+        $DateTime = $this->ValidFrom;
+        if ($DateTime instanceof \DateTime) {
+            return $DateTime;
+        } else {
+            return $DateTime;
+        }
     }
 
     /**
-     * @param \DateTime $ValidFrom
+     * @param null|\DateTime $ValidFrom
      */
-    public function setValidFrom($ValidFrom)
+    public function setValidFrom(\DateTime $ValidFrom = null)
     {
         $this->ValidFrom = $ValidFrom;
     }
+
+
 
 }

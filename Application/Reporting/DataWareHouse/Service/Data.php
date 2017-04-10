@@ -13,11 +13,13 @@ use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Assor
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Brand;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_DiscountGroup;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_MarketingCode;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part_MarketingCode;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_PartsMore;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Price;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_ProductGroup;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_ProductLevel;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_ProductManager;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_ProductManager_ProductManagerGroup;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_ProductManagerGroup;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Sales;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part;
@@ -66,13 +68,18 @@ class Data extends AbstractData
         ) );
     }
 
+
+
+
+
+
     /**
      * @param int $Id
-     * @return null|TblReporting_ProductManagerGroup
+     * @return null|Element|TblReporting_ProductManagerGroup
      */
     public function getProductManagerGroupById( $Id ) {
         $TableProductManagerGroup = new TblReporting_ProductManagerGroup();
-        return $this->getCachedEntityList(  __METHOD__, $this->getEntityManager(), $TableProductManagerGroup->getEntityShortName(), (int)$Id );
+        return $this->getCachedEntityById(  __METHOD__, $this->getEntityManager(), $TableProductManagerGroup->getEntityShortName(), (int)$Id );
     }
 
     /**
@@ -85,12 +92,64 @@ class Data extends AbstractData
     }
 
     /**
-     * @param $Id
+     * @param int $Id
+     * @return null|Element[]|TblReporting_ProductManager[]
+     */
+    public function getProductManagerAllByProductManagerGroup( TblReporting_ProductManagerGroup $Id = null ) {
+        $TableProductManagerGroup = new TblReporting_ProductManagerGroup();
+        return $this->getCachedEntityListBy( __METHOD__, $this->getEntityManager(), $TableProductManagerGroup->getEntityShortName(),
+            array(
+                $TableProductManagerGroup::ENTITY_ID => (int)$Id
+            )
+        );
+    }
+
+    /**
+     * @param TblReporting_ProductManager $TblReporting_ProductManager
+     * @return null|Element[]|TblReporting_ProductManagerGroup[]
+     */
+    public function getProductManagerGroupAllByProductManager( TblReporting_ProductManager $TblReporting_ProductManager = null ) {
+        $TableProductManagerProductManagerGroup = new TblReporting_ProductManager_ProductManagerGroup();
+        $EntityList = $this->getCachedEntityListBy( __METHOD__, $this->getEntityManager(), $TableProductManagerProductManagerGroup->getEntityShortName(),
+            array(
+                $TableProductManagerProductManagerGroup::TBL_REPORTING_PRODUCT_MANAGER => $TblReporting_ProductManager->getId()
+            )
+        );
+        if( $EntityList ) {
+            /**
+             * @var TblReporting_ProductManager_ProductManagerGroup $TblReporting_ProductManager_ProductManagerGroup
+             */
+            $EntityProductManagerGroup = null;
+            foreach((array)$EntityList AS $TblReporting_ProductManager_ProductManagerGroup ) {
+                $EntityProductManagerGroup[] = $TblReporting_ProductManager_ProductManagerGroup->getTblReportingProductManagerGroup();
+            }
+            return $EntityProductManagerGroup;
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
+     * @param int $Id
      * @return null|Element|TblReporting_MarketingCode
      */
     public function getMarketingCodeById( $Id ) {
         $TableMarktingCode = new TblReporting_MarketingCode();
         return $this->getCachedEntityById( __METHOD__, $this->getEntityManager(), $TableMarktingCode->getEntityShortName(), (int)$Id );
+    }
+
+    /**
+     * @param int $Id
+     * @return null|Element|TblReporting_MarketingCode
+     */
+    public function getMarketingCodeByPartMarketingCode( TblReporting_Part_MarketingCode $TblReporting_Part_MarketingCode ) {
+        if( $TblReporting_Part_MarketingCode->getTblReportingMarketingCode() ) {
+            return $this->getMarketingCodeById( $TblReporting_Part_MarketingCode->getTblReportingMarketingCode()->getId() );
+        }
+        else {
+            return null;
+        }
     }
 
     /**
@@ -130,6 +189,17 @@ class Data extends AbstractData
     }
 
     /**
+     * @param string $Number
+     * @return null|Element|TblReporting_Part
+     */
+    public function getPartByNumber( $Number ) {
+        $TablePart = new TblReporting_Part();
+        return $this->getCachedEntityBy( __METHOD__, $this->getEntityManager(), $TablePart->getEntityShortName(), array(
+            $TablePart::ATTR_NUMBER => $Number
+        ) );
+    }
+
+    /**
      * @param int $Id
      * @return null|Element|TblReporting_Section
      */
@@ -166,13 +236,56 @@ class Data extends AbstractData
     }
 
     /**
-     * @param int $Id
+     * @param TblReporting_Part $TblReporting_Part
+     * @return null|Element|TblReporting_Price
+     */
+    public function getPriceByPart( TblReporting_Part $TblReporting_Part ) {
+        $TablePrice = new TblReporting_Price();
+        $EntityPriceList = $this->getCachedEntityListBy( __METHOD__, $this->getEntityManager(), $TablePrice->getEntityShortName(), array(
+            $TablePrice::TBL_REPORTING_PART => $TblReporting_Part->getId()
+        ), array( $TablePrice::ENTITY_CREATE => self::ORDER_DESC ) );
+        if($EntityPriceList) {
+            return $EntityPriceList[0];
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
+     * @param TblReporting_Part $TblReporting_Part
+     * @return null|Element|TblReporting_Part_MarketingCode
+     */
+    public function getPartMarketingCodeByPart( TblReporting_Part $TblReporting_Part ) {
+        $TablePartMarketingCode = new TblReporting_Part_MarketingCode();
+        $EntityPartMarketingCode = $this->getCachedEntityListBy( __METHOD__, $this->getEntityManager(), $TablePartMarketingCode->getEntityShortName(), array(
+            $TablePartMarketingCode::TBL_REPORTING_PART => $TblReporting_Part->getId()
+        ), array( $TablePartMarketingCode::ENTITY_CREATE => self::ORDER_DESC ) );
+        if($EntityPartMarketingCode) {
+            return $EntityPartMarketingCode[0];
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
+     * @param int|TblReporting_Price $Id
      * @return null|Element|TblReporting_DiscountGroup
      */
     public function getDiscountGroupById( $Id ) {
         $TableDiscountGroup = new TblReporting_DiscountGroup();
         return $this->getCachedEntityById( __METHOD__, $this->getEntityManager(), $TableDiscountGroup->getEntityShortName(), (int)$Id );
     }
+
+//    /**
+//     * @param int $Id
+//     * @return null|Element|TblReporting_DiscountGroup
+//     */
+//    public function getDiscountGroupById(  ) {
+//        $TableDiscountGroup = new TblReporting_DiscountGroup();
+//        return $this->getCachedEntityById( __METHOD__, $this->getEntityManager(), $TableDiscountGroup->getEntityShortName(), (int)$Id );
+//    }
 
     /**
      * @param int $Id
@@ -182,5 +295,6 @@ class Data extends AbstractData
         $TableSupplier = new TblReporting_Supplier();
         return $this->getCachedEntityById( __METHOD__, $this->getEntityManager(), $TableSupplier->getEntityShortName(), (int)$Id );
     }
+
 
 }

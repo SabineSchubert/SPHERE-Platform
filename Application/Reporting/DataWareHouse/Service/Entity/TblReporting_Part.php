@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping\Cache;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
+use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\System\Database\Fitting\Element;
 
 /**
@@ -25,6 +26,7 @@ class TblReporting_Part extends Element
     const ATTR_NUMBER = 'Number';
     const ATTR_NUMBER_DISPLAY = 'NumberDisplay';
     const ATTR_NAME = 'Name';
+    const ATTR_SPARE_PART_DESIGN = 'SparePartDesign';
     const ATTR_STATUS_ACTIVE = 'StatusActive';
 
     /**
@@ -136,6 +138,19 @@ class TblReporting_Part extends Element
         $this->StatusActive = $StatusActive;
     }
 
+    /**
+     * @return null|TblReporting_Price|Element
+     */
+    public function fetchPriceCurrent() {
+        return DataWareHouse::useService()->getPriceByPart( $this );
+    }
 
+    /**
+     * @return null|TblReporting_MarketingCode|Element
+     */
+    public function fetchMarketingCodeCurrent() {
+        $PartMarketingCode = DataWareHouse::useService()->getPartMarketingCodeByPart( $this );
+        return DataWareHouse::useService()->getMarketingCodeByPartMarketingCode( $PartMarketingCode );
+    }
 
 }

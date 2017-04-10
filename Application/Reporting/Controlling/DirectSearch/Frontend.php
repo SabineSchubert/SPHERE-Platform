@@ -9,7 +9,8 @@
 namespace SPHERE\Application\Reporting\Controlling\DirectSearch;
 
 
-use SPHERE\Application\Reporting\DataWareHouse\Parts\Parts;
+use Doctrine\Common\Util\Debug;
+use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Button\Reset;
 use SPHERE\Common\Frontend\Form\Repository\Field\AutoCompleter;
@@ -34,6 +35,7 @@ use SPHERE\Common\Frontend\Text\Repository\Bold;
 use SPHERE\Common\Window\Navigation\Link\Route;
 use SPHERE\Common\Window\Stage;
 use SPHERE\System\Extension\Extension;
+use SPHERE\System\Extension\Repository\Debugger;
 
 class Frontend extends Extension
 {
@@ -60,12 +62,17 @@ class Frontend extends Extension
 		$Stage = new Stage('Direktsuche', 'Teilenummer');
 		$this->buttonStageDirectSearch($Stage);
 
-		//$this->getDebugger()->screenDump( $Search );
-
 		$LayoutGroupDirectSearch = '';
 		$LayoutGroupCompetition = '';
+        $ErrorPartNumber = '';
 		if( $Search ) {
-			if (empty($Result)) {
+
+		    $EntityPart = DataWareHouse::useService()->getPartByNumber( $Search['PartNumber'] );
+		    if( $EntityPart ) {
+                $PartNumberResult = $EntityPart->fetchPriceCurrent();
+            }
+
+			if (!empty($PartNumberResult)) {
 
 				$LayoutGroupDirectSearch =
 					new LayoutGroup(
@@ -130,9 +137,8 @@ class Frontend extends Extension
 						),
 						new Title('Angebotsdaten')
 					);
-
 			} else {
-				$Table = new Warning('Die Teilenummer konnte nicht gefunden werden.');
+				$ErrorPartNumber = new Warning('Die Teilenummer konnte nicht gefunden werden.');
 			}
 		}
 
@@ -145,6 +151,11 @@ class Frontend extends Extension
 						,4)
 					)
 				),
+				new LayoutGroup(
+				    new LayoutRow(
+				        new LayoutColumn($ErrorPartNumber)
+                    )
+                ),
 				$LayoutGroupDirectSearch,
 				$LayoutGroupCompetition
 			))
@@ -387,8 +398,6 @@ class Frontend extends Extension
 
 	private function tableMasterDataPartNumber() {
 
-		$Test = (Parts::useService()->getMarketingCodeById(1));
-
 		return new Table(
 			array(
 				array(
@@ -401,7 +410,7 @@ class Frontend extends Extension
 				),
 				array(
 					'Description' => 'Marketingcode',
-					'Value' => $Test->getMcName()
+					'Value' => 'adad'
 				),
 				array(
 					'Description' => 'Warengruppe',

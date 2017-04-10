@@ -23,7 +23,7 @@ use SPHERE\System\Database\Fitting\Element;
 class TblReporting_DiscountGroup extends Element
 {
     const ATTR_NUMBER = 'Number';
-    const ATTR_NAME = 'Name';
+    const ATTR_DISCOUNT = 'Discount';
 
     /**
      * @Column(type="string")
