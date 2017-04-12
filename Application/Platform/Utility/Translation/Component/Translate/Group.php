@@ -21,7 +21,7 @@ class Group
      */
     public function __construct($Identifier, Group $Child = null)
     {
-        $this->Identifier = preg_replace('![^:\w\d]!is', '_', $Identifier);
+        $this->Identifier = preg_replace('![^a-zA-Z-0-9]!is', '_', $Identifier);
         $this->Group = $Child;
     }
 
