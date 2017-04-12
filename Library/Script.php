@@ -284,7 +284,7 @@ class Script
         ));
         $this->addLibrary(new Library('jQuery.Cookie', '2.1.4',
             $Location . '/jQuery.Cookie/2.1.4/src/js.cookie.js',
-            "'undefined' !== typeof Cookie"
+            "'undefined' !== typeof Cookies"
         ));
     }
 
