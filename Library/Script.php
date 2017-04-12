@@ -277,6 +277,15 @@ class Script
             $Location . '/Baron.js/2.2.9/baron.min.js',
             "'undefined' !== typeof jQuery.fn.baron"
         ));
+
+        $this->addLibrary(new Library('JsTimeZoneDetect', '1.0.6',
+            $Location . '/jQuery.TimeZoneDetect/1.0.6/dist/jstz.min.js',
+            "'undefined' !== typeof jstz"
+        ));
+        $this->addLibrary(new Library('jQuery.Cookie', '2.1.4',
+            $Location . '/jQuery.Cookie/2.1.4/src/js.cookie.js',
+            "'undefined' !== typeof Cookie"
+        ));
     }
 
     /**
