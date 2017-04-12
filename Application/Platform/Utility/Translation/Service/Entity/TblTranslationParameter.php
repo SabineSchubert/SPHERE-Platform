@@ -6,39 +6,39 @@ use Doctrine\ORM\Mapping as ORM;
 use SPHERE\System\Database\Binding\AbstractEntity;
 
 /**
- * Class TblGroup
+ * Class TblTranslationParameter
  *
  * @package SPHERE\Application\Platform\Utility\Translation\Service\Entity
  *
  * @ORM\Entity()
- * @ORM\Table(name="TblGroup")
+ * @ORM\Table(name="TblTranslationParameter")
  * @ORM\Cache(usage="READ_ONLY")
  */
-class TblGroup extends AbstractEntity
+class TblTranslationParameter extends AbstractEntity
 {
-    const ATTR_IDENTIFIER = 'Identifier';
+    const ATTR_NAME = 'Name';
 
     /**
      * @var string $Identifier
      * @ORM\Column(type="string")
      */
-    protected $Identifier;
+    protected $Name;
 
     /**
      * @return string
      */
-    public function getIdentifier()
+    public function getName()
     {
-        return (string)$this->Identifier;
+        return (string)$this->Name;
     }
 
     /**
-     * @param string $Identifier
-     * @return TblGroup
+     * @param string $Name
+     * @return TblTranslationParameter
      */
-    public function setIdentifier($Identifier)
+    public function setName($Name)
     {
-        $this->Identifier = (string)$Identifier;
+        $this->Name = (string)$Name;
         return $this;
     }
 }

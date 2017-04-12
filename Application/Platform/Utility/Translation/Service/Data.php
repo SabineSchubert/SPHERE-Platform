@@ -2,7 +2,7 @@
 namespace SPHERE\Application\Platform\Utility\Translation\Service;
 
 use SPHERE\Application\Platform\System\Protocol\Protocol;
-use SPHERE\Application\Platform\Utility\Translation\Service\Entity\TblLocale;
+use SPHERE\Application\Platform\Utility\Translation\Service\Entity\TblTranslationLocale;
 use SPHERE\System\Database\Binding\AbstractData;
 use SPHERE\System\Database\Binding\AbstractEntity;
 use SPHERE\System\Database\Fitting\Element;
@@ -18,11 +18,11 @@ class Data extends AbstractData
      */
     public function setupDatabaseContent()
     {
-        if (!$this->getLocaleByIdentifier(TblLocale::LOCALE_EN_US)) {
-            $this->insertLocale(TblLocale::LOCALE_EN_US, 'United States - English', 'Default');
+        if (!$this->getLocaleByIdentifier(TblTranslationLocale::LOCALE_EN_US)) {
+            $this->insertLocale(TblTranslationLocale::LOCALE_EN_US, 'United States - English', 'Default');
         }
-        if (!$this->getLocaleByIdentifier(TblLocale::LOCALE_DE_DE)) {
-            $this->insertLocale(TblLocale::LOCALE_DE_DE, 'Germany - German', 'Default');
+        if (!$this->getLocaleByIdentifier(TblTranslationLocale::LOCALE_DE_DE)) {
+            $this->insertLocale(TblTranslationLocale::LOCALE_DE_DE, 'Germany - German', 'Default');
         }
     }
 
@@ -33,8 +33,8 @@ class Data extends AbstractData
     public function getLocaleByIdentifier($Identifier)
     {
         return $this->getCachedEntityBy(
-            __METHOD__, $this->getEntityManager(), (new TblLocale())->getEntityShortName(), array(
-                TblLocale::ATTR_IDENTIFIER => (string)$Identifier
+            __METHOD__, $this->getEntityManager(), (new TblTranslationLocale())->getEntityShortName(), array(
+                TblTranslationLocale::ATTR_IDENTIFIER => (string)$Identifier
             )
         );
     }
@@ -43,11 +43,11 @@ class Data extends AbstractData
      * @param string $Identifier
      * @param string $Name
      * @param string $Description
-     * @return TblLocale
+     * @return TblTranslationLocale
      */
     public function insertLocale($Identifier, $Name, $Description = '')
     {
-        $Entity = new TblLocale();
+        $Entity = new TblTranslationLocale();
         $Entity->setIdentifier($Identifier);
         $Entity->setName($Name);
         $Entity->setDescription($Description);
@@ -64,7 +64,7 @@ class Data extends AbstractData
     public function getLocaleById($Id)
     {
         return $this->getCachedEntityById(
-            __METHOD__, $this->getEntityManager(), (new TblLocale())->getEntityShortName(), (int)$Id
+            __METHOD__, $this->getEntityManager(), (new TblTranslationLocale())->getEntityShortName(), (int)$Id
         );
     }
 }

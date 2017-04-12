@@ -1,20 +1,20 @@
 <?php
-namespace SPHERE\Application\Platform\Utility\Translation\Service\Entity;
 
+namespace SPHERE\Application\Platform\Utility\Translation\Service\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use SPHERE\System\Database\Binding\AbstractEntity;
 
 /**
- * Class TblLocale
+ * Class TblTranslationLocale
  *
  * @package SPHERE\Application\Platform\Utility\Translation\Service\Entity
  *
  * @ORM\Entity()
- * @ORM\Table(name="TblLocale")
+ * @ORM\Table(name="TblTranslationLocale")
  * @ORM\Cache(usage="READ_ONLY")
  */
-class TblLocale extends AbstractEntity
+class TblTranslationLocale extends AbstractEntity
 {
 
     const LOCALE_DE_DE = 'de_DE';
@@ -50,7 +50,7 @@ class TblLocale extends AbstractEntity
 
     /**
      * @param string $Identifier e.g. en_US
-     * @return TblLocale
+     * @return TblTranslationLocale
      */
     public function setIdentifier($Identifier)
     {
@@ -68,7 +68,7 @@ class TblLocale extends AbstractEntity
 
     /**
      * @param string $Name e.g. English (US)
-     * @return TblLocale
+     * @return TblTranslationLocale
      */
     public function setName($Name)
     {
@@ -86,7 +86,7 @@ class TblLocale extends AbstractEntity
 
     /**
      * @param string $Description
-     * @return TblLocale
+     * @return TblTranslationLocale
      */
     public function setDescription($Description)
     {

@@ -8,7 +8,7 @@ use SPHERE\Application\AppTrait;
 use SPHERE\Application\IModuleInterface;
 use SPHERE\Application\Platform\Utility\Translation\Component\Localize;
 use SPHERE\Application\Platform\Utility\Translation\Component\Translate;
-use SPHERE\Application\Platform\Utility\Translation\Service\Entity\TblLocale;
+use SPHERE\Application\Platform\Utility\Translation\Service\Entity\TblTranslationLocale;
 use SPHERE\Common\Frontend\Form\Repository\Field\TextField;
 use SPHERE\Common\Frontend\Icon\Repository\Conversation;
 use SPHERE\Common\Frontend\Icon\Repository\Question;
@@ -83,7 +83,7 @@ class Translation implements IModuleInterface
             , array(
                 'Anzahl' => 3 * 1,
                 'Kosten' => $this->doLocalize(3 * 0.5)->getCurrency()
-            ), TblLocale::LOCALE_DE_DE
+            ), TblTranslationLocale::LOCALE_DE_DE
         );
 
         $T->getPreset()->appendPattern('!.*?!is', ':P');
