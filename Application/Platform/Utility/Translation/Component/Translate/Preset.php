@@ -3,6 +3,7 @@ namespace SPHERE\Application\Platform\Utility\Translation\Component\Translate;
 
 use MOC\V\Component\Template\Template;
 use SPHERE\Application\Platform\Utility\Translation\Component\AbstractComponent;
+use SPHERE\Application\Platform\Utility\Translation\Service\Entity\TblLocale;
 
 /**
  * Class Preset
@@ -10,9 +11,6 @@ use SPHERE\Application\Platform\Utility\Translation\Component\AbstractComponent;
  */
 class Preset extends AbstractComponent
 {
-
-    const LOCALE_EN_US = 'en_US';
-    const LOCALE_DE_DE = 'de_DE';
 
     /** @var string $DefaultLocale */
     private $DefaultLocale = 'en_US';
@@ -30,7 +28,7 @@ class Preset extends AbstractComponent
      * @param Parameter $Parameter
      * @param string $DefaultLocale
      */
-    public function __construct($DefaultPattern, Parameter $Parameter = null, $DefaultLocale = self::LOCALE_EN_US)
+    public function __construct($DefaultPattern, Parameter $Parameter = null, $DefaultLocale = TblLocale::LOCALE_EN_US)
     {
         $this->DefaultPattern = trim($DefaultPattern);
         if (null === $Parameter) {
@@ -71,11 +69,9 @@ class Preset extends AbstractComponent
             }
         }
 
-        // TODO: TR Mod
         if ($this->getDefaultLocale() != $this->getLocale()) {
-            return '{'.$Template->getContent().':'.$this->getLocale().'}';
-//            $Translate = new Paragraph(new Link('Translation (' . $this->getDefaultLocale() . ' => ' . $this->getLocale() . ')',
-//                '#', new Conversation(), array(), 'Missing (' . $this->getLocale() . ') ' . $this->getBreadCrumb()));
+            // TODO: Point Translation Access if Language is missing
+            return $Template->getContent().' (Missing translation '.$this->getDefaultLocale().' to '.$this->getLocale().')';
         } else {
             return $Template->getContent();
         }

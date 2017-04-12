@@ -6,6 +6,9 @@
         $(document).ready(function ()
         {
 
+            /**
+             * Set TZ Cookie for Sphere-PHP
+             */
             Cookies.set('ClientTimeZone', jstz.determine().name() );
 
             // MOVED TO FORM

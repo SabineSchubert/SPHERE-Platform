@@ -35,6 +35,41 @@ abstract class AbstractComponent
         return $Locale;
     }
 
+    protected function getTimezone() {
+
+        $Cache = (new CacheFactory())->getCache(new MemoryHandler());
+
+        if (!($Timezone = $Cache->getValue('Timezone', __METHOD__))) {
+
+            $TblAccount = Account::useService()->getAccountBySession();
+            if ($TblAccount) {
+                // TODO Replace with fetch Timezone Setting from Account
+                $Timezone = $this->getBrowserTimezone();
+            } else {
+                $Timezone = $this->getBrowserTimezone();
+            }
+
+            $Cache->setValue('Timezone', $Timezone, 0, __METHOD__);
+        }
+
+        return $Timezone;
+    }
+
+    /**
+     * @return string
+     */
+    private function getBrowserTimezone()
+    {
+        if( isset( $_COOKIE['ClientTimeZone'] ) ) {
+            if( preg_match('![a-z//_]!is', $_COOKIE['ClientTimeZone']) ) {
+                if( in_array(  $_COOKIE['ClientTimeZone'], timezone_identifiers_list() ) ) {
+                    return $_COOKIE['ClientTimeZone'];
+                }
+            }
+        }
+        return $this->getFallbackTimezone();
+    }
+
     /**
      * @return string
      */
@@ -46,6 +81,14 @@ abstract class AbstractComponent
             return current($LanguageList);
         }
         return $this->getFallbackLocale();
+    }
+
+    /**
+     * @return string
+     */
+    private function getFallbackTimezone()
+    {
+        return date_default_timezone_get();
     }
 
     /**
