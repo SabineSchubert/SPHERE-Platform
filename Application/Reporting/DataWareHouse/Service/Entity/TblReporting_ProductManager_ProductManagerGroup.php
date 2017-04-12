@@ -45,7 +45,7 @@ class TblReporting_ProductManager_ProductManagerGroup extends Element
     }
 
     /**
-     * @param mixed $TblReportingProductManager
+     * @param null|TblReporting_ProductManager $TblReportingProductManager
      */
     public function setTblReportingProductManager(TblReporting_ProductManager $TblReporting_ProductManager = null)
     {
@@ -53,7 +53,7 @@ class TblReporting_ProductManager_ProductManagerGroup extends Element
     }
 
     /**
-     * @return mixed
+     * @return null|TblReporting_ProductManagerGroup
      */
     public function getTblReportingProductManagerGroup()
     {
@@ -61,7 +61,7 @@ class TblReporting_ProductManager_ProductManagerGroup extends Element
     }
 
     /**
-     * @param mixed $TblReportingProductManagerGroup
+     * @param null| TblReporting_ProductManagerGroup $TblReportingProductManagerGroup
      */
     public function setTblReportingProductManagerGroup( TblReporting_ProductManagerGroup $TblReporting_ProductManagerGroup)
     {

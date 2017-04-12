@@ -90,7 +90,7 @@ class Setup extends AbstractSetup
 //        $this->getConnection()->createView(
 
 
-        //Debugger::screenDump(
+//        Debugger::screenDump(
 //            (new View( $this->getConnection(), 'ViewPart' ))
 //                ->addLink(
 //                    new TblReporting_Part_MarketingCode(), 'TblReporting_Part',
@@ -144,10 +144,8 @@ class Setup extends AbstractSetup
 //                    new TblReporting_MarketingCode_PartsMore(), 'TblReporting_MarketingCode',
 //                    new TblReporting_PartsMore(), 'Id'
 //                )
-////                ->getView()->getSql()
-////                ->getSQL()
+//                ->getView()->getSql()
 //        );
-////        );
 
         return $this->saveSchema($Schema, $Simulate);
     }

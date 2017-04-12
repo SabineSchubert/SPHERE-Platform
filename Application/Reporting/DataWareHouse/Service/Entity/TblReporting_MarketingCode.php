@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping\Cache;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
+use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\System\Database\Fitting\Element;
 
 /**
@@ -65,6 +66,43 @@ class TblReporting_MarketingCode extends Element
         $this->Name = $Name;
     }
 
+    /**
+     * @return null|TblReporting_PartsMore|Element
+     */
+    public function fetchPartsMoreCurrent() {
+        $MarketingCodePartsMore = DataWareHouse::useService()->getMarketingCodePartsMoreByMarketingCode( $this );
+        if($MarketingCodePartsMore) {
+            return DataWareHouse::useService()->getPartsMoreByMarketingCodePartsMore( $MarketingCodePartsMore );
+        }
+        else {
+            return null;
+        }
+    }
 
+    /**
+     * @return null|TblReporting_ProductManager|Element
+     */
+    public function fetchProductManagerCurrent() {
+        $ProductManagerMarketingCode = DataWareHouse::useService()->getProductManagerMarketingCodeByMarketingCode( $this );
+        if($ProductManagerMarketingCode) {
+            return DataWareHouse::useService()->getProductManagerByProductManagerMarketingCode( $ProductManagerMarketingCode );
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
+     * @return array ProductGroup|null
+     */
+    public function fetchProductGroupListCurrent() {
+        $MarketingCodeProductGroup = DataWareHouse::useService()->getMarketingCodeProductGroupByMarketingCode( $this );
+        if( $MarketingCodeProductGroup ) {
+            return DataWareHouse::useService()->getProductGroupByMarketingCodeProductGroup( $MarketingCodeProductGroup );
+        }
+        else {
+            return null;
+        }
+    }
 
 }

@@ -11,6 +11,12 @@ namespace SPHERE\Application\Reporting\Controlling\DirectSearch;
 
 use Doctrine\Common\Util\Debug;
 use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part_Supplier;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Price;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_ProductGroup;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Section;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Supplier;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Button\Reset;
 use SPHERE\Common\Frontend\Form\Repository\Field\AutoCompleter;
@@ -65,14 +71,13 @@ class Frontend extends Extension
 		$LayoutGroupDirectSearch = '';
 		$LayoutGroupCompetition = '';
         $ErrorPartNumber = '';
+        $EntityPart = null;
 		if( $Search ) {
 
-		    $EntityPart = DataWareHouse::useService()->getPartByNumber( $Search['PartNumber'] );
-		    if( $EntityPart ) {
-                $PartNumberResult = $EntityPart->fetchPriceCurrent();
-            }
+            $EntityPart = DataWareHouse::useService()->getPartByNumber( $Search['PartNumber'] );
+//            $PartPriceData = DataWareHouse::useService()->getPartPriceByPartNumber( $Search['PartNumber'] );
 
-			if (!empty($PartNumberResult)) {
+			if (!empty($EntityPart)) {
 
 				$LayoutGroupDirectSearch =
 					new LayoutGroup(
@@ -80,11 +85,11 @@ class Frontend extends Extension
 							new LayoutRow(
 								array(
 									new LayoutColumn(
-										$this->tableMasterDataPartNumber()
+										$this->tableMasterDataPartNumber( $EntityPart )
 										, 6
 									),
 									new LayoutColumn( '&nbsp;', 1 ),
-									new LayoutColumn( $this->tablePriceDataPartNumber(), 5)
+									new LayoutColumn( $this->tablePriceDataPartNumber($EntityPart), 5)
 								)
 							),
 							new LayoutRow(
@@ -396,53 +401,117 @@ class Frontend extends Extension
 		);
 	}
 
-	private function tableMasterDataPartNumber() {
+	private function tableMasterDataPartNumber(TblReporting_Part $EntityPart) {
 
-		return new Table(
-			array(
-				array(
-					'Description' => new Bold( 'Teilenummer' ),
-					'Value' => 'A1234'
-				),
-				array(
-					'Description' => 'Sortimentsgruppe',
-					'Value' => '123'
-				),
-				array(
-					'Description' => 'Marketingcode',
-					'Value' => 'adad'
-				),
-				array(
-					'Description' => 'Warengruppe',
-					'Value' => '1P23'
-				),
-				array(
-					'Description' => 'Sparte',
-					'Value' => 'Pkw'
-				),
-				array(
-					'Description' => 'Produktmanager',
-					'Value' => 'Andreas Schneider'
-				),
-				array(
-					'Description' => 'Hauptlieferant',
-					'Value' => 'unbekannt'
-				),
-			),
-			new TableTitle('Allgemeine Informationen'),
-			array( 'Description' => 'Bezeichnung', 'Value' => '' ),
-			array(
-				"columnDefs" => array(
-			        array('width' => '40%', 'targets' => '0' ),
-					array('width' => '60%', 'targets' => '1' )
-				),
-				"paging"         => false, // Deaktivieren Blättern
-			    "iDisplayLength" => -1,    // Alle Einträge zeigen
-			    "searching"      => false, // Deaktivieren Suchen
-			    "info"           => false,  // Deaktivieren Such-Info
-				"sort"           => false   //Deaktivierung Sortierung der Spalten
-			)
-		);
+        $EntityMarketingCode = null;
+        $EntityProductManager = null;
+        $EntityAssortmentGroup = null;
+        $EntitySupplierList = null;
+	    if($EntityPart) {
+            $EntityMarketingCode = $EntityPart->fetchMarketingCodeCurrent();
+
+            if ($EntityMarketingCode) {
+                $EntityProductManager = $EntityMarketingCode->fetchProductManagerCurrent();
+            }
+
+            $EntityAssortmentGroup = $EntityPart->fetchAssortmentGroupCurrent();
+
+            //Warengruppe
+            $EntityProductGroupList = $EntityMarketingCode->fetchProductGroupListCurrent();
+            $ProductGroupText = '';
+            if($EntityProductGroupList) {
+                /** @var TblReporting_ProductGroup $ProductGroup */
+                foreach($EntityProductGroupList AS $Index => $ProductGroup) {
+                    if( $Index != 0 ) {
+                        $ProductGroupText .= '<br/>';
+                    }
+                    $ProductGroupText .= $ProductGroup->getNumber().' - '.$ProductGroup->getName();
+                }
+            }
+
+            //Sparte
+            $EntitySectionList = $EntityPart->fetchSectionListCurrent();
+            $SectionText = '';
+            if( $EntitySectionList ) {
+                /** @var TblReporting_Section $Section */
+                foreach($EntitySectionList AS $Index => $Section) {
+                    if( $Index != 0 ) {
+                        $SectionText .= '<br/>';
+                    }
+                    $SectionText .= $Section->getNumber().' - '.$Section->getName();
+                }
+            }
+
+            //Lieferanten
+            $EntitySupplierList = $EntityPart->fetchSupplierListCurrent();
+            $SuppliertText = '';
+            if( $EntitySupplierList ) {
+                /** @var TblReporting_Supplier $Supplier */
+                foreach($EntitySupplierList AS $Index => $Supplier) {
+                    if( $Index != 0 ) {
+                        $SuppliertText .= '<br/>';
+                    }
+                    $SuppliertText .= $Supplier->getNumber().' - '.$Supplier->getName();
+                }
+            }
+
+            return new Table(
+                array(
+                    array(
+                        'Description' => 'Teilenummer',
+                        'Value' => $EntityPart->getNumber() . ' - ' . $EntityPart->getName()
+                    ),
+                    array(
+                        'Description' => 'ET-Baumuster',
+                        'Value' => $EntityPart->getSparePartDesign()
+                    ),
+                    array(
+                        'Description' => 'Vorgänger<br/>Nachfolger<br/>Wahlweise',
+                        'Value' => ''
+                    ),
+                    array(
+                        'Description' => 'Sortimentsgruppe',
+                        'Value' => (( $EntityAssortmentGroup ) ? $EntityAssortmentGroup->getNumber().' - '. $EntityAssortmentGroup->getName() : '' )
+                    ),
+                    array(
+                        'Description' => 'Marketingcode',
+                        'Value' => (( $EntityMarketingCode )? $EntityMarketingCode->getNumber() . ' - ' . $EntityMarketingCode->getName(): '' )
+                    ),
+                    array(
+                        'Description' => 'Warengruppe',
+                        'Value' => $ProductGroupText
+                    ),
+                    array(
+                        'Description' => 'Sparte',
+                        'Value' => $SectionText
+                    ),
+                    array(
+                        'Description' => 'Produktmanager',
+                        'Value' => (( $EntityProductManager )? $EntityProductManager->getName() . ' - ' . $EntityProductManager->getDepartment(): '' )
+                    ),
+                    array(
+                        'Description' => 'Lieferant(en)',
+                        'Value' => $SuppliertText
+                    ),
+                ),
+                new TableTitle('Allgemeine Informationen'),
+                array('Description' => 'Bezeichnung', 'Value' => ''),
+                array(
+                    "columnDefs" => array(
+                        array('width' => '40%', 'targets' => '0'),
+                        array('width' => '60%', 'targets' => '1')
+                    ),
+                    "paging" => false, // Deaktivieren Blättern
+                    "iDisplayLength" => -1,    // Alle Einträge zeigen
+                    "searching" => false, // Deaktivieren Suchen
+                    "info" => false,  // Deaktivieren Such-Info
+                    "sort" => false   //Deaktivierung Sortierung der Spalten
+                )
+            );
+        }
+        else {
+	        return '';
+        }
 	}
 
 	private function tableMasterDataMarketingCode() {
@@ -525,75 +594,113 @@ class Frontend extends Extension
 		);
 	}
 
-	private function tablePriceDataPartNumber() {
-		$Rw = 0;
-		$GrossPrice = 100;
-		$DiscountNumber = 5;
-		$Discount = 10;
-		$PartsMoreDiscount = 5;
-		$Costs = 20;
-		$CalcRules = $this->getCalculationRules();
+	private function tablePriceDataPartNumber( TblReporting_Part $EntityPart ) {
 
-		if( $Rw != 0 ) {
-			$PriceDescription = 'BLP / VP<br/>BLP / TP<br/>NLP / VP<br/>NLP / TP';
-			$PriceValue = number_format( $CalcRules->calcGrossPrice( 0, 0, $Rw, 0, 0, $GrossPrice ), 2, ',', '.' ).' €<br/>'.number_format( $GrossPrice, 2, ',', '.').' €<br/>'
-				.number_format( $CalcRules->calcNetPrice( $GrossPrice, $Discount, $Rw ), 2, ',', '.').' €<br/>'.number_format( $CalcRules->calcNetPrice( $GrossPrice, $Discount ), 2, ',', '.').' €';
-		}
-		else {
-			$PriceDescription = 'BLP / VP<br/>NLP / VP';
-			$PriceValue = number_format( $GrossPrice, 2, ',', '.').' €<br/>'.number_format( $CalcRules->calcNetPrice( $GrossPrice, $Discount ), 2, ',', '.').' €';
-		}
+        $EntityPrice = null;
+        $EntityDiscountGroup = null;
+        $EntityMarketingCode = null;
+        $EntityPartsMore = null;
+        $PartsMoreDiscount = 0;
+        $PartsMoreDescription = 'P+M';
+        $PartsMoreValue = 'nicht vorhanden';
 
-		return new Table(
-			array(
-				array(
-					'Description' => $PriceDescription,
-					'Value' => $PriceValue
-				),
-				array(//PartsMoreProzent'
-					'Description' => 'P+M '.number_format(0, 2, ',', '.').'%<br>NLP / P+M',
-					'Value' => number_format( $CalcRules->calcPartsMoreEuro( $GrossPrice, $PartsMoreDiscount ), 2, ',', '.').' €<br/>'
-						.number_format( $CalcRules->calcNetPrice( $GrossPrice, $Discount, 0, $PartsMoreDiscount, 0, 0 ) ).' €'
-				),
-				array(
-					'Description' => 'Rabattgruppe',
-					'Value' => $DiscountNumber.'<br/>'.$Discount. '%'
-				),
-				array(
-					'Description' => 'variable Kosten',
-					'Value' => number_format( $Costs, 2, ',', '.' ).' €'
-				),
-				array(
-					'Description' => 'Preis gültig ab<br/>TNR-Status',
-					'Value' => 'Gültig<br/>Status'
-				),
-				array(
-					'Description' => 'Konzern-DB',
-					'Value' => number_format( $CalcRules->calcCoverageContribution(
-							$CalcRules->calcNetPrice( $GrossPrice, $Discount, $Rw, $PartsMoreDiscount, 0, 0  )
-							, $Costs
-						) , 2, ',', '.' ).' €'
-				),
-				array(
-					'Description' => 'FC-Grenze ohne P+M<br/>FC-Grenze mit P+M',
-					'Value' => number_format( $CalcRules->calcFinancialManagementLimit( $CalcRules->calcGrossPrice( 0, 0, 0, $PartsMoreDiscount, 0, 0, $GrossPrice ), $Costs ), 2, ',', '.' ).' €<br/>'
-						.number_format( $CalcRules->calcFinancialManagementLimit( $GrossPrice, $Costs ), 2, ',', '.' ).' €'
-				),
-			),
-			new TableTitle('Preis- und Kosteninformationen'),
-			array( 'Description' => 'Bezeichnung ', 'Value' => '' ),
-			array(
-				"columnDefs" => array(
-			        array('width' => '40%', 'targets' => '0' ),
-					array('width' => '60%', 'targets' => '1' )
-				),
-				"paging"         => false, // Deaktivieren Blättern
-			    "iDisplayLength" => -1,    // Alle Einträge zeigen
-			    "searching"      => false, // Deaktivieren Suchen
-			    "info"           => false,  // Deaktivieren Such-Info
-				"sort"           => false   //Deaktivierung Sortierung der Spalten
-			)
-		);
+        if( $EntityPart ) {
+            $EntityPrice = $EntityPart->fetchPriceCurrent();
+            $EntityDiscountGroup = $EntityPrice->getTblReportingDiscountGroup();
+            $EntityMarketingCode = $EntityPart->fetchMarketingCodeCurrent();
+
+            if($EntityMarketingCode) {
+                $EntityPartsMore = $EntityMarketingCode->fetchPartsMoreCurrent();
+                $PartsMoreDiscount = $EntityPartsMore->getValue();
+            }
+        }
+
+        //Debugger::screenDump($EntityMarketingCode, $EntityPartsMore);
+
+        if( $EntityPrice ) {
+            $Rw = $EntityPrice->getBackValue();
+            $GrossPrice = $EntityPrice->getPriceGross();
+            $DiscountNumber = $EntityDiscountGroup->getNumber();
+            $Discount = $EntityDiscountGroup->getDiscount();
+            $Costs = $EntityPrice->getCostsVariable();
+            $CalcRules = $this->getCalculationRules();
+
+            if( $Rw != 0 ) {
+                $PriceDescription = 'BLP / VP<br/>BLP / TP<br/>NLP / VP<br/>NLP / TP';
+                $PriceValue = number_format( $CalcRules->calcGrossPrice( 0, 0, $Rw, 0, 0, 0, $GrossPrice ), 2, ',', '.' ).' €<br/>'.number_format( $GrossPrice, 2, ',', '.').' €<br/>'
+                    .number_format( $CalcRules->calcNetPrice( $GrossPrice, $Discount, $Rw ), 2, ',', '.').' €<br/>'.number_format( $CalcRules->calcNetPrice( $GrossPrice, $Discount ), 2, ',', '.').' €';
+            }
+            else {
+                $PriceDescription = 'BLP / VP<br/>NLP / VP';
+                $PriceValue = number_format( $GrossPrice, 2, ',', '.').' €<br/>'.number_format( $CalcRules->calcNetPrice( $GrossPrice, $Discount ), 2, ',', '.').' €';
+            }
+
+            if( $EntityPartsMore ) {
+                if( $EntityPartsMore->getType() == 'Prozent' ) {
+                    $PartsMoreDescription = 'P+M '.number_format($PartsMoreDiscount, 2, ',', '.').'%<br>NLP / P+M';
+                    $PartsMoreValue = number_format($CalcRules->calcPartsMoreEuro($GrossPrice, $PartsMoreDiscount), 2,',', '.') . ' €<br/>'
+                        . number_format($CalcRules->calcNetPrice($GrossPrice, $Discount, 0, $PartsMoreDiscount, 0, 0), 2, ',', '.') . ' €';
+                }
+                elseif( $EntityPartsMore->getType() == 'Euro' ) {
+                    $PartsMoreDescription = 'P+M '.number_format($PartsMoreDiscount, 2, ',', '.').'€<br>NLP / P+M';
+                    $PartsMoreValue = number_format(($GrossPrice + $PartsMoreDiscount), 2,',', '.') . ' €<br/>'
+                        . number_format($CalcRules->calcNetPrice($GrossPrice, $Discount, 0, $PartsMoreDiscount, 0, 0)) . ' €';
+                }
+            }
+
+            return new Table(
+                array(
+                    array(
+                        'Description' => $PriceDescription,
+                        'Value' => $PriceValue
+                    ),
+                    array(//PartsMoreProzent'
+                        'Description' => $PartsMoreDescription,
+                        'Value' => $PartsMoreValue
+                    ),
+                    array(
+                        'Description' => 'Rabattgruppe',
+                        'Value' => $DiscountNumber.'<br/>'.$Discount. '%'
+                    ),
+                    array(
+                        'Description' => 'variable Kosten',
+                        'Value' => number_format( $Costs, 2, ',', '.' ).' €'
+                    ),
+                    array(
+                        'Description' => 'Preis gültig ab<br/>TNR-Status',
+                        'Value' => 'Gültig<br/>Status'
+                    ),
+                    array(
+                        'Description' => 'Konzern-DB',
+                        'Value' => number_format( $CalcRules->calcCoverageContribution(
+                                $CalcRules->calcNetPrice( $GrossPrice, $Discount, $Rw, $PartsMoreDiscount, 0, 0  )
+                                , $Costs
+                            ) , 2, ',', '.' ).' €'
+                    ),
+                    array(
+                        'Description' => 'FC-Grenze ohne P+M<br/>FC-Grenze mit P+M',
+                        'Value' => number_format( $CalcRules->calcFinancialManagementLimit( $CalcRules->calcGrossPrice( 0, 0, 0, $PartsMoreDiscount, 0, 0, $GrossPrice ), $Costs ), 2, ',', '.' ).' €<br/>'
+                            .number_format( $CalcRules->calcFinancialManagementLimit( $GrossPrice, $Costs ), 2, ',', '.' ).' €'
+                    ),
+                ),
+                new TableTitle('Preis- und Kosteninformationen'),
+                array( 'Description' => 'Bezeichnung ', 'Value' => '' ),
+                array(
+                    "columnDefs" => array(
+                        array('width' => '40%', 'targets' => '0' ),
+                        array('width' => '60%', 'targets' => '1' )
+                    ),
+                    "paging"         => false, // Deaktivieren Blättern
+                    "iDisplayLength" => -1,    // Alle Einträge zeigen
+                    "searching"      => false, // Deaktivieren Suchen
+                    "info"           => false,  // Deaktivieren Such-Info
+                    "sort"           => false   //Deaktivierung Sortierung der Spalten
+                )
+            );
+        }
+        else {
+            return '';
+        }
 	}
 
 	private function tablePriceDevelopmentPartNumber() {

@@ -16,7 +16,7 @@ use SPHERE\System\Database\Fitting\Element;
 
 /**
  * @Entity
- * @Table(name="TblReportingSection")
+ * @Table(name="TblReporting_Section")
  * @Cache(usage="READ_ONLY")
  */
 class TblReporting_Section extends Element

@@ -37,7 +37,7 @@ class TblReporting_ProductManager_MarketingCode extends Element
     protected $TblReporting_MarketingCode;
 
     /**
-     * @return mixed
+     * @return null|TblReporting_ProductManager
      */
     public function getTblReportingProductManager()
     {
@@ -45,7 +45,7 @@ class TblReporting_ProductManager_MarketingCode extends Element
     }
 
     /**
-     * @param mixed $TblReporting_ProductManager
+     * @param null| TblReporting_ProductManager $TblReporting_ProductManager
      */
     public function setTblReportingProductManager(TblReporting_ProductManager $TblReporting_ProductManager)
     {
@@ -53,7 +53,7 @@ class TblReporting_ProductManager_MarketingCode extends Element
     }
 
     /**
-     * @return mixed
+     * @return null|TblReporting_MarketingCode
      */
     public function getTblReportingMarketingCode()
     {
@@ -61,7 +61,7 @@ class TblReporting_ProductManager_MarketingCode extends Element
     }
 
     /**
-     * @param mixed $TblReporting_MarketingCode
+     * @param TblReporting_MarketingCode $TblReporting_MarketingCode
      */
     public function setTblReportingMarketingCode(TblReporting_MarketingCode $TblReporting_MarketingCode)
     {

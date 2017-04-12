@@ -150,7 +150,57 @@ class TblReporting_Part extends Element
      */
     public function fetchMarketingCodeCurrent() {
         $PartMarketingCode = DataWareHouse::useService()->getPartMarketingCodeByPart( $this );
-        return DataWareHouse::useService()->getMarketingCodeByPartMarketingCode( $PartMarketingCode );
+        if( $PartMarketingCode ) {
+            return DataWareHouse::useService()->getMarketingCodeByPartMarketingCode( $PartMarketingCode );
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
+     * @return null|TblReporting_AssortmentGroup|Element
+     */
+    public function fetchAssortmentGroupCurrent() {
+        $PartAssortmentGroup = DataWareHouse::useService()->getPartAssortmentGroupByPart( $this );
+        if( $PartAssortmentGroup ) {
+            return DataWareHouse::useService()->getAssortmentGroupByPartAssortmentGroup( $PartAssortmentGroup );
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
+     * @return array Section|null
+     */
+    public function fetchSectionListCurrent() {
+        /** @var array $PartSectionList */
+        $PartSectionList = DataWareHouse::useService()->getPartSectionByPart( $this );
+        if($PartSectionList) {
+            /** @var TblReporting_Section $EntitySectionList */
+            return DataWareHouse::useService()->getSectionListByPartSectionList( $PartSectionList );
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
+     * @return array Supplier|null
+     */
+    public function fetchSupplierListCurrent() {
+        /** @var array $PartSupplierList */
+        $PartSupplierList = DataWareHouse::useService()->getPartSupplierByPart( $this );
+        if($PartSupplierList) {
+            /** @var TblReporting_Supplier $EntitySupplierList */
+            return DataWareHouse::useService()->getSupplierListByPartSupplierList( $PartSupplierList );
+        }
+        else {
+            return null;
+        }
+
+
     }
 
 }

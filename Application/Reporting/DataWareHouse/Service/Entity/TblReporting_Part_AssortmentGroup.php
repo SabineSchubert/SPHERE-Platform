@@ -56,7 +56,7 @@ class TblReporting_Part_AssortmentGroup extends Element
      */
     public function getTblReportingAssortmentGroup()
     {
-        return ( $this->TblReporting_AssortmentGroup ? DataWareHouse::useService()->getPartById( $this->TblReporting_AssortmentGroup ) : null );
+        return ( $this->TblReporting_AssortmentGroup ? DataWareHouse::useService()->getAssortmentGroupById( $this->TblReporting_AssortmentGroup ) : null );
     }
 
     /**

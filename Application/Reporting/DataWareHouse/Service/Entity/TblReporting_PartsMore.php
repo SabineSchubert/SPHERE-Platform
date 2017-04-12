@@ -100,11 +100,16 @@ class TblReporting_PartsMore extends Element
     }
 
     /**
-     * @param string $Type
+     * @param string $Type(Prozent|Euro)
      */
     public function setType($Type)
     {
-        $this->Type = $Type;
+        if($Type == 'Prozent' or $Type == 'Euro') {
+            $this->Type = $Type;
+        }
+        else {
+            $this->Type = 'Euro';
+        }
     }
 
     /**
