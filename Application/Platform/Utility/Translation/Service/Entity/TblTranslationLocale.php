@@ -3,6 +3,7 @@
 namespace SPHERE\Application\Platform\Utility\Translation\Service\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use SPHERE\Application\Platform\Utility\Translation\TranslationInterface;
 use SPHERE\System\Database\Binding\AbstractEntity;
 
 /**
@@ -14,12 +15,8 @@ use SPHERE\System\Database\Binding\AbstractEntity;
  * @ORM\Table(name="TblTranslationLocale")
  * @ORM\Cache(usage="READ_ONLY")
  */
-class TblTranslationLocale extends AbstractEntity
+class TblTranslationLocale extends AbstractEntity implements TranslationInterface
 {
-
-    const LOCALE_DE_DE = 'de_DE';
-    const LOCALE_EN_US = 'en_US';
-
     const ATTR_IDENTIFIER = 'Identifier';
     const ATTR_NAME = 'Name';
     const ATTR_DESCRIPTION = 'Description';

@@ -1,4 +1,5 @@
 <?php
+
 namespace SPHERE\Application\Platform\Utility\Translation;
 
 use MOC\V\Component\Document\Component\Bridge\Repository\SymfonyYaml;
@@ -7,8 +8,6 @@ use MOC\V\Component\Document\Document;
 use SPHERE\Application\AppTrait;
 use SPHERE\Application\IModuleInterface;
 use SPHERE\Application\Platform\Utility\Translation\Component\Localize;
-use SPHERE\Application\Platform\Utility\Translation\Component\Translate;
-use SPHERE\Application\Platform\Utility\Translation\Service\Entity\TblTranslationLocale;
 use SPHERE\Common\Frontend\Form\Repository\Field\TextField;
 use SPHERE\Common\Frontend\Icon\Repository\Conversation;
 use SPHERE\Common\Frontend\Icon\Repository\Question;
@@ -83,7 +82,7 @@ class Translation implements IModuleInterface
             , array(
                 'Anzahl' => 3 * 1,
                 'Kosten' => $this->doLocalize(3 * 0.5)->getCurrency()
-            ), TblTranslationLocale::LOCALE_DE_DE
+            ), TranslationInterface::LOCALE_DE_DE
         );
 
         $T->getPreset()->appendPattern('!.*?!is', ':P');
@@ -102,10 +101,10 @@ class Translation implements IModuleInterface
 
         $Setting->setContent($Path);
         $Setting->saveFile(new FileParameter($File), 10);
-        Debugger::screenDump(
-            $Path,
-            file_get_contents($File)
-        );
+//        Debugger::screenDump(
+//            $Path,
+//            file_get_contents($File)
+//        );
 
         $PatternList = array_column($Setting->getContent(), 'Pattern');
 //        $PatternList = array_map(function ($Region) {return $Region['Pattern'];}, $Setting->getContent());

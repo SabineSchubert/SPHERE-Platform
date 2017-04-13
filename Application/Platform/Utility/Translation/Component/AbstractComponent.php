@@ -3,6 +3,7 @@ namespace SPHERE\Application\Platform\Utility\Translation\Component;
 
 use MOC\V\Core\HttpKernel\HttpKernel;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
+use SPHERE\Application\Platform\Utility\Translation\TranslationInterface;
 use SPHERE\System\Cache\CacheFactory;
 use SPHERE\System\Cache\Handler\MemoryHandler;
 
@@ -10,7 +11,7 @@ use SPHERE\System\Cache\Handler\MemoryHandler;
  * Class AbstractComponent
  * @package SPHERE\Application\Platform\Utility\Translation\Component
  */
-abstract class AbstractComponent
+abstract class AbstractComponent implements TranslationInterface
 {
     /**
      * @return string

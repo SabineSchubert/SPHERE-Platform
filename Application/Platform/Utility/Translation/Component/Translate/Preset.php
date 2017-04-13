@@ -4,7 +4,7 @@ namespace SPHERE\Application\Platform\Utility\Translation\Component\Translate;
 
 use MOC\V\Component\Template\Template;
 use SPHERE\Application\Platform\Utility\Translation\Component\AbstractComponent;
-use SPHERE\Application\Platform\Utility\Translation\Service\Entity\TblTranslationLocale;
+use SPHERE\Application\Platform\Utility\Translation\TranslationInterface;
 
 /**
  * Class Preset
@@ -14,7 +14,7 @@ class Preset extends AbstractComponent
 {
 
     /** @var string $DefaultLocale */
-    private $DefaultLocale = TblTranslationLocale::LOCALE_EN_US;
+    private $DefaultLocale = TranslationInterface::LOCALE_EN_US;
     /** @var array $PatternList */
     private $PatternList = array();
     private $DefaultPattern = '';
@@ -29,8 +29,11 @@ class Preset extends AbstractComponent
      * @param Parameter $Parameter
      * @param string $DefaultLocale
      */
-    public function __construct($DefaultPattern, Parameter $Parameter = null, $DefaultLocale = TblTranslationLocale::LOCALE_EN_US)
-    {
+    public function __construct(
+        $DefaultPattern,
+        Parameter $Parameter = null,
+        $DefaultLocale = TranslationInterface::LOCALE_EN_US
+    ) {
         $this->setDefaultPattern($DefaultPattern);
         if (null === $Parameter) {
             $Parameter = new Parameter();

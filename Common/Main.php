@@ -11,6 +11,7 @@ use SPHERE\Application\Dispatcher;
 use SPHERE\Application\Eila\Eila;
 use SPHERE\Application\OtherApplication\OtherApplication;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Access;
+use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
 use SPHERE\Application\Platform\Gatekeeper\Consumer\Consumer;
 use SPHERE\Application\Platform\Platform;
 use SPHERE\Application\Platform\System;
@@ -23,6 +24,7 @@ use SPHERE\Common\Frontend\Icon\Repository\Hospital;
 use SPHERE\Common\Frontend\Icon\Repository\Info;
 use SPHERE\Common\Frontend\Icon\Repository\Shield;
 use SPHERE\Common\Frontend\Icon\Repository\Success;
+use SPHERE\Common\Frontend\Layout\Repository\Label;
 use SPHERE\Common\Frontend\Layout\Repository\Panel;
 use SPHERE\Common\Frontend\Layout\Repository\PullRight;
 use SPHERE\Common\Frontend\Layout\Structure\Layout;
@@ -265,6 +267,28 @@ class Main extends Extension
 
         Platform::registerCluster();
         Api::registerCluster();
+
+/*
+        $TblAccount = Account::useService()->getAccountBySession();
+//        $TblIdentification = Account::useService()->getIdentificationByName('System');
+        if ($TblAccount //&& $TblIdentification) {
+//            if ($TblAccount->getServiceTblIdentification()
+//                && $TblAccount->getServiceTblIdentification()->getId() == $TblIdentification->getId()
+            ) {
+                Main::getDisplay()->addServiceNavigation(
+                    new Link(
+                        new Link\Route('/Setting/MyAccount/Consumer'),
+                        new Link\Name(
+                            new Bold(new Label(
+                                'Mandant '
+                                . ($TblAccount->getServiceTblConsumer() ? $TblAccount->getServiceTblConsumer()->getAcronym() : '')
+                                , Label::LABEL_TYPE_DANGER))
+                        )
+                    )
+                );
+            }
+//        }
+*/
     }
 
     /**
@@ -368,7 +392,7 @@ class Main extends Extension
         Training::registerCluster();
         Eila::registerCluster();
         OtherApplication::registerCluster();
-        Reporting::registerCluster();
-        Competition::registerCluster();
+//        Reporting::registerCluster();
+//        Competition::registerCluster();
     }
 }

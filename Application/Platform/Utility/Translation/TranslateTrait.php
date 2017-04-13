@@ -1,11 +1,11 @@
 <?php
+
 namespace SPHERE\Application\Platform\Utility\Translation;
 
 use SPHERE\Application\Platform\Utility\Translation\Component\Translate;
 use SPHERE\Application\Platform\Utility\Translation\Component\Translate\Group;
 use SPHERE\Application\Platform\Utility\Translation\Component\Translate\Parameter;
 use SPHERE\Application\Platform\Utility\Translation\Component\Translate\Preset;
-use SPHERE\Application\Platform\Utility\Translation\Service\Entity\TblTranslationLocale;
 
 /**
  * Class TranslateTrait
@@ -20,7 +20,7 @@ trait TranslateTrait
      * @param string $Locale
      * @return Translate
      */
-    public function doTranslate($Group, $Pattern, $Parameter = array(), $Locale = TblTranslationLocale::LOCALE_EN_US)
+    public function doTranslate($Group, $Pattern, $Parameter = array(), $Locale = TranslationInterface::LOCALE_EN_US)
     {
         if (empty($Parameter)) {
             return new Translate(
