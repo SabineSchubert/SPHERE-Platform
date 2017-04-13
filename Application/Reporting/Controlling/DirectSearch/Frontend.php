@@ -11,10 +11,13 @@ namespace SPHERE\Application\Reporting\Controlling\DirectSearch;
 
 use Doctrine\Common\Util\Debug;
 use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_MarketingCode;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part_Supplier;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_PartsMore;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Price;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_ProductGroup;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_ProductManager;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Section;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Supplier;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
@@ -222,14 +225,18 @@ class Frontend extends Extension
 		$this->buttonStageDirectSearch($Stage);
 
 		$LayoutGroupDirectSearch = '';
+		$ErrorProductManager = '';
 		if( $Search ) {
-			if (empty($Result)) {
+
+		    $EntityProductManager = DataWareHouse::useService()->getProductManagerById( $Search['ProductManager'] );
+
+			if (!empty($EntityProductManager)) {
 				$LayoutGroupDirectSearch =
 					new LayoutGroup(
 						array(
 							new LayoutRow(
 								new LayoutColumn(
-									$this->tableMasterDataProductManager()
+									$this->tableMasterDataProductManager( $EntityProductManager )
 									, 6
 								)
 							),
@@ -253,7 +260,7 @@ class Frontend extends Extension
 						new Title('Direktsuche')
 					);
 			} else {
-				$Table = new Warning('Der Produktmanager konnte nicht gefunden werden.');
+				$ErrorProductManager = new Warning('Es wurde kein gültiger Produktmanager ausgewählt.');
 			}
 		}
 
@@ -262,11 +269,18 @@ class Frontend extends Extension
 				new LayoutGroup(
 					new LayoutRow(
 						new LayoutColumn(
-							$this->fromSearchProductManager()
+							$this->fromSearchProductManager( $Search )
 							,4
 						)
 					)
 				),
+				new LayoutGroup(
+				    new LayoutRow(
+				        new LayoutColumn(
+				            $ErrorProductManager
+                        )
+                    )
+                ),
 				$LayoutGroupDirectSearch
 			))
 		);
@@ -279,14 +293,19 @@ class Frontend extends Extension
 		$this->buttonStageDirectSearch($Stage);
 
 		$LayoutGroupDirectSearch = '';
+		$ErrorMarketingCode = '';
+
 		if( $Search ) {
-			if (empty($Result)) {
+
+		    $EntityMarketingCode = DataWareHouse::useService()->getMarketingCodeByNumber( $Search['MarketingCode'] );
+
+			if (!empty($EntityMarketingCode)) {
 				$LayoutGroupDirectSearch =
 					new LayoutGroup(
 						array(
 							new LayoutRow(
 								new LayoutColumn(
-									$this->tableMasterDataMarketingCode()
+									$this->tableMasterDataMarketingCode( $EntityMarketingCode )
 									, 6
 								)
 							),
@@ -310,7 +329,7 @@ class Frontend extends Extension
 						new Title('Direktsuche')
 					);
 			} else {
-				$Table = new Warning('Der Marketingcode konnte nicht gefunden werden!');
+                $ErrorMarketingCode = new Warning('Der Marketingcode konnte nicht gefunden werden!');
 			}
 		}
 
@@ -323,6 +342,13 @@ class Frontend extends Extension
 						,4)
 					)
 				),
+				new LayoutGroup(
+				    new LayoutRow(
+				        new LayoutColumn(
+                            $ErrorMarketingCode
+                        )
+                    )
+                ),
 				$LayoutGroupDirectSearch
 			))
 		);
@@ -355,9 +381,13 @@ class Frontend extends Extension
 		);
 	}
 
-	private function fromSearchProductManager()
+	private function fromSearchProductManager( $Search )
 	{
-		/*array('{{Name}} {{Bereich}}' => $PMData)*/
+		$EntityProductManager = DataWareHouse::useService()->getProductManagerAll();
+
+//		$Global = $this->getGlobal();
+//      $Global->POST['Search']['ProductManager'] = 1;
+//      $Global->savePost();
 
 		return new Form(
 			new FormGroup(
@@ -365,8 +395,12 @@ class Frontend extends Extension
 					array(
 						new FormColumn(
 							new Panel('Suche', array(
-								(new SelectBox('Search[ProductManager]', 'Produktmanager',  array(0 => '-[ Nicht ausgewählt ]-', 'AS' => 'Andreas Schneider', 'SK' => 'Stefan Klinke', 'SH' => 'Stefan Hahn') ))
-								->setRequired()
+								(new SelectBox('Search[ProductManager]', 'Produktmanager',
+//                                  array(0 => '-[ Nicht ausgewählt ]-', 'AS' => 'Andreas Schneider', 'SK' => 'Stefan Klinke', 'SH' => 'Stefan Hahn')
+                                    array( '{{Name}} {{Department}}' => $EntityProductManager )
+//                                    array( 'Name' => $EntityProductManager )
+                                ))
+//								->setRequired() //ToDo: das gibt es bei der SelectBox noch nicht
 							), Panel::PANEL_TYPE_INFO)
 						),
 					)
@@ -374,20 +408,26 @@ class Frontend extends Extension
 			)
 			, array(
 				new Primary('anzeigen', new Search()),
-				new Reset('zurücksetzen')
+//				new Reset('zurücksetzen')
 			)
 		);
 	}
 
 	private function fromSearchMarketingCode()
 	{
+	    $EntityMarketingCode = DataWareHouse::useService()->getMarketingCodeAll();
+
 		return new Form(
 			new FormGroup(
 				new FormRow(
 					array(
 						new FormColumn(
 							new Panel('Suche', array(
-								(new AutoCompleter('Search[MarketingCode]', 'Marketingcode', 'Marketingcode eingeben', array('1P123')))
+								(new AutoCompleter('Search[MarketingCode]', 'Marketingcode', 'Marketingcode eingeben',
+//                                  array('1P123')
+                                    array( 'Number' => $EntityMarketingCode )
+                                ))
+
 								->setRequired()
 							), Panel::PANEL_TYPE_INFO)
 						),
@@ -514,68 +554,190 @@ class Frontend extends Extension
         }
 	}
 
-	private function tableMasterDataMarketingCode() {
-		return new Table(
-			array(
-				array(
-					'Description' => 'Marketingcode',
-					'Value' => '1P23'
-				),
-				array(
-					'Description' => 'Warengruppe',
-					'Value' => '1P23'
-				),
-				array(
-					'Description' => 'P+M',
-					'Value' => '5%'
-				),
-				array(
-					'Description' => 'Anzahl TNR',
-					'Value' => 'Andreas Schneider'
-				),
-				array(
-					'Description' => 'Produktmanager',
-					'Value' => 'Andreas Schneider (Bereich)'
-				),
-			),
-			new TableTitle('Allgemeine Informationen'),
-			array( 'Description' => 'Bezeichnung', 'Value' => '' ),
-			array(
-				"columnDefs" => array(
-			        array('width' => '40%', 'targets' => '0' ),
-					array('width' => '60%', 'targets' => '1' )
-				),
-				"paging"         => false, // Deaktivieren Blättern
-			    "iDisplayLength" => -1,    // Alle Einträge zeigen
-			    "searching"      => false, // Deaktivieren Suchen
-			    "info"           => false,  // Deaktivieren Such-Info
-				"sort"           => false   //Deaktivierung Sortierung der Spalten
-			)
-		);
+	private function tableMasterDataMarketingCode( TblReporting_MarketingCode $EntityMarketingCode ) {
+
+	    if($EntityMarketingCode) {
+
+            $EntityProductManager = $EntityMarketingCode->fetchProductManagerCurrent();
+            $EntityPartsMore = $EntityMarketingCode->fetchPartsMoreCurrent();
+
+            //Warengruppe
+            $EntityProductGroupList = $EntityMarketingCode->fetchProductGroupListCurrent();
+            $ProductGroupText = '';
+            if($EntityProductGroupList) {
+                /** @var TblReporting_ProductGroup $ProductGroup */
+                foreach($EntityProductGroupList AS $Index => $ProductGroup) {
+                    if( $Index != 0 ) {
+                        $ProductGroupText .= '<br/>';
+                    }
+                    $ProductGroupText .= $ProductGroup->getNumber().' - '.$ProductGroup->getName();
+                }
+            }
+
+            $EntityPartList = $EntityMarketingCode->fetchPartListCurrent();
+
+            return new Table(
+                array(
+                    array(
+                        'Description' => 'Marketingcode',
+                        'Value' => $EntityMarketingCode->getNumber() . ' - '. $EntityMarketingCode->getName()
+                    ),
+                    array(
+                        'Description' => 'Warengruppe',
+                        'Value' => $ProductGroupText
+                    ),
+                    array(
+                        'Description' => 'P+M',
+                        'Value' => (( $EntityPartsMore )? (( $EntityPartsMore->getType() == 'Prozent' )? number_format( $EntityPartsMore->getValue(), 2, ',', '.' ).' %': number_format( $EntityPartsMore->getValue(), 2, ',', '.' ).' €') : '' )
+                    ),
+                    array( //ToDo: ersetzen
+                        'Description' => 'Anzahl TNR',
+                        'Value' => count($EntityPartList)
+                    ),
+                    array(
+                        'Description' => 'Produktmanager',
+                        'Value' => ( ( $EntityProductManager )? $EntityProductManager->getName().' ('.$EntityProductManager->getDepartment().')' : '' )
+                    ),
+                ),
+                new TableTitle('Allgemeine Informationen'),
+                array( 'Description' => 'Bezeichnung', 'Value' => '' ),
+                array(
+                    "columnDefs" => array(
+                        array('width' => '40%', 'targets' => '0' ),
+                        array('width' => '60%', 'targets' => '1' )
+                    ),
+                    "paging"         => false, // Deaktivieren Blättern
+                    "iDisplayLength" => -1,    // Alle Einträge zeigen
+                    "searching"      => false, // Deaktivieren Suchen
+                    "info"           => false,  // Deaktivieren Such-Info
+                    "sort"           => false   //Deaktivierung Sortierung der Spalten
+                )
+            );
+        }
+        else {
+	        return false;
+        }
 	}
 
-	private function tableMasterDataProductManager() {
+	private function tableMasterDataProductManager( TblReporting_ProductManager $EntityProductManager ) {
+
+	    if( $EntityProductManager ) {
+
+            //Marketingcode
+            $EntityMarketingCodeList = $EntityProductManager->fetchMarketingCodeListCurrent();
+            $EntityProductGroupList = null;
+            $EntityPartsMoreList = null;
+            $EntityPartList = null;
+            $MarketingCodeText = '';
+            $ProductGroupText = '';
+            $PartsMoreText = '';
+            $PartText = '';
+            if ($EntityMarketingCodeList) {
+
+                //ToDo: optimieren (zuviel foreach)
+
+                /** @var TblReporting_MarketingCode $MarketingCode */
+                foreach ($EntityMarketingCodeList AS $Index => $MarketingCode) {
+                    if ($Index != 0) {
+                        $MarketingCodeText .= ', ';
+                    }
+                    $MarketingCodeText .= $MarketingCode->getNumber() . ' - ' . $MarketingCode->getName();
+
+                    $EntityProductGroupList[$MarketingCode->getNumber()] = $MarketingCode->fetchProductGroupListCurrent();
+
+                    $EntityPartsMoreList[$MarketingCode->getNumber()] = $MarketingCode->fetchPartsMoreCurrent();
+
+                    $EntityPartList[$MarketingCode->getNumber()] = $MarketingCode->fetchPartListCurrent();
+
+                }
+
+                //ProductGruppe
+                if ($EntityProductGroupList) {
+                    $Z = 0;
+                    foreach ($EntityProductGroupList AS $MarketingCode => $ProductGroupList) {
+                        if ($Z !== 0) {
+                            $ProductGroupText .= '<br/>';
+                        }
+                        $Z++;
+                        $ProductGroupText .= $MarketingCode . ': ';
+                        if (count((array)$ProductGroupList) == 0) {
+                            $ProductGroupText .= 'unbekannt';
+                        } else {
+                            /** @var TblReporting_ProductGroup $ProductGroup */
+                            foreach ((array)$ProductGroupList AS $Index => $ProductGroup) {
+                                if ($Index !== 0) {
+                                    $ProductGroupText .= ', ';
+                                }
+                                $ProductGroupText .= $ProductGroup->getNumber() . ' - ' . $ProductGroup->getName();
+                            }
+                        }
+                    }
+                }
+
+                //PartsMore
+                if ($EntityPartsMoreList) {
+                    $Z = 0;
+                    /** @var TblReporting_PartsMore $EntityPartsMore */
+                    foreach ($EntityPartsMoreList AS $MarketingCode => $EntityPartsMore) {
+                        if ($EntityPartsMore) {
+                            if ($Z !== 0) {
+                                $PartsMoreText .= '<br/>';
+                            }
+                            $Z++;
+                            $PartsMoreText .= $MarketingCode . ': ' . (($EntityPartsMore->getType() == 'Prozent') ? number_format($EntityPartsMore->getValue(),
+                                        2, ',', '.') . ' %' : number_format($EntityPartsMore->getValue(), 2, ',',
+                                        '.') . ' €');
+                        }
+                    }
+                }
+
+                //Anzahl Teilenummern
+                if ($EntityPartList) {
+                    $Z = 0;
+                    /** @var TblReporting_Part[] $EntityPart */
+                    foreach ($EntityPartList AS $MarketingCode => $EntityPart) {
+                        if ($Z !== 0) {
+                            $PartText .= '<br/>';
+                        }
+                        $Z++;
+
+                        if ($EntityPart) {
+                            $PartText .= $MarketingCode . ': ' . count($EntityPart);
+                        } else {
+                            $PartText .= $MarketingCode . ': 0';
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            $MarketingCodeText = '';
+            $ProductGroupText = '';
+            $PartsMoreText = '';
+            $PartText = '';
+	    }
+
 		return new Table(
 			array(
 				array(
 					'Description' => 'Marketingcode',
-					'Value' => '1P23'
+					'Value' => $MarketingCodeText
 				),
 				array(
 					'Description' => 'Warengruppe',
-					'Value' => '1P23'
+					'Value' => $ProductGroupText
 				),
 				array(
 					'Description' => 'P+M',
-					'Value' => '5%'
+					'Value' => $PartsMoreText
 				),
 				array(
 					'Description' => 'Anzahl TNR',
-					'Value' => 'Andreas Schneider'
+					'Value' => $PartText
 				),
 				array(
 					'Description' => 'Produktmanager',
-					'Value' => 'Andreas Schneider (Bereich)'
+					'Value' => $EntityProductManager->getName() . ' (' . $EntityProductManager->getDepartment() . ')'
 				),
 			),
 			new TableTitle('Allgemeine Informationen'),

@@ -99,6 +99,16 @@ class Data extends AbstractData
     }
 
     /**
+     * @return null|Element[]|TblReporting_ProductManager[]
+     */
+    public function getProductManagerAll() {
+        $TableProductManager = new TblReporting_ProductManager();
+        return $this->getCachedEntityList( __METHOD__, $this->getEntityManager(), $TableProductManager->getEntityShortName(), array(
+            $TableProductManager::ATTR_NAME => self::ORDER_ASC
+        ) );
+    }
+
+    /**
      * @param int $Id
      * @return null|Element[]|TblReporting_ProductManager[]
      */
@@ -147,6 +157,27 @@ class Data extends AbstractData
     }
 
     /**
+     * @param string $Number
+     * @return null|Element|TblReporting_MarketingCode
+     */
+    public function getMarketingCodeByNumber( $Number ) {
+        $TableMarktingCode = new TblReporting_MarketingCode();
+        return $EntityMarketingCode = $this->getCachedEntityBy( __METHOD__, $this->getEntityManager(), $TableMarktingCode->getEntityShortName(), array(
+            $TableMarktingCode::ATTR_NUMBER => $Number
+        ) );
+    }
+
+    /**
+     * @return null|Element[]|TblReporting_MarketingCode[]
+     */
+    public function getMarketingCodeAll() {
+        $TableMarketingCode = new TblReporting_MarketingCode();
+        return $this->getCachedEntityList( __METHOD__, $this->getEntityManager(), $TableMarketingCode->getEntityShortName(), array(
+            $TableMarketingCode::ATTR_NUMBER => self::ORDER_ASC
+        ) );
+    }
+
+    /**
      * @param int $Id
      * @return null|Element|TblReporting_MarketingCode
      */
@@ -189,7 +220,75 @@ class Data extends AbstractData
         }
     }
 
+    /**
+    * @param TblReporting_ProductManager $TblReporting_ProductManager
+    * @return null|Element[]|TblReporting_ProductManager_MarketingCode[]
+    */
+   public function getProductManagerMarketingCodeByProductManager( TblReporting_ProductManager $TblReporting_ProductManager ) {
+       $TableProduktManagerMarketingCode = new TblReporting_ProductManager_MarketingCode();
+       $EntityProductManagerMarketingCodeList = $this->getCachedEntityListBy( __METHOD__, $this->getEntityManager(), $TableProduktManagerMarketingCode->getEntityShortName(), array(
+           $TableProduktManagerMarketingCode::TBL_REPORTING_PRODUCT_MANAGER => $TblReporting_ProductManager->getId()
+       ), array( $TableProduktManagerMarketingCode::ENTITY_CREATE => self::ORDER_DESC ) );
+       if($EntityProductManagerMarketingCodeList) {
+           return $EntityProductManagerMarketingCodeList;
+       }
+       else {
+           return null;
+       }
+   }
 
+    /**
+     * @param array $EntityProductManagerMarketingCodeList
+     * @return array $MarketingCodeList|null
+     */
+   public function getMarketingCodeByProductManagerMarketingCode( $EntityProductManagerMarketingCodeList ) {
+       if( $EntityProductManagerMarketingCodeList ) {
+           $MarketingCodeList = null;
+           /** @var TblReporting_ProductManager_MarketingCode $ProductManagerMarketingCode */
+           foreach( $EntityProductManagerMarketingCodeList AS $ProductManagerMarketingCode ) {
+               $MarketingCodeList[] = $this->getMarketingCodeById( $ProductManagerMarketingCode->getTblReportingMarketingCode()->getId() );
+           }
+           return $MarketingCodeList;
+       }
+       else {
+           return null;
+       }
+   }
+
+    /**
+     * @param TblReporting_MarketingCode $TblReporting_MarketingCode
+     * @return null|Element[]|$EntityPartMarketingCodeList[]
+     */
+   public function getPartMarketingCodeByMarketingCode( TblReporting_MarketingCode $TblReporting_MarketingCode ) {
+       $TablePartMarketingCode = new TblReporting_Part_MarketingCode();
+       $EntityPartMarketingCodeList = $this->getCachedEntityListBy( __METHOD__, $this->getEntityManager(), $TablePartMarketingCode->getEntityShortName(), array(
+           $TablePartMarketingCode::TBL_REPORTING_MARKETING_CODE => $TblReporting_MarketingCode
+       ) );
+       if($EntityPartMarketingCodeList) {
+           return $EntityPartMarketingCodeList;
+       }
+       else {
+           return null;
+       }
+   }
+
+    /**
+     * @param array $EntityPartMarketingCodeList
+     * @return array $PartList|null
+     */
+   public function getPartByPartMarketingCode( $EntityPartMarketingCodeList ) {
+       if($EntityPartMarketingCodeList) {
+            $PartList = null;
+            /** @var TblReporting_Part_MarketingCode $PartMarketingCode */
+           foreach( $EntityPartMarketingCodeList AS $PartMarketingCode ) {
+               $PartList[] = $this->getPartById( $PartMarketingCode->getTblReportingPart()->getId() );
+            }
+            return $PartList;
+       }
+       else {
+           return null;
+       }
+   }
 
     /**
      * @param int $Id
@@ -228,7 +327,7 @@ class Data extends AbstractData
             $ProductGroupList = null;
             /** @var TblReporting_MarketingCode_ProductGroup $MarketingCodeProductGroup */
             foreach( $EntityMarketingCodeProductGroupList AS $MarketingCodeProductGroup ) {
-                $ProductGroupList[] = $this->getProductGroupById( $MarketingCodeProductGroup->getId() );
+                $ProductGroupList[] = $this->getProductGroupById( $MarketingCodeProductGroup->getTblReportingProductGroup()->getId() );
             }
             return $ProductGroupList;
         }

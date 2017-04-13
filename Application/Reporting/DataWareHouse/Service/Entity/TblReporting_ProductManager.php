@@ -68,4 +68,14 @@ class TblReporting_ProductManager extends Element
     {
         $this->Department = $Department;
     }
+
+    public function fetchMarketingCodeListCurrent() {
+        $ProductManagerMarketingCode = DataWareHouse::useService()->getProductManagerMarketingCodeByProductManager( $this );
+        if( $ProductManagerMarketingCode ) {
+            return DataWareHouse::useService()->getMarketingCodeByProductManagerMarketingCode( $ProductManagerMarketingCode );
+        }
+        else {
+            return null;
+        }
+    }
 }

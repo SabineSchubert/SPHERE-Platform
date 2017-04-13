@@ -70,11 +70,33 @@ class Service extends AbstractService
     }
 
     /**
+     * @return null|TblReporting_ProductManager[]|Element[]
+     */
+    public function getProductManagerAll() {
+        return ( new Data( $this->getBinding() ) )->getProductManagerAll();
+    }
+
+    /**
      * @param int $Id
      * @return null|TblReporting_MarketingCode|Element
      */
     public function getMarketingCodeById( $Id ) {
         return ( new Data( $this->getBinding() ) )->getMarketingCodeById( $Id );
+    }
+
+    /**
+     * @param string $Number
+     * @return null|TblReporting_MarketingCode|Element
+     */
+    public function getMarketingCodeByNumber( $Number ) {
+        return ( new Data( $this->getBinding() ) )->getMarketingCodeByNumber( $Number );
+    }
+
+    /**
+     * @return null|TblReporting_MarketingCode[]|Element[]
+     */
+    public function getMarketingCodeAll() {
+        return ( new Data( $this->getBinding() ) )->getMarketingCodeAll();
     }
 
     /**
@@ -92,6 +114,38 @@ class Service extends AbstractService
     public function getProductManagerByProductManagerMarketingCode( TblReporting_ProductManager_MarketingCode $TblReporting_ProductManager_MarketingCode ) {
         return ( new Data( $this->getBinding() ) )->getProductManagerByProductManagerMarketingCode( $TblReporting_ProductManager_MarketingCode );
     }
+
+    /**
+     * @param TblReporting_ProductManager $TblReporting_ProductManager
+     * @return null|TblReporting_ProductManager_MarketingCode[]|Element[]
+     */
+    public function getProductManagerMarketingCodeByProductManager( TblReporting_ProductManager $TblReporting_ProductManager ) {
+        return ( new Data( $this->getBinding() ) )->getProductManagerMarketingCodeByProductManager( $TblReporting_ProductManager );
+    }
+
+    /**
+     * @param array $EntityProductManagerMarketingCodeList
+     * @return array $MarketingCodeList
+     */
+    public function getMarketingCodeByProductManagerMarketingCode( $EntityProductManagerMarketingCodeList ) {
+        return ( new Data( $this->getBinding() ) )->getMarketingCodeByProductManagerMarketingCode( $EntityProductManagerMarketingCodeList );
+    }
+
+    /**
+     * @param TblReporting_MarketingCode $TblReporting_MarketingCode
+     * @return null|Element[]|TblReporting_Part_MarketingCode[]
+     */
+   public function getPartMarketingCodeByMarketingCode( TblReporting_MarketingCode $TblReporting_MarketingCode ) {
+       return ( new Data( $this->getBinding() ) )->getPartMarketingCodeByMarketingCode( $TblReporting_MarketingCode );
+   }
+
+   /**
+    * @param array $EntityPartMarketingCodeList
+    * @return array $PartList
+    */
+   public function getPartByPartMarketingCode( $EntityPartMarketingCodeList ) {
+       return ( new Data( $this->getBinding() ) )->getPartByPartMarketingCode( $EntityPartMarketingCodeList );
+   }
 
     /**
      * @param int $Id

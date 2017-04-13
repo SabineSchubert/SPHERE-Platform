@@ -105,4 +105,17 @@ class TblReporting_MarketingCode extends Element
         }
     }
 
+    /**
+     * @return array $PartList|null
+     */
+    public function fetchPartListCurrent() {
+        $PartMarketingCode = DataWareHouse::useService()->getPartMarketingCodeByMarketingCode( $this );
+        if( $PartMarketingCode ) {
+            return DataWareHouse::useService()->getPartByPartMarketingCode( $PartMarketingCode );
+        }
+        else {
+            return null;
+        }
+    }
+
 }
