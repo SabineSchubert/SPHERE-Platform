@@ -18,6 +18,7 @@ class DataWareHouse implements IApplicationInterface, IModuleInterface
 
 	public static function registerApplication()
 	{
+        self::registerModule();
 	}
 
     public static function registerModule()
@@ -26,7 +27,7 @@ class DataWareHouse implements IApplicationInterface, IModuleInterface
     }
 
     /**
-     * @return mixed
+     * @return Service
      */
     public static function useService()
     {

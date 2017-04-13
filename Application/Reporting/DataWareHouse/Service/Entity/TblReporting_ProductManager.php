@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Cache;
 use Doctrine\ORM\Mapping\Entity;
+use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\System\Database\Fitting\Element;
 
 
@@ -37,7 +38,7 @@ class TblReporting_ProductManager extends Element
     protected $Department;
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getName()
     {
@@ -45,7 +46,7 @@ class TblReporting_ProductManager extends Element
     }
 
     /**
-     * @param mixed $Name
+     * @param string $Name
      */
     public function setName($Name)
     {
@@ -53,7 +54,7 @@ class TblReporting_ProductManager extends Element
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getDepartment()
     {
@@ -61,11 +62,20 @@ class TblReporting_ProductManager extends Element
     }
 
     /**
-     * @param mixed $Department
+     * @param string $Department
      */
     public function setDepartment($Department)
     {
         $this->Department = $Department;
     }
 
+    public function fetchMarketingCodeListCurrent() {
+        $ProductManagerMarketingCode = DataWareHouse::useService()->getProductManagerMarketingCodeByProductManager( $this );
+        if( $ProductManagerMarketingCode ) {
+            return DataWareHouse::useService()->getMarketingCodeByProductManagerMarketingCode( $ProductManagerMarketingCode );
+        }
+        else {
+            return null;
+        }
+    }
 }

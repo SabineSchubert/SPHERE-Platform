@@ -2,29 +2,29 @@
 /**
  * Created by PhpStorm.
  * User: schubert
- * Date: 04.04.2017
- * Time: 10:08
+ * Date: 03.04.2017
+ * Time: 15:11
  */
 
 namespace SPHERE\Application\Reporting\DataWareHouse\Service\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Cache;
+use Doctrine\ORM\Mapping\Entity;
 use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\System\Database\Fitting\Element;
 
 /**
  * @Entity
- * @Table(name="TblReporting_Part_Section")
+ * @Table(name="TblReporting_Part_Brand")
  * @Cache(usage="READ_ONLY")
  */
-class TblReporting_Part_Section extends Element
+class TblReporting_Part_Brand extends Element
 {
     const TBL_REPORTING_PART = 'TblReporting_Part';
-    const TBL_REPORTING_SECTION = 'TblReporting_Section';
+    const TBL_REPORTING_BRAND = 'TblReporting_Brand';
 
     /**
      * @Column(type="bigint")
@@ -34,7 +34,7 @@ class TblReporting_Part_Section extends Element
     /**
      * @Column(type="bigint")
      */
-    protected $TblReporting_Section;
+    protected $TblReporting_Brand;
 
     /**
      * @return null|TblReporting_Part
@@ -53,18 +53,19 @@ class TblReporting_Part_Section extends Element
     }
 
     /**
-     * @return null|TblReporting_Section
+     * @return null|TblReporting_Brand
      */
-    public function getTblReportingSection()
+    public function getTblReportingBrand()
     {
-        return ( $this->TblReporting_Section ? DataWareHouse::useService()->getSectionById( $this->TblReporting_Section ) : null );
+        return ( $this->TblReporting_Brand ? DataWareHouse::useService()->getBrandById( $this->TblReporting_Brand ) : null );
     }
 
     /**
-     * @param null|TblReporting_Section $TblReporting_Section
+     * @param null|TblReporting_Brand $TblReporting_Brand
      */
-    public function setTblReportingSection(TblReporting_Section $TblReporting_Section)
+    public function setTblReportingBrand(TblReporting_Brand $TblReporting_Brand)
     {
-        $this->TblReporting_Section = ( $TblReporting_Section ? $TblReporting_Section->getId() : null );
+        $this->TblReporting_Brand = ( $TblReporting_Brand ? $TblReporting_Brand->getId() : null );
     }
+
 }

@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping\Cache;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
+use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\System\Database\Fitting\Element;
 
 /**
@@ -26,6 +27,8 @@ class TblReporting_Sales extends Element
     const ATTR_QUANTITY = 'Quantity';
     const ATTR_SALES_GROSS = 'SalesGross';
     const ATTR_SALES_NET = 'SalesNet';
+
+    const TBL_REPORTING_PART = 'TblReporting_Part';
 
     /**
      * @Column(type="bigint")
@@ -58,87 +61,87 @@ class TblReporting_Sales extends Element
     protected $SalesNet;
 
     /**
-     * @return mixed
+     * @return null|TblReporting_Part
      */
     public function getTblReportingPart()
     {
-        return $this->TblReporting_Part;
+        return ( $this->TblReporting_Part ? DataWareHouse::useService()->getPartById( $this->TblReporting_Part ) : null );
     }
 
     /**
-     * @param mixed $TblReporting_Part
+     * @param null|TblReporting_Part $TblReporting_Part
      */
-    public function setTblReportingPart($TblReporting_Part)
+    public function setTblReportingPart( TblReporting_Part $TblReporting_Part = null )
     {
-        $this->TblReporting_Part = $TblReporting_Part;
+        $this->TblReporting_Part = ($TblReporting_Part ? $TblReporting_Part->getId() : null );
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getMonth()
     {
-        return $this->Month;
+        return (int)$this->Month;
     }
 
     /**
-     * @param mixed $Month
+     * @param int $Month
      */
     public function setMonth($Month)
     {
-        $this->Month = $Month;
+        $this->Month = (int)$Month;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getYear()
     {
-        return $this->Year;
+        return (int)$this->Year;
     }
 
     /**
-     * @param mixed $Year
+     * @param int $Year
      */
     public function setYear($Year)
     {
-        $this->Year = $Year;
+        $this->Year = (int)$Year;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getQuantity()
     {
-        return $this->Quantity;
+        return (int)$this->Quantity;
     }
 
     /**
-     * @param mixed $Quantity
+     * @param int $Quantity
      */
     public function setQuantity($Quantity)
     {
-        $this->Quantity = $Quantity;
+        $this->Quantity = (int)$Quantity;
     }
 
     /**
-     * @return mixed
+     * @return float
      */
     public function getSalesGross()
     {
-        return $this->SalesGross;
+        return (float)$this->SalesGross;
     }
 
     /**
-     * @param mixed $SalesGross
+     * @param float $SalesGross
      */
     public function setSalesGross($SalesGross)
     {
-        $this->SalesGross = $SalesGross;
+        $this->SalesGross = round((float)$SalesGross,4);
     }
 
     /**
-     * @return mixed
+     * @return float
      */
     public function getSalesNet()
     {
@@ -146,11 +149,11 @@ class TblReporting_Sales extends Element
     }
 
     /**
-     * @param mixed $SalesNet
+     * @param float $SalesNet
      */
     public function setSalesNet($SalesNet)
     {
-        $this->SalesNet = $SalesNet;
+        $this->SalesNet = round((float)$SalesNet, 4);
     }
 
 

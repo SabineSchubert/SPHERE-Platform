@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Cache;
+use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\System\Database\Fitting\Element;
 
 /**
@@ -22,6 +23,9 @@ use SPHERE\System\Database\Fitting\Element;
  */
 class TblReporting_Part_MarketingCode extends Element
 {
+    const TBL_REPORTING_PART = 'TblReporting_Part';
+    const TBL_REPORTING_MARKETING_CODE = 'TblReporting_MarketingCode';
+
     /**
      * @Column(type="bigint")
      */
@@ -33,35 +37,35 @@ class TblReporting_Part_MarketingCode extends Element
     protected $TblReporting_MarketingCode;
 
     /**
-     * @return mixed
+     * @return null|TblReporting_Part
      */
     public function getTblReportingPart()
     {
-        return $this->TblReporting_Part;
+        return ( $this->TblReporting_Part ? DataWareHouse::useService()->getPartById( $this->TblReporting_Part ) : null );
     }
 
     /**
-     * @param mixed $TblReporting_Part
+     * @param null|TblReporting_Part $TblReporting_Part
      */
-    public function setTblReportingPart($TblReporting_Part)
+    public function setTblReportingPart(TblReporting_Part $TblReporting_Part)
     {
-        $this->TblReporting_Part = $TblReporting_Part;
+        $this->TblReporting_Part = ( $TblReporting_Part ? $TblReporting_Part->getId() : null );
     }
 
     /**
-     * @return mixed
+     * @return null|TblReporting_MarketingCode
      */
     public function getTblReportingMarketingCode()
     {
-        return $this->TblReporting_MarketingCode;
+        return ( $this->TblReporting_MarketingCode ? DataWareHouse::useService()->getMarketingCodeById( $this->TblReporting_MarketingCode ) : null );
     }
 
     /**
-     * @param mixed $TblReporting_MarketingCode
+     * @param null|TblReporting_MarketingCode $TblReporting_MarketingCode
      */
-    public function setTblReportingMarketingCode($TblReporting_MarketingCode)
+    public function setTblReportingMarketingCode(TblReporting_MarketingCode $TblReporting_MarketingCode)
     {
-        $this->TblReporting_MarketingCode = $TblReporting_MarketingCode;
+        $this->TblReporting_MarketingCode = ( $TblReporting_MarketingCode ? $TblReporting_MarketingCode->getId() : null );
     }
 
 }
