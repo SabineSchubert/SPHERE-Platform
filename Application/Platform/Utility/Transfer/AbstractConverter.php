@@ -6,6 +6,10 @@ use MOC\V\Component\Document\Component\Bridge\Repository\PhpExcel;
 use MOC\V\Component\Document\Document;
 use MOC\V\Component\Document\Exception\DocumentTypeException;
 
+/**
+ * Class AbstractConverter
+ * @package SPHERE\Application\Platform\Utility\Transfer
+ */
 abstract class AbstractConverter extends Sanitizer
 {
 
@@ -48,7 +52,8 @@ abstract class AbstractConverter extends Sanitizer
     {
 
         if (is_callable($FieldSanitizer->getCallback())) {
-            $this->SanitizePointer[$FieldSanitizer->getColumn()][$FieldSanitizer->getField()] = $FieldSanitizer->getCallback();
+            $this->SanitizePointer[$FieldSanitizer->getColumn()][$FieldSanitizer->getField()]
+                = $FieldSanitizer->getCallback();
         } else {
             /** @var array $Callback */
             $Callback = $FieldSanitizer->getCallback();
@@ -64,7 +69,8 @@ abstract class AbstractConverter extends Sanitizer
     final public function scanFile($Offset, $Length = null)
     {
 
-        for ($RunHeight = (1 + $Offset); $RunHeight <= ($Length ? ($Offset + $Length) : $this->SizeHeight); $RunHeight++) {
+        $ScanLength = ($Length ? ($Offset + $Length) : $this->SizeHeight);
+        for ($RunHeight = (1 + $Offset); $RunHeight <= $ScanLength; $RunHeight++) {
 
             $Payload = array();
             for ($RunWidth = 0; $RunWidth < $this->SizeWidth; $RunWidth++) {
@@ -125,11 +131,15 @@ abstract class AbstractConverter extends Sanitizer
      *
      * @return self
      * @throws DocumentTypeException
+     * @throws \Exception
      */
     final protected function loadFile($File)
     {
 
         $this->Document = Document::getDocument($File);
+        if( !$this->Document instanceof PhpExcel ) {
+            throw new \Exception( 'Native file support for spreadsheet only!' );
+        }
         $this->SizeHeight = $this->Document->getSheetRowCount();
         $this->SizeWidth = $this->Document->getSheetColumnCount();
         return $this;
