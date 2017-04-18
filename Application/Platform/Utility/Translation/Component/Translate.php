@@ -4,6 +4,10 @@ namespace SPHERE\Application\Platform\Utility\Translation\Component;
 use SPHERE\Application\Platform\Utility\Translation\Component\Translate\Group;
 use SPHERE\Application\Platform\Utility\Translation\Component\Translate\Preset;
 
+/**
+ * Class Translate
+ * @package SPHERE\Application\Platform\Utility\Translation\Component
+ */
 class Translate extends AbstractComponent
 {
 
@@ -56,9 +60,6 @@ class Translate extends AbstractComponent
         return array_merge(
             array( 'Identifier' => $this->getIdentifier() ),
             $this->Group->getDefinition($this->Preset)
-//            'Version' => date('y.n.j-z.w.His'),
-
-//            'Definition' =>
         );
     }
 

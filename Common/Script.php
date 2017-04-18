@@ -82,6 +82,8 @@ class Script extends Extension
             $this->setLibrary((new ScriptLibrary('Morris.js', '0.5.1'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Chart.js', '2.5.0'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Baron.js', '2.2.9'))->getLibrary());
+            $this->setLibrary((new ScriptLibrary('JsTimeZoneDetect', '1.0.6'))->getLibrary());
+            $this->setLibrary((new ScriptLibrary('jQuery.Cookie', '2.1.4'))->getLibrary());
 
         } catch (\Exception $Exception) {
             Main::getDisplay()->setException($Exception, 'JavaScript Library');
@@ -142,6 +144,8 @@ class Script extends Extension
 //                'Tether',
                 'jQuery.deparam',
                 'jQuery.Ui',
+                'JsTimeZoneDetect',
+                'jQuery.Cookie',
                 'jQuery'
             )
         );
@@ -153,6 +157,8 @@ class Script extends Extension
                 'Bootstrap',
 //                'Tether',
                 'jQuery.Ui',
+                'JsTimeZoneDetect',
+                'jQuery.Cookie',
                 'jQuery'
             )
         );

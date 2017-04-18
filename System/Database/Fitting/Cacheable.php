@@ -5,6 +5,7 @@ use SPHERE\System\Cache\CacheFactory;
 use SPHERE\System\Cache\Handler\HandlerInterface;
 use SPHERE\System\Cache\Handler\MemcachedHandler;
 use SPHERE\System\Cache\Handler\MemoryHandler;
+use SPHERE\System\Database\Binding\AbstractEntity;
 use SPHERE\System\Debugger\Logger\CacheLogger;
 use SPHERE\System\Debugger\Logger\QueryLogger;
 use SPHERE\System\Extension\Extension;
@@ -32,7 +33,7 @@ abstract class Cacheable extends Extension
      * @param string  $EntityName
      * @param int     $Id
      *
-     * @return Element|null
+     * @return AbstractEntity|Element|null
      * @throws \Exception
      */
     final protected function getCachedEntityById($__METHOD__, Manager $EntityManager, $EntityName, $Id)
@@ -147,7 +148,7 @@ abstract class Cacheable extends Extension
      * @param string  $EntityName
      * @param array   $Parameter  Initiator Parameter-Array
      *
-     * @return null|Element
+     * @return null|AbstractEntity|Element
      * @throws \Exception
      */
     final protected function getCachedEntityBy($__METHOD__, Manager $EntityManager, $EntityName, $Parameter)
@@ -185,7 +186,7 @@ abstract class Cacheable extends Extension
      * @param array   $Parameter  Initiator Parameter-Array
      * @param array   $OrderBy array( 'Column' => ORDER_{ASC|DESC}, ... )
      *
-     * @return null|Element[]
+     * @return null|AbstractEntity[]|Element[]
      */
     final protected function getCachedEntityListBy($__METHOD__, Manager $EntityManager, $EntityName, $Parameter, $OrderBy = array( 'EntityCreate' => self::ORDER_DESC ))
     {
@@ -218,7 +219,7 @@ abstract class Cacheable extends Extension
      * @param string  $EntityName
      * @param array   $OrderBy array( 'Column' => ORDER_{ASC|DESC}, ... )
      *
-     * @return null|Element[]
+     * @return null|AbstractEntity[]|Element[]
      */
     final protected function getCachedEntityList($__METHOD__, Manager $EntityManager, $EntityName, $OrderBy = array( 'EntityCreate' => self::ORDER_DESC ))
     {
@@ -251,7 +252,7 @@ abstract class Cacheable extends Extension
      * @param string  $EntityName
      * @param array   $Parameter  Initiator Parameter-Array
      *
-     * @return null|Element
+     * @return null|int
      * @throws \Exception
      */
     final protected function getCachedCountBy($__METHOD__, Manager $EntityManager, $EntityName, $Parameter)
@@ -262,24 +263,24 @@ abstract class Cacheable extends Extension
         $Key = $this->getKeyHash($EntityName, $Parameter);
 
         $Memory = $this->getMemoryCacheHandler();
-        if (!$this->Enabled || null === ( $Entity = $Memory->getValue($Key, $__METHOD__) )) {
+        if (!$this->Enabled || null === ( $Count = $Memory->getValue($Key, $__METHOD__) )) {
 
             $Cache = self::getCacheSystem();
-            $Entity = null;
-            if (!$this->Enabled || null === ( $Entity = $Cache->getValue($Key, $__METHOD__) )) {
-                $Entity = $EntityManager->getEntity($EntityName)->countBy($Parameter);
-                if (null === $Entity) {
-                    $Entity = false;
+            $Count = null;
+            if (!$this->Enabled || null === ( $Count = $Cache->getValue($Key, $__METHOD__) )) {
+                $Count = $EntityManager->getEntity($EntityName)->countBy($Parameter);
+                if (null === $Count) {
+                    $Count = false;
                 }
-                $Cache->setValue($Key, $Entity, 0, $__METHOD__);
-                $this->debugFactory($__METHOD__, $Entity, $Parameter);
+                $Cache->setValue($Key, $Count, 0, $__METHOD__);
+                $this->debugFactory($__METHOD__, $Count, $Parameter);
             } else {
-                $this->debugCache($__METHOD__, $Entity, $Parameter);
+                $this->debugCache($__METHOD__, $Count, $Parameter);
             }
-            $Memory->setValue($Key, $Entity, 0, $__METHOD__);
-            return ( null === $Entity || false === $Entity ? null : $Entity );
+            $Memory->setValue($Key, $Count, 0, $__METHOD__);
+            return ( null === $Count || false === $Count ? null : $Count );
         }
-        return ( null === $Entity || false === $Entity ? null : $Entity );
+        return ( null === $Count || false === $Count ? null : $Count );
     }
 
     /** @var null|MemoryHandler $MemoryCacheHandler */

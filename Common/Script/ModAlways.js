@@ -5,6 +5,12 @@
     {
         $(document).ready(function ()
         {
+
+            /**
+             * Set TZ Cookie for Sphere-PHP
+             */
+            Cookies.set('ClientTimeZone', jstz.determine().name() );
+
             // MOVED TO FORM
             // var worldForm = $('form:not(.AjaxSubmit)');
             // /**
@@ -125,7 +131,7 @@
 
                 if (
                     jQuery('<a>').prop('href', window.location).prop('hostname')
-                    ==
+                    ===
                     jQuery('<a>').prop('href', jQuery(iFrame[Frame]).attr('src')).prop('hostname')
                 ) {
                     iRun(jQuery(iFrame[Frame]));

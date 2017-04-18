@@ -1,8 +1,10 @@
 <?php
+
 namespace SPHERE\Application\Platform\Utility\Translation\Component\Translate;
 
 use MOC\V\Component\Template\Template;
 use SPHERE\Application\Platform\Utility\Translation\Component\AbstractComponent;
+use SPHERE\Application\Platform\Utility\Translation\TranslationInterface;
 
 /**
  * Class Preset
@@ -11,11 +13,8 @@ use SPHERE\Application\Platform\Utility\Translation\Component\AbstractComponent;
 class Preset extends AbstractComponent
 {
 
-    const LOCALE_EN_US = 'en_US';
-    const LOCALE_DE_DE = 'de_DE';
-
     /** @var string $DefaultLocale */
-    private $DefaultLocale = 'en_US';
+    private $DefaultLocale = TranslationInterface::LOCALE_EN_US;
     /** @var array $PatternList */
     private $PatternList = array();
     private $DefaultPattern = '';
@@ -30,9 +29,12 @@ class Preset extends AbstractComponent
      * @param Parameter $Parameter
      * @param string $DefaultLocale
      */
-    public function __construct($DefaultPattern, Parameter $Parameter = null, $DefaultLocale = self::LOCALE_EN_US)
-    {
-        $this->DefaultPattern = trim($DefaultPattern);
+    public function __construct(
+        $DefaultPattern,
+        Parameter $Parameter = null,
+        $DefaultLocale = TranslationInterface::LOCALE_EN_US
+    ) {
+        $this->setDefaultPattern($DefaultPattern);
         if (null === $Parameter) {
             $Parameter = new Parameter();
         }
@@ -71,11 +73,9 @@ class Preset extends AbstractComponent
             }
         }
 
-        // TODO: TR Mod
         if ($this->getDefaultLocale() != $this->getLocale()) {
-            return '{'.$Template->getContent().':'.$this->getLocale().'}';
-//            $Translate = new Paragraph(new Link('Translation (' . $this->getDefaultLocale() . ' => ' . $this->getLocale() . ')',
-//                '#', new Conversation(), array(), 'Missing (' . $this->getLocale() . ') ' . $this->getBreadCrumb()));
+            // TODO: Point Translation Access if Language is missing
+            return $Template->getContent() . ' (Missing translation ' . $this->getDefaultLocale() . ' to ' . $this->getLocale() . ')';
         } else {
             return $Template->getContent();
         }
@@ -113,7 +113,7 @@ class Preset extends AbstractComponent
      */
     public function getDefaultLocale()
     {
-        return $this->DefaultLocale;
+        return (string)$this->DefaultLocale;
     }
 
     /**
@@ -121,7 +121,7 @@ class Preset extends AbstractComponent
      */
     public function setDefaultLocale($DefaultLocale)
     {
-        $this->DefaultLocale = $DefaultLocale;
+        $this->DefaultLocale = (string)$DefaultLocale;
     }
 
     /**
@@ -129,7 +129,7 @@ class Preset extends AbstractComponent
      */
     public function getBreadCrumb()
     {
-        return $this->BreadCrumb;
+        return (string)$this->BreadCrumb;
     }
 
     /**
@@ -145,7 +145,7 @@ class Preset extends AbstractComponent
      */
     public function getPatternList()
     {
-        return $this->PatternList;
+        return (array)$this->PatternList;
     }
 
     /**
@@ -153,6 +153,14 @@ class Preset extends AbstractComponent
      */
     public function getDefaultPattern()
     {
-        return $this->DefaultPattern;
+        return (string)$this->DefaultPattern;
+    }
+
+    /**
+     * @param string $DefaultPattern
+     */
+    public function setDefaultPattern($DefaultPattern)
+    {
+        $this->DefaultPattern = (string)trim($DefaultPattern);
     }
 }
