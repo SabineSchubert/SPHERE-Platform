@@ -39,7 +39,7 @@ class Number extends AbstractComponent
     private function createNumberFormatter()
     {
         return new \NumberFormatter(
-            $this->getLocale(), $this->Style
+            $this->getClientLocale(), $this->Style
         );
     }
 }

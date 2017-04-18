@@ -55,11 +55,6 @@ class Translation implements IModuleInterface
     public function frontendDashboard()
     {
 
-        $File = tempnam(sys_get_temp_dir(), 'tryamltest') . '.yaml';
-//        Debugger::screenDump( $File );
-        /** @var SymfonyYaml $Setting */
-        $Setting = Document::getDocument($File);
-
         $T = $this->doTranslate(array(
             __METHOD__,
             'Identifier.1',
@@ -76,16 +71,14 @@ class Translation implements IModuleInterface
                         {{ Anzahl }} Äpfel kosten {{ Kosten }}
                     {% endif %}
                 {% else %}
-                   {{ Anzahl }} Apfel ist kostenlos
+                   {{ Anzahl }} Apfel ist kostenlos <br/><br/> :)
                 {% endif %}
              {% endif %}'
             , array(
-                'Anzahl' => 3 * 1,
+                'Anzahl' => 1,
                 'Kosten' => $this->doLocalize(3 * 0.5)->getCurrency()
             ), TranslationInterface::LOCALE_DE_DE
         );
-
-        $T->getPreset()->appendPattern('!.*?!is', ':P');
 
         $F = new TextField('',
             'Number',
@@ -97,26 +90,12 @@ class Translation implements IModuleInterface
             $this->doTranslate(array('Textfeld', 'Label'), 'Number')
         );
 
-        $Path = $T->getDefinition();
-
-        $Setting->setContent($Path);
-        $Setting->saveFile(new FileParameter($File), 10);
-//        Debugger::screenDump(
-//            $Path,
-//            file_get_contents($File)
-//        );
-
-        $PatternList = array_column($Setting->getContent(), 'Pattern');
-//        $PatternList = array_map(function ($Region) {return $Region['Pattern'];}, $Setting->getContent());
+        Debugger::screenDump($this->doTranslate(array('Textfeld', 'Platzhalter'), 'Number'));
 
         return (new Stage($T))->setContent(
             $F . $FT .
             (new Localize(time()))->getDateTime()
             . new Muted(new Tooltip($this->doTranslate(array('Question'), 'Question'), 'Answer', new Question()))
-            . '<br/>'
-
-            . new Code(file_get_contents($File), Code::TYPE_YAML)
-            . new Code(print_r($PatternList, true))
         );
     }
 }

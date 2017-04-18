@@ -63,7 +63,10 @@ class Transfer extends AbstractConverter implements IModuleInterface
      */
     public function runConvert($Row)
     {
-        $this->TestFilePayload[] = $Row;
+        $this->TestFilePayload[] = array(
+            'Artikelnummer' => $Row['A']['A'],
+            'ArtikelBeschreibung' => $Row['B']['B']
+        );
     }
 
     private function setFieldPointer() {
@@ -129,33 +132,40 @@ class Transfer extends AbstractConverter implements IModuleInterface
 
 //                Debugger::screenDump( $File );
 
+//                $this->loadFile($File->getRealPath());
+//                $this->addSanitizer(array($this, 'sanitizeFullTrim'));
+//                $this->setFieldPointer();
+//                $this->scanFile(0,1);
+//
+                $Header = array();
+//                foreach ( $this->TestFilePayload as $Row => $Payload ) {
+//                    foreach ( $Payload as $Column => $Content ) {
+//                        $Header[$Column] = $Content[$Column].' ('.$Column.')';
+//                    }
+//                }
+//                $this->getDebugger()->screenDump( $this->TestFilePayload );
+                $this->TestFilePayload = array();
+
                 $this->loadFile($File->getRealPath());
                 $this->addSanitizer(array($this, 'sanitizeFullTrim'));
+//                $this->setSanitizer(new FieldSanitizer( 'F', 'F',array($this, 'sanitizeDateTime')));
+//                $this->setSanitizer(new FieldSanitizer( 'W', 'W',array($this, 'sanitizeDateTime')));
                 $this->setFieldPointer();
-                $this->scanFile(0,1);
+                $this->scanFile(1,10);
 
-                $Header = array();
+                Debugger::screenDump( $this->TestFilePayload );
+
                 foreach ( $this->TestFilePayload as $Row => $Payload ) {
-                    foreach ( $Payload as $Column => $Content ) {
-                        $Header[$Column] = $Content[$Column].' ('.$Column.')';
-                    }
+                    $Payload['Artikelnummer'];
+                    $Payload['ArtikelBeschreibung'];
                 }
-//                $this->getDebugger()->screenDump( $this->TestFilePayload );
-                    $this->TestFilePayload = array();
-
-                    $this->loadFile($File->getRealPath());
-                    $this->addSanitizer(array($this, 'sanitizeFullTrim'));
-                    $this->setSanitizer(new FieldSanitizer( 'F', 'F',array($this, 'sanitizeDateTime')));
-                    $this->setSanitizer(new FieldSanitizer( 'W', 'W',array($this, 'sanitizeDateTime')));
-                    $this->setFieldPointer();
-                    $this->scanFile(1);
 
 
-                    foreach ( $this->TestFilePayload as $Row => $Payload ) {
-                        foreach ( $Payload as $Column => $Content ) {
-                            $Result[$Row][$Column] = $Content[$Column];
-                        }
-                }
+//                foreach ( $this->TestFilePayload as $Row => $Payload ) {
+//                    foreach ( $Payload as $Column => $Content ) {
+//                        $Result[$Row][$Column] = $Content[$Column];
+//                    }
+//                }
             }
         }
 
@@ -170,13 +180,13 @@ class Transfer extends AbstractConverter implements IModuleInterface
                     )), new Primary('Hochladen'))
 
                 )), new Title( 'Test-Datei' )),
-                new LayoutGroup(new LayoutRow(new LayoutColumn(
-                    ($Transfer
-                        ? new Table($Result,null,$Header,array('responsive' => false), false)
-                        : new Warning('Bitte eine Datei hochladen')
-                    )
-
-                )), new Title( 'Converter-Ergebnis' )),
+//                new LayoutGroup(new LayoutRow(new LayoutColumn(
+//                    ($Transfer
+//                        ? new Table($Result,null,$Header,array('responsive' => false), false)
+//                        : new Warning('Bitte eine Datei hochladen')
+//                    )
+//
+//                )), new Title( 'Converter-Ergebnis' )),
             ))
         );
 

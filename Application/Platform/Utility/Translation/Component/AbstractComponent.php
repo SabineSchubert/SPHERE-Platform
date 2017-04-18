@@ -16,7 +16,7 @@ abstract class AbstractComponent implements TranslationInterface
     /**
      * @return string
      */
-    protected function getLocale()
+    protected function getClientLocale()
     {
         $Cache = (new CacheFactory())->getCache(new MemoryHandler());
 
@@ -36,7 +36,7 @@ abstract class AbstractComponent implements TranslationInterface
         return $Locale;
     }
 
-    protected function getTimezone() {
+    protected function getClientTimezone() {
 
         $Cache = (new CacheFactory())->getCache(new MemoryHandler());
 

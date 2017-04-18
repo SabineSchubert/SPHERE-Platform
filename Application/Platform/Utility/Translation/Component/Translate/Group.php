@@ -1,4 +1,5 @@
 <?php
+
 namespace SPHERE\Application\Platform\Utility\Translation\Component\Translate;
 
 /**
@@ -25,40 +26,21 @@ class Group
         $this->Group = $Child;
     }
 
-    public function getIdentifier()
-    {
-        if ($this->Group) {
-            return $this->Identifier . self::GROUP_SEPARATOR . $this->Group->getIdentifier();
-        } else {
-            return $this->Identifier;
-        }
-    }
-
-    /**
-     * @param Preset $Preset
-     * @return array
-     */
-    public function getDefinition(Preset $Preset)
-    {
-        if ($this->Group) {
-            return $this->Group->getDefinition($Preset);
-        } else {
-            return array(
-                $Preset->getDefaultLocale() => $Preset->getDefaultPattern(),
-                'Pattern' => $Preset->getPatternList(),
-                'Parameter' => $Preset->getParameter()->getParameterList(),
-                'Switch' => $Preset->getParameter()->getSwitch()
-            );
-        }
-    }
-
     /**
      * @return string
      */
     public function __toString()
     {
+        return $this->getIdentifier();
+    }
+
+    /**
+     * @return string
+     */
+    public function getIdentifier()
+    {
         if ($this->Group) {
-            return $this->Identifier . self::GROUP_SEPARATOR . $this->Group->__toString();
+            return $this->Identifier . self::GROUP_SEPARATOR . $this->Group->getIdentifier();
         } else {
             return $this->Identifier;
         }
