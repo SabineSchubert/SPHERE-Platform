@@ -107,27 +107,27 @@ class Transfer extends AbstractConverter implements IModuleInterface
                 $Transfer = null;
             } else {
 
-//                $File = new FilePointer($Transfer['File']->getClientOriginalExtension(), 'TransferTestFile');
-//                $File->setFileContent(file_get_contents($Transfer['File']->getRealPath()));
-//                $File->saveFile();
-
-                $File = new FilePointer('pdf', 'PDFCase');
+                $File = new FilePointer($Transfer['File']->getClientOriginalExtension(), 'TransferTestFile');
+                $File->setFileContent(file_get_contents($Transfer['File']->getRealPath()));
                 $File->saveFile();
 
-                $Bild = $this->getPdfImage( '/Common/Style/Resource/Teaser/00-mercedes-benz-design-aesthetics-a-1280-686-848x454.jpg' );
+//                $File = new FilePointer('pdf', 'PDFCase');
+//                $File->saveFile();
 
-                /** @var DomPdf $Document */
-                $Document = Document::getDocument( $File->getRealPath() );
-                $Document->setContent( Template::getTwigTemplateString(':) {% if(1>0) %} ;) {% endif %} '.$Bild  ) );
-                $Document->saveFile();
+//                $Bild = $this->getPdfImage( '/Common/Style/Resource/Teaser/00-mercedes-benz-design-aesthetics-a-1280-686-848x454.jpg' );
 
-                $File->loadFile();
+//                /** @var DomPdf $Document */
+//                $Document = Document::getDocument( $File->getRealPath() );
+//                $Document->setContent( Template::getTwigTemplateString(':) {% if(1>0) %} ;) {% endif %} '.$Bild  ) );
+//                $Document->saveFile();
 
-                print FileSystem::getDownload( $File->getRealPath() );
+//                $File->loadFile();
+
+//                print FileSystem::getDownload( $File->getRealPath() );
 //                Debugger::screenDump( $File->getFileContent() );
-                exit();
+//                exit();
 
-                Debugger::screenDump( $File );
+//                Debugger::screenDump( $File );
 
                 $this->loadFile($File->getRealPath());
                 $this->addSanitizer(array($this, 'sanitizeFullTrim'));
