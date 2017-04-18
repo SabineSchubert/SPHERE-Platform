@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Cache;
+use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\System\Database\Fitting\Element;
 
 /**
@@ -21,45 +22,49 @@ use SPHERE\System\Database\Fitting\Element;
  */
 class TblReporting_ProductManager_ProductManagerGroup extends Element
 {
-    /**
-     * @Column(type="bigint")
-     */
-    protected $TblReportingProductManager;
+    const TBL_REPORTING_PRODUCT_MANAGER = 'TblReporting_ProductManager';
+    const TBL_REPORTING_PRODUCT_MANAGER_PRODUCT_MANAGER_GROUP = 'TblReporting_ProductManager_ProductManagerGroup';
 
     /**
      * @Column(type="bigint")
      */
-    protected $TblReportingProductManagerGroup;
+    protected $TblReporting_ProductManager;
 
     /**
-     * @return mixed
+     * @Column(type="bigint")
+     */
+    protected $TblReporting_ProductManagerGroup;
+
+    /**
+     * @return null|TblReporting_ProductManager|Element
      */
     public function getTblReportingProductManager()
     {
-        return $this->TblReportingProductManager;
+        $Service = DataWareHouse::useService();
+        return ( $this->TblReporting_ProductManager ? $Service->getProductManagerById( $this->TblReporting_ProductManager ) : null);
     }
 
     /**
-     * @param mixed $TblReportingProductManager
+     * @param null|TblReporting_ProductManager $TblReportingProductManager
      */
-    public function setTblReportingProductManager($TblReportingProductManager)
+    public function setTblReportingProductManager(TblReporting_ProductManager $TblReporting_ProductManager = null)
     {
-        $this->TblReportingProductManager = $TblReportingProductManager;
+        $this->TblReporting_ProductManager = ( $TblReporting_ProductManager ? $TblReporting_ProductManager->getId() : $TblReporting_ProductManager );
     }
 
     /**
-     * @return mixed
+     * @return null|TblReporting_ProductManagerGroup
      */
     public function getTblReportingProductManagerGroup()
     {
-        return $this->TblReportingProductManagerGroup;
+        return ( $this->TblReporting_ProductManagerGroup ? DataWareHouse::useService()->getProductManagerGroupById( $this->TblReporting_ProductManagerGroup ) : null );
     }
 
     /**
-     * @param mixed $TblReportingProductManagerGroup
+     * @param null| TblReporting_ProductManagerGroup $TblReportingProductManagerGroup
      */
-    public function setTblReportingProductManagerGroup($TblReportingProductManagerGroup)
+    public function setTblReportingProductManagerGroup( TblReporting_ProductManagerGroup $TblReporting_ProductManagerGroup)
     {
-        $this->TblReportingProductManagerGroup = $TblReportingProductManagerGroup;
+        $this->TblReporting_ProductManagerGroup = ( $TblReporting_ProductManagerGroup ? $TblReporting_ProductManagerGroup->getId() : null );
     }
 }

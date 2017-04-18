@@ -12,6 +12,8 @@ namespace SPHERE\Application\Reporting\Controlling\Search;
 use SPHERE\Application\Api\Platform\Gatekeeper\Access;
 use SPHERE\Application\Api\Reporting\Utility\ScenarioCalculator\ScenarioCalculator;
 use SPHERE\Application\Api\TestAjax\TestAjax;
+use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Data;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Field\SelectBox;
 use SPHERE\Common\Frontend\Form\Repository\Field\TextField;
@@ -30,6 +32,7 @@ use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Window\Navigation\Link\Route;
 use SPHERE\Common\Window\Stage;
 use SPHERE\System\Extension\Extension;
+use SPHERE\System\Extension\Repository\Debugger;
 
 class Frontend extends Extension
 {

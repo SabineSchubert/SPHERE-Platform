@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: schubert
- * Date: 04.04.2017
- * Time: 10:08
+ * Date: 05.04.2017
+ * Time: 11:42
  */
 
 namespace SPHERE\Application\Reporting\DataWareHouse\Service\Entity;
@@ -18,13 +18,13 @@ use SPHERE\System\Database\Fitting\Element;
 
 /**
  * @Entity
- * @Table(name="TblReporting_Part_Section")
+ * @Table(name="TblReporting_Part_Supplier")
  * @Cache(usage="READ_ONLY")
  */
-class TblReporting_Part_Section extends Element
+class TblReporting_Part_Supplier extends Element
 {
     const TBL_REPORTING_PART = 'TblReporting_Part';
-    const TBL_REPORTING_SECTION = 'TblReporting_Section';
+    const TBL_REPORTING_SUPPLIER = 'TblReporting_Supplier';
 
     /**
      * @Column(type="bigint")
@@ -34,7 +34,7 @@ class TblReporting_Part_Section extends Element
     /**
      * @Column(type="bigint")
      */
-    protected $TblReporting_Section;
+    protected $TblReporting_Supplier;
 
     /**
      * @return null|TblReporting_Part
@@ -49,22 +49,24 @@ class TblReporting_Part_Section extends Element
      */
     public function setTblReportingPart(TblReporting_Part $TblReporting_Part)
     {
-        $this->TblReporting_Part = ( $TblReporting_Part ? $TblReporting_Part->getId() : null );
+        $this->TblReporting_Part = ( $TblReporting_Part ? $TblReporting_Part : null );
     }
 
     /**
-     * @return null|TblReporting_Section
+     * @return null|TblReporting_Supplier
      */
-    public function getTblReportingSection()
+    public function getTblReportingSupplier()
     {
-        return ( $this->TblReporting_Section ? DataWareHouse::useService()->getSectionById( $this->TblReporting_Section ) : null );
+        return ( $this->TblReporting_Supplier ? DataWareHouse::useService()->getSupplierById( $this->TblReporting_Supplier ) : null );
     }
 
     /**
-     * @param null|TblReporting_Section $TblReporting_Section
+     * @param null|TblReporting_Supplier $TblReporting_Supplier
      */
-    public function setTblReportingSection(TblReporting_Section $TblReporting_Section)
+    public function setTblReportingSupplier(TblReporting_Supplier $TblReporting_Supplier)
     {
-        $this->TblReporting_Section = ( $TblReporting_Section ? $TblReporting_Section->getId() : null );
+        $this->TblReporting_Supplier = ( $TblReporting_Supplier ? $TblReporting_Supplier->getId() : null );
     }
+
+
 }

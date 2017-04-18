@@ -27,6 +27,7 @@
         Client.Use('ModSelecter', function()
         {
             var guiSelect = jQuery('select[name="{{ ElementName }}"]');
+            guiSelect.find('option[value="{{ ElementValue }}"]').attr('selected', 'selected');
             guiSelect.on('change keyup blur', function(Event)
             {
                 var noSelection = jQuery(Event.currentTarget);

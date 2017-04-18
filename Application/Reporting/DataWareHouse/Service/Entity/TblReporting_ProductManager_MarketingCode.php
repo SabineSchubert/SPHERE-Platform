@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Cache;
 use Doctrine\ORM\Mapping\Entity;
+use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\System\Database\Fitting\Element;
 
 /**
@@ -22,8 +23,8 @@ use SPHERE\System\Database\Fitting\Element;
  */
 class TblReporting_ProductManager_MarketingCode extends Element
 {
-    const Reporting_PRODUCT_MANAGER = 'TblReporting_ProductManager';
-    const Reporting_MARKETING_CODE = 'TblReporting_MarketingCode';
+    const TBL_REPORTING_PRODUCT_MANAGER = 'TblReporting_ProductManager';
+    const TBL_REPORTING_MARKETING_CODE = 'TblReporting_MarketingCode';
 
     /**
      * @Column(type="bigint")
@@ -36,35 +37,35 @@ class TblReporting_ProductManager_MarketingCode extends Element
     protected $TblReporting_MarketingCode;
 
     /**
-     * @return mixed
+     * @return null|TblReporting_ProductManager
      */
     public function getTblReportingProductManager()
     {
-        return $this->TblReporting_ProductManager;
+        return ( $this->TblReporting_ProductManager ? DataWareHouse::useService()->getProductManagerById( $this->TblReporting_ProductManager ) : null );
     }
 
     /**
-     * @param mixed $TblReporting_ProductManager
+     * @param null| TblReporting_ProductManager $TblReporting_ProductManager
      */
-    public function setTblReportingProductManager($TblReporting_ProductManager)
+    public function setTblReportingProductManager(TblReporting_ProductManager $TblReporting_ProductManager)
     {
-        $this->TblReporting_ProductManager = $TblReporting_ProductManager;
+        $this->TblReporting_ProductManager = ( $TblReporting_ProductManager ? $TblReporting_ProductManager->getId() : null );
     }
 
     /**
-     * @return mixed
+     * @return null|TblReporting_MarketingCode
      */
     public function getTblReportingMarketingCode()
     {
-        return $this->TblReporting_MarketingCode;
+        return ( $this->TblReporting_MarketingCode ? DataWareHouse::useService()->getMarketingCodeById( $this->TblReporting_MarketingCode ) : null );
     }
 
     /**
-     * @param mixed $TblReporting_MarketingCode
+     * @param TblReporting_MarketingCode $TblReporting_MarketingCode
      */
-    public function setTblReportingMarketingCode($TblReporting_MarketingCode)
+    public function setTblReportingMarketingCode(TblReporting_MarketingCode $TblReporting_MarketingCode)
     {
-        $this->TblReporting_MarketingCode = $TblReporting_MarketingCode;
+        $this->TblReporting_MarketingCode = ( $TblReporting_MarketingCode ? $TblReporting_MarketingCode->getId() : null );
     }
 
 
