@@ -1,9 +1,10 @@
 <?php
+
 namespace SPHERE\Application\Api;
 
+use SPHERE\Application\Api\Example\Example;
 use SPHERE\Application\Api\Platform\Platform;
 use SPHERE\Application\Api\Reporting\Reporting;
-use SPHERE\Application\Api\TestAjax\TestAjax;
 use SPHERE\Application\IClusterInterface;
 
 /**
@@ -18,5 +19,6 @@ class Api implements IClusterInterface
     {
         Platform::registerApplication();
         Reporting::registerApplication();
+        Example::registerApplication();
     }
 }

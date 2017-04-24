@@ -1,8 +1,16 @@
 <?php
+
 namespace SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service;
 
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\Table;
+use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblLevel;
+use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblLevelPrivilege;
+use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblPrivilege;
+use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblPrivilegeRight;
+use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblRight;
+use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblRole;
+use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblRoleLevel;
 use SPHERE\System\Database\Binding\AbstractSetup;
 use SPHERE\System\Database\Fitting\Element;
 
@@ -45,9 +53,9 @@ class Setup extends AbstractSetup
     private function setTableRight(Schema &$Schema)
     {
 
-        $Table = $this->createTable($Schema, 'TblRight');
-        $this->createColumn($Table, 'Route', self::FIELD_TYPE_STRING);
-        $this->createIndex($Table, array('Route', Element::ENTITY_REMOVE));
+        $Table = $this->createTable($Schema, (new TblRight())->getEntityShortName());
+        $this->createColumn($Table, TblRight::ATTR_ROUTE, self::FIELD_TYPE_STRING);
+        $this->createIndex($Table, array(TblRight::ATTR_ROUTE, Element::ENTITY_REMOVE));
         return $Table;
     }
 
@@ -59,9 +67,9 @@ class Setup extends AbstractSetup
     private function setTablePrivilege(Schema &$Schema)
     {
 
-        $Table = $this->createTable($Schema, 'TblPrivilege');
-        $this->createColumn($Table, 'Name', self::FIELD_TYPE_STRING);
-        $this->createIndex($Table, array('Name', Element::ENTITY_REMOVE));
+        $Table = $this->createTable($Schema, (new TblPrivilege())->getEntityShortName());
+        $this->createColumn($Table, TblPrivilege::ATTR_NAME, self::FIELD_TYPE_STRING);
+        $this->createIndex($Table, array(TblPrivilege::ATTR_NAME, Element::ENTITY_REMOVE));
         return $Table;
     }
 
@@ -73,9 +81,9 @@ class Setup extends AbstractSetup
     private function setTableLevel(Schema &$Schema)
     {
 
-        $Table = $this->createTable($Schema, 'TblLevel');
-        $this->createColumn($Table, 'Name', self::FIELD_TYPE_STRING);
-        $this->createIndex($Table, array('Name', Element::ENTITY_REMOVE));
+        $Table = $this->createTable($Schema, (new TblLevel())->getEntityShortName());
+        $this->createColumn($Table, TblLevel::ATTR_NAME, self::FIELD_TYPE_STRING);
+        $this->createIndex($Table, array(TblLevel::ATTR_NAME, Element::ENTITY_REMOVE));
         return $Table;
     }
 
@@ -87,11 +95,11 @@ class Setup extends AbstractSetup
     private function setTableRole(Schema &$Schema)
     {
 
-        $Table = $this->createTable($Schema, 'TblRole');
-        $this->createColumn($Table, 'Name', self::FIELD_TYPE_STRING);
-        $this->createIndex($Table, array('Name', Element::ENTITY_REMOVE));
+        $Table = $this->createTable($Schema, (new TblRole())->getEntityShortName());
+        $this->createColumn($Table, TblRole::ATTR_NAME, self::FIELD_TYPE_STRING);
+        $this->createIndex($Table, array(TblRole::ATTR_NAME, Element::ENTITY_REMOVE));
 
-        $this->createColumn($Table, 'IsInternal', self::FIELD_TYPE_BOOLEAN);
+        $this->createColumn($Table, TblRole::ATTR_IS_INTERNAL, self::FIELD_TYPE_BOOLEAN);
         return $Table;
     }
 
@@ -108,7 +116,7 @@ class Setup extends AbstractSetup
         Table $TblRight
     ) {
 
-        $Table = $this->createTable($Schema, 'TblPrivilegeRight');
+        $Table = $this->createTable($Schema, (new TblPrivilegeRight())->getEntityShortName());
         $this->createForeignKey($Table, $TblPrivilege);
         $this->createForeignKey($Table, $TblRight);
         return $Table;
@@ -127,7 +135,7 @@ class Setup extends AbstractSetup
         Table $TblPrivilege
     ) {
 
-        $Table = $this->createTable($Schema, 'TblLevelPrivilege');
+        $Table = $this->createTable($Schema, (new TblLevelPrivilege())->getEntityShortName());
         $this->createForeignKey($Table, $TblLevel);
         $this->createForeignKey($Table, $TblPrivilege);
         return $Table;
@@ -146,7 +154,7 @@ class Setup extends AbstractSetup
         Table $TblLevel
     ) {
 
-        $Table = $this->createTable($Schema, 'TblRoleLevel');
+        $Table = $this->createTable($Schema, (new TblRoleLevel())->getEntityShortName());
         $this->createForeignKey($Table, $TblRole);
         $this->createForeignKey($Table, $TblLevel);
         return $Table;

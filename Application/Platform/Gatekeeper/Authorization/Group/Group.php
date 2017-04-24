@@ -1,10 +1,9 @@
 <?php
 namespace SPHERE\Application\Platform\Gatekeeper\Authorization\Group;
 
+use SPHERE\Application\AppTrait;
 use SPHERE\Application\IModuleInterface;
 use SPHERE\Common\Frontend\Icon\Repository\Share;
-use SPHERE\Common\Main;
-use SPHERE\Common\Window\Navigation\Link;
 use SPHERE\System\Database\Link\Identifier;
 
 /**
@@ -14,11 +13,11 @@ use SPHERE\System\Database\Link\Identifier;
  */
 class Group implements IModuleInterface
 {
+    use AppTrait;
+
     public static function registerModule()
     {
-        Main::getDisplay()->addModuleNavigation(
-            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Benutzergruppen'), new Link\Icon(new Share()))
-        );
+        self::createModule(__NAMESPACE__,__CLASS__,'', 'Benutzergruppen', new Share());
     }
 
     /**

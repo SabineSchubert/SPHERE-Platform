@@ -46,7 +46,17 @@ class FilePointer
     public function __destruct()
     {
 
-        if ($this->Destruct && $this->getRealPath()) {
+        if ($this->Destruct) {
+            $this->removeFile();
+        }
+    }
+
+    /**
+     *
+     */
+    public function removeFile()
+    {
+        if ($this->getRealPath()) {
             unlink($this->getRealPath());
         }
     }

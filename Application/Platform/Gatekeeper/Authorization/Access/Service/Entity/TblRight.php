@@ -23,15 +23,6 @@ class TblRight extends Element
     protected $Route;
 
     /**
-     * @param string $Route
-     */
-    public function __construct($Route)
-    {
-
-        $this->Route = $Route;
-    }
-
-    /**
      * @return string
      */
     public function getRoute()

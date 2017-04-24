@@ -9,6 +9,7 @@ use SPHERE\Application\Api\Api;
 use SPHERE\Application\Competition\Competition;
 use SPHERE\Application\Dispatcher;
 use SPHERE\Application\Eila\Eila;
+use SPHERE\Application\Example\Example;
 use SPHERE\Application\OtherApplication\OtherApplication;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Access;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
@@ -394,5 +395,6 @@ class Main extends Extension
         OtherApplication::registerCluster();
 //        Reporting::registerCluster();
 //        Competition::registerCluster();
+        Example::registerCluster();
     }
 }
