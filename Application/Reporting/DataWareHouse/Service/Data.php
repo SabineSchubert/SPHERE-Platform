@@ -9,6 +9,7 @@
 namespace SPHERE\Application\Reporting\DataWareHouse\Service;
 
 
+use Doctrine\ORM\Query\Expr;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_AssortmentGroup;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Brand;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_DiscountGroup;
@@ -31,6 +32,7 @@ use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Sales
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Section;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Supplier;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\ViewPart;
 use SPHERE\System\Database\Binding\AbstractData;
 use SPHERE\System\Database\Fitting\Element;
 use SPHERE\System\Extension\Repository\Debugger;
@@ -545,6 +547,17 @@ class Data extends AbstractData
     }
 
     /**
+     * @param string $Number
+     * @return null|Element|TblReporting_DiscountGroup
+     */
+    public function getDiscountGroupByNumber( $Number ) {
+        $TableDiscountGroup = new TblReporting_DiscountGroup();
+        return $this->getCachedEntityBy( __METHOD__, $this->getEntityManager(), $TableDiscountGroup->getEntityShortName(), array(
+             $TableDiscountGroup::ATTR_NUMBER => $Number
+        ));
+    }
+
+    /**
      * @param int $Id
      * @return null|Element|TblReporting_Supplier
      */
@@ -585,6 +598,122 @@ class Data extends AbstractData
                 $EntitySupplierList[] = $this->getSupplierById( $PartSupplier->getTblReportingSupplier()->getId() );
             }
             return $EntitySupplierList;
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
+     * @param TblReporting_Part $TblReporting_Part
+     * @param int $Year
+     * @return array|null
+     */
+    public function getSalesByPart( TblReporting_Part $TblReporting_Part, $Year ) {
+        if( $TblReporting_Part->getId() ) {
+            $TableSales = new TblReporting_Sales();
+            $Manager = $this->getEntityManager();
+            $QueryBuilder = $Manager->getQueryBuilder();
+
+            $SqlSalesData = $QueryBuilder
+                   ->select( $TableSales->getEntityShortName().'.'.$TableSales::ATTR_YEAR )
+                    ->addSelect( 'SUM( '.$TableSales->getEntityShortName().'.'.$TableSales::ATTR_SALES_GROSS.' ) as SumSalesGross' )
+                   ->addSelect( 'SUM( '.$TableSales->getEntityShortName().'.'.$TableSales::ATTR_SALES_NET.' ) as SumSalesNet' )
+                   ->addSelect( 'SUM( '.$TableSales->getEntityShortName().'.'.$TableSales::ATTR_QUANTITY.' ) as SumQuantity' )
+                   ->from( $TableSales->getEntityFullName(), $TableSales->getEntityShortName(), null )
+                   ->where(
+                       $QueryBuilder->expr()->gte( $TableSales->getEntityShortName().'.'.$TableSales::ATTR_YEAR, ':'.$TableSales::ATTR_YEAR )
+                   )
+                   ->andWhere( $TableSales->getEntityShortName().'.'.$TableSales::TBL_REPORTING_PART.' = :'.$TableSales::TBL_REPORTING_PART )
+                   ->groupBy( $TableSales->getEntityShortName().'.'.$TableSales::ATTR_YEAR )
+                   ->orderBy( $QueryBuilder->expr()->desc( $TableSales->getEntityShortName().'.'.$TableSales::ATTR_YEAR ) )
+                   ->setParameter( $TableSales::ATTR_YEAR, $Year, \Doctrine\DBAL\Types\Type::INTEGER )
+                   ->setParameter( $TableSales::TBL_REPORTING_PART, $TblReporting_Part->getId() )
+                   ->getQuery();
+
+               //Debugger::screenDump($SqlSalesData->getSQL());
+
+           if($SqlSalesData->getResult()) {
+               return $SqlSalesData->getResult();
+           }
+           else {
+               return null;
+           }
+       }
+       else {
+           return null;
+       }
+    }
+
+    public function getViewPart() {
+        $ViewPart = new ViewPart();
+        $ViewData = $this->getCachedEntityListBy( __METHOD__, $this->getEntityManager(), $ViewPart->getEntityShortName(), array() );
+    }
+
+    /**
+     * @param $PartNumber
+     * @param $MarketingCode
+     * @param $ProductManager
+     * @return array|null
+     */
+    public function getViewPartGroupPart( $PartNumber = null, $MarketingCode = null, $ProductManager = null ) {
+        $Manager = $this->getEntityManager();
+        $QueryBuilder = $Manager->getQueryBuilder();
+        $ViewPart = new ViewPart();
+        $TableSales = new TblReporting_Sales();
+        $ViewPartAlias = $ViewPart->getEntityShortName();
+        $TableSalesAlias = $TableSales->getEntityShortName();
+
+        $SqlSalesPartData = $QueryBuilder
+            ->select( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_NUMBER )
+            ->addSelect( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_NAME )
+            //ToDo: aktueller Preis ->addSelect( $ViewPartAlias.'.'.$ViewPart-> )
+            ->addSelect( 'SUM('.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_GROSS.') as SumSalesGross' )
+            ->addSelect( 'SUM('.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_NET.') as SumSalesNet' )
+            ->addSelect( 'SUM('.$TableSalesAlias.'.'.$TableSales::ATTR_QUANTITY.') as SumQuantity' )
+            ->from( $ViewPart->getEntityFullName(), $ViewPartAlias, null )
+            ->innerJoin(
+                //$ViewPartAlias,
+                $TableSales->getEntityFullName(),
+                $TableSalesAlias,
+                Expr\Join::WITH,
+                $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_ID.' = '.$TableSalesAlias.'.'.$TableSales::TBL_REPORTING_PART
+                //null
+            )
+            ->where( '1 = 1' );
+
+        //dynm. Where-Klausel
+        if( $PartNumber ) {
+            $SqlSalesPartData = $QueryBuilder
+                ->andWhere( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_NUMBER. ' = :'. $ViewPart::TBL_REPORTING_PART_NUMBER )
+                ->setParameter( $ViewPart::TBL_REPORTING_PART_NUMBER, $PartNumber );
+        }
+        elseif( $MarketingCode ) {
+            $SqlSalesPartData = $QueryBuilder
+                ->andWhere( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER. ' = :'. $ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER );
+//                ->setParameter( $ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER, $MarketingCode );
+        }
+        elseif( $ProductManager ) {
+            $SqlSalesPartData = $QueryBuilder
+                ->andWhere(  );
+        }
+
+        $SqlSalesPartData = $QueryBuilder
+            ->groupBy( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_NUMBER )
+            ->addgroupBy( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_NAME );
+            //->addgroupBy( $ViewPartAlias.'.'.$ViewPart-> );
+
+        if( $MarketingCode ) {
+            $SqlSalesPartData = $QueryBuilder
+            ->setParameter( $ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER, $MarketingCode );
+        }
+        $SqlSalesPartData = $QueryBuilder
+            ->getQuery();
+
+        Debugger::screenDump($MarketingCode, $SqlSalesPartData->getSQL());
+
+        if( $SqlSalesPartData->getResult() ) {
+            return $SqlSalesPartData->getResult();
         }
         else {
             return null;

@@ -12,6 +12,8 @@ namespace SPHERE\Application\Api\Reporting\Utility\MultiplyCalculation;
 use SPHERE\Application\Api\ApiTrait;
 use SPHERE\Application\Api\Dispatcher;
 use SPHERE\Application\IApiInterface;
+use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part;
 use SPHERE\Common\Frontend\Ajax\Emitter\ServerEmitter;
 use SPHERE\Common\Frontend\Ajax\Pipeline;
 use SPHERE\Common\Frontend\Ajax\Receiver\AbstractReceiver;
@@ -24,16 +26,18 @@ use SPHERE\Common\Frontend\Text\Repository\Danger;
 use SPHERE\Common\Frontend\Text\Repository\Success;
 use SPHERE\Common\Frontend\Layout\Repository\Label\Danger as DangerMessage;
 use SPHERE\System\Extension\Extension;
+use SPHERE\System\Extension\Repository\Debugger;
 
 class MultiplyCalculation extends Extension implements IApiInterface
 {
 	use ApiTrait;
 
-	public static function pipelineMultiplyCalculation( AbstractReceiver $Receiver, AbstractField $Field = null ) {
+	public static function pipelineMultiplyCalculation( AbstractReceiver $Receiver, AbstractField $Field = null, TblReporting_Part $EntityPart ) {
 		$Emitter = new ServerEmitter( $Receiver, MultiplyCalculation::getEndpoint() );
 		$Emitter->setGetPayload(array(
 			MultiplyCalculation::API_TARGET => 'calcMultiplyCalculation',
-			'Receiver' => $Receiver->getIdentifier()
+			'Receiver' => $Receiver->getIdentifier(),
+            'PartId' => $EntityPart->getId()
 		));
 
 		$Pipeline = new Pipeline(false);
@@ -44,7 +48,8 @@ class MultiplyCalculation extends Extension implements IApiInterface
 			$Emitter2 = new ServerEmitter( $Receiver2, MultiplyCalculation::getEndpoint() );
 			$Emitter2->setGetPayload(array(
 				MultiplyCalculation::API_TARGET => 'calcMultiplyCalculation',
-				'Receiver'  => $Receiver2->getIdentifier()
+				'Receiver'  => $Receiver2->getIdentifier(),
+                'PartId' => $EntityPart->getId()
 			));
 			$Pipeline->appendEmitter($Emitter2);
 		}
@@ -52,13 +57,29 @@ class MultiplyCalculation extends Extension implements IApiInterface
 		return $Pipeline;
 	}
 
-	public function calcPriceData( $Receiver, $DiscountNumber, $GrossPrice, $NetSale, $CoverageContribution ) {
+	public function calcPriceData( $Receiver, $DiscountNumber, $GrossPrice, $NetSale, $CoverageContribution, $PartId ) {
 
-		$PriceData = array(
-			array('GrossPrice' => 150.00, 'DiscountNumber' => 5, 'Discount' => 17.00, 'Costs' => 140.00, 'PartsMore' => 5.00, 'Quantity' => 2)
-		);
-		$PriceData['New'] = $PriceData[0];
-		$PriceData['Old'] = $PriceData[0];
+//		$PriceData = array(
+//			array('GrossPrice' => 150.00, 'DiscountNumber' => 5, 'Discount' => 17.00, 'Costs' => 140.00, 'PartsMore' => 5.00, 'Quantity' => 2)
+//		);
+
+        $EntityPart = DataWareHouse::useService()->getPartById( $PartId );
+        $EntityPrice = $EntityPart->fetchPriceCurrent();
+        $EntityDiscountGroup = $EntityPrice->getTblReportingDiscountGroup();
+//        $EntityMarketingCode = $EntityPart->fetchMarketingCodeCurrent();
+//        $EntityPartsMore = $EntityMarketingCode->fetchPartsMoreCurrent();
+
+        $PriceData['Old'] = array(
+            'GrossPrice' => $EntityPrice->getPriceGross(),
+            'DiscountNumber' => $EntityDiscountGroup->getNumber(),
+            'Discount' => $EntityDiscountGroup->getDiscount(),
+            'Costs' => $EntityPrice->getCostsVariable(),
+            //         'PartsAndMore' => $EntityPartsMore->getValue(),
+            //         'PartsAndMoreType' => $EntityPartsMore->getType(),
+            'Quantity' => 1
+        );
+
+		$PriceData['New'] = $PriceData['Old'];
 
 		$CalcRules = $this->getCalculationRules();
 		$PriceData['Old']['NetPrice'] = $CalcRules->calcNetPrice( $PriceData['Old']['GrossPrice'], $PriceData['Old']['Discount'] );
@@ -71,8 +92,9 @@ class MultiplyCalculation extends Extension implements IApiInterface
 		switch ($Receiver) {
 			case 'DiscountNumber':
 				if ( $DiscountNumber != $PriceData['Old']['DiscountNumber'] && $DiscountNumber != '' ) {
+                    $EntityDiscountGroupNew = DataWareHouse::useService()->getDiscountGroupByNumber( $DiscountNumber );
 					$PriceData['New']['DiscountNumber'] = $DiscountNumber;
-					$PriceData['New']['Discount'] = '20';
+					$PriceData['New']['Discount'] = $EntityDiscountGroupNew->getDiscount();
 				}
 				break;
 			case 'GrossPrice':
@@ -82,8 +104,9 @@ class MultiplyCalculation extends Extension implements IApiInterface
 				break;
 			case 'NetSale':
 				if ( $DiscountNumber != $PriceData['Old']['DiscountNumber'] && $DiscountNumber != '' ) {
-					$PriceData['New']['DiscountNumber'] = $DiscountNumber;
-					$PriceData['New']['Discount'] = '20';
+                    $EntityDiscountGroupNew = DataWareHouse::useService()->getDiscountGroupByNumber( $DiscountNumber );
+                    $PriceData['New']['DiscountNumber'] = $DiscountNumber;
+                    $PriceData['New']['Discount'] = $EntityDiscountGroupNew->getDiscount();
 				}
 				break;
 			case 'CoverageContribution':
@@ -136,9 +159,9 @@ class MultiplyCalculation extends Extension implements IApiInterface
 		return $PriceData;
 	}
 
-	public function calcMultiplyCalculation( $Receiver, $DiscountNumber, $GrossPrice, $NetSale, $CoverageContribution ) {
+	public function calcMultiplyCalculation( $Receiver, $DiscountNumber, $GrossPrice, $NetSale, $CoverageContribution, $PartId ) {
 
-		$PriceData = $this->calcPriceData( $Receiver, $DiscountNumber, $GrossPrice, $NetSale, $CoverageContribution );
+		$PriceData = $this->calcPriceData( $Receiver, $DiscountNumber, $GrossPrice, $NetSale, $CoverageContribution, $PartId );
 
 		switch ($Receiver) {
 			case 'DiscountNumber':
@@ -345,6 +368,7 @@ class MultiplyCalculation extends Extension implements IApiInterface
 	}
 
 	private function tableBalancingChanceDiscount( $PriceData ) {
+
 		return
 				new Table(array(
 					array(
@@ -389,6 +413,7 @@ class MultiplyCalculation extends Extension implements IApiInterface
 	}
 
 	private function tableBalancingChanceGrossPrice( $PriceData ) {
+
 		return
 			new Table(array(
 				array(

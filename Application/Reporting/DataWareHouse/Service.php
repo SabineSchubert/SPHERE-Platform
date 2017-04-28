@@ -9,6 +9,8 @@
 namespace SPHERE\Application\Reporting\DataWareHouse;
 
 
+use Doctrine\Common\Util\Debug;
+use Doctrine\ORM\Query\Expr;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Data;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_AssortmentGroup;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Brand;
@@ -316,6 +318,14 @@ class Service extends AbstractService
     }
 
     /**
+     * @param $Number
+     * @return null|TblReporting_DiscountGroup|Element
+     */
+    public function getDiscountGroupByNumber( $Number ) {
+        return ( new Data( $this->getBinding() ) )->getDiscountGroupByNumber( $Number );
+    }
+
+    /**
      * @param int $Id
      * @return null|TblReporting_Supplier|Element
      */
@@ -352,5 +362,24 @@ class Service extends AbstractService
 //    public function getPartPriceByPartNumber( $PartNumber ) {
 //ToDo: für View
 //    }
+
+    /**
+     * @param TblReporting_Part $TblReporting_Part
+     * @param int $Year
+     * @return array|null
+     */
+    public function getSalesByPartId( TblReporting_Part $TblReporting_Part, $Year ) {
+        return ( new Data( $this->getBinding() ) )->getSalesByPart( $TblReporting_Part, $Year );
+    }
+
+    /**
+     * @param $PartNumber
+     * @param $MarketingCode
+     * @param $ProductManager
+     * @return array|null
+     */
+    public function getViewPartGroupPart( $PartNumber = null, $MarketingCode = null, $ProductManager = null ) {
+        return ( new Data( $this->getBinding() ) ) ->getViewPartGroupPart( $PartNumber, $MarketingCode, $ProductManager );
+    }
 
 }

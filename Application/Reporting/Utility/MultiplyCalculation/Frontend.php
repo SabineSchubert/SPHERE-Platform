@@ -9,6 +9,8 @@
 namespace SPHERE\Application\Reporting\Utility\MultiplyCalculation;
 
 use SPHERE\Application\Api\Reporting\Utility\MultiplyCalculation\MultiplyCalculation as ApiMultiplyCalculation;
+use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Button\Reset;
 use SPHERE\Common\Frontend\Form\Repository\Field\TextField;
@@ -17,7 +19,6 @@ use SPHERE\Common\Frontend\Form\Structure\FormColumn;
 use SPHERE\Common\Frontend\Form\Structure\FormGroup;
 use SPHERE\Common\Frontend\Form\Structure\FormRow;
 use SPHERE\Common\Frontend\Icon\Repository\Search;
-use SPHERE\Common\Frontend\Icon\Repository\Warning;
 use SPHERE\Common\Frontend\Layout\Repository\Panel;
 use SPHERE\Common\Frontend\Layout\Repository\PullRight;
 use SPHERE\Common\Frontend\Layout\Repository\Title;
@@ -25,6 +26,7 @@ use SPHERE\Common\Frontend\Layout\Structure\Layout;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
+use SPHERE\Common\Frontend\Message\Repository\Warning;
 use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Frontend\Text\Repository\Bold;
 use SPHERE\Common\Window\Stage;
@@ -41,8 +43,12 @@ class Frontend extends Extension
 		$Form = '';
 		$LayoutAllocation = '';
 		$LayoutBalancing = '';
+        $ErrorPart = '';
 		if ($Search) {
-			if (empty($Result)) {
+
+		    $EntityPart = DataWareHouse::useService()->getPartByNumber( $Search['PartNumber'] );
+
+			if (!empty($EntityPart)) {
 
 				//$this->preloadPriceData();
 
@@ -59,10 +65,10 @@ class Frontend extends Extension
 				$TableBalancingChanceGrossPriceReceiver = (ApiMultiplyCalculation::Receiver())->setIdentifier($CoverageContributionField->getName());
 
 				//Pipeline
-				$DiscountNumberPipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableAllocationChanceDiscountReceiver, $NetSaleField);
-				$GrossPricePipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableAllocationChanceGrossPriceReceiver, $CoverageContributionField);
-				$NetSalePipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableBalancingChanceDiscountReceiver, $CoverageContributionField);
-				$CoverageContributionPipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableBalancingChanceGrossPriceReceiver, $NetSaleField);
+				$DiscountNumberPipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableAllocationChanceDiscountReceiver, $NetSaleField, $EntityPart);
+				$GrossPricePipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableAllocationChanceGrossPriceReceiver, $CoverageContributionField, $EntityPart);
+				$NetSalePipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableBalancingChanceDiscountReceiver, $CoverageContributionField, $EntityPart);
+				$CoverageContributionPipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableBalancingChanceGrossPriceReceiver, $NetSaleField, $EntityPart);
 
 				$LayoutContent = new Form(
 					new FormGroup(
@@ -118,7 +124,7 @@ class Frontend extends Extension
 							new LayoutRow(
 								array(
 									new LayoutColumn(
-										$this->tableAllocationBasicData(), 4
+										$this->tableAllocationBasicData( $EntityPart ), 4
 									),
 									new LayoutColumn(
 										$TableAllocationChanceDiscountReceiver, 4
@@ -152,20 +158,28 @@ class Frontend extends Extension
 				);
 
 			} else {
-				$Table = new Warning('Die Teilenummer konnte nicht gefunden werden.');
+				$ErrorPart = new Warning('Die Teilenummer konnte nicht gefunden werden.');
 			}
 		}
 
 
 		$Stage->setContent(
-			new Layout(
-				new LayoutGroup(
-					new LayoutRow(
-						new LayoutColumn(
-							$this->fromSearchPartNumber(), 4
-						)
-					)
-				)
+			new Layout(array(
+                    new LayoutGroup(
+                        new LayoutRow(
+                            new LayoutColumn(
+                                $this->fromSearchPartNumber(), 4
+                            )
+                        )
+                    ),
+                    new LayoutGroup(
+                        new LayoutRow(
+                            new LayoutColumn(
+                                $ErrorPart
+                            )
+                        )
+                    )
+                )
 			)
 			.$Form
 			.$LayoutAllocation
@@ -194,11 +208,17 @@ class Frontend extends Extension
 		);
 	}
 
-	private function tableAllocationBasicData() {
-		$PriceDataOld = array(
-			array('GrossPrice' => 150.00, 'DiscountNumber' => 5, 'Discount' => 17.00, 'Costs' => 140.00, 'PartsMore' => 5.00, 'Quantity' => 2)
-		);
-		$PriceData['Old'] = $PriceDataOld[0];
+	private function tableAllocationBasicData( TblReporting_Part $EntityPart ) {
+
+        $EntityPrice = $EntityPart->fetchPriceCurrent();
+        $EntityDiscountGroup = $EntityPrice->getTblReportingDiscountGroup();
+        $PriceData['Old'] = array(
+            'GrossPrice' => $EntityPrice->getPriceGross(),
+            'DiscountNumber' => $EntityDiscountGroup->getNumber(),
+            'Discount' => $EntityDiscountGroup->getDiscount(),
+            'Costs' => $EntityPrice->getCostsVariable(),
+            'Quantity' => 2
+        );
 
 		$CalcRules = $this->getCalculationRules();
 
