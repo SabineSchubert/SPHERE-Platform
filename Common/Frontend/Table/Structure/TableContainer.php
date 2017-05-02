@@ -114,6 +114,7 @@ class TableContainer extends Extension implements ITemplateInterface
     {
 
         if (empty( $this->Hash )) {
+/*
             $HeadList = $this->TableHead;
             array_walk($HeadList, function (&$H) {
 
@@ -136,6 +137,9 @@ class TableContainer extends Extension implements ITemplateInterface
                 }
             });
             $this->Hash = md5(json_encode($HeadList) . json_encode($BodyList) . json_encode($FootList));
+*/
+            // TODO: Check Quick-Hash vs. Structure&Content Hash
+            $this->Hash = crc32( uniqid('Table', true) );
         }
         return $this->Hash;
     }
