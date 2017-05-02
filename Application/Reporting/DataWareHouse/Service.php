@@ -373,13 +373,52 @@ class Service extends AbstractService
     }
 
     /**
-     * @param $PartNumber
-     * @param $MarketingCode
-     * @param $ProductManager
+     * @param null|string $PartNumber
+     * @param null|string $MarketingCodeNumber
+     * @param null|int $ProductManagerId
+     * @param null|string $PeriodFrom
+     * @param null|string $PeriodTo
      * @return array|null
      */
-    public function getViewPartGroupPart( $PartNumber = null, $MarketingCode = null, $ProductManager = null ) {
-        return ( new Data( $this->getBinding() ) ) ->getViewPartGroupPart( $PartNumber, $MarketingCode, $ProductManager );
+    public function getViewPartGroupPart($PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null, $PeriodFrom = null, $PeriodTo = null ) {
+        return ( new Data( $this->getBinding() ) ) ->getViewPartGroup('Part', $PartNumber, $MarketingCodeNumber, $ProductManagerId, $PeriodFrom, $PeriodTo );
     }
+
+    /**
+     * @param null|string $PartNumber
+     * @param null|string $MarketingCodeNumber
+     * @param null|int $ProductManagerId
+     * @param null|string $PeriodFrom
+     * @param null|string $PeriodTo
+     * @return array|null
+     */
+    public function getViewPartGroupMarketingCode($PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null, $PeriodFrom = null, $PeriodTo = null ) {
+        return ( new Data( $this->getBinding() ) ) ->getViewPartGroup('MarketingCode', $PartNumber, $MarketingCodeNumber, $ProductManagerId, $PeriodFrom, $PeriodTo );
+    }
+
+    /**
+     * @param null|string $PartNumber
+     * @param null|string $MarketingCodeNumber
+     * @param null|int $ProductManagerId
+     * @param null|string $PeriodFrom
+     * @param null|string $PeriodTo
+     * @return array|null
+     */
+    public function getViewPartGroupProductManager($PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null, $PeriodFrom = null, $PeriodTo = null ) {
+        return ( new Data( $this->getBinding() ) ) ->getViewPartGroup('ProductManager', $PartNumber, $MarketingCodeNumber, $ProductManagerId, $PeriodFrom, $PeriodTo );
+    }
+
+    /**
+     * @param null|string $PartNumber
+     * @param null|string $MarketingCodeNumber
+     * @param null|int $ProductManagerId
+     * @param null|string $PeriodFrom
+     * @param null|string $PeriodTo
+     * @return array|null
+     */
+    public function getViewPartGroupCompetition($PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null, $PeriodFrom = null, $PeriodTo = null ) {
+        return ( new Data( $this->getBinding() ) ) ->getViewPartGroup('Competition', $PartNumber, $MarketingCodeNumber, $ProductManagerId, $PeriodFrom, $PeriodTo );
+    }
+
 
 }

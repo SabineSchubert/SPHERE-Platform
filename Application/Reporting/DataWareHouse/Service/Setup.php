@@ -148,6 +148,14 @@ class Setup extends AbstractSetup
                 );
 //        );
 
+        $this->getConnection()->createView(
+            ( new View( $this->getConnection(), 'ViewPrice' ) )
+                ->addLink(
+                    new TblReporting_Price(), 'TblReporting_DiscountGroup',
+                    new TblReporting_DiscountGroup(), 'Id'
+                )
+        );
+
         return $this->saveSchema($Schema, $Simulate);
     }
 

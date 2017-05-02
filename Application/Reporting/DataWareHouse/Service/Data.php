@@ -33,6 +33,7 @@ use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Section;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Supplier;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\ViewPart;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\ViewPrice;
 use SPHERE\System\Database\Binding\AbstractData;
 use SPHERE\System\Database\Fitting\Element;
 use SPHERE\System\Extension\Repository\Debugger;
@@ -651,66 +652,137 @@ class Data extends AbstractData
     }
 
     /**
-     * @param $PartNumber
-     * @param $MarketingCode
-     * @param $ProductManager
+     * @param string $GroupBy
+     * @param null|string $PartNumber
+     * @param null|string $MarketingCodeNumber
+     * @param null|int $ProductManagerId
+     * @param null|string $PeriodFrom
+     * @param null|string $PeriodTo
      * @return array|null
      */
-    public function getViewPartGroupPart( $PartNumber = null, $MarketingCode = null, $ProductManager = null ) {
+    public function getViewPartGroup( $GroupBy, $PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null, $PeriodFrom = null, $PeriodTo = null ) {
         $Manager = $this->getEntityManager();
         $QueryBuilder = $Manager->getQueryBuilder();
         $ViewPart = new ViewPart();
         $TableSales = new TblReporting_Sales();
+        $ViewPrice = new ViewPrice();
         $ViewPartAlias = $ViewPart->getEntityShortName();
         $TableSalesAlias = $TableSales->getEntityShortName();
+        $ViewPriceAlias = $ViewPrice->getEntityShortName();
+
+        if( $GroupBy == 'Part' ) {
+            $SqlSalesPartData = $QueryBuilder
+                ->select( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_NUMBER.' as PartNumber' )
+                ->addSelect( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_NAME. ' as PartName' )
+                ->addSelect( $ViewPriceAlias.'.'.$ViewPrice::TBL_REPORTING_PRICE_PRICE_GROSS.' as PriceGross' )
+                ->addSelect( $ViewPriceAlias.'.'.$ViewPrice::TBL_REPORTING_PRICE_PRICE_GROSS.'*(1-('.$ViewPriceAlias.'.'.$ViewPrice::TBL_REPORTING_DISCOUNT_GROUP_DISCOUNT.'/100)) as PriceNet ' );
+        }
+        elseif( $GroupBy == 'MarketingCode' ) {
+            $SqlSalesPartData = $QueryBuilder
+                ->select( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER.' as MarketingCodeNumber' )
+                ->addSelect( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_MARKETING_CODE_NAME. ' as MarketingCodeName' );
+        }
+        elseif( $GroupBy == 'ProductManager' ) {
+            $SqlSalesPartData = $QueryBuilder
+                ->select( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PRODUCT_MANAGER_NAME.' as ProductManagerName' )
+                ->addSelect( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PRODUCT_MANAGER_DEPARTMENT. ' as ProductManagerDepartment' );
+        }
+        elseif( $GroupBy == 'Competition' ) {
+//            $SqlSalesPartData = $QueryBuilder
+//                ->select( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_NUMBER.' as PartNumber' )
+//                ->addSelect( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_NAME. ' as PartName' );
+        }
+        else {
+            return null;
+        }
 
         $SqlSalesPartData = $QueryBuilder
-            ->select( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_NUMBER )
-            ->addSelect( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_NAME )
-            //ToDo: aktueller Preis ->addSelect( $ViewPartAlias.'.'.$ViewPart-> )
             ->addSelect( 'SUM('.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_GROSS.') as SumSalesGross' )
             ->addSelect( 'SUM('.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_NET.') as SumSalesNet' )
             ->addSelect( 'SUM('.$TableSalesAlias.'.'.$TableSales::ATTR_QUANTITY.') as SumQuantity' )
             ->from( $ViewPart->getEntityFullName(), $ViewPartAlias, null )
             ->innerJoin(
-                //$ViewPartAlias,
                 $TableSales->getEntityFullName(),
                 $TableSalesAlias,
                 Expr\Join::WITH,
                 $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_ID.' = '.$TableSalesAlias.'.'.$TableSales::TBL_REPORTING_PART
-                //null
             )
-            ->where( '1 = 1' );
+            ->innerJoin(
+                $ViewPrice->getEntityFullName(),
+                $ViewPriceAlias,
+                Expr\Join::WITH,
+                $ViewPriceAlias.'.'.$ViewPrice::TBL_REPORTING_PART.' = '.$ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_ID
+            )
+            ->where( '1 = 1' ); //ToDo: $ViewPriceAlias.'.'.$ViewPrice::ATTR_VALID_FROM auf aktuellen Preis eingrenzen
 
         //dynm. Where-Klausel
-        if( $PartNumber ) {
+        if( $PartNumber) {
             $SqlSalesPartData = $QueryBuilder
                 ->andWhere( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_NUMBER. ' = :'. $ViewPart::TBL_REPORTING_PART_NUMBER )
                 ->setParameter( $ViewPart::TBL_REPORTING_PART_NUMBER, $PartNumber );
         }
-        elseif( $MarketingCode ) {
+        if( $MarketingCodeNumber ) {
             $SqlSalesPartData = $QueryBuilder
-                ->andWhere( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER. ' = :'. $ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER );
-//                ->setParameter( $ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER, $MarketingCode );
+                ->andWhere( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER. ' = :'. $ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER )
+                ->setParameter( $ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER, $MarketingCodeNumber );
         }
-        elseif( $ProductManager ) {
-            $SqlSalesPartData = $QueryBuilder
-                ->andWhere(  );
+        if( $ProductManagerId ) {
+//            $SqlSalesPartData = $QueryBuilder
+//                ->andWhere( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PRODUCT_MANAGER_ID = '' )
+//                ->setParameter($ViewPartAlias.'.'.$ViewPart::ENTITY_ID, $ProductManagerId);
         }
 
-        $SqlSalesPartData = $QueryBuilder
-            ->groupBy( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_NUMBER )
-            ->addgroupBy( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_NAME );
-            //->addgroupBy( $ViewPartAlias.'.'.$ViewPart-> );
-
-        if( $MarketingCode ) {
+        if($PeriodFrom) {
             $SqlSalesPartData = $QueryBuilder
-            ->setParameter( $ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER, $MarketingCode );
+                ->andWhere(
+                    $QueryBuilder->expr()->gte(
+                        $QueryBuilder->expr()
+                            ->concat( $TableSalesAlias.'.'.$TableSales::ATTR_MONTH, $TableSalesAlias.'.'.$TableSales::ATTR_YEAR ),
+                        ':MonthYear'
+                    )
+                )
+                ->setParameter( 'MonthYear', date('nY',strtotime($PeriodFrom)) );
         }
+
+        if($PeriodTo) {
+            $SqlSalesPartData = $QueryBuilder
+                ->andWhere(
+                    $QueryBuilder->expr()->lte(
+                        $QueryBuilder->expr()
+                            ->concat( $TableSalesAlias.'.'.$TableSales::ATTR_MONTH, $TableSalesAlias.'.'.$TableSales::ATTR_YEAR ),
+                        ':MonthYear'
+                    )
+                )
+                ->setParameter( 'MonthYear', date('nY',strtotime($PeriodTo)) );
+        }
+
+        //Group By
+        if( $GroupBy == 'Part' ) {
+            $SqlSalesPartData = $QueryBuilder
+                ->groupBy( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_NUMBER )
+                ->addgroupBy( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_NAME )
+                ->addgroupBy( $ViewPriceAlias.'.'.$ViewPrice::TBL_REPORTING_PRICE_PRICE_GROSS )
+                ->addgroupBy( $ViewPriceAlias.'.'.$ViewPrice::TBL_REPORTING_DISCOUNT_GROUP_DISCOUNT );
+        }
+        elseif( $GroupBy == 'MarketingCode' ) {
+            $SqlSalesPartData = $QueryBuilder
+                ->groupBy( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER )
+                ->addGroupBy( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_MARKETING_CODE_NAME );
+        }
+        elseif( $GroupBy == 'ProductManager' ) {
+            $SqlSalesPartData = $QueryBuilder
+                ->groupBy( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PRODUCT_MANAGER_NAME )
+                ->addGroupBy( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PRODUCT_MANAGER_DEPARTMENT );
+        }
+        elseif( $GroupBy == 'Competition' ) {
+//            $SqlSalesPartData = $QueryBuilder
+//                ->groupBy('');
+        }
+
         $SqlSalesPartData = $QueryBuilder
             ->getQuery();
 
-        Debugger::screenDump($MarketingCode, $SqlSalesPartData->getSQL());
+        //Debugger::screenDump($SqlSalesPartData->getSQL());
 
         if( $SqlSalesPartData->getResult() ) {
             return $SqlSalesPartData->getResult();

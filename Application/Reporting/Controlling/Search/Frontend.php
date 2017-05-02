@@ -46,10 +46,12 @@ class Frontend extends Extension
 		$Stage->setMessage('Teilenummer');
 		$this->buttonStageDirectSearch($Stage);
 
-		if( $Search ) {
-            $SearchData = DataWareHouse::useService()->getViewPartGroupPart( $Search['PartNumber'], $Search['MarketingCode'], $Search['ProductManager'] );
+        Debugger::screenDump($Search);
 
-            Debugger::screenDump($SearchData);
+		if( $Search ) {
+            $SearchData = DataWareHouse::useService()->getViewPartGroupPart( $Search['PartNumber'], $Search['MarketingCode'], $Search['ProductManager'], $Search['PeriodFrom'], $Search['PeriodTo'] );
+
+            //Debugger::screenDump($SearchData);
 
             $LayoutTable = $this->tableSearchData($SearchData);
         }
@@ -83,8 +85,13 @@ class Frontend extends Extension
 		$Stage->setMessage('Marketingcode');
 		$this->buttonStageDirectSearch($Stage);
 
-		$SearchData = array(array('Marketingcode'));
-		$LayoutTable = $this->tableSearchData($SearchData);
+        if( $Search ) {
+            $SearchData = DataWareHouse::useService()->getViewPartGroupMarketingCode( $Search['PartNumber'], $Search['MarketingCode'], $Search['ProductManager'] );
+            $LayoutTable = $this->tableSearchData($SearchData);
+        }
+        else {
+            $LayoutTable = '';
+        }
 
 		$Stage->setContent(
 			new Layout(
@@ -111,8 +118,13 @@ class Frontend extends Extension
 		$Stage->setMessage('Produktmanager');
 		$this->buttonStageDirectSearch($Stage);
 
-		$SearchData = array(array('Produktmanager'));
-		$LayoutTable = $this->tableSearchData($SearchData);
+        if( $Search ) {
+            $SearchData = DataWareHouse::useService()->getViewPartGroupProductManager( $Search['PartNumber'], $Search['MarketingCode'], $Search['ProductManager'] );
+            $LayoutTable = $this->tableSearchData($SearchData);
+        }
+        else {
+            $LayoutTable = '';
+        }
 
 		$Stage->setContent(
 			new Layout(
@@ -137,10 +149,9 @@ class Frontend extends Extension
 		$Stage->setMessage('Angebotsdaten');
 		$this->buttonStageDirectSearch($Stage);
 
-		$SearchData = array(array('Angebotsdaten'));
-
-		if($Search) {
-		    $LayoutTable = $this->tableSearchData($SearchData);
+        if( $Search ) {
+            $SearchData = DataWareHouse::useService()->getViewPartGroupCompetition( $Search['PartNumber'], $Search['MarketingCode'], $Search['ProductManager'] );
+            $LayoutTable = $this->tableSearchData($SearchData);
         }
         else {
             $LayoutTable = '';
@@ -238,47 +249,21 @@ class Frontend extends Extension
 	}
 
 	private function tableSearchData( $SearchData ) {
-
-//		switch ($SelectionStatistic) {
-//			case '1':
-//				$SearchData = array(
-//					array( 'PartNumber' => 'dsakj', 'GrossPrice' => 250.00, 'Discount' => 10, 'Quantity' => 5 ),
-//					array( 'PartNumber' => 'dsakj', 'GrossPrice' => 250.00, 'Discount' => 10, 'Quantity' => 5 )
-//				);
-//				break;
-//			case '2':
-//				$SearchData = array(
-//					array( 'McCode' => 'dsakj', 'GrossPrice' => 250.00, 'Discount' => 10, 'Quantity' => 5 ),
-//					array( 'McCode' => 'dsakj', 'GrossPrice' => 250.00, 'Discount' => 10, 'Quantity' => 5 )
-//				);
-//				break;
-//			case '3':
-//				$SearchData = array(
-//					array( 'ProductManager' => 'dsakj', 'GrossPrice' => 250.00, 'Discount' => 10, 'Quantity' => 5 ),
-//					array( 'ProductManager' => 'dsakj', 'GrossPrice' => 250.00, 'Discount' => 10, 'Quantity' => 5 )
-//				);
-//				break;
-//			case '4':
-//				$SearchData = array(
-//					array( 'Competitor' => 'dsakj', 'GrossPrice' => 250.00, 'Discount' => 10, 'Quantity' => 5 ),
-//					array( 'Competitor' => 'dsakj', 'GrossPrice' => 250.00, 'Discount' => 10, 'Quantity' => 5 )
-//				);
-//				break;
-//			default:
-//				$SearchData = array();
-//				break;
-//		}
-
         if( $SearchData ) {
             $ReplaceArray = array(
-                'TblReporting_Part_Number' => 'Teilenummer',
-                'TblReporting_MarketingCode_Number' => 'Marketingcode',
-                'TblReporting_ProductManager_Name' => 'Produktmanager',
+                'PartNumber' => 'Teilenummer',
+                'PartName' => 'Bezeichnung',
+                'MarketingCodeNumber' => 'Marketingcode',
+                'MarketingCodeName' => 'Marketingcode-Bezeichnung',
+                'ProductManagerName' => 'Produktmanager',
+                'ProductManagerDepartment' => 'Bereich',
                 'Competitor' => 'Wettbewerber',
-                'GrossPrice' => 'BLP',
-                'NetPrice' => 'NLP',
+                'PriceGross' => 'BLP',
+                'PriceNet' => 'NLP',
                 'Discount' => 'RG',
-                'TblReporting_Sales_Quantity' => 'Menge',
+                'SumSalesGross' => 'Bruttoumsatz',
+                'SumSalesNet' => 'Nettoumsatz',
+                'SumQuantity' => 'Menge',
                 //'TblReporting_Sales_Quantity' => 'Menge'
             );
 
