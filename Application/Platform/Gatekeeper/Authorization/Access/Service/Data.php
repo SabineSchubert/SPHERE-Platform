@@ -1,4 +1,5 @@
 <?php
+
 namespace SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service;
 
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblLevel;
@@ -221,22 +222,6 @@ class Data extends AbstractData
 
     /**
      * @param string $Name
-     * @param bool $IsInternal
-     * @return TblRole
-     */
-    public function insertRole($Name, $IsInternal = false)
-    {
-        $Entity = new TblRole();
-        $Entity->setName($Name);
-        $Entity->setInternal($IsInternal);
-
-        $this->getEntityManager()->saveEntity($Entity);
-        Protocol::useService()->createInsertEntry($this->getConnection()->getDatabase(), $Entity);
-        return $Entity;
-    }
-
-    /**
-     * @param string $Name
      *
      * @return TblLevel
      */
@@ -248,7 +233,8 @@ class Data extends AbstractData
             TblLevel::ATTR_NAME => $Name
         ));
         if (null === $Entity) {
-            $Entity = new TblLevel($Name);
+            $Entity = new TblLevel();
+            $Entity->setName($Name);
             $Manager->saveEntity($Entity);
             Protocol::useService()->createInsertEntry($this->getConnection()->getDatabase(), $Entity);
         }
@@ -292,7 +278,8 @@ class Data extends AbstractData
             TblPrivilege::ATTR_NAME => $Name
         ));
         if (null === $Entity) {
-            $Entity = new TblPrivilege($Name);
+            $Entity = new TblPrivilege();
+            $Entity->setName($Name);
             $Manager->saveEntity($Entity);
             Protocol::useService()->createInsertEntry($this->getConnection()->getDatabase(), $Entity);
         }
@@ -336,7 +323,8 @@ class Data extends AbstractData
             TblRight::ATTR_ROUTE => $Route
         ));
         if (null === $Entity) {
-            $Entity = new TblRight($Route);
+            $Entity = new TblRight();
+            $Entity->setRoute($Route);
             $Manager->saveEntity($Entity);
             Protocol::useService()->createInsertEntry($this->getConnection()->getDatabase(), $Entity);
         }
@@ -364,6 +352,22 @@ class Data extends AbstractData
             $Manager->saveEntity($Entity);
             Protocol::useService()->createInsertEntry($this->getConnection()->getDatabase(), $Entity);
         }
+        return $Entity;
+    }
+
+    /**
+     * @param string $Name
+     * @param bool $IsInternal
+     * @return TblRole
+     */
+    public function insertRole($Name, $IsInternal = false)
+    {
+        $Entity = new TblRole();
+        $Entity->setName($Name);
+        $Entity->setInternal($IsInternal);
+
+        $this->getEntityManager()->saveEntity($Entity);
+        Protocol::useService()->createInsertEntry($this->getConnection()->getDatabase(), $Entity);
         return $Entity;
     }
 

@@ -1,8 +1,10 @@
 <?php
+
 namespace SPHERE\Application\Platform\Utility\Translation\Component\Translate;
 
 use MOC\V\Component\Template\Template;
 use SPHERE\Application\Platform\Utility\Translation\Component\AbstractComponent;
+use SPHERE\Application\Platform\Utility\Translation\TranslationInterface;
 
 /**
  * Class Preset
@@ -11,33 +13,30 @@ use SPHERE\Application\Platform\Utility\Translation\Component\AbstractComponent;
 class Preset extends AbstractComponent
 {
 
-    const LOCALE_EN_US = 'en_US';
-    const LOCALE_DE_DE = 'de_DE';
-
-    /** @var string $DefaultLocale */
-    private $DefaultLocale = 'en_US';
-    /** @var array $PatternList */
-    private $PatternList = array();
-    private $DefaultPattern = '';
+    /** @var string $Locale */
+    private $Locale = TranslationInterface::LOCALE_EN_US;
+    /** @var string $Template */
+    private $Template = '';
     /** @var null|Parameter $Parameter */
     private $Parameter = null;
-    /** @var string $BreadCrumb */
-    private $BreadCrumb = '-NA-';
 
     /**
      * Preset constructor.
-     * @param string $DefaultPattern
+     * @param string $Template
      * @param Parameter $Parameter
-     * @param string $DefaultLocale
+     * @param string $Locale
      */
-    public function __construct($DefaultPattern, Parameter $Parameter = null, $DefaultLocale = self::LOCALE_EN_US)
-    {
-        $this->DefaultPattern = trim($DefaultPattern);
+    public function __construct(
+        $Template,
+        Parameter $Parameter = null,
+        $Locale = TranslationInterface::LOCALE_EN_US
+    ) {
+        $this->setTemplate($Template);
         if (null === $Parameter) {
             $Parameter = new Parameter();
         }
         $this->setParameter($Parameter);
-        $this->setDefaultLocale($DefaultLocale);
+        $this->setLocale($Locale);
     }
 
     /**
@@ -46,50 +45,23 @@ class Preset extends AbstractComponent
     public function __toString()
     {
 
-        $this->appendPattern('!.*!is', $this->DefaultPattern);
-        $Template = null;
-        if (key_exists(
-            ($Switch = $this->getParameter()->getSwitch()),
-            ($ParameterList = $this->getParameter()->getParameterList())
-        )) {
-            $Match = $ParameterList[$Switch];
-            foreach ($this->PatternList as $RegEx => $Preset) {
-                if (preg_match($RegEx, $Match)) {
-                    $Template = Template::getTwigTemplateString($Preset);
-                    foreach ($ParameterList as $Key => $Value) {
-                        $Template->setVariable($Key, $Value);
-                    }
-                    break;
-                }
-            }
+        if(($Parameter = $this->getParameter())) {
+            $ParameterList = $Parameter->getParameter();
+        } else {
+            $ParameterList = array();
         }
 
-        if (!$Template) {
-            $Template = Template::getTwigTemplateString(end($this->PatternList));
-            foreach ($ParameterList as $Key => $Value) {
-                $Template->setVariable($Key, $Value);
-            }
+        $Template = Template::getTwigTemplateString( $this->getTemplate() );
+        foreach ($ParameterList as $Key => $Value) {
+            $Template->setVariable($Key, $Value);
         }
 
-        // TODO: TR Mod
-        if ($this->getDefaultLocale() != $this->getLocale()) {
-            return '{'.$Template->getContent().':'.$this->getLocale().'}';
-//            $Translate = new Paragraph(new Link('Translation (' . $this->getDefaultLocale() . ' => ' . $this->getLocale() . ')',
-//                '#', new Conversation(), array(), 'Missing (' . $this->getLocale() . ') ' . $this->getBreadCrumb()));
+        if ($this->getLocale() != $this->getClientLocale()) {
+            // TODO: Point Translation Access if Language is missing
+            return $Template->getContent() . ' (Missing translation ' . $this->getLocale() . ' to ' . $this->getClientLocale() . ')';
         } else {
             return $Template->getContent();
         }
-    }
-
-    /**
-     * @param $RegEx
-     * @param $Template
-     * @return $this
-     */
-    public function appendPattern($RegEx, $Template)
-    {
-        $this->PatternList[$RegEx] = strip_tags($Template);
-        return $this;
     }
 
     /**
@@ -111,48 +83,32 @@ class Preset extends AbstractComponent
     /**
      * @return string
      */
-    public function getDefaultLocale()
+    public function getLocale()
     {
-        return $this->DefaultLocale;
+        return (string)$this->Locale;
     }
 
     /**
-     * @param string $DefaultLocale
+     * @param string $Locale
      */
-    public function setDefaultLocale($DefaultLocale)
+    public function setLocale($Locale)
     {
-        $this->DefaultLocale = $DefaultLocale;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBreadCrumb()
-    {
-        return $this->BreadCrumb;
-    }
-
-    /**
-     * @param string $BreadCrumb
-     */
-    public function setBreadCrumb($BreadCrumb)
-    {
-        $this->BreadCrumb = (string)$BreadCrumb;
-    }
-
-    /**
-     * @return array
-     */
-    public function getPatternList()
-    {
-        return $this->PatternList;
+        $this->Locale = (string)$Locale;
     }
 
     /**
      * @return string
      */
-    public function getDefaultPattern()
+    public function getTemplate()
     {
-        return $this->DefaultPattern;
+        return (string)$this->Template;
+    }
+
+    /**
+     * @param string $Template
+     */
+    public function setTemplate($Template)
+    {
+        $this->Template = (string)trim(strip_tags($Template));
     }
 }

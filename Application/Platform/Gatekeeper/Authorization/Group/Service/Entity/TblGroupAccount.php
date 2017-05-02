@@ -65,7 +65,7 @@ class TblGroupAccount extends Element
     /**
      * @param null|TblAccount $TblAccount
      */
-    public function setTblAccount(TblAccount $TblAccount = null)
+    public function setServiceTblAccount(TblAccount $TblAccount = null)
     {
 
         $this->serviceTblAccount = (null === $TblAccount ? null : $TblAccount->getId());

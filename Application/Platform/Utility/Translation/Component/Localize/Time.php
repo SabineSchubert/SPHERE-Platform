@@ -43,9 +43,10 @@ class Time extends AbstractComponent
     private function createDateFormatter()
     {
         return new \IntlDateFormatter(
-            $this->getLocale(),
+            $this->getClientLocale(),
             $this->DateStyle,
-            $this->TimeStyle
+            $this->TimeStyle,
+            $this->getClientTimezone()
         );
     }
 }

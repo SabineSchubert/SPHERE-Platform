@@ -24,15 +24,6 @@ class TblLevel extends Element
     protected $Name;
 
     /**
-     * @param string $Name
-     */
-    public function __construct($Name)
-    {
-
-        $this->Name = $Name;
-    }
-
-    /**
      * @return string
      */
     public function getName()

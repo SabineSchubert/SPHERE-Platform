@@ -162,6 +162,7 @@ class Pipeline
                             $Payload = array_merge( $FrontendElement->getData(), $Payload );
                             $Data = json_encode( $Payload, JSON_FORCE_OBJECT );
                         } else {
+                            $Data = json_decode( $Emitter->getAjaxPostPayload() );
                             $Data = json_encode( $Data, JSON_FORCE_OBJECT );
                         }
                         $Data = 'var EmitterData = ' . $Data . ';';

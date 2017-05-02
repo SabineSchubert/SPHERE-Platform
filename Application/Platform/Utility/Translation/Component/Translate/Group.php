@@ -1,4 +1,5 @@
 <?php
+
 namespace SPHERE\Application\Platform\Utility\Translation\Component\Translate;
 
 /**
@@ -21,35 +22,8 @@ class Group
      */
     public function __construct($Identifier, Group $Child = null)
     {
-        $this->Identifier = preg_replace('![^:\w\d]!is', '_', $Identifier);
+        $this->Identifier = preg_replace('![^a-zA-Z-0-9]!is', '_', $Identifier);
         $this->Group = $Child;
-    }
-
-    public function getIdentifier()
-    {
-        if ($this->Group) {
-            return $this->Identifier . self::GROUP_SEPARATOR . $this->Group->getIdentifier();
-        } else {
-            return $this->Identifier;
-        }
-    }
-
-    /**
-     * @param Preset $Preset
-     * @return array
-     */
-    public function getDefinition(Preset $Preset)
-    {
-        if ($this->Group) {
-            return $this->Group->getDefinition($Preset);
-        } else {
-            return array(
-                $Preset->getDefaultLocale() => $Preset->getDefaultPattern(),
-                'Pattern' => $Preset->getPatternList(),
-                'Parameter' => $Preset->getParameter()->getParameterList(),
-                'Switch' => $Preset->getParameter()->getSwitch()
-            );
-        }
     }
 
     /**
@@ -57,8 +31,16 @@ class Group
      */
     public function __toString()
     {
+        return $this->getIdentifier();
+    }
+
+    /**
+     * @return string
+     */
+    public function getIdentifier()
+    {
         if ($this->Group) {
-            return $this->Identifier . self::GROUP_SEPARATOR . $this->Group->__toString();
+            return $this->Identifier . self::GROUP_SEPARATOR . $this->Group->getIdentifier();
         } else {
             return $this->Identifier;
         }

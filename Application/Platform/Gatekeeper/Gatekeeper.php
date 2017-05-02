@@ -1,13 +1,13 @@
 <?php
 namespace SPHERE\Application\Platform\Gatekeeper;
 
+use SPHERE\Application\AppTrait;
 use SPHERE\Application\IApplicationInterface;
 use SPHERE\Application\Platform\Gatekeeper\Authentication\Authentication;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Authorization;
 use SPHERE\Application\Platform\Gatekeeper\Consumer\Consumer;
+use SPHERE\Application\Platform\Gatekeeper\Profile\Profile;
 use SPHERE\Common\Frontend\Icon\Repository\Shield;
-use SPHERE\Common\Main;
-use SPHERE\Common\Window\Navigation\Link;
 use SPHERE\Common\Window\Stage;
 
 /**
@@ -17,6 +17,7 @@ use SPHERE\Common\Window\Stage;
  */
 class Gatekeeper implements IApplicationInterface
 {
+    use AppTrait;
 
     public static function registerApplication()
     {
@@ -24,13 +25,9 @@ class Gatekeeper implements IApplicationInterface
         Consumer::registerModule();
         Authorization::registerModule();
         Authentication::registerModule();
+        Profile::registerModule();
 
-        Main::getDisplay()->addApplicationNavigation(
-            new Link(new Link\Route(__NAMESPACE__), new Link\Name('Gatekeeper'), new Link\Icon(new Shield()))
-        );
-        Main::getDispatcher()->registerRoute(
-            Main::getDispatcher()->createRoute(__NAMESPACE__, __CLASS__ . '::frontendGatekeeper')
-        );
+        self::createApplication(__NAMESPACE__,__CLASS__,'frontendGatekeeper', 'Gatekeeper', new Shield());
     }
 
     /**

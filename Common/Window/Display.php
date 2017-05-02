@@ -85,7 +85,7 @@ class Display extends Extension implements ITemplateInterface
 
         if (Access::useService()->hasAuthorization($Link->getRoute()->getValue())) {
             if ($Link->isActive()) {
-                $this->ClusterBreadcrumb = $Link->getName()->getValue();
+                $this->ClusterBreadcrumb = strip_tags( $Link->getName()->getValue() );
             }
             array_push($this->ClusterNavigation, $Link);
         }
@@ -135,7 +135,7 @@ class Display extends Extension implements ITemplateInterface
         if ($Branch === null || $Branch >= 2) {
             if (Access::useService()->hasAuthorization($Link->getRoute()->getValue())) {
                 if ($Link->isActive()) {
-                    $this->ApplicationBreadcrumb = $Link->getName()->getValue();
+                    $this->ApplicationBreadcrumb = strip_tags( $Link->getName()->getValue() );
                 }
                 array_push($this->ApplicationNavigation, $Link);
             }
@@ -186,7 +186,7 @@ class Display extends Extension implements ITemplateInterface
         if ($Branch === null || $Branch >= 3) {
             if (Access::useService()->hasAuthorization($Link->getRoute()->getValue())) {
                 if ($Link->isActive()) {
-                    $this->ModuleBreadcrumb = $Link->getName()->getValue();
+                    $this->ModuleBreadcrumb = strip_tags( $Link->getName()->getValue() );
                 }
                 array_push($this->ModuleNavigation, $Link);
             }
@@ -220,7 +220,7 @@ class Display extends Extension implements ITemplateInterface
 
         if (Access::useService()->hasAuthorization($Link->getRoute()->getValue())) {
             if ($Link->isActive()) {
-                $this->ClusterBreadcrumb = $Link->getName()->getValue();
+                $this->ClusterBreadcrumb = strip_tags( $Link->getName()->getValue() );
             }
             array_push($this->ServiceNavigation, $Link);
         }

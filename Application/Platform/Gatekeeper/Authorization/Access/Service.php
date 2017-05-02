@@ -156,6 +156,15 @@ class Service extends AbstractService
     }
 
     /**
+     * @param string $Name
+     * @return TblRight
+     */
+    public function insertRight($Name)
+    {
+        return (new Data($this->getBinding()))->createRight($Name);
+    }
+
+    /**
      * @param IFormInterface $Form
      * @param null|string $Name
      *
