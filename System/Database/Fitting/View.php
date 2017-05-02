@@ -1,4 +1,5 @@
 <?php
+
 namespace SPHERE\System\Database\Fitting;
 
 use Doctrine\DBAL\Query\QueryBuilder;
@@ -24,7 +25,7 @@ class View
     /**
      * View constructor.
      *
-     * @param string    $Name DB-UNIQUE!
+     * @param string $Name DB-UNIQUE!
      * @param Structure $Structure
      *
      * @throws \Exception
@@ -33,7 +34,7 @@ class View
     {
 
         if (!preg_match($this->Pattern, $Name)) {
-            throw new \Exception(__CLASS__.' > Pattern mismatch: ('.$Name.') ['.$this->Pattern.']');
+            throw new \Exception(__CLASS__ . ' > Pattern mismatch: (' . $Name . ') [' . $this->Pattern . ']');
         }
         $this->Name = $Name;
         $this->Structure = $Structure;
@@ -43,9 +44,9 @@ class View
      * Add ORM-Node-Link
      *
      * @param Element $From
-     * @param string  $FromKey
+     * @param string $FromKey
      * @param Element $To
-     * @param string  $ToKey Default: "Id"
+     * @param string $ToKey Default: "Id"
      *
      * @return $this
      */
@@ -90,7 +91,7 @@ class View
         // SELECT
         $Select = array();
         /**
-         * @var int              $Index
+         * @var int $Index
          * @var Element[]|string $Link
          */
         foreach ($TableList as $Index => $Link) {
@@ -98,11 +99,11 @@ class View
             if ($Index === 0) {
                 $Select[] = $this->convertPropertyList($Link['From'], false);
                 $Select[] = $this->convertPropertyList($Link['From']);
-                if( $Link['To'] ) {
+                if ($Link['To']) {
                     $Select[] = $this->convertPropertyList($Link['To']);
                 }
             } else {
-                if( $Link['To'] ) {
+                if ($Link['To']) {
                     $Select[] = $this->convertPropertyList($Link['To']);
                 }
             }
@@ -122,7 +123,7 @@ class View
             $From = $Link['From'];
             /** @var Element $To */
             $To = $Link['To'];
-            if( $Link['To'] ) {
+            if ($Link['To']) {
                 $QueryBuilder->leftJoin(
                     $From->getEntityShortName(),
                     $this->convertWordCase($To->getEntityShortName()),
@@ -136,7 +137,7 @@ class View
             }
         }
         $QueryBuilder->where(
-            $QueryBuilder->expr()->isNull($FromSource->getEntityShortName().'.EntityRemove')
+            $QueryBuilder->expr()->isNull($FromSource->getEntityShortName() . '.EntityRemove')
         );
 
         return $QueryBuilder;
@@ -146,7 +147,7 @@ class View
      * Prepare Property-Selector
      *
      * @param Element $Entity
-     * @param bool    $Prefix
+     * @param bool $Prefix
      *
      * @return string
      */
@@ -162,26 +163,43 @@ class View
         array_walk($PropertyList, function (\ReflectionProperty &$Property) use ($Entity, $Prefix) {
 
             $Property = $this->convertSelectAlias($Property->getName(), $Entity->getEntityShortName(), $Prefix);
+
         });
+        $PropertyList = array_filter( $PropertyList );
+
         return implode(', ', $PropertyList);
     }
 
     /**
      * Prepend Table-Alias
      *
-     * @param      $Field
-     * @param      $Table
+     * @param string $Field
+     * @param string $Table
      * @param bool $Prefix
-     *
      * @return string
+     *
+     * @throws \Exception
      */
     private function convertSelectAlias($Field, $Table, $Prefix = true)
     {
 
         if (false === $Prefix) {
-            return $Table.'.'.$Field.' '.$Field;
+            return $Table . '.' . $Field . ' ' . $Field;
         } else {
-            return $Table.'.'.$Field.' '.$Table.'_'.$Field;
+            $Alias = $Table . '_' . $Field;
+            if (strlen($Alias) > $this->Structure->getPlatform()->getMaxIdentifierLength()) {
+                // remove n:m id columns, because we got id of both entities and alias name will be long ( > 64 )
+                if (preg_match('!^tbl.*_tbl.*$!is', $Alias)) {
+                    return null;
+                }
+            }
+            if (strlen($Alias) > $this->Structure->getPlatform()->getMaxIdentifierLength()) {
+                throw new \Exception(
+                    'Alias "'.$Alias.'" exceeds max length of '
+                    .$this->Structure->getPlatform()->getMaxIdentifierLength().' characters!'
+                );
+            }
+            return $Table . '.' . $Field . ' ' . $Alias;
         }
     }
 
