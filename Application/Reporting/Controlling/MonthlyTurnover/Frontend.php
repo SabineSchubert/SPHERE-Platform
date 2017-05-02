@@ -9,6 +9,7 @@
 namespace SPHERE\Application\Reporting\Controlling\MonthlyTurnover;
 
 
+use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Button\Reset;
 use SPHERE\Common\Frontend\Form\Repository\Field\AutoCompleter;
@@ -223,7 +224,7 @@ class Frontend extends Extension
 							new Panel('Suche', array(
 								(new TextField('Search[PartNumber]', 'Teilenummer', 'Teilenummer eingeben', new Search()))
 								->setRequired()
-							), Panel::PANEL_TYPE_INFO)
+							), Panel::PANEL_TYPE_DEFAULT)
 						),
 					)
 				)
@@ -237,20 +238,19 @@ class Frontend extends Extension
 
 	private function fromSearchProductManager()
 	{
+	    $EntityProductManager = DataWareHouse::useService()->getProductManagerAll();
 		return new Form(
 			new FormGroup(
 				new FormRow(
-					array(
-						new FormColumn(
-							new Panel('Suche', array(
-								(new SelectBox('ProductManager', 'Produktmanager', array( 0 => '-[ Nicht ausgewählt ]-', 'AS' => 'Andreas Schneider', 'SK' => 'Stefan Klinke', 'SH' => 'Stefan Hahn' )))
-								->setRequired()
-							), Panel::PANEL_TYPE_INFO)
-						),
-					)
-				)
-			)
-			, array(
+                    new FormColumn(
+                        new Panel('Suche', array(
+                            new SelectBox('ProductManager', 'Produktmanager',
+                                array( '{{Name}} {{Department}}' => $EntityProductManager )
+                            )
+                        ))
+                    )
+			    )
+            ), array(
 				new Primary('anzeigen', new Search()),
 				new Reset('zurücksetzen')
 			)
@@ -267,7 +267,7 @@ class Frontend extends Extension
 							new Panel('Suche', array(
 								(new AutoCompleter('MarketingCode', 'Marketingcode', 'Marketingcode eingeben', array('1P123')))
 								->setRequired()
-							), Panel::PANEL_TYPE_INFO)
+							), Panel::PANEL_TYPE_DEFAULT)
 						),
 					)
 				)

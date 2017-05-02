@@ -380,8 +380,8 @@ class Service extends AbstractService
      * @param null|string $PeriodTo
      * @return array|null
      */
-    public function getViewPartGroupPart($PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null, $PeriodFrom = null, $PeriodTo = null ) {
-        return ( new Data( $this->getBinding() ) ) ->getViewPartGroup('Part', $PartNumber, $MarketingCodeNumber, $ProductManagerId, $PeriodFrom, $PeriodTo );
+    public function getSalesGroupPart($PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null, $PeriodFrom = null, $PeriodTo = null ) {
+        return ( new Data( $this->getBinding() ) ) ->getSearchByGroup('Part', $PartNumber, $MarketingCodeNumber, $ProductManagerId, $PeriodFrom, $PeriodTo );
     }
 
     /**
@@ -392,8 +392,8 @@ class Service extends AbstractService
      * @param null|string $PeriodTo
      * @return array|null
      */
-    public function getViewPartGroupMarketingCode($PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null, $PeriodFrom = null, $PeriodTo = null ) {
-        return ( new Data( $this->getBinding() ) ) ->getViewPartGroup('MarketingCode', $PartNumber, $MarketingCodeNumber, $ProductManagerId, $PeriodFrom, $PeriodTo );
+    public function getSalesGroupMarketingCode($PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null, $PeriodFrom = null, $PeriodTo = null ) {
+        return ( new Data( $this->getBinding() ) ) ->getSearchByGroup('MarketingCode', $PartNumber, $MarketingCodeNumber, $ProductManagerId, $PeriodFrom, $PeriodTo );
     }
 
     /**
@@ -404,8 +404,8 @@ class Service extends AbstractService
      * @param null|string $PeriodTo
      * @return array|null
      */
-    public function getViewPartGroupProductManager($PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null, $PeriodFrom = null, $PeriodTo = null ) {
-        return ( new Data( $this->getBinding() ) ) ->getViewPartGroup('ProductManager', $PartNumber, $MarketingCodeNumber, $ProductManagerId, $PeriodFrom, $PeriodTo );
+    public function getSalesGroupProductManager($PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null, $PeriodFrom = null, $PeriodTo = null ) {
+        return ( new Data( $this->getBinding() ) ) ->getSearchByGroup('ProductManager', $PartNumber, $MarketingCodeNumber, $ProductManagerId, $PeriodFrom, $PeriodTo );
     }
 
     /**
@@ -416,8 +416,8 @@ class Service extends AbstractService
      * @param null|string $PeriodTo
      * @return array|null
      */
-    public function getViewPartGroupCompetition($PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null, $PeriodFrom = null, $PeriodTo = null ) {
-        return ( new Data( $this->getBinding() ) ) ->getViewPartGroup('Competition', $PartNumber, $MarketingCodeNumber, $ProductManagerId, $PeriodFrom, $PeriodTo );
+    public function getSalesGroupCompetition($PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null, $PeriodFrom = null, $PeriodTo = null ) {
+        return ( new Data( $this->getBinding() ) ) ->getSearchByGroup('Competition', $PartNumber, $MarketingCodeNumber, $ProductManagerId, $PeriodFrom, $PeriodTo );
     }
 
 

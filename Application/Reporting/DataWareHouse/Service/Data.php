@@ -660,7 +660,7 @@ class Data extends AbstractData
      * @param null|string $PeriodTo
      * @return array|null
      */
-    public function getViewPartGroup( $GroupBy, $PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null, $PeriodFrom = null, $PeriodTo = null ) {
+    public function getSearchByGroup( $GroupBy, $PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null, $PeriodFrom = null, $PeriodTo = null ) {
         $Manager = $this->getEntityManager();
         $QueryBuilder = $Manager->getQueryBuilder();
         $ViewPart = new ViewPart();
@@ -792,5 +792,8 @@ class Data extends AbstractData
         }
     }
 
+    public function getMonthlyTurnoverByGroup( $GroupBy, $PartNumber, $ProductManagerId, $MarketingCodeNumber ) {
+
+    }
 
 }

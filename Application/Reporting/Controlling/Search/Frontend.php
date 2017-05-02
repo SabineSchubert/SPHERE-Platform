@@ -46,10 +46,10 @@ class Frontend extends Extension
 		$Stage->setMessage('Teilenummer');
 		$this->buttonStageDirectSearch($Stage);
 
-        Debugger::screenDump($Search);
+        //Debugger::screenDump($Search);
 
 		if( $Search ) {
-            $SearchData = DataWareHouse::useService()->getViewPartGroupPart( $Search['PartNumber'], $Search['MarketingCode'], $Search['ProductManager'], $Search['PeriodFrom'], $Search['PeriodTo'] );
+            $SearchData = DataWareHouse::useService()->getSalesGroupPart( $Search['PartNumber'], $Search['MarketingCode'], $Search['ProductManager'], $Search['PeriodFrom'], $Search['PeriodTo'] );
 
             //Debugger::screenDump($SearchData);
 
@@ -86,7 +86,7 @@ class Frontend extends Extension
 		$this->buttonStageDirectSearch($Stage);
 
         if( $Search ) {
-            $SearchData = DataWareHouse::useService()->getViewPartGroupMarketingCode( $Search['PartNumber'], $Search['MarketingCode'], $Search['ProductManager'] );
+            $SearchData = DataWareHouse::useService()->getSalesGroupMarketingCode( $Search['PartNumber'], $Search['MarketingCode'], $Search['ProductManager'] );
             $LayoutTable = $this->tableSearchData($SearchData);
         }
         else {
@@ -119,7 +119,7 @@ class Frontend extends Extension
 		$this->buttonStageDirectSearch($Stage);
 
         if( $Search ) {
-            $SearchData = DataWareHouse::useService()->getViewPartGroupProductManager( $Search['PartNumber'], $Search['MarketingCode'], $Search['ProductManager'] );
+            $SearchData = DataWareHouse::useService()->getSalesGroupProductManager( $Search['PartNumber'], $Search['MarketingCode'], $Search['ProductManager'] );
             $LayoutTable = $this->tableSearchData($SearchData);
         }
         else {
@@ -263,8 +263,7 @@ class Frontend extends Extension
                 'Discount' => 'RG',
                 'SumSalesGross' => 'Bruttoumsatz',
                 'SumSalesNet' => 'Nettoumsatz',
-                'SumQuantity' => 'Menge',
-                //'TblReporting_Sales_Quantity' => 'Menge'
+                'SumQuantity' => 'Menge'
             );
 
             $Keys = array_keys($SearchData[0]);
