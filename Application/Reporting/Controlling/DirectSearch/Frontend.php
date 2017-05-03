@@ -161,7 +161,7 @@ class Frontend extends Extension
 				new LayoutGroup(
 					new LayoutRow(
 						new LayoutColumn(
-							$this->fromSearchPartNumber()
+							$this->formSearchPartNumber()
 						,4)
 					)
 				),
@@ -275,7 +275,7 @@ class Frontend extends Extension
 				new LayoutGroup(
 					new LayoutRow(
 						new LayoutColumn(
-							$this->fromSearchProductManager( $Search )
+							$this->formSearchProductManager()
 							,4
 						)
 					)
@@ -344,7 +344,7 @@ class Frontend extends Extension
 				new LayoutGroup(
 					new LayoutRow(
 						new LayoutColumn(
-							$this->fromSearchMarketingCode()
+							$this->formSearchMarketingCode()
 						,4)
 					)
 				),
@@ -365,7 +365,7 @@ class Frontend extends Extension
 	/**
 	 * @return Form
 	 */
-	private function fromSearchPartNumber()
+	private function formSearchPartNumber()
 	{
 		return new Form(
 			new FormGroup(
@@ -387,7 +387,7 @@ class Frontend extends Extension
 		);
 	}
 
-	private function fromSearchProductManager()
+	private function formSearchProductManager()
 	{
 		$EntityProductManager = DataWareHouse::useService()->getProductManagerAll();
 
@@ -415,7 +415,7 @@ class Frontend extends Extension
 		);
 	}
 
-	private function fromSearchMarketingCode()
+	private function formSearchMarketingCode()
 	{
 	    $EntityMarketingCode = DataWareHouse::useService()->getMarketingCodeAll();
 

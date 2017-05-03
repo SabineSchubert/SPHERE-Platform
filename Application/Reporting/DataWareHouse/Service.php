@@ -420,5 +420,20 @@ class Service extends AbstractService
         return ( new Data( $this->getBinding() ) ) ->getSearchByGroup('Competition', $PartNumber, $MarketingCodeNumber, $ProductManagerId, $PeriodFrom, $PeriodTo );
     }
 
+    /**
+     * @return null|int
+     */
+    public function getYearCurrentFromSales() {
+        return ( new Data( $this->getBinding() ) ) ->getYearCurrentFromSales();
+    }
 
+    /**
+     * @param null|string $PartNumber
+     * @param null|string $MarketingCodeNumber
+     * @param null|int $ProductManagerId
+     * @return array|null
+     */
+    public function getMonthlyTurnover( $PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null ) {
+        return ( new Data( $this->getBinding() ) ) ->getMonthlyTurnoverByGroup( $PartNumber, $MarketingCodeNumber, $ProductManagerId );
+    }
 }
