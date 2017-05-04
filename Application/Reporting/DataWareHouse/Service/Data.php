@@ -727,9 +727,9 @@ class Data extends AbstractData
                 ->setParameter( $ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER, $MarketingCodeNumber );
         }
         if( $ProductManagerId ) {
-//            $SqlSalesData = $QueryBuilder
-//                ->andWhere( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PRODUCT_MANAGER_ID = '' )
-//                ->setParameter($ViewPartAlias.'.'.$ViewPart::ENTITY_ID, $ProductManagerId);
+            $SqlSalesData = $QueryBuilder
+                ->andWhere( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PRODUCT_MANAGER_ID.' = :'.$ViewPart::TBL_REPORTING_PRODUCT_MANAGER_ID )
+                ->setParameter($ViewPart::TBL_REPORTING_PRODUCT_MANAGER_ID, $ProductManagerId);
         }
 
         if($PeriodFrom) {
@@ -933,9 +933,9 @@ class Data extends AbstractData
                     ->setParameter( $ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER, $MarketingCodeNumber );
             }
             elseif($ProductManagerId) {
-//                $SqlMonthlyTurnoverData = $QueryBuilder
-//                    ->where( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_P.' = :'.$ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER )
-//                    ->setParameter( $ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER, $PartNumber );
+                $SqlMonthlyTurnoverData = $QueryBuilder
+                    ->where( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PRODUCT_MANAGER_ID.' = :'.$ViewPart::TBL_REPORTING_PRODUCT_MANAGER_ID )
+                    ->setParameter( $ViewPart::TBL_REPORTING_PRODUCT_MANAGER_ID, $ProductManagerId );
             }
 
             $SqlMonthlyTurnoverData = $QueryBuilder
@@ -945,8 +945,6 @@ class Data extends AbstractData
                 ->setParameter( 'Previous'.$TableSales::ATTR_YEAR, ($MaxYear-1) )
                 ->setParameter( 'SecondPrevious'.$TableSales::ATTR_YEAR, ($MaxYear-2) )
                 ->getQuery();
-
-            Debugger::screenDump($SqlMonthlyTurnoverData->getSQL());
 
             if($SqlMonthlyTurnoverData->getResult()) {
                 return $SqlMonthlyTurnoverData->getResult();

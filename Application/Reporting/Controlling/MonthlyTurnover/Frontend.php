@@ -96,7 +96,6 @@ class Frontend extends Extension
         if( $Search ) {
             $MonthlyTurnoverResult = DataWareHouse::useService()->getMonthlyTurnover( null, null, $Search['ProductManager'] );
             $LayoutTable = $this->tableMonthlyTurnover($MonthlyTurnoverResult);
-            Debugger::screenDump($MonthlyTurnoverResult);
         }
         else {
             $LayoutTable = '';
