@@ -35,7 +35,6 @@ use SPHERE\Common\Frontend\Table\Structure\TableRow;
 use SPHERE\Common\Window\Navigation\Link\Route;
 use SPHERE\Common\Window\Stage;
 use SPHERE\System\Extension\Extension;
-use SPHERE\System\Extension\Repository\Debugger;
 
 class Frontend extends Extension
 {
@@ -126,7 +125,6 @@ class Frontend extends Extension
         if( $Search ) {
             $MonthlyTurnoverResult = DataWareHouse::useService()->getMonthlyTurnover( null, $Search['MarketingCode'], null );
             $LayoutTable = $this->tableMonthlyTurnover($MonthlyTurnoverResult);
-            Debugger::screenDump($MonthlyTurnoverResult);
         }
         else {
             $LayoutTable = '';
@@ -209,7 +207,7 @@ class Frontend extends Extension
 							new Panel('Suche', array(
 								(new AutoCompleter('Search[MarketingCode]', 'Marketingcode', 'Marketingcode eingeben', array( 'Number' => $EntityMarketingCode)))
 								->setRequired()
-							), Panel::PANEL_TYPE_DEFAULT), 2
+							), Panel::PANEL_TYPE_DEFAULT), 3
 						),
 					)
 				)

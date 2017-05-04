@@ -365,11 +365,26 @@ class Service extends AbstractService
 
     /**
      * @param TblReporting_Part $TblReporting_Part
-     * @param int $Year
+     * @return null|array
+     */
+    public function getSalesByPart( TblReporting_Part $TblReporting_Part ) {
+        return ( new Data( $this->getBinding() ) )->getSalesByGroup( $TblReporting_Part, null, null );
+    }
+
+    /**
+     * @param TblReporting_MarketingCode $TblReporting_MarketingCode
      * @return array|null
      */
-    public function getSalesByPartId( TblReporting_Part $TblReporting_Part, $Year ) {
-        return ( new Data( $this->getBinding() ) )->getSalesByPart( $TblReporting_Part, $Year );
+    public function getSalesByMarketingCode( TblReporting_MarketingCode $TblReporting_MarketingCode ) {
+        return ( new Data( $this->getBinding() ) )->getSalesByGroup( null, $TblReporting_MarketingCode, null );
+    }
+
+    /**
+     * @param TblReporting_ProductManager $TblReporting_ProductManager
+     * @return array|null
+     */
+    public function getSalesByProductManager( TblReporting_ProductManager $TblReporting_ProductManager ) {
+        return ( new Data( $this->getBinding() ) )->getSalesByGroup( null, null, $TblReporting_ProductManager );
     }
 
     /**
@@ -436,4 +451,42 @@ class Service extends AbstractService
     public function getMonthlyTurnover( $PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null ) {
         return ( new Data( $this->getBinding() ) ) ->getMonthlyTurnoverByGroup( $PartNumber, $MarketingCodeNumber, $ProductManagerId );
     }
+
+    /**
+     * @param TblReporting_Part $TblReporting_Part
+     * @param int $Restriction
+     * @return null|array
+     *
+     * $Restriction z.B. für Top 50 bzw. geplant Filter über Zeitraum
+     */
+    public function getPriceDevelopmentByPartNumber( TblReporting_Part $TblReporting_Part, $Restriction ) {
+        $PriceDevelopmentData = ( new Data( $this->getBinding() ) ) ->getPriceDevelopmentByPartNumber( $TblReporting_Part, $Restriction );
+
+        Debugger::screenDump($PriceDevelopmentData);
+
+        if($PriceDevelopmentData) {
+            $CalcPriceDevelopmentData = null;
+            array_walk($PriceDevelopmentData, function($Row) use(&$CalcPriceDevelopmentData) {
+
+                $PriceNet = $this->getCalculationRules()->calcNetPrice($Row['PriceGross'], $Row['Discount'], $Row['BackValue']);
+
+                $CalcPriceDevelopmentData[] = array (
+                    'ValidFrom' => date('d.m.Y',$Row['ValidFrom']),
+                    'PriceGross' => $Row['PriceGross'],
+                    'PriceNet' => $PriceNet,
+                    'DiscountGroupNumber' => $Row['DiscountGroupNumber'],
+                    'Discount' => $Row['Discount'],
+                    'BackValue' => $Row['BackValue'],
+                    'CostsVariable' => $Row['CostsVariable'],
+                    'CoverageContribution' => $this->getCalculationRules()->calcCoverageContribution($PriceNet, $Row['CostsVariable']),
+                );
+            });
+            return $CalcPriceDevelopmentData;
+        }
+        else {
+            return null;
+        }
+    }
+
+
 }

@@ -21,6 +21,7 @@ use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Produ
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Section;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Supplier;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\ViewPart;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\ViewPrice;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Button\Reset;
 use SPHERE\Common\Frontend\Form\Repository\Field\AutoCompleter;
@@ -103,7 +104,7 @@ class Frontend extends Extension
 							),
 							new LayoutRow(
 								new LayoutColumn(
-									$this->tablePriceDevelopmentPartNumber(), 12
+									$this->tablePriceDevelopmentPartNumber( $EntityPart ), 12
 								)
 							),
 							new LayoutRow(
@@ -248,7 +249,7 @@ class Frontend extends Extension
 							),
 							new LayoutRow(
 								new LayoutColumn(
-									$this->tableSalesDataProductManager()
+									$this->tableSalesDataProductManager( $EntityProductManager )
 									, 12
 								)
 							),
@@ -317,7 +318,7 @@ class Frontend extends Extension
 							),
 							new LayoutRow(
 								new LayoutColumn(
-									$this->tableSalesDataMarketingCode()
+									$this->tableSalesDataMarketingCode( $EntityMarketingCode )
 									, 12
 								)
 							),
@@ -867,234 +868,188 @@ class Frontend extends Extension
         }
 	}
 
-	private function tablePriceDevelopmentPartNumber() {
-		return new Table(
-			array(
-				array(
-					'Year' => '',
-					'GrossPrice' => 'A1234',
-					'NetPrice' => 'A1234',
-					'Discount' => 'A1234',
-					'Rw' => 'A1234',
-					'VariableCosts' => 'A1234',
-					'CoverageContribution' => 'A1234'
-				),
-				array(
-					'Year' => '',
-					'GrossPrice' => 'A1234',
-					'NetPrice' => 'A1234',
-					'Discount' => 'A1234',
-					'Rw' => 'A1234',
-					'VariableCosts' => 'A1234',
-					'CoverageContribution' => 'A1234'
-				),
-				array(
-					'Year' => '',
-					'GrossPrice' => 'A1234',
-					'NetPrice' => 'A1234',
-					'Discount' => 'A1234',
-					'Rw' => 'A1234',
-					'VariableCosts' => 'A1234',
-					'CoverageContribution' => 'A1234'
-				),
-				array(
-					'Year' => '',
-					'GrossPrice' => 'A1234',
-					'NetPrice' => 'A1234',
-					'Discount' => 'A1234',
-					'Rw' => 'A1234',
-					'VariableCosts' => 'A1234',
-					'CoverageContribution' => 'A1234'
-				),
-				array(
-					'Year' => '',
-					'GrossPrice' => 'A1234',
-					'NetPrice' => 'A1234',
-					'Discount' => 'A1234',
-					'Rw' => 'A1234',
-					'VariableCosts' => 'A1234',
-					'CoverageContribution' => 'A1234'
-				),
-				array(
-					'Year' => '',
-					'GrossPrice' => 'A1234',
-					'NetPrice' => 'A1234',
-					'Discount' => 'A1234',
-					'Rw' => 'A1234',
-					'VariableCosts' => 'A1234',
-					'CoverageContribution' => 'A1234'
-				),
-				array(
-					'Year' => '',
-					'GrossPrice' => 'A1234',
-					'NetPrice' => 'A1234',
-					'Discount' => 'A1234',
-					'Rw' => 'A1234',
-					'VariableCosts' => 'A1234',
-					'CoverageContribution' => 'A1234'
-				),
-			),
-			new TableTitle('Preis- und Kostenentwicklung'),
-			array(
-				'Year' => 'Jahr',
-				'GrossPrice' => 'BLP',
-				'NetPrice' => 'NLP',
-				'Discount' => 'RG',
-				'Rw' => 'RW',
-				'VariableCosts' => 'VK',
-				'CoverageContribution' => 'DB'
-			),
-			array(
-				"columnDefs" => array(
-			        array('width' => '40%', 'targets' => '0' ),
-					array('width' => '60%', 'targets' => '1' )
-				),
-				"paging"         => false, // Deaktivieren Blättern
-			    "iDisplayLength" => -1,    // Alle Einträge zeigen
-			    "searching"      => false, // Deaktivieren Suchen
-			    "info"           => false,  // Deaktivieren Such-Info
-				"sort"           => false   //Deaktivierung Sortierung der Spalten
-			)
-		);
+	private function tablePriceDevelopmentPartNumber( TblReporting_Part $EntityPart ) {
+
+        $PriceDevData = DataWareHouse::useService()->getPriceDevelopmentByPartNumber( $EntityPart, 50 );
+
+        if($PriceDevData) {
+            return new Table(
+                $PriceDevData,
+                new TableTitle('Preis- und Kostenentwicklung'),
+                array(
+                    'ValidFrom' => 'Gültig ab',
+                    'PriceGross' => 'BLP',
+                    'PriceNet' => 'NLP',
+                    'Discount' => 'RG',
+                    'BackValue' => 'RW',
+                    'CostsVariable' => 'VK',
+                    'CoverageContribution' => 'DB'
+                ),
+                array(
+                    "columnDefs" => array(
+                        array('width' => '40%', 'targets' => '0' ),
+                        array('width' => '60%', 'targets' => '1' )
+                    ),
+                    "paging"         => false, // Deaktivieren Blättern
+                    "iDisplayLength" => -1,    // Alle Einträge zeigen
+                    "searching"      => false, // Deaktivieren Suchen
+                    "info"           => false,  // Deaktivieren Such-Info
+                    "sort"           => false   //Deaktivierung Sortierung der Spalten
+                )
+            );
+        }
+        else {
+            return new Warning( 'Keine Preisentwicklung vorhanden' );
+        }
 	}
 
 	private function tableSalesDataPartNumber( TblReporting_Part $EntityPart  ) {
 
-	    $Year = (date('Y')-3);
-	    $SalesData = DataWareHouse::useService()->getSalesByPartId( $EntityPart, $Year );
+	    $SalesData = DataWareHouse::useService()->getSalesByPart( $EntityPart );
 
-		$Table = new Table(
-			$SalesData,
-			new TableTitle('Controlling-Informationen'),
-			array( 'Year' => '&nbsp;', 'SumSalesGross' => new Tooltip('Brutto','Test2', new Info()), 'SumSalesNet' => 'Netto', 'SumQuantity' => 'Anzahl effektiv' ),
-			array(
-				"columnDefs" => array(
+	    if( $SalesData ) {
+            $Table = new Table(
+                $SalesData,
+                new TableTitle('Controlling-Informationen'),
+                array(
+                    'Year' => '&nbsp;',
+                    'SumSalesGross' => new Tooltip('Brutto', 'Test2', new Info()),
+                    'SumSalesNet' => 'Netto',
+                    'SumQuantity' => 'Anzahl effektiv'
+                ),
+                array(
+                    "columnDefs" => array(
 //			        array('width' => '40%', 'targets' => '0' ),
 //					array('width' => '60%', 'targets' => '1' )
-                    array(
-                        "orderable" => true,
-                        "targets" => '_all'
-                    )
-				),
-				"paging"         => false, // Deaktivieren Blättern
-			    "iDisplayLength" => -1,    // Alle Einträge zeigen
-			    "searching"      => false, // Deaktivieren Suchen
-			    "info"           => false, // Deaktivieren Such-Info
-				"sort"           => false, //Deaktivierung Sortierung der Spalten
-//              "responsive"     => false  //Deaktivierung Responsiv-Design
-			)
-		);
-
-        $Table->prependHead(
-            new TableHead(
-                array(
-                    new TableRow(
                         array(
-                            new TableColumn('', 1),
-                            new TableColumn('Umsatz',2),
-                            new TableColumn('Anzahl effektiv', 1)
+                            "orderable" => true,
+                            "targets" => '_all'
+                        )
+                    ),
+                    "paging" => false, // Deaktivieren Blättern
+                    "iDisplayLength" => -1,    // Alle Einträge zeigen
+                    "searching" => false, // Deaktivieren Suchen
+                    "info" => false, // Deaktivieren Such-Info
+                    "sort" => false, //Deaktivierung Sortierung der Spalten
+//              "responsive"     => false  //Deaktivierung Responsiv-Design
+                )
+            );
+
+            $Table->prependHead(
+                new TableHead(
+                    array(
+                        new TableRow(
+                            array(
+                                new TableColumn('', 1),
+                                new TableColumn('Umsatz', 2),
+                                new TableColumn('Anzahl effektiv', 1)
+                            )
                         )
                     )
                 )
-            )
-        );
-        return $Table;
+            );
+            return $Table;
+        }
+        else {
+            return new Warning( 'Keine Umsatz-Daten vorhanden' );
+        }
 	}
 
-	private function tableSalesDataMarketingCode() {
-		return new Table(
-			array(
-				array(
-					'Description' => new Bold( 'Teilenummer' ),
-					'Value' => 'A1234'
-				),
-				array(
-					'Description' => 'Sortimentsgruppe',
-					'Value' => '123'
-				),
-				array(
-					'Description' => 'Marketingcode',
-					'Value' => '1P23'
-				),
-				array(
-					'Description' => 'Warengruppe',
-					'Value' => '1P23'
-				),
-				array(
-					'Description' => 'Sparte',
-					'Value' => 'Pkw'
-				),
-				array(
-					'Description' => 'Produktmanager',
-					'Value' => 'Andreas Schneider'
-				),
-				array(
-					'Description' => 'Hauptlieferant',
-					'Value' => 'unbekannt'
-				),
-			),
-			new TableTitle('Controlling-Informationen'),
-			array( 'Description' => 'Bezeichnung', 'Value' => '', 'Value2' => ' ' ),
-			array(
-				"columnDefs" => array(
-			        array('width' => '40%', 'targets' => '0' ),
-					array('width' => '60%', 'targets' => '1' )
-				),
-				"paging"         => false, // Deaktivieren Blättern
-			    "iDisplayLength" => -1,    // Alle Einträge zeigen
-			    "searching"      => false, // Deaktivieren Suchen
-			    "info"           => false,  // Deaktivieren Such-Info
-				"sort"           => false   //Deaktivierung Sortierung der Spalten
-			)
-		);
+	private function tableSalesDataMarketingCode( TblReporting_MarketingCode $EntityMarketingCode ) {
+        $SalesData = DataWareHouse::useService()->getSalesByMarketingCode( $EntityMarketingCode );
+
+        if($SalesData) {
+            $Table = new Table(
+                $SalesData,
+                new TableTitle('Controlling-Informationen'),
+                array( 'Year' => '&nbsp;', 'SumSalesGross' => new Tooltip('Brutto','Test2', new Info()), 'SumSalesNet' => 'Netto', 'SumQuantity' => 'Anzahl effektiv' ),
+                array(
+                    "columnDefs" => array(
+    //			        array('width' => '40%', 'targets' => '0' ),
+    //					array('width' => '60%', 'targets' => '1' )
+                        array(
+                            "orderable" => true,
+                            "targets" => '_all'
+                        )
+                    ),
+                    "paging"         => false, // Deaktivieren Blättern
+                    "iDisplayLength" => -1,    // Alle Einträge zeigen
+                    "searching"      => false, // Deaktivieren Suchen
+                    "info"           => false, // Deaktivieren Such-Info
+                    "sort"           => false, //Deaktivierung Sortierung der Spalten
+    //              "responsive"     => false  //Deaktivierung Responsiv-Design
+                )
+            );
+
+            $Table->prependHead(
+                new TableHead(
+                    array(
+                        new TableRow(
+                            array(
+                                new TableColumn('', 1),
+                                new TableColumn('Umsatz',2),
+                                new TableColumn('Anzahl effektiv', 1)
+                            )
+                        )
+                    )
+                )
+            );
+            return $Table;
+        }
+        else {
+            return new Warning( 'Keine Umsatz-Daten vorhanden' );
+        }
 	}
 
-	private function tableSalesDataProductManager() {
-		return new Table(
-			array(
-				array(
-					'Description' => new Bold( 'Teilenummer' ),
-					'Value' => 'A1234'
-				),
-				array(
-					'Description' => 'Sortimentsgruppe',
-					'Value' => '123'
-				),
-				array(
-					'Description' => 'Marketingcode',
-					'Value' => '1P23'
-				),
-				array(
-					'Description' => 'Warengruppe',
-					'Value' => '1P23'
-				),
-				array(
-					'Description' => 'Sparte',
-					'Value' => 'Pkw'
-				),
-				array(
-					'Description' => 'Produktmanager',
-					'Value' => 'Andreas Schneider'
-				),
-				array(
-					'Description' => 'Hauptlieferant',
-					'Value' => 'unbekannt'
-				),
-			),
-			new TableTitle('Controlling-Informationen'),
-			array( 'Description' => 'Bezeichnung', 'Value' => '', 'Value2' => ' ' ),
-			array(
-				"columnDefs" => array(
-			        array('width' => '40%', 'targets' => '0' ),
-					array('width' => '60%', 'targets' => '1' )
-				),
-				"paging"         => false, // Deaktivieren Blättern
-			    "iDisplayLength" => -1,    // Alle Einträge zeigen
-			    "searching"      => false, // Deaktivieren Suchen
-			    "info"           => false,  // Deaktivieren Such-Info
-				"sort"           => false   //Deaktivierung Sortierung der Spalten
-			)
-		);
+	private function tableSalesDataProductManager( TblReporting_ProductManager $EntityProductManager ) {
+        $SalesData = DataWareHouse::useService()->getSalesByProductManager( $EntityProductManager );
+
+        if( $SalesData ) {
+            $Table = new Table(
+                $SalesData,
+                new TableTitle('Controlling-Informationen'),
+                array(
+                    'Year' => '&nbsp;',
+                    'SumSalesGross' => new Tooltip('Brutto', 'Test2', new Info()),
+                    'SumSalesNet' => 'Netto',
+                    'SumQuantity' => 'Anzahl effektiv'
+                ),
+                array(
+                    "columnDefs" => array(
+//			        array('width' => '40%', 'targets' => '0' ),
+//					array('width' => '60%', 'targets' => '1' )
+                        array(
+                            "orderable" => true,
+                            "targets" => '_all'
+                        )
+                    ),
+                    "paging" => false, // Deaktivieren Blättern
+                    "iDisplayLength" => -1,    // Alle Einträge zeigen
+                    "searching" => false, // Deaktivieren Suchen
+                    "info" => false, // Deaktivieren Such-Info
+                    "sort" => false, //Deaktivierung Sortierung der Spalten
+//              "responsive"     => false  //Deaktivierung Responsiv-Design
+                )
+            );
+
+            $Table->prependHead(
+                new TableHead(
+                    array(
+                        new TableRow(
+                            array(
+                                new TableColumn('', 1),
+                                new TableColumn('Umsatz', 2),
+                                new TableColumn('Anzahl effektiv', 1)
+                            )
+                        )
+                    )
+                )
+            );
+            return $Table;
+        }
+        else {
+            return new Warning( 'Keine Umsatz-Daten vorhanden' );
+        }
 	}
 
 	private function tableCompetitionExtraPartNumber() {

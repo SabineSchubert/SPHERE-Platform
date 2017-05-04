@@ -36,6 +36,7 @@ use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\ViewPart;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\ViewPrice;
 use SPHERE\System\Database\Binding\AbstractData;
 use SPHERE\System\Database\Fitting\Element;
+use SPHERE\System\Database\Fitting\View;
 use SPHERE\System\Extension\Repository\Debugger;
 
 /**
@@ -606,30 +607,63 @@ class Data extends AbstractData
     }
 
     /**
-     * @param TblReporting_Part $TblReporting_Part
-     * @param int $Year
+     * @param null|TblReporting_Part $TblReporting_Part
+     * @param null|TblReporting_MarketingCode $TblReporting_MarketingCode
+     * @param null|TblReporting_ProductManager $TblReporting_ProductManager
      * @return array|null
      */
-    public function getSalesByPart( TblReporting_Part $TblReporting_Part, $Year ) {
-        if( $TblReporting_Part->getId() ) {
+    public function getSalesByGroup( TblReporting_Part $TblReporting_Part = null, TblReporting_MarketingCode $TblReporting_MarketingCode = null, TblReporting_ProductManager $TblReporting_ProductManager = null ) {
+        if( $TblReporting_Part || $TblReporting_MarketingCode || $TblReporting_ProductManager ) {
             $TableSales = new TblReporting_Sales();
+            $ViewPart = new ViewPart();
+            $TableSalesAlias = $TableSales->getEntityShortName();
+            $ViewPartAlias = $ViewPart->getEntityShortName();
             $Manager = $this->getEntityManager();
             $QueryBuilder = $Manager->getQueryBuilder();
+            $MaxYear = $this->getYearCurrentFromSales();
 
             $SqlSalesData = $QueryBuilder
-                   ->select( $TableSales->getEntityShortName().'.'.$TableSales::ATTR_YEAR )
-                    ->addSelect( 'SUM( '.$TableSales->getEntityShortName().'.'.$TableSales::ATTR_SALES_GROSS.' ) as SumSalesGross' )
-                   ->addSelect( 'SUM( '.$TableSales->getEntityShortName().'.'.$TableSales::ATTR_SALES_NET.' ) as SumSalesNet' )
-                   ->addSelect( 'SUM( '.$TableSales->getEntityShortName().'.'.$TableSales::ATTR_QUANTITY.' ) as SumQuantity' )
-                   ->from( $TableSales->getEntityFullName(), $TableSales->getEntityShortName(), null )
+                   ->select( $TableSalesAlias.'.'.$TableSales::ATTR_YEAR )
+                    ->addSelect( 'SUM( '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_GROSS.' ) as SumSalesGross' )
+                   ->addSelect( 'SUM( '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_NET.' ) as SumSalesNet' )
+                   ->addSelect( 'SUM( '.$TableSalesAlias.'.'.$TableSales::ATTR_QUANTITY.' ) as SumQuantity' )
+                   ->from( $TableSales->getEntityFullName(), $TableSales->getEntityShortName(), null );
+
+            if($TblReporting_MarketingCode || $TblReporting_ProductManager ) {
+                $SqlSalesData = $QueryBuilder
+                       ->innerJoin(
+                           $ViewPart->getEntityFullName(),
+                           $ViewPartAlias,
+                           Expr\Join::WITH,
+                           $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_ID.' = '.$TableSalesAlias.'.'.$TableSales::TBL_REPORTING_PART
+                       );
+            }
+
+            $SqlSalesData = $QueryBuilder
                    ->where(
                        $QueryBuilder->expr()->gte( $TableSales->getEntityShortName().'.'.$TableSales::ATTR_YEAR, ':'.$TableSales::ATTR_YEAR )
-                   )
-                   ->andWhere( $TableSales->getEntityShortName().'.'.$TableSales::TBL_REPORTING_PART.' = :'.$TableSales::TBL_REPORTING_PART )
+                   );
+
+            if($TblReporting_Part) {
+                $SqlSalesData = $QueryBuilder
+                    ->andWhere( $TableSalesAlias.'.'.$TableSales::TBL_REPORTING_PART.' = :'.$TableSales::TBL_REPORTING_PART )
+                    ->setParameter( $TableSales::TBL_REPORTING_PART, $TblReporting_Part->getId() );
+            }
+            elseif($TblReporting_MarketingCode) {
+                $SqlSalesData = $QueryBuilder
+                    ->andWhere( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER.' = :'.$ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER )
+                    ->setParameter( $ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER, $TblReporting_MarketingCode->getNumber() );
+            }
+            elseif($TblReporting_ProductManager) {
+                $SqlSalesData = $QueryBuilder
+                    ->andWhere( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PRODUCT_MANAGER_ID.' = :'.$ViewPart::TBL_REPORTING_PRODUCT_MANAGER_ID )
+                    ->setParameter( $ViewPart::TBL_REPORTING_PRODUCT_MANAGER_ID, $TblReporting_ProductManager->getId() );
+            }
+
+            $SqlSalesData = $QueryBuilder
                    ->groupBy( $TableSales->getEntityShortName().'.'.$TableSales::ATTR_YEAR )
                    ->orderBy( $QueryBuilder->expr()->desc( $TableSales->getEntityShortName().'.'.$TableSales::ATTR_YEAR ) )
-                   ->setParameter( $TableSales::ATTR_YEAR, $Year, \Doctrine\DBAL\Types\Type::INTEGER )
-                   ->setParameter( $TableSales::TBL_REPORTING_PART, $TblReporting_Part->getId() )
+                   ->setParameter( $TableSales::ATTR_YEAR, ($MaxYear-3), \Doctrine\DBAL\Types\Type::INTEGER )
                    ->getQuery();
 
                //Debugger::screenDump($SqlSalesData->getSQL());
@@ -948,6 +982,44 @@ class Data extends AbstractData
 
             if($SqlMonthlyTurnoverData->getResult()) {
                 return $SqlMonthlyTurnoverData->getResult();
+            }
+            else {
+                return null;
+            }
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
+     * @param TblReporting_Part $TblReporting_Part
+     * @param int $Restriction
+     * @return array|null
+     */
+    public function getPriceDevelopmentByPartNumber( TblReporting_Part $TblReporting_Part, $Restriction ) {
+        if( $TblReporting_Part ) {
+            $Manager = $this->getEntityManager();
+            $QueryBuilder = $Manager->getQueryBuilder();
+
+            $ViewPrice = new ViewPrice();
+            $ViewPriceAlias = $ViewPrice->getEntityShortName();
+
+            $SqlPriceDevelopment = $QueryBuilder
+                ->select( $ViewPriceAlias.'.'.$ViewPrice::TBL_REPORTING_PRICE_VALID_FROM.' AS ValidFrom' )
+                ->addSelect( $ViewPriceAlias.'.'.$ViewPrice::TBL_REPORTING_PRICE_PRICE_GROSS.' AS PriceGross' )
+                ->addSelect( $ViewPriceAlias.'.'.$ViewPrice::TBL_REPORTING_DISCOUNT_GROUP_NUMBER.' AS DiscountGroupNumber' )
+                ->addSelect( $ViewPriceAlias.'.'.$ViewPrice::TBL_REPORTING_DISCOUNT_GROUP_DISCOUNT.' AS Discount' )
+                ->addSelect( $ViewPriceAlias.'.'.$ViewPrice::TBL_REPORTING_PRICE_BACK_VALUE.' AS BackValue' )
+                ->addSelect( $ViewPriceAlias.'.'.$ViewPrice::TBL_REPORTING_PRICE_COSTS_VARIABLE.' AS CostsVariable' )
+                ->from($ViewPrice->getEntityFullName(), $ViewPriceAlias)
+                ->where( $ViewPriceAlias.'.'.$ViewPrice::TBL_REPORTING_PART.' = :'.$ViewPrice::TBL_REPORTING_PART )
+                ->setParameter( $ViewPrice::TBL_REPORTING_PART, $TblReporting_Part->getId() )
+                ->orderBy( $QueryBuilder->expr()->desc( $ViewPriceAlias.'.'.$ViewPrice::TBL_REPORTING_PRICE_VALID_FROM ) )
+                ->getQuery()->setMaxResults($Restriction);
+
+            if( $SqlPriceDevelopment->getResult() ) {
+                return $SqlPriceDevelopment->getResult();
             }
             else {
                 return null;
