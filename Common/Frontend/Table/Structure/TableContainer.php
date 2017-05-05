@@ -114,31 +114,6 @@ class TableContainer extends Extension implements ITemplateInterface
     {
 
         if (empty( $this->Hash )) {
-/*
-            $HeadList = $this->TableHead;
-            array_walk($HeadList, function (&$H) {
-
-                if (is_object($H)) {
-                    $H = serialize($H);
-                }
-            });
-            $BodyList = $this->TableBody;
-            array_walk($BodyList, function (&$H) {
-
-                if (is_object($H)) {
-                    $H = serialize($H);
-                }
-            });
-            $FootList = $this->TableFoot;
-            array_walk($FootList, function (&$H) {
-
-                if (is_object($H)) {
-                    $H = serialize($H);
-                }
-            });
-            $this->Hash = md5(json_encode($HeadList) . json_encode($BodyList) . json_encode($FootList));
-*/
-            // TODO: Check Quick-Hash vs. Structure&Content Hash
             $this->Hash = crc32( uniqid('Table', true) );
         }
         return $this->Hash;
@@ -205,5 +180,15 @@ class TableContainer extends Extension implements ITemplateInterface
     {
 
         return '';
+    }
+
+    /**
+     * @param string $Hash
+     * @return TableContainer
+     */
+    protected function setHash($Hash)
+    {
+        $this->Hash = $Hash;
+        return $this;
     }
 }

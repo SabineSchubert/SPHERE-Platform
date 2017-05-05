@@ -1,6 +1,7 @@
 <?php
 namespace SPHERE\Application\Api\Product;
 
+use SPHERE\Application\Api\Product\Filter\Filter;
 use SPHERE\Application\IApplicationInterface;
 
 /**
@@ -12,6 +13,6 @@ class Product implements IApplicationInterface
 {
     public static function registerApplication()
     {
-        // TODO: Implement registerApplication() method.
+        Filter::registerApi();
     }
 }

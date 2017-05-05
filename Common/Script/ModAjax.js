@@ -260,6 +260,8 @@
 // Execute
 
         var callAjax = function (Method, Url, Data, Callback) {
+            // console.log('callAjax', Method, Url, Data, Callback);
+
             if (!occupyPipeline()) return;
             try {
                 var Payload = JSON.parse(Data);
@@ -303,6 +305,8 @@
             });
         };
         var callContent = function (Content, Callback) {
+            // console.log('callContent', Content, Callback);
+
             if (!occupyPipeline()) return;
             onSuccessEvent(Content);
             if (Callback == false) {

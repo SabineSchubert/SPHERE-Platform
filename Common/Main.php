@@ -393,8 +393,8 @@ class Main extends Extension
         Training::registerCluster();
         Eila::registerCluster();
         OtherApplication::registerCluster();
-//        Reporting::registerCluster();
-//        Competition::registerCluster();
+        Reporting::registerCluster();
+        Competition::registerCluster();
         Example::registerCluster();
     }
 }

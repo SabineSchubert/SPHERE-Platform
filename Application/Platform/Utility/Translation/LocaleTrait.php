@@ -14,7 +14,7 @@ trait LocaleTrait
      * @param $Value
      * @return Localize
      */
-    public function doLocalize($Value)
+    public static function doLocalize($Value)
     {
         return new Localize($Value);
     }

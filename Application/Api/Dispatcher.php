@@ -117,26 +117,30 @@ class Dispatcher extends Extension
         ) {
             if (Debugger::$Enabled) {
                 $Debugger = new Accordion();
-
+                $ShowDebug = false;
                 $ProtocolBenchmark = $this->getLogger(new BenchmarkLogger())->getLog();
                 if (!empty( $ProtocolBenchmark )) {
                     $Debugger->addItem('Debugger (Benchmark)', new Listing($ProtocolBenchmark), true );
+                    $ShowDebug = true;
                 }
                 $ProtocolError = $this->getLogger(new ErrorLogger())->getLog();
                 if (!empty( $ProtocolError )) {
                     $Debugger->addItem('Debugger (Error)', new Listing($ProtocolError), false );
+                    $ShowDebug = true;
                 }
                 $ProtocolCache = $this->getLogger(new CacheLogger())->getLog();
                 if (!empty( $ProtocolCache )) {
                     $Debugger->addItem('Debugger (Cache)', new Listing($ProtocolCache), false );
+                    $ShowDebug = true;
                 }
                 $ProtocolQuery = $this->getLogger(new QueryLogger())->getLog();
                 if (!empty( $ProtocolQuery )) {
                     $Debugger->addItem('Debugger (Query)', new Listing($ProtocolQuery), false );
+                    $ShowDebug = true;
                 }
                 $Result = implode(array(
                     $Result->__toString(),
-                    ( Debugger::$Enabled ? '<br/><div class="small">'.$Debugger.'</div>' : '' )
+                    ( $ShowDebug ? '<br/><div class="small">'.$Debugger.'</div>' : '' )
                 ));
             } else {
                 $Result = $Result->__toString();
