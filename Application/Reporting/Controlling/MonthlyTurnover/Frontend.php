@@ -9,6 +9,11 @@
 namespace SPHERE\Application\Reporting\Controlling\MonthlyTurnover;
 
 
+use MOC\V\Component\Document\Component\Bridge\Repository\PhpExcel;
+use MOC\V\Component\Document\Document;
+use MOC\V\Core\FileSystem\FileSystem;
+use SPHERE\Application\Api\Reporting\Excel\ExcelDefault;
+use SPHERE\Application\Platform\Utility\Storage\FilePointer;
 use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Button\Reset;
@@ -26,6 +31,7 @@ use SPHERE\Common\Frontend\Layout\Structure\Layout;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
+use SPHERE\Common\Frontend\Link\Repository\External;
 use SPHERE\Common\Frontend\Link\Repository\Standard;
 use SPHERE\Common\Frontend\Message\Repository\Warning;
 use SPHERE\Common\Frontend\Table\Structure\Table;
@@ -64,9 +70,12 @@ class Frontend extends Extension
         if( $Search ) {
             $MonthlyTurnoverResult = DataWareHouse::useService()->getMonthlyTurnover( $Search['PartNumber'], null, null );
             $LayoutTable = $this->tableMonthlyTurnover($MonthlyTurnoverResult);
+
+            $LayoutExcel = '<br/>'.(new External('ExcelDownload', ExcelDefault::getEndpoint(), null, array( ExcelDefault::API_TARGET => 'getExcelMonthlyTurnover', 'FileName' => 'Test', 'FileTyp' => 'xlsx', 'PartNumber' => $Search['PartNumber'] ) ));
         }
         else {
             $LayoutTable = '';
+            $LayoutExcel = '';
         }
 
         $Stage->setContent(
@@ -78,6 +87,9 @@ class Frontend extends Extension
                         ),
                         new LayoutColumn(
                             $LayoutTable
+                        ),
+                        new LayoutColumn(
+                            $LayoutExcel
                         )
                     ))
                 )
