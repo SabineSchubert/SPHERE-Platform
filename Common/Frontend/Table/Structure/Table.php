@@ -219,4 +219,13 @@ class Table extends TableContainer
         }
     }
 
+    /**
+     * @param string $Hash
+     * @return Table
+     */
+    public function setHash($Hash)
+    {
+        parent::setHash($Hash);
+        return $this;
+    }
 }

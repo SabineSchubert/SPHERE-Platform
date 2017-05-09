@@ -20,15 +20,19 @@ trait TranslateTrait
      * @param string $Locale
      * @return Translate
      */
-    public function doTranslate($Group, $Pattern, $Parameter = array(), $Locale = TranslationInterface::LOCALE_EN_US)
+    public static function doTranslate($Group, $Pattern, $Parameter = array(), $Locale = TranslationInterface::LOCALE_EN_US)
     {
+        if( !is_array( $Group ) ) {
+            $Group = array( $Group );
+        }
+
         if (empty($Parameter)) {
             return new Translate(
-                $this->getGroupPath($Group), new Preset($Pattern, null, $Locale)
+                self::getGroupPath($Group), new Preset($Pattern, null, $Locale)
             );
         } else {
             return new Translate(
-                $this->getGroupPath($Group), new Preset($Pattern, new Parameter($Parameter), $Locale)
+                self::getGroupPath($Group), new Preset($Pattern, new Parameter($Parameter), $Locale)
             );
         }
     }
@@ -37,7 +41,7 @@ trait TranslateTrait
      * @param array $List
      * @return null|Group
      */
-    private function getGroupPath($List)
+    private static function getGroupPath($List)
     {
         krsort($List);
         $Group = null;
