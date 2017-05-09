@@ -7,7 +7,9 @@
         // This is the easiest way to have default options.
         var settings = $.extend({
             theme: "bootstrap",
-            containerCssClass: ':all:'
+            containerCssClass: ':all:',
+            selectOnBlur: true,
+            selectOnClose: true
         }, options);
 
         this.select2(settings);
