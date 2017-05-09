@@ -120,13 +120,13 @@ class Filter implements IApiInterface
                         , 2),
                     new LayoutColumn(
                         new TextField('Filter[VIN]', '', 'FIN')
-                        , 1),
+                        , 2),
                     new LayoutColumn(
                         new Dropdown('Auswahl', new Panel('',
                                 $this->formStock()
                                 , Panel::PANEL_TYPE_DEFAULT, null, true)
                             , 'Bestand')
-                        , 2),
+                        , 1),
                 ))
             ),
             new LayoutGroup(
