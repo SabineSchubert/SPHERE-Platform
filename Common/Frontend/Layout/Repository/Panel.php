@@ -112,10 +112,10 @@ class Panel extends Extension implements ITemplateInterface
                 }
                 array_unshift($this->Content,
                     '<input type="text" class="form-control search" name="PanelSearch-' . md5($this->Title) . '" placeholder="Filtern" value="' . $Value . '">'
-                    .( $this->Filter < count($this->Content)
-                        ? new PullRight(new Label($this->Filter.' von '.count($this->Content).' Einträgen'))
-                        : new PullRight(new Label(count($this->Content).' Einträge'))
-                    )
+//                    .( $this->Filter < count($this->Content)
+//                        ? new PullRight(new Label($this->Filter.' von '.count($this->Content).' Einträgen'))
+//                        : new PullRight(new Label(count($this->Content).' Einträge'))
+//                    )
                 );
             } else {
                 $this->Template->setVariable('FilterValue', '');

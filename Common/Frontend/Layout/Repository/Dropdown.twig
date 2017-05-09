@@ -1,0 +1,22 @@
+<div id="{{ Hash }}" class="form-group" style="width: 100%;">
+    <label>{{ Label }}</label><br/>
+    <button type="button" class="btn btn-default dropdown-toggle form-control" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false" style="width: 100%; text-align: right;">
+        <span class="pull-left">{{ Name }}</span> <span class="caret"></span>
+    </button>
+    <div class="dropdown-menu" style="min-width: inherit; width: auto; background: #FFF; margin: 2px 0 0 0;">
+        {{ Content }}
+    </div>
+</div>
+<script type="text/javascript">
+    //noinspection JSUnresolvedFunction
+    executeScript(function()
+    {
+        Client.Use('ModAlways', function()
+        {
+            jQuery(document).on('click', 'div#{{ Hash }} .dropdown-menu',function(Event){
+                Event.stopPropagation();
+            });
+        });
+    });
+</script>
