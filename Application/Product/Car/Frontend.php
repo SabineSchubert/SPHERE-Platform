@@ -58,8 +58,9 @@ class Frontend extends Extension
                     )),
                     new LayoutRow(array(
                         new LayoutColumn(array(
-                            $ReceiverProductFilter = Filter::receiverProductFilter(),
-                            Filter::pipelineProductFilter( $ReceiverProductFilter ),
+                            (new Filter())->layoutProductFilter()
+//                            $ReceiverProductFilter = Filter::receiverProductFilter(),
+//                            Filter::pipelineProductFilter( $ReceiverProductFilter ),
                         )),
                     )),
                 )),
@@ -82,8 +83,9 @@ class Frontend extends Extension
                         new LayoutColumn(array(
                             '<br/>',
                             new Title('Produkte'),
-                            $ReceiverProductList = Filter::receiverProductList(),
-                            Filter::pipelineProductList( $ReceiverProductList ),
+                            (new Filter())->layoutProductList()
+//                            $ReceiverProductList = Filter::receiverProductList(),
+//                            Filter::pipelineProductList( $ReceiverProductList ),
                         ), 12),
                     ))
                 ),
