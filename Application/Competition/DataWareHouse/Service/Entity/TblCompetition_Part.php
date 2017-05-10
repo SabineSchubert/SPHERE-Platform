@@ -9,7 +9,7 @@
 namespace SPHERE\Application\Competition\DataWareHouse\Competition\Service\Entity;
 
 
-class TblReporting_Competition
+class Tbl_CompetitionPart
 {
 
 }
