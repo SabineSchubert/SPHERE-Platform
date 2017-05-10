@@ -626,3 +626,17 @@
 .form-inline .select2-container--bootstrap {
   display: inline-block;
 }
+/* Sphere Correction */
+.select2.select2-container {
+  width: auto !important;
+}
+.select2-dropdown {
+  color: #333;
+}
+.select2-container--bootstrap .select2-selection {
+  font-family: "CorporateSDemi";
+}
+.select2-container--bootstrap .select2-selection--single .select2-selection__arrow b {
+  border-width: 5px 5px 0 5px;
+  margin-left: -9px;
+}

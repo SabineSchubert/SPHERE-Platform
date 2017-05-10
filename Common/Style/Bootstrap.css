@@ -4899,8 +4899,7 @@ a.label:focus {
   vertical-align: middle;
   white-space: nowrap;
   text-align: center;
-  background-color: #777777;
-  border-radius: 10px;
+  border-radius: 3px;
 }
 .badge:empty {
   display: none;
@@ -4933,6 +4932,48 @@ a.badge:focus {
 }
 .nav-pills > li > a > .badge {
   margin-left: 3px;
+}
+.badge-default {
+  background-color: #777777;
+}
+.badge-default[href]:hover,
+.badge-default[href]:focus {
+  background-color: #5e5e5e;
+}
+.badge-primary {
+  background-color: #00adef;
+}
+.badge-primary[href]:hover,
+.badge-primary[href]:focus {
+  background-color: #0088bc;
+}
+.badge-success {
+  background-color: #5cb85c;
+}
+.badge-success[href]:hover,
+.badge-success[href]:focus {
+  background-color: #449d44;
+}
+.badge-info {
+  background-color: #5bc0de;
+}
+.badge-info[href]:hover,
+.badge-info[href]:focus {
+  background-color: #31b0d5;
+}
+.badge-warning {
+  background-color: #f0ad4e;
+}
+.badge-warning[href]:hover,
+.badge-warning[href]:focus {
+  background-color: #ec971f;
+}
+.badge-danger {
+  background-color: #9f0002;
+}
+.badge-danger[href]:hover,
+.badge-danger[href]:focus {
+  background-color: #6c0001;
 }
 .jumbotron {
   padding-top: 30px;
