@@ -1,4 +1,5 @@
 <?php
+
 namespace SPHERE\Common\Frontend\Layout\Repository;
 
 use SPHERE\Common\Frontend\ITemplateInterface;
@@ -13,17 +14,21 @@ class Scrollable extends Extension implements ITemplateInterface
 
     /** @var string $Content */
     private $Content = '';
+    /** @var null|int $Height */
+    private $Height = null;
 
     /**
      * @param string|array $Content
+     * @param null|int $Height Pixel
      */
-    public function __construct($Content)
+    public function __construct($Content, $Height = null)
     {
 
-        if( is_array($Content) ) {
-            $Content = implode( '', $Content);
+        if (is_array($Content)) {
+            $Content = implode('', $Content);
         }
         $this->Content = $Content;
+        $this->Height = $Height;
     }
 
     /**
@@ -41,6 +46,8 @@ class Scrollable extends Extension implements ITemplateInterface
     public function getContent()
     {
 
-        return '<div class="pre-scrollable" style="overflow-y: auto;">'.$this->Content.'</div>';
+        return '<div class="pre-scrollable" style="overflow-y: auto;' .
+            ($this->Height ? 'height:' . $this->Height . 'px;' : '')
+            . '">' . $this->Content . '</div>';
     }
 }
