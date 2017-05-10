@@ -12,10 +12,16 @@ class Dropdown extends Extension implements ITemplateInterface
     private $Template = null;
 
     /**
-     *
+     * @param string $Name
+     * @param string|array $Content
+     * @param string $Label
      */
     public function __construct( $Name, $Content, $Label = '' )
     {
+
+        if( is_array($Content) ) {
+            $Content = implode( '', $Content);
+        }
 
         $this->Template = $this->getTemplate(__DIR__ . '/Dropdown.twig');
         $this->Template->setVariable( 'Name', $Name );
