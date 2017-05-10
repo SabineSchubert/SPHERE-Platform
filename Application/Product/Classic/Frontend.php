@@ -2,6 +2,7 @@
 
 namespace SPHERE\Application\Product\Classic;
 
+use SPHERE\Common\Frontend\Ajax\Receiver\BlockReceiver;
 use SPHERE\Common\Frontend\Form\Repository\Field\CheckBox;
 use SPHERE\Common\Frontend\Form\Repository\Field\TextField;
 use SPHERE\Common\Frontend\Icon\Repository\CogWheels;
@@ -11,6 +12,7 @@ use SPHERE\Common\Frontend\Icon\Repository\Snowflake;
 use SPHERE\Common\Frontend\Icon\Repository\Sun;
 use SPHERE\Common\Frontend\Icon\Repository\Wheel;
 use SPHERE\Common\Frontend\Layout\Repository\Badge;
+use SPHERE\Common\Frontend\Layout\Repository\Container;
 use SPHERE\Common\Frontend\Layout\Repository\Dropdown;
 use SPHERE\Common\Frontend\Layout\Repository\Header;
 use SPHERE\Common\Frontend\Layout\Repository\Listing;
@@ -58,21 +60,21 @@ class Frontend extends Extension
                                             new Layout(array(
                                                 new LayoutGroup(array(
                                                     new LayoutRow(array(
-                                                        new LayoutColumn(array(
-                                                            new Standard('', '', new Sun(), array(), 'Sommer'),
-                                                        ), 4, array(LayoutColumn::GRID_OPTION_HIDDEN_SM)),
-                                                        new LayoutColumn(array(
-                                                            new Standard('', '', new Snowflake(), array(), 'Winter'),
-                                                        ), 4, array(LayoutColumn::GRID_OPTION_HIDDEN_SM)),
-                                                        new LayoutColumn(array(
-                                                            new Standard('', '', new Leaf(), array(), 'Ganzjahr'),
-                                                        ), 4, array(LayoutColumn::GRID_OPTION_HIDDEN_SM)),
+//                                                        new LayoutColumn(array(
+//                                                            new Standard('', '', new Sun(), array(), 'Sommer'),
+//                                                        ), 4, array(LayoutColumn::GRID_OPTION_HIDDEN_SM)),
+//                                                        new LayoutColumn(array(
+//                                                            new Standard('', '', new Snowflake(), array(), 'Winter'),
+//                                                        ), 4, array(LayoutColumn::GRID_OPTION_HIDDEN_SM)),
+//                                                        new LayoutColumn(array(
+//                                                            new Standard('', '', new Leaf(), array(), 'Ganzjahr'),
+//                                                        ), 4, array(LayoutColumn::GRID_OPTION_HIDDEN_SM)),
 
                                                         new LayoutColumn(array(
                                                             new CheckBox('2', new Sun() . '&nbsp;Sommer', 1),
                                                             new CheckBox('2', new Snowflake() . '&nbsp;Winter', 1),
                                                             new CheckBox('2', new Leaf() . '&nbsp;Ganzjahr', 1),
-                                                        ), 12, array(LayoutColumn::GRID_OPTION_HIDDEN_XS)),
+                                                        )),
                                                     )),
                                                 )),
                                             )),
@@ -111,13 +113,24 @@ class Frontend extends Extension
                                             )),
                                             new Ruler(),
                                             new Header('Hersteller'),
-                                            new Listing(array(
-                                                new TextField('1', 'Suchen'),
-                                                new CheckBox('2', 'Continental', 1),
-                                                new CheckBox('3', 'Pirelli', 1),
-                                                new CheckBox('4', 'Dunlop', 1),
-                                                new Link('Mehr anzeigen', '#')
+
+                                            new Container( array(
+                                                new TextField('1', 'Liste eingrenzen'),
+                                                new Scrollable(
+                                                    new BlockReceiver(
+                                                        new Listing(array(
+                                                            new CheckBox('10', 'Continental', 1),
+                                                            new CheckBox('12', 'Michelin', 1),
+                                                            new CheckBox('13', 'Pirelli', 1),
+                                                            new CheckBox('14', 'Pirelli', 1),
+                                                            new CheckBox('15', 'Pirelli', 1),
+                                                            new CheckBox('16', 'Pirelli', 1),
+                                                            new CheckBox('17', 'Pirelli', 1),
+                                                            new CheckBox('18', 'Pirelli', 1),
+                                                        ))
+                                                    ))
                                             )),
+
                                             new Ruler(),
                                             new Header('Fahrgestellnummer'),
                                             new TextField('1', 'Suchen'),
@@ -139,33 +152,123 @@ class Frontend extends Extension
                         ), 2),
                         new LayoutColumn(array(
                             '<div id="FilterAdditional" class="collapse in">' .
-                            new Listing(array(
-                                new Layout(array(
-                                    new LayoutGroup(array(
-                                        new LayoutRow(array(
-                                            new LayoutColumn(array(
-                                                new Dropdown('Hersteller', array(
-                                                    new TextField('1', 'Liste eingrenzen'),
-                                                    new Scrollable(new Listing(array(
-                                                        new CheckBox('10', 'Continental', 1),
-                                                        new CheckBox('12', 'Michelin', 1),
-                                                        new CheckBox('13', 'Pirelli', 1),
-                                                        new CheckBox('14', 'Pirelli', 1),
-                                                        new CheckBox('15', 'Pirelli', 1),
-                                                        new CheckBox('16', 'Pirelli', 1),
-                                                        new CheckBox('17', 'Pirelli', 1),
-                                                        new CheckBox('18', 'Pirelli', 1),
-                                                    )))
-                                                ))
-                                            ), 4),
-
-                                        )),
-                                    ), new Title('Erweiterter Filter',
-                                        new PullRight(new Link('', '#', new CogWheels()))
-                                    ))
-                                ))
+//                            new Listing(array(
+                            new Layout(array(
+                                new LayoutGroup(array(
+                                    new LayoutRow(array(
+                                        new LayoutColumn(array(
+                                            new Container(new Dropdown('Hersteller1', array(
+                                                new TextField('1', 'Liste eingrenzen'),
+                                                new Scrollable(
+                                                    new BlockReceiver(
+                                                        new Listing(array(
+                                                            new CheckBox('10', 'Continental', 1),
+                                                            new CheckBox('12', 'Michelin', 1),
+                                                            new CheckBox('13', 'Pirelli', 1),
+                                                            new CheckBox('14', 'Pirelli', 1),
+                                                            new CheckBox('15', 'Pirelli', 1),
+                                                            new CheckBox('16', 'Pirelli', 1),
+                                                            new CheckBox('17', 'Pirelli', 1),
+                                                            new CheckBox('18', 'Pirelli', 1),
+                                                        ))
+                                                    ))
+                                            ))),
+                                        ), 4),
+                                        new LayoutColumn(array(
+                                            new Container(new Dropdown('Hersteller2', array(
+                                                new TextField('1', 'Liste eingrenzen'),
+                                                new Scrollable(
+                                                    new BlockReceiver(
+                                                        new Listing(array(
+                                                            new CheckBox('10', 'Continental', 1),
+                                                            new CheckBox('12', 'Michelin', 1),
+                                                            new CheckBox('13', 'Pirelli', 1),
+                                                            new CheckBox('14', 'Pirelli', 1),
+                                                            new CheckBox('15', 'Pirelli', 1),
+                                                            new CheckBox('16', 'Pirelli', 1),
+                                                            new CheckBox('17', 'Pirelli', 1),
+                                                            new CheckBox('18', 'Pirelli', 1),
+                                                        ))
+                                                    ))
+                                            ))),
+                                        ), 4),
+                                        new LayoutColumn(array(
+                                            new Container(new Dropdown('Hersteller3', array(
+                                                new TextField('1', 'Liste eingrenzen'),
+                                                new Scrollable(
+                                                    new BlockReceiver(
+                                                        new Listing(array(
+                                                            new CheckBox('10', 'Continental', 1),
+                                                            new CheckBox('12', 'Michelin', 1),
+                                                            new CheckBox('13', 'Pirelli', 1),
+                                                            new CheckBox('14', 'Pirelli', 1),
+                                                            new CheckBox('15', 'Pirelli', 1),
+                                                            new CheckBox('16', 'Pirelli', 1),
+                                                            new CheckBox('17', 'Pirelli', 1),
+                                                            new CheckBox('18', 'Pirelli', 1),
+                                                        ))
+                                                    ))
+                                            ))),
+                                        ), 4),
+                                    )),
+                                    new LayoutRow(array(
+                                        new LayoutColumn(array(
+                                            new Container(new Dropdown('Hersteller4', array(
+                                                new TextField('1', 'Liste eingrenzen'),
+                                                new Scrollable(
+                                                    new BlockReceiver(
+                                                        new Listing(array(
+                                                            new CheckBox('10', 'Continental', 1),
+                                                            new CheckBox('12', 'Michelin', 1),
+                                                            new CheckBox('13', 'Pirelli', 1),
+                                                            new CheckBox('14', 'Pirelli', 1),
+                                                            new CheckBox('15', 'Pirelli', 1),
+                                                            new CheckBox('16', 'Pirelli', 1),
+                                                            new CheckBox('17', 'Pirelli', 1),
+                                                            new CheckBox('18', 'Pirelli', 1),
+                                                        ))
+                                                    ))
+                                            ))),
+                                        ), 4),
+                                        new LayoutColumn(array(
+                                            new Container(new Dropdown('Hersteller5', array(
+                                                new TextField('1', 'Liste eingrenzen'),
+                                                new Scrollable(
+                                                    new BlockReceiver(
+                                                        new Listing(array(
+                                                            new CheckBox('10', 'Continental', 1),
+                                                            new CheckBox('12', 'Michelin', 1),
+                                                            new CheckBox('13', 'Pirelli', 1),
+                                                            new CheckBox('14', 'Pirelli', 1),
+                                                            new CheckBox('15', 'Pirelli', 1),
+                                                            new CheckBox('16', 'Pirelli', 1),
+                                                            new CheckBox('17', 'Pirelli', 1),
+                                                            new CheckBox('18', 'Pirelli', 1),
+                                                        ))
+                                                    ))
+                                            ))),
+                                        ), 4),
+                                        new LayoutColumn(array(
+                                            new Container(new Dropdown('Hersteller6', array(
+                                                new TextField('1', 'Liste eingrenzen'),
+                                                new Scrollable(
+                                                    new BlockReceiver(
+                                                        new Listing(array(
+                                                            new CheckBox('10', 'Continental', 1),
+                                                            new CheckBox('12', 'Michelin', 1),
+                                                            new CheckBox('13', 'Pirelli', 1),
+                                                            new CheckBox('14', 'Pirelli', 1),
+                                                            new CheckBox('15', 'Pirelli', 1),
+                                                            new CheckBox('16', 'Pirelli', 1),
+                                                            new CheckBox('17', 'Pirelli', 1),
+                                                            new CheckBox('18', 'Pirelli', 1),
+                                                        ))
+                                                    ))
+                                            ))),
+                                        ), 4),
+                                    )),
+                                ), new Title('Weitere Filter'))
                             ))
-
                             . '</div>',
 
                             new Layout(array(
