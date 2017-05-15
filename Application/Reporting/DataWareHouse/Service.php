@@ -9,6 +9,8 @@
 namespace SPHERE\Application\Reporting\DataWareHouse;
 
 
+use Doctrine\Common\Util\Debug;
+use Doctrine\ORM\Query\Expr;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Data;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_AssortmentGroup;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Brand;
@@ -316,6 +318,14 @@ class Service extends AbstractService
     }
 
     /**
+     * @param $Number
+     * @return null|TblReporting_DiscountGroup|Element
+     */
+    public function getDiscountGroupByNumber( $Number ) {
+        return ( new Data( $this->getBinding() ) )->getDiscountGroupByNumber( $Number );
+    }
+
+    /**
      * @param int $Id
      * @return null|TblReporting_Supplier|Element
      */
@@ -352,5 +362,131 @@ class Service extends AbstractService
 //    public function getPartPriceByPartNumber( $PartNumber ) {
 //ToDo: für View
 //    }
+
+    /**
+     * @param TblReporting_Part $TblReporting_Part
+     * @return null|array
+     */
+    public function getSalesByPart( TblReporting_Part $TblReporting_Part ) {
+        return ( new Data( $this->getBinding() ) )->getSalesByGroup( $TblReporting_Part, null, null );
+    }
+
+    /**
+     * @param TblReporting_MarketingCode $TblReporting_MarketingCode
+     * @return array|null
+     */
+    public function getSalesByMarketingCode( TblReporting_MarketingCode $TblReporting_MarketingCode ) {
+        return ( new Data( $this->getBinding() ) )->getSalesByGroup( null, $TblReporting_MarketingCode, null );
+    }
+
+    /**
+     * @param TblReporting_ProductManager $TblReporting_ProductManager
+     * @return array|null
+     */
+    public function getSalesByProductManager( TblReporting_ProductManager $TblReporting_ProductManager ) {
+        return ( new Data( $this->getBinding() ) )->getSalesByGroup( null, null, $TblReporting_ProductManager );
+    }
+
+    /**
+     * @param null|string $PartNumber
+     * @param null|string $MarketingCodeNumber
+     * @param null|int $ProductManagerId
+     * @param null|string $PeriodFrom
+     * @param null|string $PeriodTo
+     * @return array|null
+     */
+    public function getSalesGroupPart($PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null, $PeriodFrom = null, $PeriodTo = null ) {
+        return ( new Data( $this->getBinding() ) ) ->getSearchByGroup('Part', $PartNumber, $MarketingCodeNumber, $ProductManagerId, $PeriodFrom, $PeriodTo );
+    }
+
+    /**
+     * @param null|string $PartNumber
+     * @param null|string $MarketingCodeNumber
+     * @param null|int $ProductManagerId
+     * @param null|string $PeriodFrom
+     * @param null|string $PeriodTo
+     * @return array|null
+     */
+    public function getSalesGroupMarketingCode($PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null, $PeriodFrom = null, $PeriodTo = null ) {
+        return ( new Data( $this->getBinding() ) ) ->getSearchByGroup('MarketingCode', $PartNumber, $MarketingCodeNumber, $ProductManagerId, $PeriodFrom, $PeriodTo );
+    }
+
+    /**
+     * @param null|string $PartNumber
+     * @param null|string $MarketingCodeNumber
+     * @param null|int $ProductManagerId
+     * @param null|string $PeriodFrom
+     * @param null|string $PeriodTo
+     * @return array|null
+     */
+    public function getSalesGroupProductManager($PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null, $PeriodFrom = null, $PeriodTo = null ) {
+        return ( new Data( $this->getBinding() ) ) ->getSearchByGroup('ProductManager', $PartNumber, $MarketingCodeNumber, $ProductManagerId, $PeriodFrom, $PeriodTo );
+    }
+
+    /**
+     * @param null|string $PartNumber
+     * @param null|string $MarketingCodeNumber
+     * @param null|int $ProductManagerId
+     * @param null|string $PeriodFrom
+     * @param null|string $PeriodTo
+     * @return array|null
+     */
+    public function getSalesGroupCompetition($PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null, $PeriodFrom = null, $PeriodTo = null ) {
+        return ( new Data( $this->getBinding() ) ) ->getSearchByGroup('Competition', $PartNumber, $MarketingCodeNumber, $ProductManagerId, $PeriodFrom, $PeriodTo );
+    }
+
+    /**
+     * @return null|int
+     */
+    public function getYearCurrentFromSales() {
+        return ( new Data( $this->getBinding() ) ) ->getYearCurrentFromSales();
+    }
+
+    /**
+     * @param null|string $PartNumber
+     * @param null|string $MarketingCodeNumber
+     * @param null|int $ProductManagerId
+     * @return array|null
+     */
+    public function getMonthlyTurnover( $PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null ) {
+        return ( new Data( $this->getBinding() ) ) ->getMonthlyTurnoverByGroup( $PartNumber, $MarketingCodeNumber, $ProductManagerId );
+    }
+
+    /**
+     * @param TblReporting_Part $TblReporting_Part
+     * @param int $Restriction
+     * @return null|array
+     *
+     * $Restriction z.B. für Top 50 bzw. geplant Filter über Zeitraum
+     */
+    public function getPriceDevelopmentByPartNumber( TblReporting_Part $TblReporting_Part, $Restriction ) {
+        $PriceDevelopmentData = ( new Data( $this->getBinding() ) ) ->getPriceDevelopmentByPartNumber( $TblReporting_Part, $Restriction );
+
+        Debugger::screenDump($PriceDevelopmentData);
+
+        if($PriceDevelopmentData) {
+            $CalcPriceDevelopmentData = null;
+            array_walk($PriceDevelopmentData, function($Row) use(&$CalcPriceDevelopmentData) {
+
+                $PriceNet = $this->getCalculationRules()->calcNetPrice($Row['PriceGross'], $Row['Discount'], $Row['BackValue']);
+
+                $CalcPriceDevelopmentData[] = array (
+                    'ValidFrom' => date('d.m.Y',$Row['ValidFrom']),
+                    'PriceGross' => $Row['PriceGross'],
+                    'PriceNet' => $PriceNet,
+                    'DiscountGroupNumber' => $Row['DiscountGroupNumber'],
+                    'Discount' => $Row['Discount'],
+                    'BackValue' => $Row['BackValue'],
+                    'CostsVariable' => $Row['CostsVariable'],
+                    'CoverageContribution' => $this->getCalculationRules()->calcCoverageContribution($PriceNet, $Row['CostsVariable']),
+                );
+            });
+            return $CalcPriceDevelopmentData;
+        }
+        else {
+            return null;
+        }
+    }
+
 
 }

@@ -15,12 +15,15 @@ use SPHERE\Application\Api\TestAjax\TestAjax;
 use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Data;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
+use SPHERE\Common\Frontend\Form\Repository\Field\AutoCompleter;
+use SPHERE\Common\Frontend\Form\Repository\Field\DatePicker;
 use SPHERE\Common\Frontend\Form\Repository\Field\SelectBox;
 use SPHERE\Common\Frontend\Form\Repository\Field\TextField;
 use SPHERE\Common\Frontend\Form\Structure\Form;
 use SPHERE\Common\Frontend\Form\Structure\FormColumn;
 use SPHERE\Common\Frontend\Form\Structure\FormGroup;
 use SPHERE\Common\Frontend\Form\Structure\FormRow;
+use SPHERE\Common\Frontend\Icon\Repository\Time;
 use SPHERE\Common\Frontend\Layout\Repository\Panel;
 use SPHERE\Common\Frontend\Layout\Repository\Title;
 use SPHERE\Common\Frontend\Layout\Structure\Layout;
@@ -28,28 +31,43 @@ use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
 use SPHERE\Common\Frontend\Link\Repository\Standard;
+use SPHERE\Common\Frontend\Message\Repository\Warning;
 use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Window\Navigation\Link\Route;
 use SPHERE\Common\Window\Stage;
 use SPHERE\System\Extension\Extension;
 use SPHERE\System\Extension\Repository\Debugger;
+use SPHERE\Common\Frontend\Icon\Repository\Search as SearchIcon;
 
 class Frontend extends Extension
 {
-	public function frontendSearchPartNumber() {
+	public function frontendSearchPartNumber( $Search = null ) {
 		$Stage = new Stage('Suche');
 		$Stage->setMessage('Teilenummer');
 		$this->buttonStageDirectSearch($Stage);
 
-		$SearchData = array(array('Teilenummer'));
-		$LayoutTable = $this->tableSearchData($SearchData);
+        //Debugger::screenDump($Search);
+
+		if( $Search ) {
+            $SearchData = DataWareHouse::useService()->getSalesGroupPart( $Search['PartNumber'], $Search['MarketingCode'], $Search['ProductManager'], $Search['PeriodFrom'], $Search['PeriodTo'] );
+
+            //Debugger::screenDump($SearchData);
+
+            $LayoutTable = $this->tableSearchData($SearchData);
+        }
+        else {
+            $LayoutTable = '';
+        }
 
 		$Stage->setContent(
 			new Layout(
 				new LayoutGroup(
 					new LayoutRow(array(
 						new LayoutColumn(
-							'&nbsp;'
+                            $this->formSearch()
+						),
+                        new LayoutColumn(
+                            '&nbsp;'
 						),
 						new LayoutColumn(
 							$LayoutTable
@@ -62,20 +80,25 @@ class Frontend extends Extension
 		return $Stage;
 	}
 
-	public function frontendSearchMarketingCode() {
+	public function frontendSearchMarketingCode( $Search = null ) {
 		$Stage = new Stage('Suche');
 		$Stage->setMessage('Marketingcode');
 		$this->buttonStageDirectSearch($Stage);
 
-		$SearchData = array(array('Marketingcode'));
-		$LayoutTable = $this->tableSearchData($SearchData);
+        if( $Search ) {
+            $SearchData = DataWareHouse::useService()->getSalesGroupMarketingCode( $Search['PartNumber'], $Search['MarketingCode'], $Search['ProductManager'] );
+            $LayoutTable = $this->tableSearchData($SearchData);
+        }
+        else {
+            $LayoutTable = '';
+        }
 
 		$Stage->setContent(
 			new Layout(
 				new LayoutGroup(
 					new LayoutRow(array(
 						new LayoutColumn(
-							'&nbsp;'
+                            $this->formSearch()
 						),
 						new LayoutColumn(
 							$LayoutTable
@@ -85,23 +108,30 @@ class Frontend extends Extension
 			)
 		);
 
+        Debugger::screenDump( $Search );
+
 		return $Stage;
 	}
 
-	public function frontendSearchProductManager() {
+	public function frontendSearchProductManager( $Search = null ) {
 		$Stage = new Stage('Suche');
 		$Stage->setMessage('Produktmanager');
 		$this->buttonStageDirectSearch($Stage);
 
-		$SearchData = array(array('Produktmanager'));
-		$LayoutTable = $this->tableSearchData($SearchData);
+        if( $Search ) {
+            $SearchData = DataWareHouse::useService()->getSalesGroupProductManager( $Search['PartNumber'], $Search['MarketingCode'], $Search['ProductManager'] );
+            $LayoutTable = $this->tableSearchData($SearchData);
+        }
+        else {
+            $LayoutTable = '';
+        }
 
 		$Stage->setContent(
 			new Layout(
 				new LayoutGroup(
 					new LayoutRow(array(
 						new LayoutColumn(
-							'&nbsp;'
+                            $this->formSearch()
 						),
 						new LayoutColumn(
 							$LayoutTable
@@ -114,20 +144,25 @@ class Frontend extends Extension
 		return $Stage;
 	}
 
-	public function frontendSearchCompetition() {
+	public function frontendSearchCompetition( $Search = null ) {
 		$Stage = new Stage('Suche');
 		$Stage->setMessage('Angebotsdaten');
 		$this->buttonStageDirectSearch($Stage);
 
-		$SearchData = array(array('Angebotsdaten'));
-		$LayoutTable = $this->tableSearchData($SearchData);
+        if( $Search ) {
+            $SearchData = DataWareHouse::useService()->getViewPartGroupCompetition( $Search['PartNumber'], $Search['MarketingCode'], $Search['ProductManager'] );
+            $LayoutTable = $this->tableSearchData($SearchData);
+        }
+        else {
+            $LayoutTable = '';
+        }
 
 		$Stage->setContent(
 			new Layout(
 				new LayoutGroup(
 					new LayoutRow(array(
 						new LayoutColumn(
-							'&nbsp;'
+							$this->formSearch()
 						),
 						new LayoutColumn(
 							$LayoutTable
@@ -139,6 +174,63 @@ class Frontend extends Extension
 
 		return $Stage;
 	}
+
+	private function formSearch() {
+        $EntityProductManager = DataWareHouse::useService()->getProductManagerAll();
+        $EntityMarketingCode = DataWareHouse::useService()->getMarketingCodeAll();
+
+	    return new Form(
+	        new FormGroup(
+	            array(
+                    new FormRow(
+                        array(
+                            new FormColumn(
+                                new Panel('Teilenummer',
+                                    new TextField( 'Search[PartNumber]', 'Teilenummer', '' )
+                                ), 4
+                            ),
+                            new FormColumn(
+                                new Panel('Marketingcode',
+                                    new AutoCompleter('Search[MarketingCode]', '', 'Marketingcode eingeben',
+                                        array( 'Number' => $EntityMarketingCode )
+                                    )
+                                ), 4
+                            ),
+                            new FormColumn(
+                                new Panel('Produktmanager',
+                                    new SelectBox('Search[ProductManager]', '',
+                                        array( '{{Name}} {{Department}}' => $EntityProductManager )
+                                    )
+                                ), 4
+                            ),
+                        )
+                    ),
+                    new FormRow(
+                        new FormColumn(
+                            new Panel('Zeitraum',
+                                new Layout(
+                                    new LayoutGroup(
+                                        new LayoutRow(
+                                            array(
+                                                new LayoutColumn(
+                                                    new DatePicker('Search[PeriodFrom]', date('d.m.Y'), 'von', new Time()), 6
+                                                ),
+                                                new LayoutColumn(
+                                                    new DatePicker('Search[PeriodTo]', date('d.m.Y'), 'bis', new Time()), 6
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            ), 4
+                        )
+                    )
+                )
+            ), array(
+                new Primary( 'suchen', new SearchIcon() )
+            )
+        );
+    }
 
 	private function buttonStageDirectSearch(Stage $Stage)
 	{
@@ -157,53 +249,32 @@ class Frontend extends Extension
 	}
 
 	private function tableSearchData( $SearchData ) {
+        if( $SearchData ) {
+            $ReplaceArray = array(
+                'PartNumber' => 'Teilenummer',
+                'PartName' => 'Bezeichnung',
+                'MarketingCodeNumber' => 'Marketingcode',
+                'MarketingCodeName' => 'Marketingcode-Bezeichnung',
+                'ProductManagerName' => 'Produktmanager',
+                'ProductManagerDepartment' => 'Bereich',
+                'Competitor' => 'Wettbewerber',
+                'PriceGross' => 'BLP',
+                'PriceNet' => 'NLP',
+                'Discount' => 'RG',
+                'SumSalesGross' => 'Bruttoumsatz',
+                'SumSalesNet' => 'Nettoumsatz',
+                'SumQuantity' => 'Menge'
+            );
 
-//		switch ($SelectionStatistic) {
-//			case '1':
-//				$SearchData = array(
-//					array( 'PartNumber' => 'dsakj', 'GrossPrice' => 250.00, 'Discount' => 10, 'Quantity' => 5 ),
-//					array( 'PartNumber' => 'dsakj', 'GrossPrice' => 250.00, 'Discount' => 10, 'Quantity' => 5 )
-//				);
-//				break;
-//			case '2':
-//				$SearchData = array(
-//					array( 'McCode' => 'dsakj', 'GrossPrice' => 250.00, 'Discount' => 10, 'Quantity' => 5 ),
-//					array( 'McCode' => 'dsakj', 'GrossPrice' => 250.00, 'Discount' => 10, 'Quantity' => 5 )
-//				);
-//				break;
-//			case '3':
-//				$SearchData = array(
-//					array( 'ProductManager' => 'dsakj', 'GrossPrice' => 250.00, 'Discount' => 10, 'Quantity' => 5 ),
-//					array( 'ProductManager' => 'dsakj', 'GrossPrice' => 250.00, 'Discount' => 10, 'Quantity' => 5 )
-//				);
-//				break;
-//			case '4':
-//				$SearchData = array(
-//					array( 'Competitor' => 'dsakj', 'GrossPrice' => 250.00, 'Discount' => 10, 'Quantity' => 5 ),
-//					array( 'Competitor' => 'dsakj', 'GrossPrice' => 250.00, 'Discount' => 10, 'Quantity' => 5 )
-//				);
-//				break;
-//			default:
-//				$SearchData = array();
-//				break;
-//		}
+            $Keys = array_keys($SearchData[0]);
+            $TableHead = array_combine( $Keys, str_replace( array_keys( $ReplaceArray ) , $ReplaceArray, $Keys) );
 
-		$ReplaceArray = array(
-			'PartNumber' => 'Teilenummer',
-			'McCode' => 'Marketingcode',
-			'ProductManager' => 'Produktmanager',
-			'Competitor' => 'Wettbewerber',
-			'GrossPrice' => 'BLP',
-			'NetPrice' => 'NLP',
-			'Discount' => 'RG',
-			'Quantity' => 'Menge'
-		);
-
-		$Keys = array_keys($SearchData[0]);
-		$TableHead = array_combine( $Keys, str_replace( array_keys( $ReplaceArray ) , $ReplaceArray, $Keys) );
-
-		return new Table(
-			$SearchData, null, $TableHead
-		);
+            return new Table(
+                $SearchData, null, $TableHead
+            );
+        }
+        else {
+            return new Warning( 'Keine Daten vorhanden' );
+        }
 	}
 }

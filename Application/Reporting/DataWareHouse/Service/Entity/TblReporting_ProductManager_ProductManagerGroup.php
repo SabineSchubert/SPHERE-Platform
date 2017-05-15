@@ -23,7 +23,7 @@ use SPHERE\System\Database\Fitting\Element;
 class TblReporting_ProductManager_ProductManagerGroup extends Element
 {
     const TBL_REPORTING_PRODUCT_MANAGER = 'TblReporting_ProductManager';
-    const TBL_REPORTING_PRODUCT_MANAGER_PRODUCT_MANAGER_GROUP = 'TblReporting_ProductManager_ProductManagerGroup';
+    const TBL_REPORTING_PRODUCT_MANAGER_GROUP = 'TblReporting_ProductManagerGroup';
 
     /**
      * @Column(type="bigint")

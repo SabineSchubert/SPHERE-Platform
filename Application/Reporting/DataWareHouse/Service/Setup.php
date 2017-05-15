@@ -91,61 +91,70 @@ class Setup extends AbstractSetup
 
 
 //        Debugger::screenDump(
-//            (new View( $this->getConnection(), 'ViewPart' ))
-//                ->addLink(
-//                    new TblReporting_Part_MarketingCode(), 'TblReporting_Part',
-//                    new TblReporting_Part(), 'Id'
-//                )
-//                ->addLink(
-//                    new TblReporting_Part_MarketingCode(), 'TblReporting_MarketingCode',
-//                    new TblReporting_MarketingCode(), 'Id'
-//                )
-//                ->addLink(
-//                    new TblReporting_MarketingCode(), 'Id',
-//                    new TblReporting_ProductManager_MarketingCode(), 'TblReporting_MarketingCode'
-//                )
-//                ->addLink(
-//                    new TblReporting_ProductManager_MarketingCode(), 'TblReporting_MarketingCode',
-//                    new TblReporting_ProductManager(), 'Id'
-//                )
-//                ->addLink(
-//                    new TblReporting_MarketingCode(), 'Id',
-//                    new TblReporting_MarketingCode_ProductGroup(), 'TblReporting_MarketingCode'
-//                )
-//                ->addLink(
-//                    new TblReporting_MarketingCode_ProductGroup(), 'TblReporting_ProductGroup',
-//                    new TblReporting_ProductGroup(), 'Id'
-//                )
-//                ->addLink(
-//                    new TblReporting_ProductGroup(), 'Id',
-//                    new TblReporting_ProductGroup_ProductLevel(), 'TblReporting_ProductGroup'
-//                )
-//                ->addLink(
-//                    new TblReporting_ProductGroup_ProductLevel(), 'TblReporting_ProductLevel',
-//                    new TblReporting_ProductLevel(), 'Id'
-//                )
-//                ->addLink(
-//                    new TblReporting_Part(), 'Id',
-//                    new TblReporting_Part_Section(), 'TblReporting_Part'
-//                )
-//                ->addLink(
-//                    new TblReporting_Part(), 'Id',
-//                    new TblReporting_Part_Brand(), 'TblReporting_Part'
-//                )
-//                ->addLink(
-//                    new TblReporting_Part_Brand(), 'TblReporting_Part',
-//                    new TblReporting_Brand(), 'Id'
-//                )
-//                ->addLink(
-//                    new TblReporting_MarketingCode(), 'Id',
-//                    new TblReporting_MarketingCode_PartsMore(), 'TblReporting_MarketingCode'
-//                )
-//                ->addLink(
-//                    new TblReporting_MarketingCode_PartsMore(), 'TblReporting_MarketingCode',
-//                    new TblReporting_PartsMore(), 'Id'
-//                )
-//                ->getView()->getSql()
+        $this->getConnection()->createView(
+            (new View( $this->getConnection(), 'ViewPart' ))
+                    ->addLink(
+                        new TblReporting_Part_MarketingCode(), 'TblReporting_Part',
+                        new TblReporting_Part(), 'Id'
+                    )
+                    ->addLink(
+                        new TblReporting_Part_MarketingCode(), 'TblReporting_MarketingCode',
+                        new TblReporting_MarketingCode(), 'Id'
+                    )
+                    ->addLink(
+                        new TblReporting_MarketingCode(), 'Id',
+                        new TblReporting_ProductManager_MarketingCode(), 'TblReporting_MarketingCode'
+                    )
+                    ->addLink(
+                        new TblReporting_ProductManager_MarketingCode(), 'TblReporting_MarketingCode',
+                        new TblReporting_ProductManager(), 'Id'
+                    )
+                    ->addLink(
+                        new TblReporting_MarketingCode(), 'Id',
+                        new TblReporting_MarketingCode_ProductGroup(), 'TblReporting_MarketingCode'
+                    )
+                    ->addLink(
+                        new TblReporting_MarketingCode_ProductGroup(), 'TblReporting_ProductGroup',
+                        new TblReporting_ProductGroup(), 'Id'
+                    )
+                    ->addLink(
+                        new TblReporting_ProductGroup(), 'Id',
+                        new TblReporting_ProductGroup_ProductLevel(), 'TblReporting_ProductGroup'
+                    )
+                    ->addLink(
+                        new TblReporting_ProductGroup_ProductLevel(), 'TblReporting_ProductLevel',
+                        new TblReporting_ProductLevel(), 'Id'
+                    )
+                    ->addLink(
+                        new TblReporting_Part(), 'Id',
+                        new TblReporting_Part_Section(), 'TblReporting_Part'
+                    )
+                    ->addLink(
+                        new TblReporting_Part(), 'Id',
+                        new TblReporting_Part_Brand(), 'TblReporting_Part'
+                    )
+                    ->addLink(
+                        new TblReporting_Part_Brand(), 'TblReporting_Part',
+                        new TblReporting_Brand(), 'Id'
+                    )
+                    ->addLink(
+                        new TblReporting_MarketingCode(), 'Id',
+                        new TblReporting_MarketingCode_PartsMore(), 'TblReporting_MarketingCode'
+                    )
+                    ->addLink(
+                        new TblReporting_MarketingCode_PartsMore(), 'TblReporting_MarketingCode',
+                        new TblReporting_PartsMore(), 'Id'
+                    )//->getView()->getSql()
+                );
 //        );
+
+        $this->getConnection()->createView(
+            ( new View( $this->getConnection(), 'ViewPrice' ) )
+                ->addLink(
+                    new TblReporting_Price(), 'TblReporting_DiscountGroup',
+                    new TblReporting_DiscountGroup(), 'Id'
+                )
+        );
 
         return $this->saveSchema($Schema, $Simulate);
     }
@@ -472,6 +481,5 @@ class Setup extends AbstractSetup
         $this->createColumn( $Table, $TableSales::ATTR_SALES_NET, self::FIELD_TYPE_FLOAT, false);
         return $Table;
     }
-
 
 }

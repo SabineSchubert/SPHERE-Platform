@@ -388,13 +388,13 @@ class Main extends Extension
                     , null, array(), false, External::STYLE_LINK)
             );
 
-        Product::registerCluster();
-        Statistic::registerCluster();
-        Training::registerCluster();
-        Eila::registerCluster();
-        OtherApplication::registerCluster();
         Reporting::registerCluster();
+        Product::registerCluster();
+//        Statistic::registerCluster();
+//        Training::registerCluster();
+//        Eila::registerCluster();
+//        OtherApplication::registerCluster();
         Competition::registerCluster();
-        Example::registerCluster();
+//        Example::registerCluster();
     }
 }

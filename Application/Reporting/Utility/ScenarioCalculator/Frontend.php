@@ -9,6 +9,8 @@
 namespace SPHERE\Application\Reporting\Utility\ScenarioCalculator;
 
 use SPHERE\Application\Api\Reporting\Utility\ScenarioCalculator\ScenarioCalculator As ApiScenarioCalculator;
+use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part;
 use SPHERE\Common\Frontend\Ajax\Receiver\FieldValueReceiver;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Button\Reset;
@@ -18,10 +20,10 @@ use SPHERE\Common\Frontend\Form\Structure\FormColumn;
 use SPHERE\Common\Frontend\Form\Structure\FormGroup;
 use SPHERE\Common\Frontend\Form\Structure\FormRow;
 use SPHERE\Common\Frontend\Icon\Repository\Search;
-use SPHERE\Common\Frontend\Icon\Repository\Warning;
 use SPHERE\Common\Frontend\Layout\Repository\Panel;
 use SPHERE\Common\Frontend\Layout\Repository\PullRight;
 use SPHERE\Common\Frontend\Layout\Repository\Title;
+use SPHERE\Common\Frontend\Message\Repository\Warning;
 use SPHERE\Common\Frontend\Table\Repository\Title as TableTitle;
 use SPHERE\Common\Frontend\Layout\Structure\Layout;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
@@ -45,14 +47,18 @@ class Frontend extends Extension
 		$LayoutGroupPartNumberInformation = '';
 		$LayoutGroupScenarioCalculatorForm = '';
 		$LayoutGroupScenarioCalculator = '';
+		$ErrorPart = '';
 		if ($Search) {
-			if (empty($Result)) {
+
+		    $EntityPart = DataWareHouse::useService()->getPartByNumber( $Search['PartNumber'] );
+
+			if (!empty($EntityPart)) {
 
 				$LayoutGroupPartNumberInformation = //$this->tablePartNumberInformation();
 					new LayoutGroup(
 						new LayoutRow(
 							new LayoutColumn(
-								$this->tablePartNumberInformation(), 4
+								$this->tablePartNumberInformation( $EntityPart ), 4
 							)
 						)
 						, new Title('Teilenummer-Informationen')
@@ -60,7 +66,26 @@ class Frontend extends Extension
 
 
 				$Global = $this->getGlobal();
-				$Pipeline = ApiScenarioCalculator::pipelineScenarioCalculator($Search, ((!isset($Global->POST['PriceData']))? true:'0'), $PriceData);
+
+//				if( $PriceData == null ) {
+//                    $EntityPrice = $EntityPart->fetchPriceCurrent();
+//                    $EntityDiscountGroup = $EntityPrice->getTblReportingDiscountGroup();
+//                    $EntityMarketingCode = $EntityPart->fetchMarketingCodeCurrent();
+//                    $EntityPartsMore = $EntityMarketingCode->fetchPartsMoreCurrent();
+//
+//                    $PriceDataOld = array(
+//                        'BLP' => $EntityPrice->getPriceGross(),
+//                        'DiscountNumber' => $EntityDiscountGroup->getNumber(),
+//                        'Discount' => $EntityDiscountGroup->getDiscount(),
+//                        'Costs' => $EntityPrice->getCostsVariable(),
+//                        'PartsAndMore' => $EntityPartsMore->getValue(),
+//                        'PartsAndMoreType' => $EntityPartsMore->getType(),
+//                        'Quantity' => 1
+//                    );
+//                    $PriceData = $PriceDataOld;
+//                }
+
+				$Pipeline = ApiScenarioCalculator::pipelineScenarioCalculator($Search, ((!isset($Global->POST['PriceData']))? true:'0'), $PriceData, $EntityPart);
 				$FormReceiver = (ApiScenarioCalculator::BlockReceiver())->setIdentifier('FormReceiver');
 
 				$LayoutGroupScenarioCalculatorForm = new LayoutColumn(
@@ -69,7 +94,7 @@ class Frontend extends Extension
 
 				if($PriceData !== null) {
 
-					$PriceDataSum = $this->setPriceData( $PriceData );
+					$PriceDataSum = $this->setPriceData( $PriceData, $EntityPart );
 
 //					print '<pre>';
 //					var_dump($PriceDataSum);
@@ -105,7 +130,7 @@ class Frontend extends Extension
 
 
 			} else {
-				$Table = new Warning('Die Teilenummer konnte nicht gefunden werden.');
+                $ErrorPart = new Warning('Die Teilenummer konnte nicht gefunden werden.');
 			}
 		}
 
@@ -122,6 +147,11 @@ class Frontend extends Extension
 						)
 					)
 				),
+				new LayoutGroup(
+				    new LayoutRow(
+				        new LayoutColumn( $ErrorPart )
+                    )
+                ),
 				$LayoutGroupPartNumberInformation,
 				$LayoutGroupScenarioCalculatorForm,
 				$LayoutGroupScenarioCalculator
@@ -131,21 +161,23 @@ class Frontend extends Extension
 		return $Stage;
 	}
 
-	private function tablePartNumberInformation()
+	private function tablePartNumberInformation( TblReporting_Part $EntityPart )
 	{
+	    $EntityMarketingCode = $EntityPart->fetchMarketingCodeCurrent();
+
 		return new Table(
 			array(
 				array(
 					'Description' => 'Teilenummer',
-					'Value' => 'A1234'
+					'Value' => $EntityPart->getNumber()
 				),
 				array(
 					'Description' => 'Bezeichnung',
-					'Value' => '123'
+					'Value' => $EntityPart->getName()
 				),
 				array(
 					'Description' => 'Marketingcode',
-					'Value' => '1P23'
+					'Value' => ( ($EntityMarketingCode)? $EntityMarketingCode->getNumber(). ' - ' . $EntityMarketingCode->getName() : '' )
 				)
 			),
 			null,
@@ -186,14 +218,23 @@ class Frontend extends Extension
 		);
 	}
 
-	private function setPriceData( $PriceData ) {
+	private function setPriceData( $PriceData, TblReporting_Part $EntityPart ) {
 
 		$CalcRules = $this->getCalculationRules();
+		$EntityPrice = $EntityPart->fetchPriceCurrent();
+		$EntityDiscountGroup = $EntityPrice->getTblReportingDiscountGroup();
+		$EntityMarketingCode = $EntityPart->fetchMarketingCodeCurrent();
+		$EntityPartsMore = $EntityMarketingCode->fetchPartsMoreCurrent();
 
 		$PriceDataOld = array(
-			array('BLP' => 150.00, 'DiscountNumber' => 5, 'Discount' => 17.00, 'Costs' => 40.00, 'PartsAndMore' => 5.00, 'Quantity' => 1)
-		);
-		$PriceDataOld = $PriceDataOld[0];
+		    'BLP' => $EntityPrice->getPriceGross(),
+            'DiscountNumber' => $EntityDiscountGroup->getNumber(),
+            'Discount' => $EntityDiscountGroup->getDiscount(),
+            'Costs' => $EntityPrice->getCostsVariable(),
+            'PartsAndMore' => $EntityPartsMore->getValue(),
+            'PartsAndMoreType' => $EntityPartsMore->getType(),
+            'Quantity' => 1
+        );
 
 		//Berechnungen
 		$PriceDataOld['NLP'] = $CalcRules->calcNetPrice( $PriceDataOld['BLP'], $PriceDataOld['Discount'], 0, 0, 0, 0 );
