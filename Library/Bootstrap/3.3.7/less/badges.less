@@ -15,7 +15,7 @@
   vertical-align: middle;
   white-space: nowrap;
   text-align: center;
-  background-color: @badge-bg;
+  //background-color: @badge-bg;
   border-radius: @badge-border-radius;
 
   // Empty badges collapse automatically (not available in IE8)
@@ -63,4 +63,31 @@
   .nav-pills > li > a > & {
     margin-left: 3px;
   }
+}
+
+// Colors
+// Contextual variations (linked labels get darker on :hover)
+
+.badge-default {
+  .label-variant(@badge-bg);
+}
+
+.badge-primary {
+  .label-variant(@label-primary-bg);
+}
+
+.badge-success {
+  .label-variant(@label-success-bg);
+}
+
+.badge-info {
+  .label-variant(@label-info-bg);
+}
+
+.badge-warning {
+  .label-variant(@label-warning-bg);
+}
+
+.badge-danger {
+  .label-variant(@label-danger-bg);
 }
