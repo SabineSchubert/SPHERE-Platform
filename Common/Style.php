@@ -48,6 +48,8 @@ class Style extends Extension
             $this->setLibrary((new StyleLibrary('Slick', '1.6.0'))->getLibrary());
             $this->setLibrary((new StyleLibrary('Slick.Theme', '1.6.0'))->getLibrary());
 
+            $this->setLibrary((new StyleLibrary('Bootstrap.Slider', '9.8.0'))->getLibrary());
+
             $this->setLibrary((new StyleLibrary('jQuery.Formstone.Selecter', '3.2.4'))->getLibrary(), false, true);
             $this->setLibrary((new StyleLibrary('jQuery.Formstone.Stepper', '3.0.8'))->getLibrary(), false, true);
 
@@ -112,6 +114,7 @@ class Style extends Extension
         $this->setSource('/Common/Style/TypeAHead.Correction.css', false, true);
         $this->setSource('/Common/Style/Button.Correction.css', false, true);
         $this->setSource('/Common/Style/Teaser.Correction.css', false, true);
+        $this->setSource('/Common/Style/Slider.Correction.css', false, true);
 
         $this->setSource('/Common/Style/MBComIcon.css');
         $this->setSource('/Common/Style/MBComFont.css');

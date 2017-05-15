@@ -4,6 +4,7 @@ namespace SPHERE\Application\Product\Classic;
 
 use SPHERE\Common\Frontend\Ajax\Receiver\BlockReceiver;
 use SPHERE\Common\Frontend\Form\Repository\Field\CheckBox;
+use SPHERE\Common\Frontend\Form\Repository\Field\Slider;
 use SPHERE\Common\Frontend\Form\Repository\Field\TextField;
 use SPHERE\Common\Frontend\Icon\Repository\CogWheels;
 use SPHERE\Common\Frontend\Icon\Repository\Disable;
@@ -143,6 +144,13 @@ class Frontend extends Extension
                                                 new CheckBox('4', 'Zwickau', 1),
                                             )),
 
+                                            new Ruler(),
+                                            new Header('Bestand'),
+                                            new Listing(array(
+                                                new Slider('Slider1', 'Slider', 'VK'),
+                                                new Slider('Slider2', 'Slider', 'EK'),
+                                                new Slider('Slider4', 'Slider', 'VK inkl Montage'),
+                                            )),
 
                                         )),
                                     )),

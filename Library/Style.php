@@ -130,7 +130,9 @@ class Style
         $this->addLibrary(new Library('jQuery.Select2.Theme', '0.1.0.9',
             $Location . '/jQuery.Select2.Theme/0.1.0.9/dist/select2-bootstrap.min.css'
         ));
-
+        $this->addLibrary(new Library('Bootstrap.Slider', '9.8.0',
+            $Location . '/Bootstrap.Slider/9.8.0/dist/css/bootstrap-slider.min.css'
+        ));
     }
 
     /**

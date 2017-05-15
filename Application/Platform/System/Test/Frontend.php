@@ -25,6 +25,7 @@ use SPHERE\Common\Frontend\Form\Repository\Field\NumberField;
 use SPHERE\Common\Frontend\Form\Repository\Field\PasswordField;
 use SPHERE\Common\Frontend\Form\Repository\Field\RadioBox;
 use SPHERE\Common\Frontend\Form\Repository\Field\SelectBox;
+use SPHERE\Common\Frontend\Form\Repository\Field\Slider;
 use SPHERE\Common\Frontend\Form\Repository\Field\TextArea;
 use SPHERE\Common\Frontend\Form\Repository\Field\TextCaptcha;
 use SPHERE\Common\Frontend\Form\Repository\Field\TextField;
@@ -170,9 +171,10 @@ class Frontend extends Extension implements IFrontendInterface
                         new FormColumn(
                             new TextCaptcha('TextCaptcha', 'TextCaptcha', 'TextCaptcha')
                             , 3),
-                        new FormColumn(
-                            new TextField('TextField', 'TextField', 'TextField')
-                            , 3),
+                        new FormColumn(array(
+                            new TextField('TextField', 'TextField', 'TextField'),
+                            new Slider('Slider', 'Slider', 'Slider')
+                        ), 3),
                     )),
 //                    new FormRow( array(
 //                        new FormColumn(

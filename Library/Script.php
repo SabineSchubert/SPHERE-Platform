@@ -286,6 +286,10 @@ class Script
             $Location . '/jQuery.Cookie/2.1.4/src/js.cookie.js',
             "'undefined' !== typeof Cookies"
         ));
+        $this->addLibrary(new Library('Bootstrap.Slider', '9.8.0',
+            $Location . '/Bootstrap.Slider/9.8.0/dist/bootstrap-slider.min.js',
+            "'undefined' !== typeof jQuery.fn.bootstrapSlider"
+        ));
     }
 
     /**

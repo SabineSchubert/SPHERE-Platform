@@ -68,6 +68,7 @@ class Script extends Extension
             $this->setLibrary((new ScriptLibrary('Bootstrap.Select', '1.6.4'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Bootstrap.Notify', '3.1.3'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Bootstrap.Validator', '0.11.9'))->getLibrary());
+            $this->setLibrary((new ScriptLibrary('Bootstrap.Slider', '9.8.0'))->getLibrary());
 
             $this->setLibrary((new ScriptLibrary('Twitter.Typeahead', '0.11.1'))->getLibrary());
 
@@ -173,6 +174,14 @@ class Script extends Extension
         $this->setModule(
             'ModSelect2', array(
                 'jQuery.Select2',
+                'jQuery'
+            )
+        );
+
+        $this->setModule(
+            'ModSlider', array(
+                'Bootstrap.Slider',
+                'Bootstrap',
                 'jQuery'
             )
         );
