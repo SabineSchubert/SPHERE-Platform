@@ -16,11 +16,13 @@ class Container extends Extension implements ITemplateInterface
     private $Content = '';
 
     /**
-     * @param string $Content
+     * @param string|array $Content
      */
     public function __construct($Content)
     {
-
+        if( is_array($Content) ) {
+            $Content = implode( '', $Content);
+        }
         $this->Content = $Content;
     }
 
@@ -39,6 +41,6 @@ class Container extends Extension implements ITemplateInterface
     public function getContent()
     {
 
-        return '<div>'.$this->Content.'</div>';
+        return '<div style="margin-bottom: 10px; margin-top: 10px;">'.$this->Content.'</div>';
     }
 }
