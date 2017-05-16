@@ -1,4 +1,5 @@
 <?php
+
 namespace SPHERE\System\Cache\Handler;
 
 use SPHERE\System\Cache\CacheFactory;

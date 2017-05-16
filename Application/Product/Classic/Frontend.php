@@ -61,20 +61,10 @@ class Frontend extends Extension
                                             new Layout(array(
                                                 new LayoutGroup(array(
                                                     new LayoutRow(array(
-//                                                        new LayoutColumn(array(
-//                                                            new Standard('', '', new Sun(), array(), 'Sommer'),
-//                                                        ), 4, array(LayoutColumn::GRID_OPTION_HIDDEN_SM)),
-//                                                        new LayoutColumn(array(
-//                                                            new Standard('', '', new Snowflake(), array(), 'Winter'),
-//                                                        ), 4, array(LayoutColumn::GRID_OPTION_HIDDEN_SM)),
-//                                                        new LayoutColumn(array(
-//                                                            new Standard('', '', new Leaf(), array(), 'Ganzjahr'),
-//                                                        ), 4, array(LayoutColumn::GRID_OPTION_HIDDEN_SM)),
-
                                                         new LayoutColumn(array(
-                                                            new CheckBox('2', new Sun() . '&nbsp;Sommer', 1),
-                                                            new CheckBox('2', new Snowflake() . '&nbsp;Winter', 1),
-                                                            new CheckBox('2', new Leaf() . '&nbsp;Ganzjahr', 1),
+                                                            new CheckBox('2', new Sun() . ' Sommer', 1),
+                                                            new CheckBox('2', new Snowflake() . ' Winter', 1),
+                                                            new CheckBox('2', new Leaf() . ' Ganzjahr', 1),
                                                         )),
                                                     )),
                                                 )),
