@@ -10,6 +10,7 @@ namespace SPHERE\Application\Reporting\Controlling\Search;
 
 
 use SPHERE\Application\Api\Platform\Gatekeeper\Access;
+use SPHERE\Application\Api\Reporting\Excel\ExcelDefault;
 use SPHERE\Application\Api\Reporting\Utility\ScenarioCalculator\ScenarioCalculator;
 use SPHERE\Application\Api\TestAjax\TestAjax;
 use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
@@ -30,6 +31,7 @@ use SPHERE\Common\Frontend\Layout\Structure\Layout;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
+use SPHERE\Common\Frontend\Link\Repository\External;
 use SPHERE\Common\Frontend\Link\Repository\Standard;
 use SPHERE\Common\Frontend\Message\Repository\Warning;
 use SPHERE\Common\Frontend\Table\Structure\Table;
@@ -45,15 +47,27 @@ class Frontend extends Extension
 		$Stage = new Stage('Suche');
 		$Stage->setMessage('Teilenummer');
 		$this->buttonStageDirectSearch($Stage);
+        $LayoutExcel = '';
 
         //Debugger::screenDump($Search);
 
 		if( $Search ) {
             $SearchData = DataWareHouse::useService()->getSalesGroupPart( $Search['PartNumber'], $Search['MarketingCode'], $Search['ProductManager'], $Search['PeriodFrom'], $Search['PeriodTo'] );
-
-            //Debugger::screenDump($SearchData);
-
             $LayoutTable = $this->tableSearchData($SearchData);
+
+            if($SearchData) {
+                $LayoutExcel = '<br/>'.(new External('ExcelDownload', ExcelDefault::getEndpoint(), null, array(
+                    ExcelDefault::API_TARGET => 'getExcelSearch',
+                    'FileName' => 'Suche',
+                    'FileTyp' => 'xlsx',
+                    'GroupBy' => 'Part',
+                    'PartNumber' => $Search['PartNumber'],
+                    'MarketingCodeNumber' => $Search['PartNumber'],
+                    'ProductManagerId' => $Search['PartNumber'],
+                    'ValidFrom' => $Search['PeriodFrom'],
+                    'ValidTo' => $Search['PeriodTo']
+                ) ));
+            }
         }
         else {
             $LayoutTable = '';
@@ -71,6 +85,9 @@ class Frontend extends Extension
 						),
 						new LayoutColumn(
 							$LayoutTable
+						),
+						new LayoutColumn(
+							$LayoutExcel
 						)
 					))
 				)
@@ -84,10 +101,25 @@ class Frontend extends Extension
 		$Stage = new Stage('Suche');
 		$Stage->setMessage('Marketingcode');
 		$this->buttonStageDirectSearch($Stage);
+        $LayoutExcel = '';
 
         if( $Search ) {
             $SearchData = DataWareHouse::useService()->getSalesGroupMarketingCode( $Search['PartNumber'], $Search['MarketingCode'], $Search['ProductManager'] );
             $LayoutTable = $this->tableSearchData($SearchData);
+
+            if($SearchData) {
+                $LayoutExcel = '<br/>'.(new External('ExcelDownload', ExcelDefault::getEndpoint(), null, array(
+                    ExcelDefault::API_TARGET => 'getExcelSearch',
+                    'FileName' => 'Suche',
+                    'FileTyp' => 'xlsx',
+                    'GroupBy' => 'MarketingCode',
+                    'PartNumber' => $Search['PartNumber'],
+                    'MarketingCodeNumber' => $Search['PartNumber'],
+                    'ProductManagerId' => $Search['PartNumber'],
+                    'ValidFrom' => $Search['PeriodFrom'],
+                    'ValidTo' => $Search['PeriodTo']
+                ) ));
+            }
         }
         else {
             $LayoutTable = '';
@@ -102,6 +134,9 @@ class Frontend extends Extension
 						),
 						new LayoutColumn(
 							$LayoutTable
+						),
+						new LayoutColumn(
+                            $LayoutExcel
 						)
 					))
 				)
@@ -117,10 +152,25 @@ class Frontend extends Extension
 		$Stage = new Stage('Suche');
 		$Stage->setMessage('Produktmanager');
 		$this->buttonStageDirectSearch($Stage);
+        $LayoutExcel = '';
 
         if( $Search ) {
             $SearchData = DataWareHouse::useService()->getSalesGroupProductManager( $Search['PartNumber'], $Search['MarketingCode'], $Search['ProductManager'] );
             $LayoutTable = $this->tableSearchData($SearchData);
+
+            if($SearchData) {
+                $LayoutExcel = '<br/>'.(new External('ExcelDownload', ExcelDefault::getEndpoint(), null, array(
+                    ExcelDefault::API_TARGET => 'getExcelSearch',
+                    'FileName' => 'Suche',
+                    'FileTyp' => 'xlsx',
+                    'GroupBy' => 'ProductManager',
+                    'PartNumber' => $Search['PartNumber'],
+                    'MarketingCodeNumber' => $Search['PartNumber'],
+                    'ProductManagerId' => $Search['PartNumber'],
+                    'ValidFrom' => $Search['PeriodFrom'],
+                    'ValidTo' => $Search['PeriodTo']
+                ) ));
+            }
         }
         else {
             $LayoutTable = '';
@@ -135,6 +185,9 @@ class Frontend extends Extension
 						),
 						new LayoutColumn(
 							$LayoutTable
+						),
+						new LayoutColumn(
+                            $LayoutExcel
 						)
 					))
 				)
@@ -148,10 +201,25 @@ class Frontend extends Extension
 		$Stage = new Stage('Suche');
 		$Stage->setMessage('Angebotsdaten');
 		$this->buttonStageDirectSearch($Stage);
+		$LayoutExcel = '';
 
         if( $Search ) {
             $SearchData = DataWareHouse::useService()->getViewPartGroupCompetition( $Search['PartNumber'], $Search['MarketingCode'], $Search['ProductManager'] );
             $LayoutTable = $this->tableSearchData($SearchData);
+
+            if($SearchData) {
+                $LayoutExcel = '<br/>'.(new External('ExcelDownload', ExcelDefault::getEndpoint(), null, array(
+                    ExcelDefault::API_TARGET => 'getExcelSearch',
+                    'FileName' => 'Suche',
+                    'FileTyp' => 'xlsx',
+                    'GroupBy' => 'Competition',
+                    'PartNumber' => $Search['PartNumber'],
+                    'MarketingCodeNumber' => $Search['PartNumber'],
+                    'ProductManagerId' => $Search['PartNumber'],
+                    'ValidFrom' => $Search['PeriodFrom'],
+                    'ValidTo' => $Search['PeriodTo']
+                ) ));
+            }
         }
         else {
             $LayoutTable = '';
@@ -166,6 +234,9 @@ class Frontend extends Extension
 						),
 						new LayoutColumn(
 							$LayoutTable
+						),
+						new LayoutColumn(
+                            $LayoutExcel
 						)
 					))
 				)
