@@ -8,7 +8,7 @@ use MOC\V\Component\Document\Component\Exception\ComponentException;
  *
  * @package MOC\V\Component\Document\Component\Bridge\Repository\PhpExcel
  */
-class Style
+class Style implements IStyleInterface
 {
 
     /** @var null|\PHPExcel_Worksheet $Worksheet */
@@ -404,5 +404,13 @@ class Style
         $this->Worksheet->getStyle($this->getRangeName())->getBorders()->getLeft()->setBorderStyle($this->getBorderSize($Size));
         $this->Worksheet->getStyle($this->getRangeName())->getBorders()->getLeft()->setColor(new \PHPExcel_Style_Color());
         return $this;
+    }
+
+    /**
+     * @param $FormatCode
+     */
+    public function setFormatCode($FormatCode)
+    {
+        $this->Worksheet->getStyle($this->getRangeName())->getNumberFormat()->setFormatCode($FormatCode);
     }
 }
