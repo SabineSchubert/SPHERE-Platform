@@ -42,7 +42,7 @@ class ExcelDefault implements IApiInterface
 
     public static function getExcel( $FileName, $FileTyp, $DataList, $ReplaceArray ) {
 
-        return 'noch in Entwicklung von Gerd';
+        //return 'noch in Entwicklung von Gerd';
 
         $FilePointer = new FilePointer($FileTyp);
         $FileLocation = $FilePointer->getFileLocation();
