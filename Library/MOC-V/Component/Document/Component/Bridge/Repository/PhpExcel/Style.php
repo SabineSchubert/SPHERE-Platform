@@ -408,9 +408,12 @@ class Style implements IStyleInterface
 
     /**
      * @param $FormatCode
+     *
+     * @return $this
      */
     public function setFormatCode($FormatCode)
     {
         $this->Worksheet->getStyle($this->getRangeName())->getNumberFormat()->setFormatCode($FormatCode);
+        return $this;
     }
 }
