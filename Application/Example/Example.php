@@ -2,6 +2,7 @@
 namespace SPHERE\Application\Example;
 
 use SPHERE\Application\AppTrait;
+use SPHERE\Application\Example\Download\Download;
 use SPHERE\Application\Example\Upload\Upload;
 use SPHERE\Application\IClusterInterface;
 use SPHERE\Common\Frontend\Icon\Repository\Blackboard;
@@ -16,6 +17,7 @@ class Example implements IClusterInterface
         self::createCluster(__NAMESPACE__,__CLASS__, 'frontendExample', 'Example', new Blackboard(), 'Beispiele');
 
         Upload::registerApplication();
+        Download::registerApplication();
     }
 
     public function frontendExample()

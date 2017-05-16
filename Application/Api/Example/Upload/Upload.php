@@ -14,6 +14,8 @@ use SPHERE\Common\Frontend\Ajax\Receiver\AbstractReceiver;
 use SPHERE\Common\Frontend\Ajax\Receiver\BlockReceiver;
 use SPHERE\Common\Frontend\Layout\Repository\Headline;
 use SPHERE\Common\Frontend\Layout\Repository\ProgressBar;
+use SPHERE\Common\Frontend\Link\Repository\Standard;
+use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Window\Redirect;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -75,6 +77,8 @@ class Upload extends AbstractConverter implements IApiInterface
         $Dispatcher->registerMethod('uploadFile');
         $Dispatcher->registerMethod('importFile');
 
+        $Dispatcher->registerMethod('tableBasket');
+
         return $Dispatcher->callMethod($Method);
     }
 
@@ -118,5 +122,64 @@ class Upload extends AbstractConverter implements IApiInterface
     public function importFile()
     {
 
+    }
+
+
+    public static function pipelinePlus()
+    {
+        $Pipeline = new Pipeline();
+        $Emitter = new ServerEmitter( self::receiverBasket(), self::getEndpoint() );
+        $Emitter->setPostPayload(array(
+            self::API_TARGET => 'tableBasket',
+            'Type' => 1
+        ));
+        $Pipeline->appendEmitter( $Emitter );
+
+        return $Pipeline;
+    }
+
+    public static function pipelineMinus()
+    {
+        $Pipeline = new Pipeline();
+        $Emitter = new ServerEmitter( self::receiverBasket(), self::getEndpoint() );
+        $Emitter->setPostPayload(array(
+            self::API_TARGET => 'tableBasket',
+            'Type' => 0
+        ));
+        $Pipeline->appendEmitter( $Emitter );
+
+        return $Pipeline;
+    }
+
+    public static function receiverBasket( $Content = '' )
+    {
+        return (new BlockReceiver( $Content ))->setIdentifier( 'BasketReceiver' );
+    }
+
+    public static function tableBasket( $Id = null, $Type = null ) {
+
+        $Ids = array();
+
+
+        // Service
+        // Plus
+        if( $Type == 1) {
+            $Ids[$Id] = $Id;
+        }
+        // Minus
+        if( $Type == 0 && isset( $Ids[$Id] ) ) {
+            unset( $Ids[$Id] );
+        }
+
+        // Select
+        $Table = array();
+        foreach( $Ids as $IdEntity ) {
+            $Table[] = array(
+                'Artikel' => $IdEntity, 'Option' => (new Standard('-', '#', null, array( 'Id' => $IdEntity )))->ajaxPipelineOnClick( Upload::pipelineMinus() )
+            );
+        }
+
+        // Anzeige
+        return new Table($Table, null, array( 'Artikel' => 'Artikel', 'Option' => 'Option' ));
     }
 }

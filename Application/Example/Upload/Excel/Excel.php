@@ -23,6 +23,8 @@ use SPHERE\Common\Frontend\Layout\Structure\Layout;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
+use SPHERE\Common\Frontend\Link\Repository\Standard;
+use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Window\Stage;
 use SPHERE\System\Database\Link\Identifier;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -118,28 +120,47 @@ class Excel extends AbstractConverter implements IModuleInterface
     public function frontendExcelDynamic()
     {
         $Stage = new Stage('Excel', 'Excel');
-
-        $Receiver = Upload::receiverUpload();
-
-        $Form = new Form(
-            new FormGroup(
-                new FormRow(
-                    new FormColumn(
-                        new FileUpload('Transfer[File]', null, null, null, array())
-                    )
-                )
-            ), new Primary('Hochladen')
-        );
-        $Form->ajaxPipelineOnSubmit( Upload::pipelineUploadFile( $Receiver ) );
+//
+//        $Receiver = Upload::receiverUpload();
+//
+//        $Form = new Form(
+//            new FormGroup(
+//                new FormRow(
+//                    new FormColumn(
+//                        new FileUpload('Transfer[File]', null, null, null, array())
+//                    )
+//                )
+//            ), new Primary('Hochladen')
+//        );
+//        $Form->ajaxPipelineOnSubmit( Upload::pipelineUploadFile( $Receiver ) );
+//
+//        $Stage->setContent(
+//            new Layout(array(
+//                new LayoutGroup(
+//                    new LayoutRow(
+//                        new LayoutColumn(
+//                            $Receiver->initContent( $Form )
+//                        )
+//                    ), new Title('Test-Datei')
+//                )
+//            ))
+//        );
 
         $Stage->setContent(
             new Layout(array(
                 new LayoutGroup(
-                    new LayoutRow(
+                    new LayoutRow(array(
                         new LayoutColumn(
-                            $Receiver->initContent( $Form )
-                        )
-                    ), new Title('Test-Datei')
+                            new Table(array(
+                                array( 'Artikel' => '1', 'Option' => (new Standard('+', '#', null, array( 'Id' => 1 )))->ajaxPipelineOnClick( Upload::pipelinePlus() ) ),
+                                array( 'Artikel' => '2', 'Option' => (new Standard('+', '#', null, array( 'Id' => 2 )))->ajaxPipelineOnClick( Upload::pipelinePlus() ) ),
+                                array( 'Artikel' => '3', 'Option' => (new Standard('+', '#', null, array( 'Id' => 3 )))->ajaxPipelineOnClick( Upload::pipelinePlus() ) )
+                            ), null, array( 'Artikel' => 'Artikel', 'Option' => 'Option' ))
+                        ,6 ),
+                        new LayoutColumn(
+                            Upload::receiverBasket( Upload::tableBasket() )
+                        , 6),
+                    )), new Title('Test-Datei')
                 )
             ))
         );
