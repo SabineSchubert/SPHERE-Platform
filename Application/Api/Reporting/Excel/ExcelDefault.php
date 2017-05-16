@@ -19,6 +19,7 @@ use SPHERE\Application\IApiInterface;
 use SPHERE\Application\Platform\Utility\Storage\FilePointer;
 use SPHERE\Application\Reporting\Controlling\MonthlyTurnover\MonthlyTurnover;
 use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
+use SPHERE\Common\Frontend\Message\Repository\Warning;
 use SPHERE\System\Extension\Repository\Debugger;
 
 class ExcelDefault implements IApiInterface
@@ -36,6 +37,7 @@ class ExcelDefault implements IApiInterface
 
         $Dispatcher->registerMethod('getExcel');
         $Dispatcher->registerMethod('getExcelMonthlyTurnover');
+        $Dispatcher->registerMethod('getExcelSearch');
 
         return $Dispatcher->callMethod($Method);
     }
@@ -50,11 +52,8 @@ class ExcelDefault implements IApiInterface
          * @var PhpExcel $Document
          */
         $Document = Document::getDocument( $FileLocation );
-//      $Document->setValue( new PhpExcel\Cell(1,1), 'Test' );
 
-        $Excel = new PhpExcel;
-
-        // Head
+//         Head
         $HeaderList = array_keys( (array)$DataList[0] );
         foreach( (array)$HeaderList as $HeaderIndex => $HeaderText ) {
             if(stripos($HeaderText,';HIDE') == false) {
@@ -65,7 +64,7 @@ class ExcelDefault implements IApiInterface
 //                    Excel::CellIndex2Name( $HeaderIndex,0 ),
 //                    array('width'=>'auto','text-align'=>'center')
 //                );
-                $Document->setValue( $Excel->getCell($HeaderIndex,0), trim(str_replace(array_keys($ReplaceArray),$ReplaceArray,$HeaderText)) );
+                $Document->setValue( $Document->getCell($HeaderIndex,0), trim(str_replace(array_keys($ReplaceArray),$ReplaceArray,$HeaderText)) );
                 //new PhpExcel\Style()
 //                Excel::CellWrap(
 //                    Excel::CellIndex2Name( $HeaderIndex, 0 )
@@ -75,12 +74,35 @@ class ExcelDefault implements IApiInterface
             }
         }
 
-        $Document->saveFile(new FileParameter($FileLocation));
+        // Body
+        foreach( (array)$DataList as $RowIndex => $RowList ) {
+            $ColIndex = 0;
+            foreach( (array)$RowList as $ColName => $ColValue ) {
+                if(stripos($ColName,';HIDE') == false) {
+                    //Zahl
+                    if( is_int( self::ConvertNumeric($ColValue,$ColName) ) == '1' ) {
+                        $Document->setValue( $Document->getCell( $ColIndex++, ( $RowIndex +1 ) ), number_format($ColValue,0,"","") );
+                    }
+                    elseif( is_float( self::ConvertNumeric($ColValue,$ColName) ) == '1' ) {
+                        //$Document->setStyle( $Document->getCell( ($ColIndex), ( $RowIndex + 1 ) ) )->// array('number-format'=>'#,##0.00') );
+                        $Document->setValue( $Document->getCell( $ColIndex++, ( $RowIndex +1 ) ), $ColValue );
+                    }
+                    else {
+                        $Document->setValue( $Document->getCell( $ColIndex++, ( $RowIndex +1 ) ), $ColValue );
+                    }
+                }
+            }
+        }
 
-        return (string)FileSystem::getDownload($FileLocation, $FileName.'.'.$FileTyp);
+        $Document->saveFile();
+        $FilePointer->loadFile();
+
+//        Debugger::screenDump($FilePointer->getRealPath(), $Document);
+
+        print FileSystem::getDownload($FilePointer->getRealPath(), $FileName.'.'.$FileTyp);
     }
 
-    private function ConvertNumeric( $Parameter, $ColName ) {
+    private static function ConvertNumeric( $Parameter, $ColName ) {
         if ( substr($ColName,0,5) == "Data_" or substr($ColName,0,6) == "Group_" ) {
             $Parameter = (preg_match('!^[0-9|-]+$!is',$Parameter )?(integer)$Parameter:$Parameter);
             $Parameter = (preg_match('!(^[0-9|-]+\.([0-9]+(E-)[0-9]|[0-9]+)+$|^\.[0]{1,})!is',$Parameter )?(float)$Parameter:$Parameter);
@@ -92,18 +114,68 @@ class ExcelDefault implements IApiInterface
     public function getExcelMonthlyTurnover( $FileName, $FileTyp, $PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null ) {
         if( $PartNumber or $MarketingCodeNumber or $ProductManagerId ) {
             $DataList = DataWareHouse::useService()->getMonthlyTurnover( $PartNumber, $MarketingCodeNumber, $ProductManagerId );
+            $YearCurrent = DataWareHouse::useService()->getYearCurrentFromSales();
+
             $ReplaceArray = array(
                 'Month' => 'Monat',
                 'SumSalesGross' => 'Bruttoumsatz',
                 'SumSalesNet' => 'Nettoumsatz',
                 'SumQuantity' => 'Menge',
                 'Discount' => 'Rabatt',
-                '_AJ' => '',
-                '_VJ' => '',
-                '_VVJ' => '',
+                '_' => ' ',
+                'VVJ' => ($YearCurrent-2),
+                'VJ' => ($YearCurrent-1),
+                'AJ' => $YearCurrent,
             );
             return self::getExcel( $FileName, $FileTyp, $DataList, $ReplaceArray );
         }
-        return null;
+        else {
+            return new Warning('Es sind keine Daten vorhanden!');
+        }
+    }
+
+    public function getExcelSearch( $FileName, $FileTyp, $GroupBy, $PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null, $PeriodFrom = null, $PeriodTo = null ) {
+        if($GroupBy) {
+            switch( $GroupBy ) {
+                case 'Part':
+                    $DataList = DataWareHouse::useService()->getSalesGroupPart( $PartNumber, $MarketingCodeNumber, $ProductManagerId, $PeriodFrom, $PeriodTo );
+                    break;
+                case 'MarketingCode':
+                    $DataList = DataWareHouse::useService()->getSalesGroupMarketingCode( $PartNumber, $MarketingCodeNumber, $ProductManagerId, $PeriodFrom, $PeriodTo );
+                    break;
+                case 'ProductManager':
+                    $DataList = DataWareHouse::useService()->getSalesGroupProductManager( $PartNumber, $MarketingCodeNumber, $ProductManagerId, $PeriodFrom, $PeriodTo );
+                    break;
+                case 'Competition':
+                    $DataList = array();
+                    break;
+                default:
+                    $DataList = array();
+            }
+
+            if( count($DataList) > 0 ) {
+
+                $ReplaceArray = array(
+                    'ProductManagerName' => 'Produktmanager',
+                    'ProductManagerDepartment' => 'Bereich',
+                    'PartNumber' => 'Teilenummer',
+                    'PartName' => 'Bezeichnung',
+                    'PriceGross' => 'BLP',
+                    'PriceNet' => 'NLP',
+                    'MarketingCodeNumber' => 'Marketingcode',
+                    'MarketingCodeName' => 'Marketingcode-Bezeichnung',
+                    'SumSalesGross' => 'Bruttoumsatz',
+                    'SumSalesNet' => 'Nettoumsatz',
+                    'SumQuantity' => 'Menge',
+                );
+                return self::getExcel( $FileName, $FileTyp, $DataList, $ReplaceArray );
+            }
+            else {
+                return new Warning('Es sind keine Daten vorhanden!');
+            }
+        }
+        else {
+            return new Warning('Es sind keine Daten vorhanden!');
+        }
     }
 }

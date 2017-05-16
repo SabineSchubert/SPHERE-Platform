@@ -66,16 +66,23 @@ class Frontend extends Extension
 	{
 		$Stage = new Stage('Geschäftsentwicklung', 'Teilenummer');
 		$this->buttonStageDirectSearch($Stage);
+        $LayoutExcel = '';
 
         if( $Search ) {
             $MonthlyTurnoverResult = DataWareHouse::useService()->getMonthlyTurnover( $Search['PartNumber'], null, null );
             $LayoutTable = $this->tableMonthlyTurnover($MonthlyTurnoverResult);
 
-            $LayoutExcel = '<br/>'.(new External('ExcelDownload', ExcelDefault::getEndpoint(), null, array( ExcelDefault::API_TARGET => 'getExcelMonthlyTurnover', 'FileName' => 'Test', 'FileTyp' => 'xlsx', 'PartNumber' => $Search['PartNumber'] ) ));
+            if($MonthlyTurnoverResult) {
+                $LayoutExcel = '<br/>'.(new External('ExcelDownload', ExcelDefault::getEndpoint(), null, array(
+                    ExcelDefault::API_TARGET => 'getExcelMonthlyTurnover',
+                    'FileName' => 'Geschaeftsentwicklung',
+                    'FileTyp' => 'xlsx',
+                    'PartNumber' => $Search['PartNumber']
+                ) ));
+            }
         }
         else {
             $LayoutTable = '';
-            $LayoutExcel = '';
         }
 
         $Stage->setContent(
@@ -103,10 +110,20 @@ class Frontend extends Extension
 	{
 		$Stage = new Stage('Geschäftsentwicklung', 'Produktmanager');
 		$this->buttonStageDirectSearch($Stage);
+        $LayoutExcel = '';
 
         if( $Search ) {
             $MonthlyTurnoverResult = DataWareHouse::useService()->getMonthlyTurnover( null, null, $Search['ProductManager'] );
             $LayoutTable = $this->tableMonthlyTurnover($MonthlyTurnoverResult);
+
+            if($MonthlyTurnoverResult) {
+                $LayoutExcel = '<br/>'.(new External('ExcelDownload', ExcelDefault::getEndpoint(), null, array(
+                    ExcelDefault::API_TARGET => 'getExcelMonthlyTurnover',
+                    'FileName' => 'Geschaeftsentwicklung',
+                    'FileTyp' => 'xlsx',
+                    'ProductManagerId' => $Search['ProductManager']
+                ) ));
+            }
         }
         else {
             $LayoutTable = '';
@@ -121,6 +138,9 @@ class Frontend extends Extension
                         ),
                         new LayoutColumn(
                             $LayoutTable
+                        ),
+                        new LayoutColumn(
+                            $LayoutExcel
                         )
                     ))
                 )
@@ -133,10 +153,20 @@ class Frontend extends Extension
 	{
 		$Stage = new Stage('Geschäftsentwicklung', 'Marketingcode');
 		$this->buttonStageDirectSearch($Stage);
+		$LayoutExcel = '';
 
         if( $Search ) {
             $MonthlyTurnoverResult = DataWareHouse::useService()->getMonthlyTurnover( null, $Search['MarketingCode'], null );
             $LayoutTable = $this->tableMonthlyTurnover($MonthlyTurnoverResult);
+
+            if($MonthlyTurnoverResult) {
+                $LayoutExcel = '<br/>'.(new External('ExcelDownload', ExcelDefault::getEndpoint(), null, array(
+                    ExcelDefault::API_TARGET => 'getExcelMonthlyTurnover',
+                    'FileName' => 'Geschaeftsentwicklung',
+                    'FileTyp' => 'xlsx',
+                    'MarketingCodeNumber' => $Search['MarketingCode'],
+                 ) ));
+            }
         }
         else {
             $LayoutTable = '';
@@ -151,6 +181,9 @@ class Frontend extends Extension
                         ),
                         new LayoutColumn(
                             $LayoutTable
+                        ),
+                        new LayoutColumn(
+                            $LayoutExcel
                         )
                     ))
                 )
