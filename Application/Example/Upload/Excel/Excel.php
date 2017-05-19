@@ -5,6 +5,8 @@ namespace SPHERE\Application\Example\Upload\Excel;
 
 use SPHERE\Application\Api\Example\Upload\Upload;
 use SPHERE\Application\AppTrait;
+use SPHERE\Application\Example\Upload\Excel\Converter\LoadExampleUploadExcel;
+use SPHERE\Application\Example\Upload\Excel\Converter\ReadExampleUploadExcel;
 use SPHERE\Application\IModuleInterface;
 use SPHERE\Application\IServiceInterface;
 use SPHERE\Application\Platform\Utility\Storage\FilePointer;
@@ -27,6 +29,7 @@ use SPHERE\Common\Frontend\Link\Repository\Standard;
 use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Window\Stage;
 use SPHERE\System\Database\Link\Identifier;
+use SPHERE\System\Extension\Repository\Debugger;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class Excel extends AbstractConverter implements IModuleInterface
@@ -84,7 +87,17 @@ class Excel extends AbstractConverter implements IModuleInterface
         }
 
         if ($File) {
-            $this->loadFile($File->getRealPath());
+
+            if( (new LoadExampleUploadExcel( $File->getRealPath() ))->isValid() ) {
+                Debugger::screenDump('Valid');
+
+                new ReadExampleUploadExcel( $File->getRealPath() );
+
+            } else {
+                Debugger::screenDump('Not Valid');
+            }
+
+//            $this->loadFile($File->getRealPath());
         }
 
         $Stage->setContent(
@@ -104,13 +117,13 @@ class Excel extends AbstractConverter implements IModuleInterface
                         )
                     ), new Title('Test-Datei')
                 ),
-                new LayoutGroup(
-                    new LayoutRow(
-                        new LayoutColumn(
-                            new ProgressBar(0,100,0, 10)
-                        )
-                    ), new Title('Import der Datei...')
-                )
+//                new LayoutGroup(
+//                    new LayoutRow(
+//                        new LayoutColumn(
+//                            new ProgressBar(0,100,0, 10)
+//                        )
+//                    ), new Title('Import der Datei...')
+//                )
             ))
         );
 

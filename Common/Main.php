@@ -390,11 +390,11 @@ class Main extends Extension
 
         Reporting::registerCluster();
         Product::registerCluster();
-//        Statistic::registerCluster();
-//        Training::registerCluster();
-//        Eila::registerCluster();
-//        OtherApplication::registerCluster();
+        Statistic::registerCluster();
+        Training::registerCluster();
+        Eila::registerCluster();
+        OtherApplication::registerCluster();
         Competition::registerCluster();
-//        Example::registerCluster();
+        Example::registerCluster();
     }
 }

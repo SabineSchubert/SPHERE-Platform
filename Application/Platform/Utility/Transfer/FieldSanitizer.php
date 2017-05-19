@@ -14,7 +14,7 @@ class FieldSanitizer
      *
      * @param string $Column
      * @param string $Field
-     * @param array $Callback
+     * @param array|callable|\Closure $Callback
      */
     public function __construct($Column, $Field, $Callback)
     {

@@ -146,7 +146,7 @@ abstract class AbstractConverter extends Sanitizer
     }
 
     /**
-     * @param array $Callback
+     * @param array|callable|\Closure $Callback
      * @param string $Chain
      *
      * @return self
