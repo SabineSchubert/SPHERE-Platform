@@ -624,9 +624,9 @@ class Data extends AbstractData
 
             $SqlSalesData = $QueryBuilder
                    ->select( $TableSalesAlias.'.'.$TableSales::ATTR_YEAR )
-                    ->addSelect( 'SUM( '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_GROSS.' ) as SumSalesGross' )
-                   ->addSelect( 'SUM( '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_NET.' ) as SumSalesNet' )
-                   ->addSelect( 'SUM( '.$TableSalesAlias.'.'.$TableSales::ATTR_QUANTITY.' ) as SumQuantity' )
+                    ->addSelect( 'SUM( '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_GROSS.' ) as Data_SumSalesGross' )
+                   ->addSelect( 'SUM( '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_NET.' ) as Data_SumSalesNet' )
+                   ->addSelect( 'SUM( '.$TableSalesAlias.'.'.$TableSales::ATTR_QUANTITY.' ) as Data_SumQuantity' )
                    ->from( $TableSales->getEntityFullName(), $TableSales->getEntityShortName(), null );
 
             if($TblReporting_MarketingCode || $TblReporting_ProductManager ) {
@@ -708,8 +708,8 @@ class Data extends AbstractData
             $SqlSalesData = $QueryBuilder
                 ->select( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_NUMBER.' as PartNumber' )
                 ->addSelect( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_NAME. ' as PartName' )
-                ->addSelect( $ViewPriceAlias.'.'.$ViewPrice::TBL_REPORTING_PRICE_PRICE_GROSS.' as PriceGross' )
-                ->addSelect( $ViewPriceAlias.'.'.$ViewPrice::TBL_REPORTING_PRICE_PRICE_GROSS.'*(1-('.$ViewPriceAlias.'.'.$ViewPrice::TBL_REPORTING_DISCOUNT_GROUP_DISCOUNT.'/100)) as PriceNet ' );
+                ->addSelect( $ViewPriceAlias.'.'.$ViewPrice::TBL_REPORTING_PRICE_PRICE_GROSS.' as Data_PriceGross' )
+                ->addSelect( $ViewPriceAlias.'.'.$ViewPrice::TBL_REPORTING_PRICE_PRICE_GROSS.'*(1-('.$ViewPriceAlias.'.'.$ViewPrice::TBL_REPORTING_DISCOUNT_GROUP_DISCOUNT.'/100)) as Data_PriceNet ' );
         }
         elseif( $GroupBy == 'MarketingCode' ) {
             $SqlSalesData = $QueryBuilder
@@ -731,9 +731,9 @@ class Data extends AbstractData
         }
 
         $SqlSalesData = $QueryBuilder
-            ->addSelect( 'SUM('.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_GROSS.') as SumSalesGross' )
-            ->addSelect( 'SUM('.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_NET.') as SumSalesNet' )
-            ->addSelect( 'SUM('.$TableSalesAlias.'.'.$TableSales::ATTR_QUANTITY.') as SumQuantity' )
+            ->addSelect( 'SUM('.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_GROSS.') as Data_SumSalesGross' )
+            ->addSelect( 'SUM('.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_NET.') as Data_SumSalesNet' )
+            ->addSelect( 'SUM('.$TableSalesAlias.'.'.$TableSales::ATTR_QUANTITY.') as Data_SumQuantity' )
             ->from( $ViewPart->getEntityFullName(), $ViewPartAlias, null )
             ->innerJoin(
                 $TableSales->getEntityFullName(),
@@ -881,11 +881,11 @@ class Data extends AbstractData
                 )
                 //aktuelle Jahr
                 ->addSelect( 'SUM( CASE WHEN '.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' = :'.$TableSales::ATTR_YEAR.'
-                    THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_NET.' ELSE 0 END) AS SumSalesNet_AJ' )
+                    THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_NET.' ELSE 0 END) AS Data_SumSalesNet_AJ' )
                 ->addSelect( 'SUM( CASE WHEN '.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' = :'.$TableSales::ATTR_YEAR.'
-                    THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_GROSS.' ELSE 0 END) AS SumSalesGross_AJ' )
+                    THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_GROSS.' ELSE 0 END) AS Data_SumSalesGross_AJ' )
                 ->addSelect( 'SUM( CASE WHEN '.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' = :'.$TableSales::ATTR_YEAR.'
-                    THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_QUANTITY.' ELSE 0 END) AS SumQuantity_AJ' )
+                    THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_QUANTITY.' ELSE 0 END) AS Data_SumQuantity_AJ' )
                 ->addSelect(
                     'CASE 
                         WHEN ( 
@@ -900,15 +900,15 @@ class Data extends AbstractData
                                         THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_GROSS.' ELSE 0 END)
                         )
                         ELSE 0 
-                    END AS Discount_AJ'
+                    END AS Data_Discount_AJ'
                 )
                 //Vorjahr
                 ->addSelect( 'SUM( CASE WHEN '.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' = :Previous'.$TableSales::ATTR_YEAR.'
-                    THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_NET.' ELSE 0 END) AS SumSalesNet_VJ' )
+                    THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_NET.' ELSE 0 END) AS Data_SumSalesNet_VJ' )
                 ->addSelect( 'SUM( CASE WHEN '.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' = :Previous'.$TableSales::ATTR_YEAR.'
-                    THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_GROSS.' ELSE 0 END) AS SumSalesGross_VJ' )
+                    THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_GROSS.' ELSE 0 END) AS Data_SumSalesGross_VJ' )
                 ->addSelect( 'SUM( CASE WHEN '.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' = :Previous'.$TableSales::ATTR_YEAR.'
-                    THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_QUANTITY.' ELSE 0 END) AS SumQuantity_VJ' )
+                    THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_QUANTITY.' ELSE 0 END) AS Data_SumQuantity_VJ' )
                 ->addSelect(
                     'CASE 
                         WHEN ( 
@@ -923,15 +923,15 @@ class Data extends AbstractData
                                         THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_GROSS.' ELSE 0 END)
                         )
                         ELSE 0 
-                    END AS Discount_VJ'
+                    END AS Data_Discount_VJ'
                 )
                 //Vorvorjahr
                 ->addSelect( 'SUM( CASE WHEN '.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' = :SecondPrevious'.$TableSales::ATTR_YEAR.'
-                    THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_NET.' ELSE 0 END) AS SumSalesNet_VVJ' )
+                    THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_NET.' ELSE 0 END) AS Data_SumSalesNet_VVJ' )
                 ->addSelect( 'SUM( CASE WHEN '.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' = :SecondPrevious'.$TableSales::ATTR_YEAR.'
-                    THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_GROSS.' ELSE 0 END) AS SumSalesGross_VVJ' )
+                    THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_GROSS.' ELSE 0 END) AS Data_SumSalesGross_VVJ' )
                 ->addSelect( 'SUM( CASE WHEN '.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' = :SecondPrevious'.$TableSales::ATTR_YEAR.'
-                    THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_QUANTITY.' ELSE 0 END) AS SumQuantity_VVJ' )
+                    THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_QUANTITY.' ELSE 0 END) AS Data_SumQuantity_VVJ' )
                 ->addSelect(
                     'CASE 
                         WHEN ( 
@@ -946,7 +946,7 @@ class Data extends AbstractData
                                         THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_GROSS.' ELSE 0 END)
                         )
                         ELSE 0 
-                    END AS Discount_VVJ'
+                    END AS Data_Discount_VVJ'
                 )
                 ->from( $TableSales->getEntityFullName(), $TableSalesAlias )
                 ->innerJoin(

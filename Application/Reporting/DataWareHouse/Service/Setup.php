@@ -477,7 +477,7 @@ class Setup extends AbstractSetup
         $this->createColumn( $Table, $TableSales::ATTR_MONTH, self::FIELD_TYPE_INTEGER, false);
         $this->createColumn( $Table, $TableSales::ATTR_YEAR, self::FIELD_TYPE_INTEGER, false);
         $this->createColumn( $Table, $TableSales::ATTR_QUANTITY, self::FIELD_TYPE_INTEGER, false);
-        $this->createColumn( $Table, $TableSales::ATTR_SALES_GROSS, self::FIELD_TYPE_FLOAT, false);
+        $this->createColumn( $Table, $TableSales::ATTR_SALES_GROSS, 'decimal', false);
         $this->createColumn( $Table, $TableSales::ATTR_SALES_NET, self::FIELD_TYPE_FLOAT, false);
         return $Table;
     }

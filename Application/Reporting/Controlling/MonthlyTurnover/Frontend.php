@@ -267,6 +267,8 @@ class Frontend extends Extension
 	private function tableMonthlyTurnover( $MonthlyTurnoverData ) {
         if( $MonthlyTurnoverData ) {
            $ReplaceArray = array(
+               'Data_' => '',
+               'Group_' => '',
                'Month' => 'Monat',
                'SumSalesGross' => 'Bruttoumsatz',
                'SumSalesNet' => 'Nettoumsatz',

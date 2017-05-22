@@ -57,13 +57,14 @@ class ExcelDefault implements IApiInterface
         $HeaderList = array_keys( (array)$DataList[0] );
         foreach( (array)$HeaderList as $HeaderIndex => $HeaderText ) {
             if(stripos($HeaderText,';HIDE') == false) {
-                if(strstr($HeaderText,'Data_')) {
+                if(strstr($HeaderText,'Group_')) {
                     $HeaderText = trim(implode('#',array_slice(explode('#',$HeaderText),0,-1)));
                 }
 //                Excel::CellStyle(
 //                    Excel::CellIndex2Name( $HeaderIndex,0 ),
 //                    array('width'=>'auto','text-align'=>'center')
 //                );
+                $Document->setStyle( $Document->getCell( $HeaderIndex, 0 ) )->setWrapText();
                 $Document->setValue( $Document->getCell($HeaderIndex,0), trim(str_replace(array_keys($ReplaceArray),$ReplaceArray,$HeaderText)) );
                 //new PhpExcel\Style()
 //                Excel::CellWrap(
@@ -78,17 +79,23 @@ class ExcelDefault implements IApiInterface
         foreach( (array)$DataList as $RowIndex => $RowList ) {
             $ColIndex = 0;
             foreach( (array)$RowList as $ColName => $ColValue ) {
+
                 if(stripos($ColName,';HIDE') == false) {
                     //Zahl
-                    if( is_int( self::ConvertNumeric($ColValue,$ColName) ) == '1' ) {
+                    if( is_int( self::ConvertNumeric($ColValue,$ColName) ) == true ) {
                         $Document->setValue( $Document->getCell( $ColIndex++, ( $RowIndex +1 ) ), number_format($ColValue,0,"","") );
+                        //Debugger::screenDump($ColName.'Test'.$ColValue);
                     }
-                    elseif( is_float( self::ConvertNumeric($ColValue,$ColName) ) == '1' ) {
-                        //$Document->setStyle( $Document->getCell( ($ColIndex), ( $RowIndex + 1 ) ) )->// array('number-format'=>'#,##0.00') );
-                        $Document->setValue( $Document->getCell( $ColIndex++, ( $RowIndex +1 ) ), $ColValue );
+                    elseif( is_float( self::ConvertNumeric($ColValue,$ColName) ) == true ) {
+
+                        //$Document->setStyle( $Document->getCell( ($ColIndex++), ( $RowIndex + 1 ) ) )->setFormatCode('#.##0,00');// array('number-format'=>'#,##0.00') );
+                        //Debugger::screenDump($ColName, $ColIndex);
+                        $Document->setValue( $Document->getCell( ($ColIndex++), ( $RowIndex + 1 ) ), $ColValue );
+                        //Debugger::screenDump($ColName.$ColIndex);
                     }
                     else {
                         $Document->setValue( $Document->getCell( $ColIndex++, ( $RowIndex +1 ) ), $ColValue );
+                        //Debugger::screenDump($ColName.'Test2');
                     }
                 }
             }
@@ -96,9 +103,7 @@ class ExcelDefault implements IApiInterface
 
         $Document->saveFile();
         $FilePointer->loadFile();
-
-//        Debugger::screenDump($FilePointer->getRealPath(), $Document);
-
+        //exit();
         print FileSystem::getDownload($FilePointer->getRealPath(), $FileName.'.'.$FileTyp);
     }
 
@@ -117,15 +122,17 @@ class ExcelDefault implements IApiInterface
             $YearCurrent = DataWareHouse::useService()->getYearCurrentFromSales();
 
             $ReplaceArray = array(
+                'Data_' => '',
+                'Group_' => '',
                 'Month' => 'Monat',
                 'SumSalesGross' => 'Bruttoumsatz',
                 'SumSalesNet' => 'Nettoumsatz',
                 'SumQuantity' => 'Menge',
                 'Discount' => 'Rabatt',
                 '_' => ' ',
-                'VVJ' => ($YearCurrent-2),
-                'VJ' => ($YearCurrent-1),
-                'AJ' => $YearCurrent,
+                'VVJ' => "\n".($YearCurrent-2),
+                'VJ' => "\n".($YearCurrent-1),
+                'AJ' => "\n".$YearCurrent,
             );
             return self::getExcel( $FileName, $FileTyp, $DataList, $ReplaceArray );
         }
@@ -156,6 +163,8 @@ class ExcelDefault implements IApiInterface
             if( count($DataList) > 0 ) {
 
                 $ReplaceArray = array(
+                    'Data_' => '',
+                    'Group_' => '',
                     'ProductManagerName' => 'Produktmanager',
                     'ProductManagerDepartment' => 'Bereich',
                     'PartNumber' => 'Teilenummer',

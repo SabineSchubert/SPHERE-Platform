@@ -462,7 +462,7 @@ class Service extends AbstractService
     public function getPriceDevelopmentByPartNumber( TblReporting_Part $TblReporting_Part, $Restriction ) {
         $PriceDevelopmentData = ( new Data( $this->getBinding() ) ) ->getPriceDevelopmentByPartNumber( $TblReporting_Part, $Restriction );
 
-        Debugger::screenDump($PriceDevelopmentData);
+//        Debugger::screenDump($PriceDevelopmentData);
 
         if($PriceDevelopmentData) {
             $CalcPriceDevelopmentData = null;

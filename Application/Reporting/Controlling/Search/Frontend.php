@@ -322,6 +322,8 @@ class Frontend extends Extension
 	private function tableSearchData( $SearchData ) {
         if( $SearchData ) {
             $ReplaceArray = array(
+                'Data_' => '',
+                'Group_' => '',
                 'PartNumber' => 'Teilenummer',
                 'PartName' => 'Bezeichnung',
                 'MarketingCodeNumber' => 'Marketingcode',

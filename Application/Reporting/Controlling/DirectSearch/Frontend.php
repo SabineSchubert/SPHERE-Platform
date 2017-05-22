@@ -877,6 +877,8 @@ class Frontend extends Extension
                 $PriceDevData,
                 new TableTitle('Preis- und Kostenentwicklung'),
                 array(
+                    'Data_' => '',
+                    'Group_' => '',
                     'ValidFrom' => 'Gültig ab',
                     'PriceGross' => 'BLP',
                     'PriceNet' => 'NLP',
@@ -913,9 +915,9 @@ class Frontend extends Extension
                 new TableTitle('Controlling-Informationen'),
                 array(
                     'Year' => '&nbsp;',
-                    'SumSalesGross' => new Tooltip('Brutto', 'Test2', new Info()),
-                    'SumSalesNet' => 'Netto',
-                    'SumQuantity' => 'Anzahl effektiv'
+                    'Data_SumSalesGross' => new Tooltip('Brutto', 'Test2', new Info()),
+                    'Data_SumSalesNet' => 'Netto',
+                    'Data_SumQuantity' => 'Anzahl effektiv'
                 ),
                 array(
                     "columnDefs" => array(
