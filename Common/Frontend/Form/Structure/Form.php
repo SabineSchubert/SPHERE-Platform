@@ -257,37 +257,39 @@ class Form extends Extension implements IFormInterface
      */
     public function getHash()
     {
-        $HashList = array();
+//        $HashList = array();
 
         if (empty($this->Hash)) {
-            $GroupList = $this->GridGroupList;
-            array_walk($GroupList, function ($FormGroup) use (&$HashList) {
-                if (is_object($FormGroup)) {
-                    $HashList[] = get_class($FormGroup);
-                    /** @var FormGroup $FormGroup */
-                    $RowList = $FormGroup->getFormRow();
-                    array_walk($RowList, function ($FormRow) use (&$HashList) {
-                        if (is_object($FormRow)) {
-                            $HashList[] = get_class($FormRow);
-                            /** @var FormRow $FormRow */
-                            $ColumnList = $FormRow->getFormColumn();
-                            array_walk($ColumnList, function ($FormColumn) use (&$HashList) {
-                                if (is_object($FormColumn)) {
-                                    $HashList[] = get_class($FormColumn);
-                                    /** @var FormColumn $FormColumn */
-                                    $FrontendList = $FormColumn->getFrontend();
-                                    array_walk($FrontendList, function ($Frontend) use (&$HashList) {
-                                        if (is_object($Frontend)) {
-                                            $HashList[] = get_class($Frontend);
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-            $this->Hash = md5(json_encode($HashList) . date('Ymd'));
+
+//            $GroupList = $this->GridGroupList;
+//            array_walk($GroupList, function ($FormGroup) use (&$HashList) {
+//                if (is_object($FormGroup)) {
+//                    $HashList[] = get_class($FormGroup);
+//                    /** @var FormGroup $FormGroup */
+//                    $RowList = $FormGroup->getFormRow();
+//                    array_walk($RowList, function ($FormRow) use (&$HashList) {
+//                        if (is_object($FormRow)) {
+//                            $HashList[] = get_class($FormRow);
+//                            /** @var FormRow $FormRow */
+//                            $ColumnList = $FormRow->getFormColumn();
+//                            array_walk($ColumnList, function ($FormColumn) use (&$HashList) {
+//                                if (is_object($FormColumn)) {
+//                                    $HashList[] = get_class($FormColumn);
+//                                    /** @var FormColumn $FormColumn */
+//                                    $FrontendList = $FormColumn->getFrontend();
+//                                    array_walk($FrontendList, function ($Frontend) use (&$HashList) {
+//                                        if (is_object($Frontend)) {
+//                                            $HashList[] = get_class($Frontend);
+//                                        }
+//                                    });
+//                                }
+//                            });
+//                        }
+//                    });
+//                }
+//            });
+//            $this->Hash = md5(json_encode($HashList) . date('Ymd'));
+            $this->Hash = crc32( uniqid( 'Form', true ) );
         }
         return $this->Hash;
     }

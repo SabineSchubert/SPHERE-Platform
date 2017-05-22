@@ -3,6 +3,7 @@
 namespace SPHERE\Application\Example\Upload\Excel\Service;
 
 
+use SPHERE\Application\Example\Upload\Excel\Service\Entity\TblExampleUploadExcel;
 use SPHERE\System\Database\Binding\AbstractData;
 
 class Data extends AbstractData
@@ -15,8 +16,16 @@ class Data extends AbstractData
         // TODO: Implement setupDatabaseContent() method.
     }
 
-    public function insertExampleUploadExcel( $RowScanArray )
+    /**
+     * @param TblExampleUploadExcel $TblExampleUploadExcel
+     */
+    public function insertExampleUploadExcel( TblExampleUploadExcel $TblExampleUploadExcel )
     {
+        $this->getEntityManager()->bulkSaveEntity( $TblExampleUploadExcel );
+    }
 
+    public function flushExampleUploadExcel()
+    {
+        $this->getEntityManager()->flushCache();
     }
 }
