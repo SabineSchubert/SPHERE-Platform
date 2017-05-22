@@ -4,7 +4,6 @@ namespace SPHERE\Common;
 use Doctrine\DBAL\Driver\PDOException;
 use Doctrine\DBAL\Exception\InvalidFieldNameException;
 use Doctrine\DBAL\Exception\TableNotFoundException;
-use MOC\V\Component\Router\Component\Bridge\Repository\UniversalRouter;
 use SPHERE\Application\Api\Api;
 use SPHERE\Application\Competition\Competition;
 use SPHERE\Application\Dispatcher;
@@ -79,7 +78,7 @@ class Main extends Extension
             self::$Display = new Display();
         }
         if (self::getDispatcher() === null) {
-            self::$Dispatcher = new Dispatcher(new UniversalRouter());
+            self::$Dispatcher = new Dispatcher(new Router());
         }
     }
 
