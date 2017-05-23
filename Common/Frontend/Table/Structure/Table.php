@@ -225,7 +225,7 @@ class Table extends TableContainer
      */
     public function setHash($Hash)
     {
-        parent::setHash($Hash);
+        parent::setHash('Table-'.$Hash);
         return $this;
     }
 }
