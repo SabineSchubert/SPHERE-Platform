@@ -193,4 +193,20 @@ class SelectBox extends AbstractField implements IFieldInterface
         }
         return parent::getContent();
     }
+
+    /**
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->Label;
+    }
+
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->Data;
+    }
 }

@@ -14,7 +14,7 @@ class Platform implements IApplicationInterface
 {
     public static function registerApplication()
     {
-        Consumer::registerApi();
+//        Consumer::registerApi();
         Access::registerApi();
         Favorite::registerApi();
     }

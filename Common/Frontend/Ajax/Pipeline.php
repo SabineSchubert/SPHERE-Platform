@@ -188,11 +188,11 @@ class Pipeline implements IFrontendInterface
                     $Method = 'POST';
                     if (strlen($Emitter->getAjaxPostPayload()) > 2) {
                         if( !empty( $FrontendElement->getData() ) ) {
-                            $Payload = json_decode( $Emitter->getAjaxPostPayload() );
+                            $Payload = json_decode( $Emitter->getAjaxPostPayload(), true );
                             $Payload = array_merge( $FrontendElement->getData(), $Payload );
                             $Data = json_encode( $Payload, JSON_FORCE_OBJECT );
                         } else {
-                            $Data = json_decode( $Emitter->getAjaxPostPayload() );
+                            $Data = json_decode( $Emitter->getAjaxPostPayload(), true );
                             $Data = json_encode( $Data, JSON_FORCE_OBJECT );
                         }
                         $Data = 'var EmitterData = ' . $Data . ';';

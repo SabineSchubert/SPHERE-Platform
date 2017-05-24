@@ -59,24 +59,24 @@ class Frontend
 
         $Stage->addButton((new Standard('Rollen', new Link\Route(__NAMESPACE__ . '/Role'), new TagList(), array(),
             'Zusammenstellung von Berechtigungen'))
-            ->ajaxPipelineOnClick( AccessApi::pipelineStageRole( $ReceiverStage ) )
+            ->ajaxPipelineOnClick( AccessApi::pipelineRoleStage( $ReceiverStage ) )
         );
+        /*
+                $Stage->addButton((new Standard('Zugriffslevel', new Link\Route(__NAMESPACE__ . '/Level'), new Tag(), array(),
+                    'Gruppen von Privilegien'))
+                    ->ajaxPipelineOnClick( AccessApi::pipelineStageLevel( $ReceiverStage ) )
+                );
 
-        $Stage->addButton((new Standard('Zugriffslevel', new Link\Route(__NAMESPACE__ . '/Level'), new Tag(), array(),
-            'Gruppen von Privilegien'))
-            ->ajaxPipelineOnClick( AccessApi::pipelineStageLevel( $ReceiverStage ) )
-        );
+                $Stage->addButton((new Standard('Privilegien', new Link\Route(__NAMESPACE__ . '/Privilege'), new TileBig(),
+                    array(), 'Gruppen von Rechten'))
+                );
 
-        $Stage->addButton((new Standard('Privilegien', new Link\Route(__NAMESPACE__ . '/Privilege'), new TileBig(),
-            array(), 'Gruppen von Rechten'))
-        );
-
-        $Stage->addButton((new Standard('Rechte', new Link\Route(__NAMESPACE__ . '/Right'), new TileList(), array(),
-            'Geschützte Routen'))
-        );
-
+                $Stage->addButton((new Standard('Rechte', new Link\Route(__NAMESPACE__ . '/Right'), new TileList(), array(),
+                    'Geschützte Routen'))
+                );
+        */
         $Stage->setContent(
-            $ReceiverStage.AccessApi::pipelineStageRole( $ReceiverStage )
+            $ReceiverStage.AccessApi::pipelineRoleStage()
         );
 
         return $Stage;
