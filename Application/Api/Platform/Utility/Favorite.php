@@ -95,7 +95,7 @@ class Favorite extends Extension implements IApiInterface
     public static function receiverNavigation()
     {
 
-        return (new MenuDropDownReceiver( '', '', new Star() ))
+        return (new MenuDropDownReceiver( '', 'Favoriten', new Star() ))
             ->setIdentifier(MenuDropDownReceiver::IDENTIFIER_PREFIX.'-'.sha1(__METHOD__));
     }
 

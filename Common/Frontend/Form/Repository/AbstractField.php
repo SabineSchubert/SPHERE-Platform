@@ -6,6 +6,7 @@ use SPHERE\Common\Frontend\Ajax\Pipeline;
 use SPHERE\Common\Frontend\Form\IFieldInterface;
 use SPHERE\Common\Frontend\Icon\IIconInterface;
 use SPHERE\System\Extension\Extension;
+use SPHERE\System\Extension\Repository\Debugger;
 
 /**
  * Class AbstractField
@@ -337,6 +338,16 @@ abstract class AbstractField extends Extension implements IFieldInterface
     }
 
     /**
+     * @param $CssClass
+     * @return AbstractField
+     */
+    public function setCustomClass( $CssClass )
+    {
+        $this->Template->setVariable( 'ElementCustomClass', $CssClass );
+        return $this;
+    }
+
+    /**
      * Alias for ajaxPipelineOnChange
      *
      * @param Pipeline|Pipeline[] $Pipeline
@@ -382,5 +393,30 @@ abstract class AbstractField extends Extension implements IFieldInterface
 
         $this->Template->setVariable('AjaxEventKeyUp', $Script);
         return $this;
+    }
+
+    /**
+     * @param array $Configuration
+     * @return array
+     */
+    protected function convertLibraryConfiguration( $Configuration ) {
+        $Convert = array();
+        $Index = array();
+        foreach($Configuration as $Key => $Value){
+            // Look for values starting with 'function('
+            if(strpos($Value, 'function(')===0){
+                // Store function string.
+                $Convert[] = $Value;
+                // Replace function string in $foo with a unique special key.
+                $Value = '<%'.$Key.'%>';
+                $Configuration[$Key] = $Value;
+                // Later on, well look for the value, and replace it.
+                $Index[] = '"'.$Value.'"';
+            }
+        }
+        // Now encode the array to json format
+        $Configuration = json_encode( $Configuration, JSON_FORCE_OBJECT );
+        // Replace the special keys with the original string.
+        return str_replace($Index, $Convert, $Configuration);
     }
 }

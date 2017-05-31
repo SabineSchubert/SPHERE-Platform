@@ -3,6 +3,7 @@ namespace SPHERE\Common\Window;
 
 use MOC\V\Component\Template\Component\IBridgeInterface;
 use SPHERE\Application\Api\Platform\Utility\Favorite;
+use SPHERE\Application\Api\Search\Search;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Access;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
 use SPHERE\Common\Frontend\Ajax\Template\CloseModal;
@@ -146,6 +147,16 @@ class Stage extends Extension implements ITemplateInterface
         $this->Template->setVariable('StageDescription', $this->Description);
         $this->Template->setVariable('StageMessage', $this->Message);
         $this->Template->setVariable('StageTeaser', $this->Teaser);
+
+        /**
+         * Add Ajax Frontend Modal-Search Receiver
+         */
+        $this->Content .= Search::receiverSearchModal();
+        /**
+         * Add Ajax Frontend Modal-Close Receiver
+         */
+        $this->Content .= CloseModal::CloseModalReceiver();
+
         $this->Template->setVariable('StageContent', $this->Content);
 
         if((
@@ -193,10 +204,6 @@ class Stage extends Extension implements ITemplateInterface
      */
     public function setContent($Content)
     {
-        /**
-         * Add Ajax Frontend Modal-Close Receiver
-         */
-        $Content .= CloseModal::CloseModalReceiver();
 
         $this->Content = $Content;
         return $this;

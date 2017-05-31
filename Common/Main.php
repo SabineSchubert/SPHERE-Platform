@@ -17,6 +17,7 @@ use SPHERE\Application\Platform\Platform;
 use SPHERE\Application\Platform\System;
 use SPHERE\Application\Product\Product;
 use SPHERE\Application\Reporting\Reporting;
+use SPHERE\Application\Search\Search;
 use SPHERE\Application\Statistic\Statistic;
 use SPHERE\Application\Training\Training;
 use SPHERE\Common\Frontend\Icon\Repository\HazardSign;
@@ -387,13 +388,14 @@ class Main extends Extension
                     , null, array(), false, External::STYLE_LINK)
             );
 
-        Reporting::registerCluster();
+//        Reporting::registerCluster();
         Product::registerCluster();
-        Statistic::registerCluster();
-        Training::registerCluster();
+//        Statistic::registerCluster();
+//        Training::registerCluster();
         Eila::registerCluster();
         OtherApplication::registerCluster();
-        Competition::registerCluster();
-        Example::registerCluster();
+//        Competition::registerCluster();
+//        Example::registerCluster();
+        Search::registerCluster();
     }
 }

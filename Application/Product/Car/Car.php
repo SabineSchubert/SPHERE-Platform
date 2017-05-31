@@ -16,7 +16,7 @@ class Car implements IApplicationInterface
     {
         self::createApplication(
             __NAMESPACE__, __NAMESPACE__ . '\Frontend', 'frontendCar',
-                self::doTranslate(__METHOD__,'Pkw & smart'),
+            'Pkw & smart',//                self::doTranslate(__METHOD__,'Pkw & smart'),
                 new Cars()
         );
 

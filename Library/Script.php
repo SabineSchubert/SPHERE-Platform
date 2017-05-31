@@ -87,6 +87,10 @@ class Script
             $Location . '/List.Js/1.1.1/dist/list.js',
             "'undefined' !== typeof List"
         ));
+        $this->addLibrary(new Library('List.Js', '1.5.0',
+            $Location . '/List.Js/1.5.0/dist/list.js',
+            "'undefined' !== typeof List"
+        ));
         $this->addLibrary(new Library('Bootstrap', '3.3.7',
             $Location . '/Bootstrap/3.3.7/dist/js/bootstrap.min.js',
             "'function' === typeof jQuery().emulateTransitionEnd"
