@@ -102,6 +102,14 @@ var Client = (function ()
     };
     var waitModule = function (Module, Callback)
     {
+
+        if(!useConfig[Module]) {
+            if (console && console.log) {
+                console.log('!!! Unable to find ' + Module + ' !!!');
+            }
+            return false;
+        }
+
         if (useConfig[Module].isReady(Callback)) {
             return Callback();
         } else {

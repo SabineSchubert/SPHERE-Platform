@@ -43,7 +43,7 @@ class TblRole extends Element
     public function setName($Name)
     {
 
-        $this->Name = $Name;
+        $this->Name = (string)$Name;
     }
 
     /**

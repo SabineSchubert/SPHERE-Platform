@@ -55,6 +55,7 @@ class Frontend extends Extension implements IFrontendInterface
     {
 
         $Stage = new Stage();
+        $Stage->hasUtilitySearch();
 
         $Stage->setTeaser(
             (new Slick())

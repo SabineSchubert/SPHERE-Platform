@@ -4,6 +4,7 @@ namespace SPHERE\Application\Search;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Field\CheckBox;
 use SPHERE\Common\Frontend\Form\Repository\Field\TextField;
+use SPHERE\Common\Frontend\Form\Repository\Field\TokenField;
 use SPHERE\Common\Frontend\Form\Structure\Form;
 use SPHERE\Common\Frontend\Form\Structure\FormColumn;
 use SPHERE\Common\Frontend\Form\Structure\FormGroup;
@@ -51,7 +52,7 @@ class Frontend
             new FormGroup(array(
                 new FormRow(
                     new FormColumn(
-                        (new TextField('Search[Text]', '', 'Ich suche ..'))->setAutoFocus()
+                        new TokenField('Search[Text]', '','Ich suche ..')
                     )
                 ),
                 new FormRow(

@@ -38,8 +38,25 @@
     {% endif %}
 
     {% if StageTeaser is not empty %}
-        <div class="stage-teaser hidden-xs">
+        <div class="stage-teaser hidden-xs" style="position: relative;">
             {{ StageTeaser }}
+
+
+            {% if StageSearch is not empty %}
+                <div class="container-fluid" style="position: absolute; bottom: 0; width: 100%;">
+                <div class="row" style="position: absolute; bottom: 0; width: 100%;">
+                    <div class="col-xs-2"></div>
+                    <div class="col-xs-8">
+                        {{ StageSearch }}
+                        <br/>
+                        <br/>
+                    </div>
+                    <div class="col-xs-2"></div>
+                </div>
+                </div>
+            {% endif %}
+
+
         </div>
     {% endif %}
 

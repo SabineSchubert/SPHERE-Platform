@@ -33,6 +33,8 @@ class Form extends Extension implements IFormInterface
     protected $Template = null;
     /** @var bool $EnableSaveDraft */
     private $EnableSaveDraft = false;
+    /** @var bool $DisableSubmitAction */
+    private $DisableSubmitAction = false;
 
     /**
      * @param FormGroup|FormGroup[] $FormGroup
@@ -249,6 +251,9 @@ class Form extends Extension implements IFormInterface
         } else {
             $this->Template->setVariable('EnableSaveDraft', false);
         }
+        if ($this->DisableSubmitAction) {
+            $this->Template->setVariable('DisableSubmitAction', true);
+        }
         return $this->Template->getContent();
     }
 
@@ -294,6 +299,14 @@ class Form extends Extension implements IFormInterface
         return $this->Hash;
     }
 
+    /**
+     * @return $this
+     */
+    public function disableSubmitAction()
+    {
+        $this->DisableSubmitAction = true;
+        return $this;
+    }
 
     /**
      * @param Pipeline $Pipeline

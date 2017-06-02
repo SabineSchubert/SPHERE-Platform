@@ -4,6 +4,7 @@ namespace SPHERE\Application\Api\Platform\Gatekeeper\Access;
 use SPHERE\Application\Api\Platform\Gatekeeper\Access;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Access as AccessApp;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblRole;
+use SPHERE\Common\Frontend\Ajax\Emitter\ClientEmitter;
 use SPHERE\Common\Frontend\Ajax\Emitter\ServerEmitter;
 use SPHERE\Common\Frontend\Ajax\Pipeline;
 use SPHERE\Common\Frontend\Ajax\Receiver\BlockReceiver;
@@ -11,7 +12,6 @@ use SPHERE\Common\Frontend\Ajax\Receiver\ModalReceiver;
 use SPHERE\Common\Frontend\Ajax\Template\CloseModal;
 use SPHERE\Common\Frontend\Form\IFormInterface;
 use SPHERE\Common\Frontend\Form\Repository\Button\Close;
-use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Field\CheckBox;
 use SPHERE\Common\Frontend\Form\Repository\Field\TextField;
 use SPHERE\Common\Frontend\Form\Structure\Form;
@@ -34,6 +34,7 @@ use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
 use SPHERE\Common\Frontend\Link\Repository\Danger;
+use SPHERE\Common\Frontend\Link\Repository\Primary;
 use SPHERE\Common\Frontend\Link\Repository\Standard;
 use SPHERE\Common\Frontend\Message\Repository\Success;
 use SPHERE\Common\Frontend\Message\Repository\Warning;
@@ -100,6 +101,18 @@ class Role extends Level
             Access::API_TARGET => 'callRoleFormEdit'
         ));
         $Pipeline = new Pipeline();
+
+        $Client = new ClientEmitter( Access::receiverRoleEdit(),
+            new Panel(
+                'Rolle wird geladen...',
+                array(
+                    new ProgressBar(0, 100, 0, 6),
+                    new MutedText('Daten werden vom Server abgerufen')
+                ),
+                Panel::PANEL_TYPE_DEFAULT
+            ));
+        $Pipeline->appendEmitter($Client);
+
         $Pipeline->appendEmitter($Emitter);
 
         return $Pipeline;
@@ -146,6 +159,18 @@ class Role extends Level
             Access::API_TARGET => 'callRoleActionInsert'
         ));
         $Pipeline = new Pipeline();
+
+        $Client = new ClientEmitter( Access::receiverRoleEdit(),
+            new Panel(
+                'Rolle wird angelegt...',
+                array(
+                    new ProgressBar(0, 100, 0, 6),
+                    new MutedText('Daten werden vom Server abgerufen')
+                ),
+                Panel::PANEL_TYPE_DEFAULT
+            ));
+        $Pipeline->appendEmitter($Client);
+
         $Pipeline->appendEmitter($Emitter);
 
         return $Pipeline;
@@ -161,6 +186,18 @@ class Role extends Level
             Access::API_TARGET => 'callRoleActionEdit'
         ));
         $Pipeline = new Pipeline();
+
+        $Client = new ClientEmitter( Access::receiverRoleEdit(),
+        new Panel(
+            'Rolle wird geändert...',
+            array(
+                new ProgressBar(0, 100, 0, 6),
+                new MutedText('Daten werden vom Server abgerufen')
+            ),
+            Panel::PANEL_TYPE_DEFAULT
+        ));
+        $Pipeline->appendEmitter($Client);
+
         $Pipeline->appendEmitter($Emitter);
 
         return $Pipeline;
@@ -259,6 +296,9 @@ class Role extends Level
                         Access::receiverRoleTable(),
                         Access::pipelineRoleTable(),
                         Access::receiverRoleInsert(),
+                        Access::receiverRoleEdit().
+                        Access::receiverRoleSetup(),
+                        Access::receiverRoleDelete(),
                         (new Standard('Rolle anlegen', Access::getEndpoint()))
                             ->ajaxPipelineOnClick(Access::pipelineRoleFormInsert()),
                     )),
@@ -279,7 +319,7 @@ class Role extends Level
                 $Content['IsInternal'] = ($Content['IsInternal'] ? new DangerText(new Lock()) : new MutedText(new Globe()));
 
                 $Content['Option'] = new PullRight(implode(array(
-                        (new Standard('', Access::getEndpoint(), new Edit(), array( 'Id' => $TblRole->getId().'2' )))
+                        (new Standard('', Access::getEndpoint(), new Edit(), array( 'Id' => $TblRole->getId() )))
                         ->ajaxPipelineOnClick(Access::pipelineRoleFormEdit()),
                         (new Standard('', Access::getEndpoint(), new CogWheels(), array( 'Id' => $TblRole->getId().'3' )))
                         ->ajaxPipelineOnClick(Access::pipelineRoleFormSetup()),
@@ -288,11 +328,7 @@ class Role extends Level
                     )));
                 $TableContent[] = $Content;
             });
-            return
-                Access::receiverRoleEdit()
-                .Access::receiverRoleSetup()
-                .Access::receiverRoleDelete()
-                . (new Table($TableContent, null, array(
+            return (new Table($TableContent, null, array(
                     'IsInternal' => '',
                     'Name' => 'Rolle',
                     'Option' => ''
@@ -320,44 +356,48 @@ class Role extends Level
                     new FormColumn(array(
                         (new TextField('Name', '', 'Name der Rolle'))->setRequired()->setAutoFocus(),
                         (new CheckBox('IsInternal', 'Interne Rolle', 1)),
-                        (new \SPHERE\Common\Frontend\Link\Repository\Primary('Rolle anlegen', Access::getEndpoint()))->ajaxPipelineOnClick( Access::pipelineRoleActionInsert())
+                        (new Primary('Rolle anlegen', Access::getEndpoint()))
+                            ->ajaxPipelineOnClick( Access::pipelineRoleActionInsert())
                     )),
                 ))
             )
-            //, new Primary('Rolle anlegen')
-        ));//->ajaxPipelineOnSubmit( Access::pipelineRoleActionInsert() );
+        ))->disableSubmitAction();
     }
 
     /**
      * @param null|int $Id
      * @return IFormInterface|string
      */
-    public function callRoleFormEdit( $Id = null )
+    public function callRoleFormEdit( $Id = null, $Name = null, $IsInternal = null )
     {
         if (($TblRole = AccessApp::useService()->getRoleById( $Id ))) {
-            $Global = $this->getGlobal();
-            $Global->POST['Name'] = $TblRole->getName();
-            $Global->POST['IsInternal'] = ($TblRole->isInternal() ? 1 : 0);
-            $Global->savePost();
+
+            if( $Name === null ) {
+                $Global = $this->getGlobal();
+                $Global->POST['Name'] = $TblRole->getName();
+                $Global->POST['IsInternal'] = ($TblRole->isInternal() ? 1 : 0);
+                $Global->savePost();
+            }
 
             return (new Form(
                 new FormGroup(
                     new FormRow(array(
                         new FormColumn(array(
                             (new TextField('Name', '', 'Name der Rolle'))->setRequired()->setAutoFocus(),
-                            (new CheckBox('IsInternal', 'Interne Rolle', 1))
+                            (new CheckBox('IsInternal', 'Interne Rolle', 1)),
+                            (new Primary('Rolle ändern', Access::getEndpoint(), null, array( 'Id' => $Id ) ))
+                                ->ajaxPipelineOnClick( Access::pipelineRoleActionEdit())
                         )),
                     ))
                 )
-                , new Primary('Rolle ändern')
-            ))->ajaxPipelineOnSubmit( Access::pipelineRoleActionEdit() );
+            ))->disableSubmitAction();
         } else {
             return new Warning('Die Rolle konnte nicht gefunden werden.', new WarningIcon())
                 .new Container(
                     (new Standard('Rollen neu laden',Access::getEndpoint()))
                     ->ajaxPipelineOnClick(
                         Access::pipelineRoleTable()
-                        ->prependEmitter( (new CloseModal( Access::receiverRoleEdit() ))->getEmitter() )
+                        ->appendEmitter( (new CloseModal( Access::receiverRoleEdit() ))->getEmitter() )
                     )
                 );
         }
@@ -463,14 +503,17 @@ class Role extends Level
     public function callRoleActionEdit( $Id = null, $Name = null, $IsInternal = null)
     {
         $Error = false;
-        $Form = $this->callRoleFormEdit( $Id );
+        $Form = $this->callRoleFormEdit( $Id, $Name, $IsInternal );
+
+        $TblRole = AccessApp::useService()->getRoleById( $Id );
 
         if( $Form instanceof Form ) {
             if (!$Name) {
                 $Error = true;
                 $Form->setError('Name', 'Bitte geben Sie einen Namen an');
             } else {
-                if (AccessApp::useService()->getRoleByName($Name)) {
+                $Entity = AccessApp::useService()->getRoleByName($Name);
+                if ( $Entity && $TblRole && $Entity->getId() != $TblRole->getId() ) {
                     $Error = true;
                     $Form->setError('Name', 'Dieser Name wird bereits verwendet');
                 }
@@ -478,9 +521,17 @@ class Role extends Level
             if ($Error) {
                 // on Error
                 return $Form;
+            } else {
+                // on Success
+                if( AccessApp::useService()->updateRole( $TblRole, $Name, ( $IsInternal ? true : false ) ) ) {
+                    // on Success
+                    return new Success('Rolle erfolgreich geändert').(Access::pipelineRoleTable())
+                            ->appendEmitter((new CloseModal(Access::receiverRoleEdit()))->getEmitter());
+                } else {
+                    // on Error
+                    return $Form->setError('Name', 'Die Rolle konnte nicht geändert werden');
+                }
             }
-            // TODO:
-            return $Form;
         } else {
             return $Form;
         }

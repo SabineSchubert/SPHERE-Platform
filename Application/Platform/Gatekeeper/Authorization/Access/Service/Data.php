@@ -13,6 +13,8 @@ use SPHERE\Application\Platform\System\Protocol\Protocol;
 use SPHERE\System\Cache\Handler\MemcachedHandler;
 use SPHERE\System\Cache\Handler\MemoryHandler;
 use SPHERE\System\Database\Binding\AbstractData;
+use SPHERE\System\Database\Binding\AbstractEntity;
+use SPHERE\System\Database\Fitting\Element;
 
 /**
  * Class Data
@@ -373,6 +375,29 @@ class Data extends AbstractData
 
     /**
      * @param TblRole $TblRole
+     * @param string $Name
+     * @param bool $IsInternal
+     * @return TblRole|null
+     */
+    public function updateRole( TblRole $TblRole, $Name, $IsInternal = false)
+    {
+
+        $Manager = $this->getEntityManager();
+        /** @var AbstractEntity|Element|TblRole $Entity */
+        $Entity = $Manager->getEntityById($TblRole->getEntityShortName(), $TblRole->getId());
+        if (null !== $Entity) {
+            $Protocol = clone $Entity;
+            $Entity->setName($Name);
+            $Entity->setInternal($IsInternal);
+            $Manager->saveEntity($Entity);
+            Protocol::useService()->createUpdateEntry($this->getConnection()->getDatabase(), $Protocol, $Entity);
+            return $Entity;
+        }
+        return null;
+    }
+
+    /**
+     * @param TblRole $TblRole
      * @param TblLevel $TblLevel
      *
      * @return bool
@@ -616,25 +641,29 @@ class Data extends AbstractData
     /**
      * @param integer $Id
      *
-     * @return null|TblRole
+     * @return null|TblRole|AbstractEntity|Element
      */
     public function getRoleById($Id)
     {
 
-        return $this->getCachedEntityById(__METHOD__, $this->getEntityManager(), 'TblRole', $Id);
+        return $this->getCachedEntityById(
+            __METHOD__, $this->getEntityManager(), (new TblRole())->getEntityShortName(), $Id
+        );
     }
 
     /**
      * @param string $Name
      *
-     * @return null|TblRole
+     * @return null|TblRole|AbstractEntity|Element
      */
     public function getRoleByName($Name)
     {
 
-        return $this->getCachedEntityBy(__METHOD__, $this->getEntityManager(), 'TblRole', array(
+        return $this->getCachedEntityBy(
+            __METHOD__, $this->getEntityManager(), (new TblRole())->getEntityShortName(), array(
             TblRole::ATTR_NAME => $Name
-        ));
+        )
+        );
     }
 
     /**

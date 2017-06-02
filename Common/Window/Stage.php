@@ -7,6 +7,14 @@ use SPHERE\Application\Api\Search\Search;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Access;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
 use SPHERE\Common\Frontend\Ajax\Template\CloseModal;
+use SPHERE\Common\Frontend\Form\Repository\Button\Primary as PrimaryButtonForm;
+use SPHERE\Common\Frontend\Form\Repository\Field\TextField;
+use SPHERE\Common\Frontend\Form\Repository\Field\TokenField;
+use SPHERE\Common\Frontend\Form\Structure\Form;
+use SPHERE\Common\Frontend\Form\Structure\FormColumn;
+use SPHERE\Common\Frontend\Form\Structure\FormGroup;
+use SPHERE\Common\Frontend\Form\Structure\FormRow;
+use SPHERE\Common\Frontend\Icon\Repository\Search as SearchIcon;
 use SPHERE\Common\Frontend\ITemplateInterface;
 use SPHERE\Common\Frontend\Layout\Structure\Teaser;
 use SPHERE\Common\Frontend\Link\ILinkInterface;
@@ -42,7 +50,8 @@ class Stage extends Extension implements ITemplateInterface
     private $MaskMenu = array();
     /** @var bool $hasUtilityFavorite */
     private $hasUtilityFavorite = false;
-
+    /** @var bool $hasUtilitySearch */
+    private $hasUtilitySearch = false;
     /**
      * @param null|string $Title
      * @param null|string $Description
@@ -159,6 +168,23 @@ class Stage extends Extension implements ITemplateInterface
 
         $this->Template->setVariable('StageContent', $this->Content);
 
+        if($this->hasUtilitySearch) {
+            $this->Template->setVariable('StageSearch',
+                new Form(
+                    new FormGroup(
+                        new FormRow(array(
+                            new FormColumn(
+                                new TextField('Search[Text]', 'Ich suche ..')
+                            ,11),
+                            new FormColumn(
+                                new PrimaryButtonForm('', new SearchIcon())
+                            ,1),
+                        ))
+                    )
+                , null, '/Search')
+            );
+        }
+
         if((
             $this->hasUtilityFavorite
             && Account::useService()->getAccountBySession()
@@ -215,5 +241,13 @@ class Stage extends Extension implements ITemplateInterface
     public function hasUtilityFavorite($Toggle = true)
     {
         $this->hasUtilityFavorite = (bool)$Toggle;
+    }
+
+    /**
+     * @param bool $Toggle
+     */
+    public function hasUtilitySearch($Toggle = true)
+    {
+        $this->hasUtilitySearch = (bool)$Toggle;
     }
 }

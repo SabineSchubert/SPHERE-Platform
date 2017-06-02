@@ -291,7 +291,7 @@ class Service extends AbstractService
      *
      * @param string $Name
      * @param bool $IsInternal
-     * @return null|TblRole|Element
+     * @return null|TblRole
      */
     public function createRole($Name, $IsInternal = false)
     {
@@ -302,6 +302,19 @@ class Service extends AbstractService
             return null;
         }
         return $Entity;
+    }
+
+    /**
+     * Update TblRole
+     *
+     * @param TblRole $TblRole
+     * @param string $Name
+     * @param bool $IsInternal
+     * @return null|TblRole
+     */
+    public function updateRole( TblRole $TblRole, $Name, $IsInternal = false)
+    {
+        return (new Data($this->getBinding()))->updateRole( $TblRole, $Name, $IsInternal);
     }
 
 //    /**

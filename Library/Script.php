@@ -294,6 +294,18 @@ class Script
             $Location . '/Bootstrap.Slider/9.8.0/dist/bootstrap-slider.min.js',
             "'undefined' !== typeof jQuery.fn.bootstrapSlider"
         ));
+        $this->addLibrary(new Library('Bootstrap.MagicSuggest', '2.1.4',
+            $Location . '/Bootstrap.MagicSuggest/2.1.4/magicsuggest.js',
+            "'undefined' !== typeof jQuery.fn.magicSuggest"
+        ));
+        $this->addLibrary(new Library('Bootstrap.TokenField', '0.12.1',
+            $Location . '/Bootstrap.TokenField/0.12.1/dist/bootstrap-tokenfield.min.js',
+            "'undefined' !== typeof jQuery.fn.tokenfield"
+        ));
+        $this->addLibrary(new Library('Bootstrap.TokenField', 'master',
+            $Location . '/Bootstrap.TokenField/master/dist/bootstrap-tokenfield.min.js',
+            "'undefined' !== typeof jQuery.fn.tokenfield"
+        ));
     }
 
     /**

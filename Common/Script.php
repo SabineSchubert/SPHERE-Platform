@@ -69,6 +69,8 @@ class Script extends Extension
             $this->setLibrary((new ScriptLibrary('Bootstrap.Notify', '3.1.3'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Bootstrap.Validator', '0.11.9'))->getLibrary());
             $this->setLibrary((new ScriptLibrary('Bootstrap.Slider', '9.8.0'))->getLibrary());
+//            $this->setLibrary((new ScriptLibrary('Bootstrap.MagicSuggest','2.1.4'))->getLibrary());
+            $this->setLibrary((new ScriptLibrary('Bootstrap.TokenField','master'))->getLibrary());
 
             $this->setLibrary((new ScriptLibrary('Twitter.Typeahead', '0.11.1'))->getLibrary());
 
@@ -315,6 +317,23 @@ class Script extends Extension
         $this->setModule(
             'ModChartJs', array(
                 'Chart.js',
+                'jQuery'
+            )
+        );
+        $this->setModule(
+            'ModSuggest', array(
+                'Bootstrap.MagicSuggest',
+                'Bootstrap',
+//                'Tether',
+                'jQuery'
+            )
+        );
+        $this->setModule(
+            'ModTokenField', array(
+                'Bootstrap.TokenField',
+                'Twitter.Typeahead',
+                'Bootstrap',
+//                'Tether',
                 'jQuery'
             )
         );
