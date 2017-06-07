@@ -679,6 +679,22 @@ class Data extends AbstractData
      *
      * @param TblRole $TblRole
      *
+     * @return int|null
+     */
+    public function countLevelAllByRole(TblRole $TblRole)
+    {
+        return $this->getCachedCountBy( __METHOD__, $this->getEntityManager(),
+            'TblRoleLevel',
+            array(
+                TblRoleLevel::ATTR_TBL_ROLE => $TblRole->getId()
+            )
+        );
+    }
+
+    /**
+     *
+     * @param TblRole $TblRole
+     *
      * @return null|TblLevel[]
      */
     public function getLevelAllByRole(TblRole $TblRole)

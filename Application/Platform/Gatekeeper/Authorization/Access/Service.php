@@ -382,6 +382,18 @@ class Service extends AbstractService
 
     /**
      *
+     * @param TblRole $TblRole
+     *
+     * @return int|null
+     */
+    public function countLevelAllByRole(TblRole $TblRole)
+    {
+
+        return (new Data($this->getBinding()))->countLevelAllByRole($TblRole);
+    }
+
+    /**
+     *
      * @param TblPrivilege $TblPrivilege
      *
      * @return null|TblRight[]
