@@ -8,17 +8,24 @@
 
 namespace SPHERE\Application\Reporting\DataWareHouse;
 
+use SPHERE\Application\AppTrait;
 use SPHERE\Application\IApplicationInterface;
 use SPHERE\Application\IModuleInterface;
 use SPHERE\Application\Platform\Gatekeeper\Consumer\Consumer;
+use SPHERE\Application\Reporting\DataWareHouse\Sales\Sales;
+use SPHERE\Common\Frontend\Icon\Repository\Blackboard;
+use SPHERE\Common\Window\Stage;
 use SPHERE\System\Database\Link\Identifier;
 
 class DataWareHouse implements IApplicationInterface, IModuleInterface
 {
+    use AppTrait;
 
 	public static function registerApplication()
 	{
-        self::registerModule();
+	    self::createApplication(__NAMESPACE__, __CLASS__, 'frontendImport', 'Import', new Blackboard(), 'Stammdaten<br/>Preisdaten<br/>Umsatzdaten');
+//        self::registerModule();
+        Sales::registerModule();
 	}
 
     public static function registerModule()
@@ -42,5 +49,12 @@ class DataWareHouse implements IApplicationInterface, IModuleInterface
     public static function useFrontend()
     {
         // TODO: Implement useFrontend() method.
+    }
+
+    public function frontendImport()
+    {
+      $Stage = new Stage('Import', 'importieren');
+
+      return $Stage;
     }
 }

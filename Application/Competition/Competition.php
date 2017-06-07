@@ -10,7 +10,7 @@ namespace SPHERE\Application\Competition;
 
 use SPHERE\Application\IClusterInterface;
 use SPHERE\Application\Competition\Competition\Competition as AppCompetition;
-use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
+use SPHERE\Application\Competition\DataWareHouse\DataWareHouse;
 use SPHERE\Common\Frontend\Icon\Repository\Equalizer;
 use SPHERE\Common\Main;
 use SPHERE\Common\Window\Navigation\Link;
@@ -29,7 +29,7 @@ class Competition implements IClusterInterface
         );
 
 		AppCompetition::registerApplication();
-		DataWareHouse::registerApplication();
+//		DataWareHouse::registerApplication();
 	}
 
 	/**

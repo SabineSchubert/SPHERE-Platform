@@ -49,7 +49,7 @@ class Dispatcher extends Extension
         try {
             if (Access::useService()->hasAuthorization($Route->getPath())) {
                 if (in_array($Route->getPath(), self::$Router->getRouteList())) {
-                    throw new \Exception(__CLASS__ . ' > Route already available! (' . $Route->getPath() . ')');
+                    throw new \Exception(__CLASS__ . ' > Route already available! (' . $Route->getPath() . ' > '.$Route->getClass().'::'.$Route->getMethod().' )');
                 } else {
                     if (!preg_match('!^/?Api/!is', $Route->getPath())) {
                         self::$Router->addRoute($Route);

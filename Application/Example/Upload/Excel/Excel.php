@@ -5,8 +5,8 @@ namespace SPHERE\Application\Example\Upload\Excel;
 
 use SPHERE\Application\Api\Example\Upload\Upload;
 use SPHERE\Application\AppTrait;
-use SPHERE\Application\Example\Upload\Excel\Converter\LoadExampleUploadExcel;
-use SPHERE\Application\Example\Upload\Excel\Converter\ReadExampleUploadExcel;
+use SPHERE\Application\Example\Upload\Excel\Converter\LoadImportSales;
+use SPHERE\Application\Example\Upload\Excel\Converter\ReadImportSales;
 use SPHERE\Application\IModuleInterface;
 use SPHERE\Application\IServiceInterface;
 use SPHERE\Application\Platform\Utility\Storage\FilePointer;
@@ -88,10 +88,10 @@ class Excel extends AbstractConverter implements IModuleInterface
 
         if ($File) {
 
-            if( (new LoadExampleUploadExcel( $File->getRealPath() ))->isValid() ) {
+            if( (new LoadImportSales( $File->getRealPath() ))->isValid() ) {
                 Debugger::screenDump('Valid');
 
-                new ReadExampleUploadExcel( $File->getRealPath() );
+                new ReadImportSales( $File->getRealPath() );
 
             } else {
                 Debugger::screenDump('Not Valid');

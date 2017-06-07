@@ -6,7 +6,7 @@
  * Time: 09:35
  */
 
-namespace SPHERE\Application\Competition\DataWareHouse\Competition;
+namespace SPHERE\Application\Competition\DataWareHouse;
 
 
 use SPHERE\Application\IModuleInterface;
@@ -15,7 +15,7 @@ use SPHERE\Application\Platform\Gatekeeper\Consumer\Consumer;
 use SPHERE\Common\Frontend\IFrontendInterface;
 use SPHERE\System\Database\Link\Identifier;
 
-class Competition implements IModuleInterface
+class DataWareHouse implements IModuleInterface
 {
 
     public static function registerModule()

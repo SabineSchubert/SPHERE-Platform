@@ -6,7 +6,7 @@
  * Time: 09:37
  */
 
-namespace SPHERE\Application\Competition\DataWareHouse\Competition;
+namespace SPHERE\Application\Competition\DataWareHouse;
 
 
 use SPHERE\Application\Competition\DataWareHouse\Competition\Service\Data;
