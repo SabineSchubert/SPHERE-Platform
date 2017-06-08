@@ -50,20 +50,21 @@ class Dispatcher extends Extension
     public function registerMethod($MethodName)
     {
         $ReflectionClass = new \ReflectionObject($this->ApiClass);
-        $ReflectionMethod = $ReflectionClass->getMethod($MethodName);
-        $ReflectionParameter = $ReflectionMethod->getParameters();
+        if( $ReflectionClass->hasMethod( $MethodName ) ) {
+            $ReflectionMethod = $ReflectionClass->getMethod($MethodName);
+            $ReflectionParameter = $ReflectionMethod->getParameters();
 
-        $ParameterList = array();
-        foreach ($ReflectionParameter as $Parameter) {
-            if ($Parameter->isDefaultValueAvailable()) {
-                $Value = $Parameter->getDefaultValue();
-            } else {
-                $Value = null;
+            $ParameterList = array();
+            foreach ($ReflectionParameter as $Parameter) {
+                if ($Parameter->isDefaultValueAvailable()) {
+                    $Value = $Parameter->getDefaultValue();
+                } else {
+                    $Value = null;
+                }
+                $ParameterList[$Parameter->getName()] = $Value;
             }
-            $ParameterList[$Parameter->getName()] = $Value;
+            $this->ApiMethod[$MethodName] = $ParameterList;
         }
-        $this->ApiMethod[$MethodName] = $ParameterList;
-
         return $this;
     }
 
@@ -80,8 +81,8 @@ class Dispatcher extends Extension
 
             $CallParameter = array();
             foreach ($ApiMethod as $Parameter => $Value) {
-                if (isset($_REQUEST[$Parameter])) {
-                    $CallParameter[$Parameter] = $_REQUEST[$Parameter];
+                if (isset($this->getGlobal()->REQUEST[$Parameter])) {
+                    $CallParameter[$Parameter] = $this->getGlobal()->REQUEST[$Parameter];
                 } else {
                     $CallParameter[$Parameter] = $Value;
                 }
@@ -150,7 +151,7 @@ class Dispatcher extends Extension
             if (is_object($Result)) {
                 $Result = (string)new Error(
                     'Ajax-Error',
-                    'API-Method (' . $MethodName . ') returned incompatiple JSON-Type (' . get_class($Result) . ')'
+                    'API-Method (' . $MethodName . ') returned incompatible JSON-Type (' . get_class($Result) . ')'
                 );
             }
         }

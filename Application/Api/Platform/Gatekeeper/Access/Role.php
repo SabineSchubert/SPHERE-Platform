@@ -8,6 +8,7 @@ use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\T
 use SPHERE\Common\Frontend\Ajax\Emitter\ClientEmitter;
 use SPHERE\Common\Frontend\Ajax\Emitter\ServerEmitter;
 use SPHERE\Common\Frontend\Ajax\Pipeline;
+use SPHERE\Common\Frontend\Ajax\Receiver\AbstractReceiver;
 use SPHERE\Common\Frontend\Ajax\Receiver\BlockReceiver;
 use SPHERE\Common\Frontend\Ajax\Receiver\ModalReceiver;
 use SPHERE\Common\Frontend\Ajax\Template\CloseModal;
@@ -116,7 +117,7 @@ class Role extends Level
         $Emitter->setGetPayload(array(
             Access::API_TARGET => 'callRoleTable'
         ));
-        $Pipeline = new Pipeline();
+        $Pipeline = new Pipeline(false);
         $Pipeline->appendEmitter($Emitter);
 
         return $Pipeline;
@@ -129,13 +130,18 @@ class Role extends Level
     {
         $Emitter = new ServerEmitter(Access::receiverRoleSetup(), Access::getEndpoint());
         $Emitter->setGetPayload(array(
-            Access::API_TARGET => 'callRoleFormSetup'
+            Access::API_TARGET => 'callRoleActionSetupEnable'
         ));
-        $Pipeline = new Pipeline();
+        $Pipeline = new Pipeline(false);
         $Pipeline->appendEmitter($Emitter);
         $Pipeline->setLoadingMessage('Level wird aktiviert');
 
         return $Pipeline;
+    }
+
+    public function callRoleActionSetupEnable($Id = null, $TblLevel = null)
+    {
+
     }
 
     /**
@@ -145,13 +151,18 @@ class Role extends Level
     {
         $Emitter = new ServerEmitter(Access::receiverRoleSetup(), Access::getEndpoint());
         $Emitter->setGetPayload(array(
-            Access::API_TARGET => 'callRoleFormSetup'
+            Access::API_TARGET => 'callRoleActionSetupDisable'
         ));
-        $Pipeline = new Pipeline();
+        $Pipeline = new Pipeline(false);
         $Pipeline->appendEmitter($Emitter);
         $Pipeline->setLoadingMessage('Level wird deaktiviert');
 
         return $Pipeline;
+    }
+
+    public function callRoleActionSetupDisable($Id = null, $TblLevel = null)
+    {
+
     }
 
     /**
@@ -208,6 +219,7 @@ class Role extends Level
             Access::API_TARGET => 'callRoleFormInsert'
         ));
         $Pipeline = new Pipeline();
+        $Pipeline->appendEmitter( self::inProgressEmitter( Access::receiverRoleInsert(), 'Rolle wird geladen...' ) );
         $Pipeline->appendEmitter($Emitter);
 
         return $Pipeline;
@@ -255,6 +267,25 @@ class Role extends Level
     }
 
     /**
+     * @param AbstractReceiver $Receiver
+     * @param string $Title
+     * @param string $Description
+     * @return ClientEmitter
+     */
+    private static function inProgressEmitter( AbstractReceiver $Receiver, $Title, $Description = 'Daten werden vom Server abgerufen' )
+    {
+        return new ClientEmitter($Receiver,
+            new Panel(
+                $Title,
+                array(
+                    new ProgressBar(0, 100, 0, 6),
+                    new MutedText($Description)
+                ),
+                Panel::PANEL_TYPE_DEFAULT
+        ));
+    }
+
+    /**
      * @return Pipeline
      */
     public static function pipelineRoleFormEdit()
@@ -264,18 +295,7 @@ class Role extends Level
             Access::API_TARGET => 'callRoleFormEdit'
         ));
         $Pipeline = new Pipeline();
-
-        $Client = new ClientEmitter(Access::receiverRoleEdit(),
-            new Panel(
-                'Rolle wird geladen...',
-                array(
-                    new ProgressBar(0, 100, 0, 6),
-                    new MutedText('Daten werden vom Server abgerufen')
-                ),
-                Panel::PANEL_TYPE_DEFAULT
-            ));
-        $Pipeline->appendEmitter($Client);
-
+        $Pipeline->appendEmitter( self::inProgressEmitter( Access::receiverRoleEdit(), 'Rolle wird geladen...' ) );
         $Pipeline->appendEmitter($Emitter);
 
         return $Pipeline;
@@ -290,7 +310,8 @@ class Role extends Level
         $Emitter->setGetPayload(array(
             Access::API_TARGET => 'callRoleFormSetup'
         ));
-        $Pipeline = new Pipeline();
+        $Pipeline = new Pipeline(false);
+        $Pipeline->appendEmitter( self::inProgressEmitter( Access::receiverRoleSetup(), 'Rolle wird geladen...' ) );
         $Pipeline->appendEmitter($Emitter);
 
         return $Pipeline;
@@ -329,7 +350,10 @@ class Role extends Level
                         (new Danger('', Access::getEndpoint(), new Disable(), array(
                             'Id' => $TblRole->getId(),
                             'TblLevel' => $TblLevel->getId()
-                        )))->ajaxPipelineOnClick(Access::pipelineRoleSetupDisable());
+                        )))->ajaxPipelineOnClick(array(
+                                Access::pipelineRoleSetupDisable(),
+                                Access::pipelineRoleTable()
+                        ));
 
                     $CurrentLevelList[] = $Content;
                 }
@@ -348,7 +372,10 @@ class Role extends Level
                         (new \SPHERE\Common\Frontend\Link\Repository\Success('', Access::getEndpoint(), new Enable(), array(
                             'Id' => $TblRole->getId(),
                             'TblLevel' => $TblLevel->getId()
-                        )))->ajaxPipelineOnClick(Access::pipelineRoleSetupEnable());
+                        )))->ajaxPipelineOnClick(array(
+                            Access::pipelineRoleSetupEnable(),
+                            Access::pipelineRoleTable()
+                        ));
                     $AvailableLevelList[] = $Content;
                 }
             } else {
@@ -364,8 +391,7 @@ class Role extends Level
                                     'order' => array(0, 'asc'),
                                     'columnDefs' => array(
                                         array('width' => '1%', 'targets' => array(-1)),
-                                        array('width' => '15%', 'targets' => array(0)),
-                                        array('searchable' => false, 'orderable' => false, 'targets' => array(0, -1))
+                                        array('searchable' => false, 'orderable' => false, 'targets' => array(-1))
                                     )
                                 )
                             ), 6),
@@ -375,8 +401,7 @@ class Role extends Level
                                     'order' => array(0, 'asc'),
                                     'columnDefs' => array(
                                         array('width' => '1%', 'targets' => array(-1)),
-                                        array('width' => '15%', 'targets' => array(0)),
-                                        array('searchable' => false, 'orderable' => false, 'targets' => array(0, -1))
+                                        array('searchable' => false, 'orderable' => false, 'targets' => array(-1))
                                     )
                                 )
                             ), 6),

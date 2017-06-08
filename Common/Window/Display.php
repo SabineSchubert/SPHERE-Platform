@@ -2,6 +2,7 @@
 namespace SPHERE\Common\Window;
 
 use MOC\V\Component\Template\Component\IBridgeInterface;
+use MOC\V\Core\FileSystem\FileSystem;
 use SPHERE\Application\Api\Platform\Utility\Favorite;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Access;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
@@ -293,6 +294,15 @@ class Display extends Extension implements ITemplateInterface
     {
 
         $this->Template->setVariable('ManagerStyle', Style::getManager());
+
+        $Loader = '/Common/Script/Loader.min.js';
+        $RealPath = FileSystem::getFileLoader($Loader)->getRealPath();
+        if (!empty($RealPath)) {
+            $Loader = $Loader.'?cTAG-' . hash_file('crc32',$RealPath);
+        } else {
+            $Loader = $Loader.'?cTAG-' . 'MISS-' . time();
+        }
+        $this->Template->setVariable('LoaderScript', $Loader);
         $this->Template->setVariable('ManagerScript', Script::getManager());
 
         $this->Template->setVariable('NavigationCluster', implode('', $this->ClusterNavigation));

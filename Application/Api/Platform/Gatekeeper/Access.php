@@ -29,7 +29,8 @@ class Access extends Role implements IApiInterface
 
         $Dispatcher->registerMethod('callRoleActionInsert');
         $Dispatcher->registerMethod('callRoleActionEdit');
-//        $Dispatcher->registerMethod('callRoleActionSetup');
+        $Dispatcher->registerMethod('callRoleActionSetupEnable');
+        $Dispatcher->registerMethod('callRoleActionSetupDisable');
         $Dispatcher->registerMethod('callRoleActionDelete');
 
         return $Dispatcher->callMethod($Method);

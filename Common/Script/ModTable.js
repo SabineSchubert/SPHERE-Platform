@@ -320,6 +320,9 @@
          * Fix: FixedHeaders won't recalculate if DT changes size/content/etc.
          */
         if( settings.fixedHeader ) {
+            Table.on( 'init.dt', function () {
+                Table.fixedHeader.adjust();
+            } );
             Table.on( 'draw.dt', function () {
                 Table.fixedHeader.adjust();
             } );
