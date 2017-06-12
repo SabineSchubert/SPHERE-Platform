@@ -295,7 +295,7 @@ class Display extends Extension implements ITemplateInterface
 
         $this->Template->setVariable('ManagerStyle', Style::getManager());
 
-        $Loader = '/Common/Script/Loader.min.js';
+        $Loader = '/Common/Script/Loader.js';
         $RealPath = FileSystem::getFileLoader($Loader)->getRealPath();
         if (!empty($RealPath)) {
             $Loader = $Loader.'?cTAG-' . hash_file('crc32',$RealPath);

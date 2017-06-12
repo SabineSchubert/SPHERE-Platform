@@ -1,9 +1,7 @@
 <?php
 namespace SPHERE\Application\Api\Platform\Gatekeeper\Access;
 
-use SPHERE\System\Extension\Extension;
-
-class Right extends Extension
+class Right extends Common
 {
 
 }

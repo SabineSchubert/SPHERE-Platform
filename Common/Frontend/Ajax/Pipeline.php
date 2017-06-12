@@ -97,6 +97,23 @@ class Pipeline implements IFrontendInterface
     }
 
     /**
+     * Append Foreign Pipeline
+     *
+     * WARNING! ONLY STRUCTURE, NOT DATA!
+     *
+     * @param Pipeline $Pipeline
+     * @return $this
+     */
+    public function appendForeignEmitter(Pipeline $Pipeline)
+    {
+        $PipelineEmitter = $Pipeline->getEmitter();
+        foreach( $PipelineEmitter as $Emitter ) {
+            $this->appendEmitter( $Emitter );
+        }
+        return $this;
+    }
+
+    /**
      * @internal
      * @deprecated
      * @param Pipeline $Pipeline

@@ -1,6 +1,6 @@
 var Client = (function () {
     'use strict';
-    var useDebug = true,
+    var useDebug = false,
         useDelay = 20,
         useRetry = 10000,
         useConfig = {},

@@ -19,19 +19,19 @@ class Access extends Role implements IApiInterface
     {
         $Dispatcher = new Dispatcher(__CLASS__);
 
-        $Dispatcher->registerMethod('callRoleStage');
-        $Dispatcher->registerMethod('callRoleTable');
+        $Dispatcher->registerMethod('loadRoleStage');
+        $Dispatcher->registerMethod('loadRoleTable');
 
-        $Dispatcher->registerMethod('callRoleFormInsert');
-        $Dispatcher->registerMethod('callRoleFormEdit');
-        $Dispatcher->registerMethod('callRoleFormSetup');
-        $Dispatcher->registerMethod('callRoleFormDelete');
+        $Dispatcher->registerMethod('formRoleInsert');
+        $Dispatcher->registerMethod('formRoleEdit');
+        $Dispatcher->registerMethod('formRoleSetup');
+        $Dispatcher->registerMethod('formRoleDelete');
 
-        $Dispatcher->registerMethod('callRoleActionInsert');
-        $Dispatcher->registerMethod('callRoleActionEdit');
-        $Dispatcher->registerMethod('callRoleActionSetupEnable');
-        $Dispatcher->registerMethod('callRoleActionSetupDisable');
-        $Dispatcher->registerMethod('callRoleActionDelete');
+        $Dispatcher->registerMethod('actionRoleInsert');
+        $Dispatcher->registerMethod('actionRoleEdit');
+        $Dispatcher->registerMethod('actionRoleSetupEnable');
+        $Dispatcher->registerMethod('actionRoleSetupDisable');
+        $Dispatcher->registerMethod('actionRoleDelete');
 
         return $Dispatcher->callMethod($Method);
     }
