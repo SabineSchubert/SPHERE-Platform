@@ -283,8 +283,8 @@ class Role extends RolePipeline
         if (!$Error) {
             if (AccessApp::useService()->createRole($Name, ($IsInternal ? true : false))) {
                 // on Success
-                return new Success('Rolle erfolgreich angelegt') . (Access::pipelineRoleTable())
-                        ->appendEmitter((new CloseModal(Access::receiverRoleInsert()))->getEmitter());
+                return new Success('Rolle erfolgreich angelegt') . (Access::pipelineRoleTable()
+                        ->appendEmitter((new CloseModal(Access::receiverRoleInsert()))->getEmitter()));
             } else {
                 // on Error
                 return $Form->setError('Name', 'Die Rolle konnte nicht angelegt werden');
