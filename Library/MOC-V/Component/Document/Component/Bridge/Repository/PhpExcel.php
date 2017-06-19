@@ -12,6 +12,10 @@ use MOC\V\Component\Document\Component\Bridge\Repository\PhpExcel\Worksheet;
  */
 class PhpExcel extends Worksheet
 {
+    const TYPE_STRING = 's';
+    const TYPE_NUMERIC = 'n';
+    const TYPE_BOOL = 'b';
+    const TYPE_NULL = 'null';
 
     /**
      * PhpExcel constructor.
@@ -42,16 +46,17 @@ class PhpExcel extends Worksheet
     }
 
     /**
-     * @param Cell  $Cell
+     * @param Cell $Cell
      * @param mixed $Value
+     * @param string $Type
      *
      * @return $this
      */
-    public function setValue(Cell $Cell, $Value)
+    public function setValue(Cell $Cell, $Value, $Type = PhpExcel::TYPE_STRING)
     {
 
         $this->Source->getActiveSheet()->setCellValueExplicitByColumnAndRow($Cell->getColumn(), $Cell->getRow(),
-            $Value);
+            $Value, $Type);
         return $this;
     }
 
