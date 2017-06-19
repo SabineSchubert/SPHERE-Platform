@@ -12,7 +12,10 @@ use SPHERE\Common\Frontend\Icon\IIconInterface;
  */
 class TextField extends AbstractTextField implements IFieldInterface
 {
-
+    /** @var string $Label */
+    private $Label = '';
+    /** @var string $Label */
+    private $Placeholder = '';
     /**
      * @param string         $Name
      * @param null|string    $Placeholder
@@ -29,6 +32,8 @@ class TextField extends AbstractTextField implements IFieldInterface
     ) {
 
         $this->Name = $Name;
+        $this->Label = $Label;
+        $this->Placeholder = $Placeholder;
         $this->Template = $this->getTemplate(__DIR__.'/TextField.twig');
         $this->Template->setVariable('ElementName', $Name);
         $this->Template->setVariable('ElementLabel', $Label);
@@ -39,6 +44,22 @@ class TextField extends AbstractTextField implements IFieldInterface
         if (null !== $Mask) {
             $this->Template->setVariable('ElementMask', $Mask);
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->Label;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPlaceholder()
+    {
+        return $this->Placeholder;
     }
 
 }

@@ -4,7 +4,6 @@ namespace SPHERE\Common;
 use Doctrine\DBAL\Driver\PDOException;
 use Doctrine\DBAL\Exception\InvalidFieldNameException;
 use Doctrine\DBAL\Exception\TableNotFoundException;
-use MOC\V\Component\Router\Component\Bridge\Repository\UniversalRouter;
 use SPHERE\Application\Api\Api;
 use SPHERE\Application\Competition\Competition;
 use SPHERE\Application\Dispatcher;
@@ -18,6 +17,7 @@ use SPHERE\Application\Platform\Platform;
 use SPHERE\Application\Platform\System;
 use SPHERE\Application\Product\Product;
 use SPHERE\Application\Reporting\Reporting;
+use SPHERE\Application\Search\Search;
 use SPHERE\Application\Statistic\Statistic;
 use SPHERE\Application\Training\Training;
 use SPHERE\Common\Frontend\Icon\Repository\HazardSign;
@@ -79,7 +79,7 @@ class Main extends Extension
             self::$Display = new Display();
         }
         if (self::getDispatcher() === null) {
-            self::$Dispatcher = new Dispatcher(new UniversalRouter());
+            self::$Dispatcher = new Dispatcher(new Router());
         }
     }
 
@@ -396,5 +396,6 @@ class Main extends Extension
 //        OtherApplication::registerCluster();
         Competition::registerCluster();
         Example::registerCluster();
+        Search::registerCluster();
     }
 }

@@ -87,6 +87,10 @@ class Script
             $Location . '/List.Js/1.1.1/dist/list.js',
             "'undefined' !== typeof List"
         ));
+        $this->addLibrary(new Library('List.Js', '1.5.0',
+            $Location . '/List.Js/1.5.0/dist/list.js',
+            "'undefined' !== typeof List"
+        ));
         $this->addLibrary(new Library('Bootstrap', '3.3.7',
             $Location . '/Bootstrap/3.3.7/dist/js/bootstrap.min.js',
             "'function' === typeof jQuery().emulateTransitionEnd"
@@ -289,6 +293,18 @@ class Script
         $this->addLibrary(new Library('Bootstrap.Slider', '9.8.0',
             $Location . '/Bootstrap.Slider/9.8.0/dist/bootstrap-slider.min.js',
             "'undefined' !== typeof jQuery.fn.bootstrapSlider"
+        ));
+        $this->addLibrary(new Library('Bootstrap.MagicSuggest', '2.1.4',
+            $Location . '/Bootstrap.MagicSuggest/2.1.4/magicsuggest.js',
+            "'undefined' !== typeof jQuery.fn.magicSuggest"
+        ));
+        $this->addLibrary(new Library('Bootstrap.TokenField', '0.12.1',
+            $Location . '/Bootstrap.TokenField/0.12.1/dist/bootstrap-tokenfield.min.js',
+            "'undefined' !== typeof jQuery.fn.tokenfield"
+        ));
+        $this->addLibrary(new Library('Bootstrap.TokenField', 'master',
+            $Location . '/Bootstrap.TokenField/master/dist/bootstrap-tokenfield.min.js',
+            "'undefined' !== typeof jQuery.fn.tokenfield"
         ));
     }
 

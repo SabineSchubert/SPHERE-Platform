@@ -6,6 +6,7 @@ use SPHERE\Application\Api\Example\Example;
 use SPHERE\Application\Api\Platform\Platform;
 use SPHERE\Application\Api\Product\Product;
 use SPHERE\Application\Api\Reporting\Reporting;
+use SPHERE\Application\Api\Search\Search;
 use SPHERE\Application\IClusterInterface;
 
 /**
@@ -22,5 +23,6 @@ class Api implements IClusterInterface
         Product::registerApplication();
         Reporting::registerApplication();
         Example::registerApplication();
+        Search::registerApplication();
     }
 }

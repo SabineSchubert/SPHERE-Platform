@@ -39,11 +39,13 @@ class TblRole extends Element
 
     /**
      * @param string $Name
+     * @return $this
      */
     public function setName($Name)
     {
 
-        $this->Name = $Name;
+        $this->Name = (string)$Name;
+        return $this;
     }
 
     /**
@@ -53,6 +55,16 @@ class TblRole extends Element
     {
 
         return Access::useService()->getLevelAllByRole($this);
+    }
+
+    /**
+     * @return int
+     */
+    public function countTblLevelAll()
+    {
+        $Count = Access::useService()->countLevelAllByRole($this);
+
+        return (int)($Count ? $Count : 0 );
     }
 
     /**
@@ -66,10 +78,12 @@ class TblRole extends Element
 
     /**
      * @param bool $IsInternal
+     * @return $this
      */
     public function setInternal($IsInternal)
     {
 
         $this->IsInternal = (bool)$IsInternal;
+        return $this;
     }
 }

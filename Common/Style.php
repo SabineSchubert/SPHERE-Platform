@@ -49,6 +49,9 @@ class Style extends Extension
             $this->setLibrary((new StyleLibrary('Slick.Theme', '1.6.0'))->getLibrary());
 
             $this->setLibrary((new StyleLibrary('Bootstrap.Slider', '9.8.0'))->getLibrary());
+//            $this->setLibrary((new StyleLibrary('Bootstrap.MagicSuggest','2.1.4'))->getLibrary());
+            $this->setLibrary((new StyleLibrary('Bootstrap.TokenField','master'))->getLibrary());
+//            $this->setLibrary((new StyleLibrary('Bootstrap.TokenField.TypeAHead','0.12.1'))->getLibrary());
 
             $this->setLibrary((new StyleLibrary('jQuery.Formstone.Selecter', '3.2.4'))->getLibrary(), false, true);
             $this->setLibrary((new StyleLibrary('jQuery.Formstone.Stepper', '3.0.8'))->getLibrary(), false, true);
@@ -122,7 +125,7 @@ class Style extends Extension
 //        $this->setSource('/Common/Style/CleanSlate/0.10.1/cleanslate.css', false, true);
 
         $this->setSource('/Common/Style/PhpInfo.css', false, true);
-//        $this->setSource('/Common/Style/Addition.css');
+        $this->setSource('/Common/Style/Addition.css');
         $this->setSource('/Common/Style/Animate.css');
     }
 

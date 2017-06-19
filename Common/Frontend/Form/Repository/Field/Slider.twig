@@ -26,7 +26,7 @@
     //noinspection JSUnresolvedFunction
     executeScript(function() {
         Client.Use('ModSlider', function () {
-            jQuery('input[name="{{ ElementName }}"]').ModSlider();
+            jQuery('input[name="{{ ElementName }}"]').ModSlider({{ ElementConfiguration }});
         });
     });
 </script>

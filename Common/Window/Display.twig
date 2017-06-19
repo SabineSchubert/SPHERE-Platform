@@ -115,12 +115,21 @@
                     <nav class="navbar navbar-default navbar-service small">
                         <ul class="nav navbar-nav navbar-right">
                             <li>
+                                <a href="#" onClick="window.location.reload(); return false;" title="Zusätzliche Komponenten werden geladen">
+                                    <span class="loading-indicator">
+                                        <span class="glyphicons glyphicons-refresh loading-indicator-animate text-primary"></span>
+                                    </span>
+                                    <span class="loading-error">
+                                        <span class="glyphicons glyphicons-repeat text-danger"></span>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
                                 <a href="/">
                                     <span class="glyphicons glyphicons-home" aria-hidden="true"></span>&nbsp;Startseite
                                 </a>
                             </li>
                             {{ NavigationService }}
-                            {{ NavigationFavorite }}
                             <li>
                                 <a href="#" data-html="true" data-trigger="hover" data-toggle="popover"
                                    data-content="<div>4x&nbsp;Q440......................................................................................................................</div><div>2x&nbsp;Artikel</div>"
@@ -133,6 +142,7 @@
                     <nav class="navbar navbar-inverse navbar-cluster">
                         <ul class="nav navbar-nav navbar-right">
                             {{ NavigationCluster }}
+                            {{ NavigationFavorite }}
                         </ul>
                     </nav>
 
@@ -291,7 +301,7 @@
 
 {# ----------------------------------------------------------------------------------------------------------- SCRIPT #}
 
-<script src="{{ PathBase }}/Common/Script/Loader.js"></script>
+<script src="{{ PathBase }}{{ LoaderScript }}"></script>
 {{ ManagerScript }}
 <script>
     //    var _paq = _paq || [];

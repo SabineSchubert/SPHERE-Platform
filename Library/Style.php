@@ -133,6 +133,21 @@ class Style
         $this->addLibrary(new Library('Bootstrap.Slider', '9.8.0',
             $Location . '/Bootstrap.Slider/9.8.0/dist/css/bootstrap-slider.min.css'
         ));
+        $this->addLibrary(new Library('Bootstrap.MagicSuggest', '2.1.4',
+            $Location . '/Bootstrap.MagicSuggest/2.1.4/magicsuggest-min.css'
+        ));
+        $this->addLibrary(new Library('Bootstrap.TokenField', '0.12.1',
+            $Location . '/Bootstrap.TokenField/0.12.1/dist/css/bootstrap-tokenfield.min.css'
+        ));
+        $this->addLibrary(new Library('Bootstrap.TokenField.TypeAHead', '0.12.1',
+            $Location . '/Bootstrap.TokenField/0.12.1/dist/css/tokenfield-typeahead.min.css'
+        ));
+        $this->addLibrary(new Library('Bootstrap.TokenField', 'master',
+            $Location . '/Bootstrap.TokenField/master/dist/css/bootstrap-tokenfield.min.css'
+        ));
+        $this->addLibrary(new Library('Bootstrap.TokenField.TypeAHead', 'master',
+            $Location . '/Bootstrap.TokenField/master/dist/css/tokenfield-typeahead.min.css'
+        ));
     }
 
     /**

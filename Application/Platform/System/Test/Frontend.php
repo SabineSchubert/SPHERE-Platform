@@ -18,6 +18,7 @@ use SPHERE\Common\Frontend\Form\Repository\Button\Reset;
 use SPHERE\Common\Frontend\Form\Repository\Button\Standard as BtnStandard;
 use SPHERE\Common\Frontend\Form\Repository\Button\Success;
 use SPHERE\Common\Frontend\Form\Repository\Field\AutoCompleter;
+use SPHERE\Common\Frontend\Form\Repository\Field\AutoSuggest;
 use SPHERE\Common\Frontend\Form\Repository\Field\CheckBox;
 use SPHERE\Common\Frontend\Form\Repository\Field\DatePicker;
 use SPHERE\Common\Frontend\Form\Repository\Field\FileUpload;
@@ -127,10 +128,12 @@ class Frontend extends Extension implements IFrontendInterface
             (new Form(
                 new FormGroup(array(
                     new FormRow(array(
-                        new FormColumn(
+                        new FormColumn(array(
                             new AutoCompleter('AutoCompleter', 'AutoCompleter', 'AutoCompleter',
-                                array('123', '234', '345'))
-                            , 3),
+                                array('123', '234', '345')),
+//                            new AutoSuggest('AutoSuggest', 'AutoSuggest', 'AutoSuggest',
+//                                array('abc', 'bcd', 'cde')),
+                        ), 3),
                         new FormColumn(array(
                             new CheckBox('CheckBox1', 'CheckBox', 'c1'),
                             new CheckBox('CheckBox2', 'CheckBox', 'c2'),

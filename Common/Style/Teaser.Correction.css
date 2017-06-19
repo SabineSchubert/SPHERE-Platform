@@ -4,14 +4,14 @@
 }
 
 .slick-prev {
-    z-index: 1000;
+    z-index: 900;
     left: 50px;
     width: 30px;
     height: 30px;
 }
 
 .slick-next {
-    z-index: 1000;
+    z-index: 900;
     right: 50px;
     width: 30px;
     height: 30px;

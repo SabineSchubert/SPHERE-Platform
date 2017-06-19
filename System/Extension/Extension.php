@@ -122,7 +122,7 @@ class Extension
     public function getGlobal()
     {
 
-        return new SuperGlobal($_GET, $_POST, $_REQUEST, $_SESSION);
+        return new SuperGlobal($_GET, $_POST, $_REQUEST, $_SESSION, $_FILES);
     }
 
     /**

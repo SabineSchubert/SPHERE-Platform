@@ -2,6 +2,7 @@
 namespace SPHERE\Common\Window\Navigation;
 
 use MOC\V\Component\Template\Component\IBridgeInterface;
+use SPHERE\Common\Frontend\Ajax\Pipeline;
 use SPHERE\Common\Window\Navigation\Link\Icon;
 use SPHERE\Common\Window\Navigation\Link\Name;
 use SPHERE\Common\Window\Navigation\Link\Route;
@@ -25,7 +26,19 @@ class Link extends Extension
     private $Icon = null;
     /** @var bool $Active */
     private $Active = false;
+    /** @var string $Hash */
+    protected $Hash = '';
 
+    /**
+     * @return string
+     */
+    public function getHash()
+    {
+        if (empty( $this->Hash )) {
+            $this->Hash = 'Window-Navigation-'.crc32( uniqid(__CLASS__, true) );
+        }
+        return $this->Hash;
+    }
     /**
      * @param Route $Route
      * @param Name $Name
@@ -42,6 +55,7 @@ class Link extends Extension
         $this->Active = $Active || $this->getActive($Route);
 
         $this->Template = $this->getTemplate(__DIR__.'/Link.twig');
+        $this->Template->setVariable('ElementHash', $this->getHash());
         $this->Template->setVariable('Route', $Route->getValue());
         $this->Template->setVariable('Name', $Name->getValue());
         if (null === $Icon) {
@@ -126,5 +140,24 @@ class Link extends Extension
     {
 
         return $this->Icon;
+    }
+
+    /**
+     * @param Pipeline|Pipeline[] $Pipeline
+     * @return $this
+     */
+    public function ajaxPipelineOnClick( $Pipeline )
+    {
+        $Script = '';
+        if( is_array( $Pipeline ) ) {
+            foreach( $Pipeline as $Element ) {
+                $Script .= $Element->parseScript($this);
+            }
+        } else {
+            $Script = $Pipeline->parseScript($this);
+        }
+
+        $this->Template->setVariable('AjaxEventClick', $Script);
+        return $this;
     }
 }

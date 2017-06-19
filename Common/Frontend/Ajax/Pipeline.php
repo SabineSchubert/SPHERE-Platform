@@ -97,6 +97,23 @@ class Pipeline implements IFrontendInterface
     }
 
     /**
+     * Append Foreign Pipeline
+     *
+     * WARNING! ONLY STRUCTURE, NOT DATA!
+     *
+     * @param Pipeline $Pipeline
+     * @return $this
+     */
+    public function appendForeignEmitter(Pipeline $Pipeline)
+    {
+        $PipelineEmitter = $Pipeline->getEmitter();
+        foreach( $PipelineEmitter as $Emitter ) {
+            $this->appendEmitter( $Emitter );
+        }
+        return $this;
+    }
+
+    /**
      * @internal
      * @deprecated
      * @param Pipeline $Pipeline
@@ -154,11 +171,11 @@ class Pipeline implements IFrontendInterface
                     }
                     $Data = $Emitter->getAjaxPostPayload();
                 } else if( $FrontendElement instanceof AbstractLink ) {
+                    $Method = 'POST';
                     /**
                      * Link
                      */
                     if (strlen($Emitter->getAjaxPostPayload()) > 2) {
-                        $Method = 'POST';
                         if( !empty( $FrontendElement->getData() ) ) {
                             $Payload = json_decode( $Emitter->getAjaxPostPayload(), true );
                             $Payload = array_merge( $FrontendElement->getData(), $Payload );
@@ -169,41 +186,18 @@ class Pipeline implements IFrontendInterface
                         }
                     } else {
                         if (!empty($FrontendElement->getData())) {
-                            $Method = 'POST';
                             $Payload = json_encode($FrontendElement->getData(), JSON_FORCE_OBJECT);
                         } else {
                             $Payload = json_encode($Data, JSON_FORCE_OBJECT);
                         }
                     }
-                    if( $Method == 'POST' ) {
-                        $Data = 'var EmitterData = ' . $Payload . '; ';
-                        $Data .= 'var Element = jQuery("#' . $FrontendElement->getHash() . '"); ';
-                        $Data .= 'var DataSet = Element.closest("form"); ';
-                        $Data .= 'if( DataSet.length ) { DataSet = DataSet.serializeArray(); ';
-                        $Data .= 'for( var Index in DataSet ) { EmitterData[DataSet[Index]["name"]] = DataSet[Index]["value"]; };';
-                        $Data .= '} ';
-                        $Data .= 'return EmitterData;';
-                    } else {
-                        $Data = $Payload;
-                    }
-//                    if (strlen($Emitter->getAjaxPostPayload()) > 2) {
-//                        $Method = 'POST';
-//                        if( !empty( $FrontendElement->getData() ) ) {
-//                            $Payload = json_decode( $Emitter->getAjaxPostPayload(), true );
-//                            $Payload = array_merge($FrontendElement->getData(), $Payload);
-//                            $Data = json_encode( $Payload, JSON_FORCE_OBJECT );
-//                        } else {
-//                            $Data = json_decode( $Emitter->getAjaxPostPayload() );
-//                            $Data = json_encode( $Data, JSON_FORCE_OBJECT );
-//                        }
-//                    } else {
-//                        if (!empty($FrontendElement->getData())) {
-//                            $Method = 'POST';
-//                            $Data = json_encode($FrontendElement->getData(), JSON_FORCE_OBJECT);
-//                        } else {
-//                            $Data = json_encode($Data, JSON_FORCE_OBJECT);
-//                        }
-//                    }
+                    $Data = 'var EmitterData = ' . $Payload . '; ';
+                    $Data .= 'var Element = jQuery("#' . $FrontendElement->getHash() . '"); ';
+                    $Data .= 'var DataSet = Element.closest("form"); ';
+                    $Data .= 'if( DataSet.length ) { DataSet = DataSet.serializeArray(); ';
+                    $Data .= 'for( var Index in DataSet ) { EmitterData[DataSet[Index]["name"]] = DataSet[Index]["value"]; };';
+                    $Data .= '} ';
+                    $Data .= 'return EmitterData;';
                 } else if( $FrontendElement instanceof Form ) {
                     /**
                      * Form
@@ -211,11 +205,11 @@ class Pipeline implements IFrontendInterface
                     $Method = 'POST';
                     if (strlen($Emitter->getAjaxPostPayload()) > 2) {
                         if( !empty( $FrontendElement->getData() ) ) {
-                            $Payload = json_decode( $Emitter->getAjaxPostPayload() );
+                            $Payload = json_decode( $Emitter->getAjaxPostPayload(), true );
                             $Payload = array_merge( $FrontendElement->getData(), $Payload );
                             $Data = json_encode( $Payload, JSON_FORCE_OBJECT );
                         } else {
-                            $Data = json_decode( $Emitter->getAjaxPostPayload() );
+                            $Data = json_decode( $Emitter->getAjaxPostPayload(), true );
                             $Data = json_encode( $Data, JSON_FORCE_OBJECT );
                         }
                         $Data = 'var EmitterData = ' . $Data . ';';
