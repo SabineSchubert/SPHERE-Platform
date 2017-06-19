@@ -10,7 +10,10 @@ namespace SPHERE\Application\Api\Reporting;
 
 
 use SPHERE\Application\Api\Reporting\Excel\ExcelDefault;
+use SPHERE\Application\Api\Reporting\Excel\ExcelMultiplyCalculation;
+use SPHERE\Application\Api\Reporting\Excel\ExcelScenarioCalculator;
 use SPHERE\Application\Api\Reporting\Utility\MultiplyCalculation\MultiplyCalculation;
+use SPHERE\Application\Api\Reporting\Utility\MultiplyCalculation\Pipeline;
 use SPHERE\Application\Api\Reporting\Utility\ScenarioCalculator\ScenarioCalculator;
 use SPHERE\Application\IApplicationInterface;
 
@@ -20,5 +23,8 @@ class Reporting implements IApplicationInterface
 		MultiplyCalculation::registerApi();
 		ScenarioCalculator::registerApi();
 		ExcelDefault::registerApi();
+		ExcelMultiplyCalculation::registerApi();
+		ExcelScenarioCalculator::registerApi();
+		Pipeline::registerApi();
 	}
 }

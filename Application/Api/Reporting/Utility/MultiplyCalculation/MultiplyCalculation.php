@@ -11,6 +11,7 @@ namespace SPHERE\Application\Api\Reporting\Utility\MultiplyCalculation;
 
 use SPHERE\Application\Api\ApiTrait;
 use SPHERE\Application\Api\Dispatcher;
+use SPHERE\Application\Api\Reporting\Excel\ExcelMultiplyCalculation;
 use SPHERE\Application\IApiInterface;
 use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part;
@@ -20,6 +21,7 @@ use SPHERE\Common\Frontend\Ajax\Receiver\AbstractReceiver;
 use SPHERE\Common\Frontend\Ajax\Receiver\BlockReceiver;
 use SPHERE\Common\Frontend\Form\Repository\AbstractField;
 use SPHERE\Common\Frontend\Layout\Repository\PullRight;
+use SPHERE\Common\Frontend\Link\Repository\External;
 use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Frontend\Text\Repository\Bold;
 use SPHERE\Common\Frontend\Text\Repository\Danger;
@@ -32,7 +34,7 @@ class MultiplyCalculation extends Extension implements IApiInterface
 {
 	use ApiTrait;
 
-	public static function pipelineMultiplyCalculation( AbstractReceiver $Receiver, AbstractField $Field = null, TblReporting_Part $EntityPart ) {
+	public static function pipelineMultiplyCalculation( AbstractReceiver $Receiver, AbstractField $Field = null, TblReporting_Part $EntityPart, AbstractReceiver $ExcelReceiver ) {
 		$Emitter = new ServerEmitter( $Receiver, MultiplyCalculation::getEndpoint() );
 		$Emitter->setGetPayload(array(
 			MultiplyCalculation::API_TARGET => 'calcMultiplyCalculation',
@@ -53,6 +55,15 @@ class MultiplyCalculation extends Extension implements IApiInterface
 			));
 			$Pipeline->appendEmitter($Emitter2);
 		}
+
+		$ExcelEmitter = new ServerEmitter( $ExcelReceiver, MultiplyCalculation::getEndpoint() );
+        $ExcelEmitter->setGetPayload(array(
+            MultiplyCalculation::API_TARGET => 'calcMultiplyCalculation',
+            'Receiver'  => $ExcelReceiver->getIdentifier(),
+            'PartId' => $EntityPart->getId(),
+        ));
+        $Pipeline->appendEmitter($ExcelEmitter);
+
 
 		return $Pipeline;
 	}
@@ -159,22 +170,33 @@ class MultiplyCalculation extends Extension implements IApiInterface
 		return $PriceData;
 	}
 
-	public function calcMultiplyCalculation( $Receiver, $DiscountNumber, $GrossPrice, $NetSale, $CoverageContribution, $PartId ) {
+	public function calcMultiplyCalculation( $Receiver, $DiscountNumber, $GrossPrice, $NetSale, $CoverageContribution, $PartId, $AllPriceData ) {
 
 		$PriceData = $this->calcPriceData( $Receiver, $DiscountNumber, $GrossPrice, $NetSale, $CoverageContribution, $PartId );
 
 		switch ($Receiver) {
 			case 'DiscountNumber':
+                $AllPriceData['DiscountNumber'] = $PriceData;
 				return MultiplyCalculation::tableAllocationChanceDiscount( $PriceData );
 				break;
 			case 'GrossPrice':
+                $AllPriceData['GrossPrice'] = $PriceData;
 				return MultiplyCalculation::tableAllocationChanceGrossPrice( $PriceData );
 				break;
 			case 'NetSale':
+                $AllPriceData['NetSale'] = $PriceData;
 				return MultiplyCalculation::tableBalancingChanceDiscount( $PriceData );
 				break;
 			case 'CoverageContribution':
+                $AllPriceData['CoverageContribution'] = $PriceData;
 				return MultiplyCalculation::tableBalancingChanceGrossPrice( $PriceData );
+				break;
+			case 'ExcelDownload':
+                $ExcelReceiver = new External('ExcelDownload', ExcelMultiplyCalculation::getEndpoint(), null, array(
+                    ExcelMultiplyCalculation::API_TARGET => 'getExcel',
+                    'DataList' => $AllPriceData
+                ) );
+				return $ExcelReceiver;
 				break;
 		}
 	}

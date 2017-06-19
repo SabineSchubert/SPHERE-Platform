@@ -8,11 +8,14 @@
 
 namespace SPHERE\Application\Reporting\Utility\MultiplyCalculation;
 
+use SPHERE\Application\Api\Reporting\Excel\ExcelMultiplyCalculation;
 use SPHERE\Application\Api\Reporting\Utility\MultiplyCalculation\MultiplyCalculation as ApiMultiplyCalculation;
+use SPHERE\Application\Api\Reporting\Utility\MultiplyCalculation\Pipeline;
 use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Button\Reset;
+use SPHERE\Common\Frontend\Form\Repository\Button\Standard;
 use SPHERE\Common\Frontend\Form\Repository\Field\TextField;
 use SPHERE\Common\Frontend\Form\Structure\Form;
 use SPHERE\Common\Frontend\Form\Structure\FormColumn;
@@ -26,6 +29,7 @@ use SPHERE\Common\Frontend\Layout\Structure\Layout;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
+use SPHERE\Common\Frontend\Link\Repository\External;
 use SPHERE\Common\Frontend\Message\Repository\Warning;
 use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Frontend\Text\Repository\Bold;
@@ -43,6 +47,7 @@ class Frontend extends Extension
 		$Form = '';
 		$LayoutAllocation = '';
 		$LayoutBalancing = '';
+		$LayoutExcel = '';
         $ErrorPart = '';
 		if ($Search) {
 
@@ -64,40 +69,62 @@ class Frontend extends Extension
 				$TableBalancingChanceDiscountReceiver = (ApiMultiplyCalculation::Receiver())->setIdentifier($NetSaleField->getName());
 				$TableBalancingChanceGrossPriceReceiver = (ApiMultiplyCalculation::Receiver())->setIdentifier($CoverageContributionField->getName());
 
+				//Excel
+                $ReceiverExcel = Pipeline::BlockReceiver()->setIdentifier('ExcelDownload');
+                $ReceiverForm = Pipeline::BlockReceiver()->setIdentifier('FormReceiver');
+                $LinkBtn = new \SPHERE\Common\Frontend\Link\Repository\Standard('Excel-Download', Pipeline::getEndpoint() , null, array(
+                    'Receiver' => $ReceiverForm,
+                    'PartId' => $EntityPart->getId()
+                ) );
+
+
+
 				//Pipeline
-				$DiscountNumberPipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableAllocationChanceDiscountReceiver, $NetSaleField, $EntityPart);
-				$GrossPricePipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableAllocationChanceGrossPriceReceiver, $CoverageContributionField, $EntityPart);
-				$NetSalePipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableBalancingChanceDiscountReceiver, $CoverageContributionField, $EntityPart);
-				$CoverageContributionPipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableBalancingChanceGrossPriceReceiver, $NetSaleField, $EntityPart);
+				$DiscountNumberPipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableAllocationChanceDiscountReceiver, $NetSaleField, $EntityPart, $ReceiverExcel);
+				$GrossPricePipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableAllocationChanceGrossPriceReceiver, $CoverageContributionField, $EntityPart, $ReceiverExcel);
+				$NetSalePipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableBalancingChanceDiscountReceiver, $CoverageContributionField, $EntityPart, $ReceiverExcel);
+				$CoverageContributionPipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableBalancingChanceGrossPriceReceiver, $NetSaleField, $EntityPart, $ReceiverExcel);
 
 				$LayoutContent = new Form(
 					new FormGroup(
 						array(
 							new FormRow(
 								array(
+                                    new FormColumn(
+                                        $LinkBtn->ajaxPipelineOnClick( Pipeline::pipelineExcel($ReceiverExcel) ), 4
+                                    ),
 									new FormColumn(
 										new Panel( '', array(
 											$DiscountNumberField->ajaxPipelineOnChange( $DiscountNumberPipeline )
-										), Panel::PANEL_TYPE_DEFAULT), 6
+										), Panel::PANEL_TYPE_DEFAULT), 4
 									),
 									new FormColumn(
 										new Panel( '', array(
 												$GrossPriceField->ajaxPipelineOnChange( $GrossPricePipeline )
-										), Panel::PANEL_TYPE_DEFAULT), 6
+										), Panel::PANEL_TYPE_DEFAULT), 4
 									)
 								)
 							),
 							new FormRow(
 								array(
+                                    new FormColumn(
+                                        new Layout(
+                                            new LayoutGroup(
+                                                new LayoutRow(
+                                                    new LayoutColumn( '' )
+                                                )
+                                            )
+                                        ), 4
+                                    ),
 									new FormColumn(
 										new Panel( '', array(
 											$NetSaleField->ajaxPipelineOnChange( $NetSalePipeline )
-										), Panel::PANEL_TYPE_DEFAULT), 6
+										), Panel::PANEL_TYPE_DEFAULT), 4
 									),
 									new FormColumn(
 										new Panel( '', array(
 											$CoverageContributionField->ajaxPipelineOnChange( $CoverageContributionPipeline )
-										), Panel::PANEL_TYPE_DEFAULT), 6
+										), Panel::PANEL_TYPE_DEFAULT), 4
 									)
 								)
 							)
@@ -110,8 +137,8 @@ class Frontend extends Extension
 						new LayoutGroup(
 							new LayoutRow(
 								array(
-									new LayoutColumn('', 4),
-									new LayoutColumn($LayoutContent, 8)
+//									new LayoutColumn('', 4),
+									new LayoutColumn($LayoutContent, 12)
 								)
 							)
 							, new Title('Mehrmengenberechung bei Vergabe von Zusatzrabatten bzw. Änderung des BLP')
@@ -157,6 +184,16 @@ class Frontend extends Extension
 					)
 				);
 
+//				$LayoutExcel = new Layout(
+//                    new LayoutGroup(
+//                        new LayoutRow(
+//                            new LayoutColumn(
+//                                $ReceiverExcel
+//                            )
+//                        )
+//                    )
+//                );
+
 			} else {
 				$ErrorPart = new Warning('Die Teilenummer konnte nicht gefunden werden.');
 			}
@@ -184,6 +221,7 @@ class Frontend extends Extension
 			.$Form
 			.$LayoutAllocation
 			.$LayoutBalancing
+           // .$LayoutExcel
 		);
 		return $Stage;
 	}
@@ -233,7 +271,7 @@ class Frontend extends Extension
 			new Table(array(
 				array(
 					'Description' => 'Bezeichnung',
-					'Value' => 'Abschneider'
+					'Value' => $EntityPart->getName()
 				),
 				array(
 					'Description' => 'BLP/TP',

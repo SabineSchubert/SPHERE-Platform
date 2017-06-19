@@ -10,6 +10,7 @@ namespace SPHERE\Application\Reporting\Controlling\DirectSearch;
 
 
 use Doctrine\Common\Util\Debug;
+use SPHERE\Application\Platform\Utility\Translation\LocaleTrait;
 use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_MarketingCode;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part;
@@ -56,6 +57,8 @@ use SPHERE\System\Extension\Repository\Debugger;
 
 class Frontend extends Extension
 {
+
+    use LocaleTrait;
 
 	private function buttonStageDirectSearch(Stage $Stage)
 	{
@@ -792,7 +795,7 @@ class Frontend extends Extension
 
             if( $Rw != 0 ) {
                 $PriceDescription = 'BLP / VP<br/>BLP / TP<br/>NLP / VP<br/>NLP / TP';
-                $PriceValue = number_format( $CalcRules->calcGrossPrice( 0, 0, $Rw, 0, 0, 0, $GrossPrice ), 2, ',', '.' ).' €<br/>'.number_format( $GrossPrice, 2, ',', '.').' €<br/>'
+                $PriceValue = number_format( $CalcRules->calcGrossPrice( 0, 0, $Rw, 0, 0, 0, $GrossPrice ), 2, ',', '.' ).' €<br/>'.$this->doLocalize($GrossPrice)->getCurrency().' <br/>'
                     .number_format( $CalcRules->calcNetPrice( $GrossPrice, $Discount, $Rw ), 2, ',', '.').' €<br/>'.number_format( $CalcRules->calcNetPrice( $GrossPrice, $Discount ), 2, ',', '.').' €';
             }
             else {

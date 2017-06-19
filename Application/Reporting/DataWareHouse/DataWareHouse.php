@@ -12,6 +12,7 @@ use SPHERE\Application\AppTrait;
 use SPHERE\Application\IApplicationInterface;
 use SPHERE\Application\IModuleInterface;
 use SPHERE\Application\Platform\Gatekeeper\Consumer\Consumer;
+use SPHERE\Application\Reporting\DataWareHouse\Presto\Presto;
 use SPHERE\Application\Reporting\DataWareHouse\Sales\Sales;
 use SPHERE\Common\Frontend\Icon\Repository\Blackboard;
 use SPHERE\Common\Window\Stage;
@@ -25,7 +26,9 @@ class DataWareHouse implements IApplicationInterface, IModuleInterface
 	{
 	    self::createApplication(__NAMESPACE__, __CLASS__, 'frontendImport', 'Import', new Blackboard(), 'Stammdaten<br/>Preisdaten<br/>Umsatzdaten');
 //        self::registerModule();
+        Presto::registerModule();
         Sales::registerModule();
+
 	}
 
     public static function registerModule()

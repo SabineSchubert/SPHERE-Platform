@@ -8,6 +8,7 @@
 
 namespace SPHERE\Application\Reporting\Utility\ScenarioCalculator;
 
+use SPHERE\Application\Api\Reporting\Excel\ExcelScenarioCalculator;
 use SPHERE\Application\Api\Reporting\Utility\ScenarioCalculator\ScenarioCalculator As ApiScenarioCalculator;
 use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part;
@@ -23,6 +24,7 @@ use SPHERE\Common\Frontend\Icon\Repository\Search;
 use SPHERE\Common\Frontend\Layout\Repository\Panel;
 use SPHERE\Common\Frontend\Layout\Repository\PullRight;
 use SPHERE\Common\Frontend\Layout\Repository\Title;
+use SPHERE\Common\Frontend\Link\Repository\External;
 use SPHERE\Common\Frontend\Message\Repository\Warning;
 use SPHERE\Common\Frontend\Table\Repository\Title as TableTitle;
 use SPHERE\Common\Frontend\Layout\Structure\Layout;
@@ -47,6 +49,7 @@ class Frontend extends Extension
 		$LayoutGroupPartNumberInformation = '';
 		$LayoutGroupScenarioCalculatorForm = '';
 		$LayoutGroupScenarioCalculator = '';
+		$Excel = '';
 		$ErrorPart = '';
 		if ($Search) {
 
@@ -92,23 +95,29 @@ class Frontend extends Extension
 					$FormReceiver.$Pipeline, 3
 				);
 
+
+
 				if($PriceData !== null) {
 
 					$PriceDataSum = $this->setPriceData( $PriceData, $EntityPart );
-
-//					print '<pre>';
-//					var_dump($PriceDataSum);
-//					print '</pre>';
-
+					Debugger::screenDump($PriceDataSum);
 
 					$LayoutViewingColumn1 =
 						new LayoutColumn(
-							$this->tablePriceViewing($PriceDataSum), 5
+							$this->tablePriceViewing($PriceDataSum), 7
 						);
 					$LayoutViewingColumn2 =
 						new LayoutColumn(
-							$this->tableTotalViewing($PriceDataSum), 4
+							$this->tableTotalViewing($PriceDataSum), 5
 						);
+
+					$Excel = new LayoutColumn(
+					    new External('Excel-Download', ExcelScenarioCalculator::getEndpoint(), null, array(
+					        ExcelScenarioCalculator::API_TARGET => 'getExcel',
+                            'PriceData' => $PriceDataSum
+                        )), 8
+                    );
+
 
 				}
 				else {
@@ -118,13 +127,28 @@ class Frontend extends Extension
 
 				$LayoutGroupScenarioCalculator =
 					new LayoutGroup(
-						new LayoutRow(
-							array(
-								$LayoutGroupScenarioCalculatorForm,
-								$LayoutViewingColumn1,
-								$LayoutViewingColumn2
-							)
-						)
+                        new LayoutRow(
+                            array(
+                                $LayoutGroupScenarioCalculatorForm,
+                                new LayoutColumn(
+                                    new Layout(
+                                        new LayoutGroup(
+                                            array(
+                                                new LayoutRow(
+                                                    array(
+                                                        $LayoutViewingColumn1,
+                                                        $LayoutViewingColumn2,
+                                                    )
+                                                ),
+                                                new LayoutRow(
+                                                    $Excel
+                                                )
+                                            )
+                                        )
+                                    ), 9
+                                )
+                            )
+                        )
 						, new Title('')
 					);
 
@@ -245,10 +269,10 @@ class Frontend extends Extension
 
 
 		$PriceDataNew = null;
-		$NetPriceNew = $CalcRules->calcNetPrice( $PriceData['BLP'], $PriceData['Discount'], 0, 0, 0, 0 );
+		$NetPriceNew = $PriceData['NLP'];//$CalcRules->calcNetPrice( $PriceData['BLP'], $PriceData['Discount'], 0, 0, 0, 0 );
 		$QuantityNew = $PriceData['Quantity'];
-		$GrossSalesNew = $CalcRules->calcGrossSales( $PriceData['BLP'], $QuantityNew);
-		$NetSalesNew = $CalcRules->calcGrossSales( $NetPriceNew, $QuantityNew);
+		$GrossSalesNew = $PriceData['SalesGross'];//$CalcRules->calcGrossSales( $PriceData['BLP'], $QuantityNew);
+		$NetSalesNew = $GrossSalesNew - ( $CalcRules->calcDiscount( $PriceData['BLP'], $PriceData['Discount'] )*$PriceData['Quantity'] );
 
 		//var_dump($PriceData);
 
@@ -262,13 +286,22 @@ class Frontend extends Extension
 			)
 		);
 
-		//var_dump($PriceDataNew);
+		var_dump($PriceDataNew['NetSales'],$PriceDataOld['NetSales'],$PriceDataNew['NetSales']-$PriceDataOld['NetSales']);
 
 		//### Berechnungen ###
 
+        //Delta
+        $BLP['Delta'] = $CalcRules->calcDelta( $PriceDataNew['BLP'], $PriceDataOld['BLP'] );
+        $Discount['Delta'] = $CalcRules->calcDelta( $PriceDataNew['Discount'], $PriceDataOld['Discount'] );
+        $NLP['Delta'] = $CalcRules->calcDelta( $PriceDataNew['NLP'], $PriceDataOld['NLP'] );
+        $Costs['Delta'] = $CalcRules->calcDelta( $PriceDataNew['Costs'], $PriceDataOld['Costs'] );
+        $GrossSales['Delta'] = $CalcRules->calcDelta( $PriceDataNew['GrossSales'], $PriceDataOld['GrossSales'] );
+        $Quantity['Delta'] = $CalcRules->calcDelta( $PriceDataNew['Quantity'], $PriceDataOld['Quantity'] );
+        $NetSales['Delta'] = $CalcRules->calcDelta( $PriceDataNew['NetSales'], $PriceDataOld['NetSales'] );
+
 		//Rabatt in Euro
 		$DiscountEuro['Old'] = $CalcRules->calcDiscount( $PriceDataOld['BLP'], $PriceDataOld['Discount'] );
-		$DiscountEuro['New'] = $CalcRules->calcDiscount( $PriceDataNew['BLP'], $PriceDataNew['Discount'] );
+		$DiscountEuro['New'] =  $CalcRules->calcDiscount( $PriceDataNew['BLP'], $PriceDataNew['Discount'] );
 		$DiscountEuro['Delta'] = $CalcRules->calcDelta( $DiscountEuro['New'], $DiscountEuro['Old'] );
 
 		//NLP abzüglich P+M
@@ -338,6 +371,13 @@ class Frontend extends Extension
 			array( 'Old' => $PriceDataOld),
 			array( 'New' => $PriceDataNew ),
 			array( 'Delta' => array(
+			        'BLP' => $BLP['Delta'],
+			        'Discount' => $Discount['Delta'],
+                    'NLP' => $NLP['Delta'],
+					'Costs' => $Costs['Delta'],
+                    'GrossSales' => $GrossSales['Delta'],
+                    'Quantity' => $Quantity['Delta'],
+                    'NetSales' => $NetSales['Delta'],
 					'DiscountEuro' => $DiscountEuro['Delta'],
 					'NetPricePartsMore' => $NetPricePartsMore['Delta'],
 					'CoverageContribution' => $CoverageContribution['Delta'],
@@ -364,13 +404,13 @@ class Frontend extends Extension
 						'Bezeichnung' => 'BLP in €',
 						'Alt' => new PullRight( number_format($PriceData['Old']['BLP'], 2, ',', '.') ),
 						'Neu' => new PullRight( number_format($PriceData['New']['BLP'], 2, ',', '.') ),
-						'Delta' => new PullRight( number_format($CalcRules->calcDelta( $PriceData['New']['BLP'], $PriceData['Old']['BLP'] ), 2, ',', '.') )
+						'Delta' => new PullRight( number_format($PriceData['Delta']['BLP'], 2, ',', '.') )
 					),
 					array(
 						'Bezeichnung' => 'RG-Satz in %',
 						'Alt' => new PullRight( number_format($PriceData['Old']['Discount'], 2, ',', '.') ),
 						'Neu' => new PullRight( number_format($PriceData['New']['Discount'], 2, ',', '.') ),
-						'Delta' => new PullRight( number_format($CalcRules->calcDelta( $PriceData['New']['Discount'], $PriceData['Old']['Discount'] ), 2, ',', '.') )
+						'Delta' => new PullRight( number_format($PriceData['Delta']['Discount'], 2, ',', '.') )
 					),
 					array(
 						'Bezeichnung' => 'RG-Satz in €',
@@ -382,7 +422,7 @@ class Frontend extends Extension
 						'Bezeichnung' => 'NLP in €',
 						'Alt' => new PullRight( number_format($PriceData['Old']['NLP'], 2, ',', '.') ),
 						'Neu' => new PullRight( number_format($PriceData['New']['NLP'], 2, ',', '.') ),
-						'Delta' => new PullRight( number_format($CalcRules->calcDelta( $PriceData['New']['NLP'], $PriceData['Old']['NLP'] ), 2, ',', '.') )
+						'Delta' => new PullRight( number_format($PriceData['Delta']['NLP'], 2, ',', '.') )
 					),
 					array(
 						'Bezeichnung' => 'NLP abzügl. P&M in €',
@@ -394,7 +434,7 @@ class Frontend extends Extension
 						'Bezeichnung' => 'Variable Kosten in €',
 						'Alt' => new PullRight( number_format($PriceData['Old']['Costs'], 2, ',', '.') ),
 						'Neu' => new PullRight( number_format($PriceData['New']['Costs'], 2, ',', '.') ),
-						'Delta' => new PullRight( number_format($CalcRules->calcDelta( $PriceData['New']['Costs'], $PriceData['Old']['Costs'] ), 2, ',', '.') )
+						'Delta' => new PullRight( number_format($PriceData['Delta']['Costs'], 2, ',', '.') )
 					),
 					array(
 						'Bezeichnung' => 'Konzern-DB in €',
@@ -437,19 +477,19 @@ class Frontend extends Extension
 						'Bezeichnung' => 'Bruttoumsatz in €',
 						'Alt' => new PullRight( number_format($PriceData['Old']['GrossSales'], 2, ',', '.') ),
 						'Neu' => new PullRight( number_format($PriceData['New']['GrossSales'], 2, ',', '.') ),
-						'Delta' => new PullRight( number_format($CalcRules->calcDelta( $PriceData['New']['GrossSales'], $PriceData['Old']['GrossSales'] ), 2, ',', '.') )
+						'Delta' => new PullRight( number_format($PriceData['Delta']['GrossSales'], 2, ',', '.') )
 					),
 					array(
 						'Bezeichnung' => 'Anzeff in Stück',
 						'Alt' => new PullRight( number_format($PriceData['Old']['Quantity'], 0, '', '.') ),
 						'Neu' => new PullRight( number_format($PriceData['New']['Quantity'], 0, '', '.') ),
-						'Delta' => new PullRight( number_format($CalcRules->calcDelta( $PriceData['New']['Quantity'], $PriceData['Old']['Quantity'] ), 0, '', '.') )
+						'Delta' => new PullRight( number_format($PriceData['Delta']['Quantity'], 0, '', '.') )
 					),
 					array(
 						'Bezeichnung' => 'RG-Satz in %',
 						'Alt' => new PullRight( number_format($PriceData['Old']['Discount'], 2, ',', '.') ),
 						'Neu' => new PullRight( number_format($PriceData['New']['Discount'], 2, ',', '.') ),
-						'Delta' => new PullRight( number_format($CalcRules->calcDelta( $PriceData['New']['Discount'], $PriceData['Old']['Discount'] ), 2, ',', '.') )
+						'Delta' => new PullRight( number_format($PriceData['Delta']['Discount'], 2, ',', '.') )
 					),
 					array(
 						'Bezeichnung' => 'RG-Satz in €',
@@ -461,7 +501,7 @@ class Frontend extends Extension
 						'Bezeichnung' => 'Nettoumsatz in €',
 						'Alt' => new PullRight( number_format($PriceData['Old']['NetSales'], 2, ',', '.') ),
 						'Neu' => new PullRight( number_format($PriceData['New']['NetSales'], 2, ',', '.') ),
-						'Delta' => new PullRight( number_format($CalcRules->calcDelta( $PriceData['New']['NetSales'], $PriceData['Old']['NetSales'] ), 2, ',', '.') )
+						'Delta' => new PullRight( number_format($PriceData['Delta']['NetSales'], 2, ',', '.') )
 					),
 					array(
 						'Bezeichnung' => 'Nettoumsatz abzügl. P&M',
