@@ -81,18 +81,18 @@ class ExcelDefault implements IApiInterface
                 if(stripos($ColName,';HIDE') == false) {
                     //Zahl
                     if( is_int( self::ConvertNumeric($ColValue,$ColName) ) == true ) {
-                        $Document->setValue( $Document->getCell( $ColIndex++, ( $RowIndex +1 ) ), number_format($ColValue,0,"","") );
+                        $Document->setValue( $Document->getCell( $ColIndex++, ( $RowIndex +1 ) ), $ColValue, PhpExcel::TYPE_NUMERIC );
                         //Debugger::screenDump($ColName.'Test'.$ColValue);
                     }
                     elseif( is_float( self::ConvertNumeric($ColValue,$ColName) ) == true ) {
 
                         //$Document->setStyle( $Document->getCell( ($ColIndex++), ( $RowIndex + 1 ) ) )->setFormatCode('#.##0,00');// array('number-format'=>'#,##0.00') );
                         //Debugger::screenDump($ColName, $ColIndex);
-                        $Document->setValue( $Document->getCell( ($ColIndex++), ( $RowIndex + 1 ) ), $ColValue );
+                        $Document->setValue( $Document->getCell( ($ColIndex++), ( $RowIndex + 1 ) ), $ColValue, PhpExcel::TYPE_NUMERIC );
                         //Debugger::screenDump($ColName.$ColIndex);
                     }
                     else {
-                        $Document->setValue( $Document->getCell( $ColIndex++, ( $RowIndex +1 ) ), $ColValue );
+                        $Document->setValue( $Document->getCell( $ColIndex++, ( $RowIndex +1 ) ), $ColValue, PhpExcel::TYPE_STRING );
                         //Debugger::screenDump($ColName.'Test2');
                     }
                 }

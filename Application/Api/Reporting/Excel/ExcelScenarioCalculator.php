@@ -75,118 +75,114 @@ class ExcelScenarioCalculator extends Extension implements IApiInterface
         $x = 0;
         $y++;
         $Document->setValue( $Document->getCell($x++,$y), 'BLP in €' );
-        $Document->setStyle($Document->getCell('B2'))->setFormatCode( \PHPExcel_Style_NumberFormat::FORMAT_NUMBER_00 );
-        $Document->setValue( $Document->getCell($x++,$y), number_format($PriceData['Old']['BLP'],2,',','.') );//->setStyle($Document->getCell('B2'))->setFontBold();//setFormatCode(  '#.##0,00' );
-//        $Document->setStyle($Document->getCell('B2'))->setFormatCode( \PHPExcel_Style_NumberFormat::FORMAT_NUMBER_00);
-
-
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['BLP'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['BLP'] );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['BLP'], PhpExcel::TYPE_NUMERIC );//->setStyle($Document->getCell('B2'))->setFontBold();//setFormatCode(  '#.##0,00' );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['BLP'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['BLP'], PhpExcel::TYPE_NUMERIC );
 
         $Document->setValue( $Document->getCell($x++,$y), '' );
 
         $Document->setValue( $Document->getCell($x++,$y), 'Bruttoumsatz in €' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['GrossSales'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['GrossSales'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['GrossSales'] );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['GrossSales'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['GrossSales'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['GrossSales'], PhpExcel::TYPE_NUMERIC );
 
         $x = 0;
         $y++;
         $Document->setValue( $Document->getCell($x++,$y), 'RG-Satz in %' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['BLP'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['Discount'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['Discount'] );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['BLP'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['Discount'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['Discount'], PhpExcel::TYPE_NUMERIC );
 
         $Document->setValue( $Document->getCell($x++,$y), '' );
 
         $Document->setValue( $Document->getCell($x++,$y), 'Anzahl effektiv in Stück' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['Quantity'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['Quantity'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['Quantity'] );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['Quantity'], PHPExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['Quantity'], PHPExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['Quantity'], PHPExcel::TYPE_NUMERIC );
 
         $x = 0;
         $y++;
         $Document->setValue( $Document->getCell($x++,$y), 'RG-Satz in €' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['DiscountEuro'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['DiscountEuro'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['DiscountEuro'] );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['DiscountEuro'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['DiscountEuro'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['DiscountEuro'], PhpExcel::TYPE_NUMERIC );
 
         $Document->setValue( $Document->getCell($x++,$y), '' );
 
         $Document->setValue( $Document->getCell($x++,$y), 'RG-Satz in %' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['Discount'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['Discount'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['Discount'] );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['Discount'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['Discount'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['Discount'], PhpExcel::TYPE_NUMERIC );
 
         $x = 0;
         $y++;
         $Document->setValue( $Document->getCell($x++,$y), 'NLP in €' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['NLP'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['NLP'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['NLP'] );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['NLP'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['NLP'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['NLP'], PhpExcel::TYPE_NUMERIC );
 
         $Document->setValue( $Document->getCell($x++,$y), '' );
 
         $Document->setValue( $Document->getCell($x++,$y), 'RG-Satz in €' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['TotalDiscountEuro'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['TotalDiscountEuro'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['TotalDiscountEuro'] );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['TotalDiscountEuro'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['TotalDiscountEuro'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['TotalDiscountEuro'], PhpExcel::TYPE_NUMERIC );
 
         $x = 0;
         $y++;
         $Document->setValue( $Document->getCell($x++,$y), 'NLP abzügl. P&M in €' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['NetPricePartsMore'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['NetPricePartsMore'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['NetPricePartsMore'] );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['NetPricePartsMore'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['NetPricePartsMore'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['NetPricePartsMore'], PhpExcel::TYPE_NUMERIC );
 
         $Document->setValue( $Document->getCell($x++,$y), '' );
 
         $Document->setValue( $Document->getCell($x++,$y), 'Nettoumsatz in €' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['NetSales'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['NetSales'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['NetSales'] );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['NetSales'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['NetSales'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['NetSales'], PhpExcel::TYPE_NUMERIC );
 
         $x = 0;
         $y++;
         $Document->setValue( $Document->getCell($x++,$y), 'Variable Kosten in €' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['Costs'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['Costs'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['Costs'] );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['Costs'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['Costs'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['Costs'], PhpExcel::TYPE_NUMERIC );
 
         $Document->setValue( $Document->getCell($x++,$y), '' );
 
         $Document->setValue( $Document->getCell($x++,$y), 'Nettoumsatz abzügl. P&M ' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['NetSalesPartsMore'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['NetSalesPartsMore'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['NetSalesPartsMore'] );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['NetSalesPartsMore'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['NetSalesPartsMore'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['NetSalesPartsMore'], PhpExcel::TYPE_NUMERIC );
 
         $x = 0;
         $y++;
         $Document->setValue( $Document->getCell($x++,$y), 'Konzern-DB in €' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['CoverageContribution'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['CoverageContribution'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['CoverageContribution'] );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['CoverageContribution'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['CoverageContribution'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['CoverageContribution'], PhpExcel::TYPE_NUMERIC );
 
         $Document->setValue( $Document->getCell($x++,$y), '' );
 
         $Document->setValue( $Document->getCell($x++,$y), 'Variable Kosten' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['Costs'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['Costs'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['Costs'] );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['Costs'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['Costs'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['Costs'], PhpExcel::TYPE_NUMERIC );
 
         $x = 0;
         $y++;
         $Document->setValue( $Document->getCell($x++,$y), 'Konzern-DB abzügl. P&M in €' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['CoverageContributionPartsMore'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['CoverageContributionPartsMore'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['CoverageContributionPartsMore'] );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['CoverageContributionPartsMore'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['CoverageContributionPartsMore'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['CoverageContributionPartsMore'], PhpExcel::TYPE_NUMERIC );
 
         $Document->setValue( $Document->getCell($x++,$y), '' );
 
         $Document->setValue( $Document->getCell($x++,$y), 'Konzern-DB' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['TotalCoverageContribution'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['TotalCoverageContribution'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['TotalCoverageContribution'] );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['TotalCoverageContribution'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['TotalCoverageContribution'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['TotalCoverageContribution'], PhpExcel::TYPE_NUMERIC );
 
         $x = 0;
         $y++;
@@ -198,9 +194,9 @@ class ExcelScenarioCalculator extends Extension implements IApiInterface
         $Document->setValue( $Document->getCell($x++,$y), '' );
 
         $Document->setValue( $Document->getCell($x++,$y), 'Konzern-DB abzügl. P&M' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['TotalCoverageContributionPartsMore'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['TotalCoverageContributionPartsMore'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['TotalCoverageContributionPartsMore'] );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['TotalCoverageContributionPartsMore'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['TotalCoverageContributionPartsMore'], PhpExcel::TYPE_NUMERIC );
+        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Delta']['TotalCoverageContributionPartsMore'], PhpExcel::TYPE_NUMERIC );
 
 
         $Document->saveFile();

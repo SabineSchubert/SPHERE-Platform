@@ -11,6 +11,7 @@ namespace SPHERE\Application\Reporting\DataWareHouse;
 
 use Doctrine\Common\Util\Debug;
 use Doctrine\ORM\Query\Expr;
+use Nette\DateTime;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Data;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_AssortmentGroup;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Brand;
@@ -470,15 +471,19 @@ class Service extends AbstractService
 
                 $PriceNet = $this->getCalculationRules()->calcNetPrice($Row['PriceGross'], $Row['Discount'], $Row['BackValue']);
 
+                /** @var DateTime $DateValidFrom */
+                $DateValidFrom = $Row['ValidFrom'];
+
+
                 $CalcPriceDevelopmentData[] = array (
-                    'ValidFrom' => date('d.m.Y',$Row['ValidFrom']),
-                    'PriceGross' => $Row['PriceGross'],
-                    'PriceNet' => $PriceNet,
+                    'ValidFrom' => $DateValidFrom->format('d.m.Y'),
+                    'Data_PriceGross' => $Row['PriceGross'],
+                    'Data_PriceNet' => $PriceNet,
                     'DiscountGroupNumber' => $Row['DiscountGroupNumber'],
                     'Discount' => $Row['Discount'],
-                    'BackValue' => $Row['BackValue'],
-                    'CostsVariable' => $Row['CostsVariable'],
-                    'CoverageContribution' => $this->getCalculationRules()->calcCoverageContribution($PriceNet, $Row['CostsVariable']),
+                    'Data_BackValue' => $Row['BackValue'],
+                    'Data_CostsVariable' => $Row['CostsVariable'],
+                    'Data_CoverageContribution' => $this->getCalculationRules()->calcCoverageContribution($PriceNet, $Row['CostsVariable']),
                 );
             });
             return $CalcPriceDevelopmentData;

@@ -435,7 +435,7 @@ class Setup extends AbstractSetup
         $this->createColumn( $Table, $TablePrice::ATTR_PRICE_GROSS, 'float', false );
         $this->createColumn( $Table, $TablePrice::ATTR_BACK_VALUE, 'float', false );
         $this->createColumn( $Table, $TablePrice::ATTR_COSTS_VARIABLE, 'float', false );
-        $this->createColumn( $Table, $TablePrice::ATTR_VALID_FROM, 'datetime', true );
+        $this->createColumn( $Table, $TablePrice::ATTR_VALID_FROM, 'date', true );
         return $Table;
     }
 

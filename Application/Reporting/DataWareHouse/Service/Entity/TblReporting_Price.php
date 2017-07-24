@@ -141,23 +141,23 @@ class TblReporting_Price extends Element
     }
 
     /**
-     * @return \DateTime
+     * @return string
      */
     public function getValidFrom()
     {
-        /** @var \DateTime $DateTime */
+        /** @var string $DateTime */
         $DateTime = $this->ValidFrom;
-        if ($DateTime instanceof \DateTime) {
+//        if ($DateTime instanceof \DateTime) {
+//            return $DateTime;
+//        } else {
             return $DateTime;
-        } else {
-            return $DateTime;
-        }
+//        }
     }
 
     /**
-     * @param null|\DateTime $ValidFrom
+     * @param null|\string $ValidFrom
      */
-    public function setValidFrom(\DateTime $ValidFrom = null)
+    public function setValidFrom(/*\DateTime */$ValidFrom = null)
     {
         $this->ValidFrom = $ValidFrom;
     }

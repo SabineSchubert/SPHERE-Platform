@@ -100,7 +100,7 @@ class Frontend extends Extension
 				if($PriceData !== null) {
 
 					$PriceDataSum = $this->setPriceData( $PriceData, $EntityPart );
-					Debugger::screenDump($PriceDataSum);
+//					Debugger::screenDump($PriceDataSum);
 
 					$LayoutViewingColumn1 =
 						new LayoutColumn(
@@ -244,6 +244,13 @@ class Frontend extends Extension
 
 	private function setPriceData( $PriceData, TblReporting_Part $EntityPart ) {
 
+	    //Debugger::screenDump($PriceData);
+
+        //in berechenbare Zahl wandeln
+        array_walk($PriceData, function(&$Value) {
+            $Value = str_replace( ',', '.', str_replace('.','', $Value) );
+        });
+
 		$CalcRules = $this->getCalculationRules();
 		$EntityPrice = $EntityPart->fetchPriceCurrent();
 		$EntityDiscountGroup = $EntityPrice->getTblReportingDiscountGroup();
@@ -255,8 +262,8 @@ class Frontend extends Extension
             'DiscountNumber' => $EntityDiscountGroup->getNumber(),
             'Discount' => $EntityDiscountGroup->getDiscount(),
             'Costs' => $EntityPrice->getCostsVariable(),
-            'PartsAndMore' => $EntityPartsMore->getValue(),
-            'PartsAndMoreType' => $EntityPartsMore->getType(),
+            'PartsAndMore' => (($EntityPartsMore)? $EntityPartsMore->getValue():''),
+            'PartsAndMoreType' => (($EntityPartsMore)? $EntityPartsMore->getType():''),
             'Quantity' => 1
         );
 
@@ -286,7 +293,7 @@ class Frontend extends Extension
 			)
 		);
 
-		var_dump($PriceDataNew['NetSales'],$PriceDataOld['NetSales'],$PriceDataNew['NetSales']-$PriceDataOld['NetSales']);
+		//var_dump($PriceDataNew['NetSales'],$PriceDataOld['NetSales'],$PriceDataNew['NetSales']-$PriceDataOld['NetSales']);
 
 		//### Berechnungen ###
 

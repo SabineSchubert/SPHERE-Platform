@@ -14,6 +14,7 @@ use MOC\V\Component\Document\Document;
 use MOC\V\Core\FileSystem\FileSystem;
 use SPHERE\Application\Api\Reporting\Excel\ExcelDefault;
 use SPHERE\Application\Platform\Utility\Storage\FilePointer;
+use SPHERE\Application\Platform\Utility\Translation\LocaleTrait;
 use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Button\Reset;
@@ -26,6 +27,7 @@ use SPHERE\Common\Frontend\Form\Structure\FormGroup;
 use SPHERE\Common\Frontend\Form\Structure\FormRow;
 use SPHERE\Common\Frontend\Icon\Repository\Search;
 use SPHERE\Common\Frontend\Layout\Repository\Panel;
+use SPHERE\Common\Frontend\Layout\Repository\PullRight;
 use SPHERE\Common\Frontend\Layout\Repository\Title;
 use SPHERE\Common\Frontend\Layout\Structure\Layout;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
@@ -41,9 +43,12 @@ use SPHERE\Common\Frontend\Table\Structure\TableRow;
 use SPHERE\Common\Window\Navigation\Link\Route;
 use SPHERE\Common\Window\Stage;
 use SPHERE\System\Extension\Extension;
+use SPHERE\System\Extension\Repository\Debugger;
 
 class Frontend extends Extension
 {
+
+    use LocaleTrait;
 
 	private function buttonStageDirectSearch(Stage $Stage)
 	{
@@ -266,7 +271,8 @@ class Frontend extends Extension
 
 	private function tableMonthlyTurnover( $MonthlyTurnoverData ) {
         if( $MonthlyTurnoverData ) {
-           $ReplaceArray = array(
+
+            $ReplaceArray = array(
                'Data_' => '',
                'Group_' => '',
                'Month' => 'Monat',
@@ -277,9 +283,9 @@ class Frontend extends Extension
                '_AJ' => '',
                '_VJ' => '',
                '_VVJ' => '',
-           );
+            );
 
-           $MonthArray = array(
+            $MonthArray = array(
                '10' => 'Oktober',
                '11' => 'November',
                '12' => 'Dezember',
@@ -292,10 +298,52 @@ class Frontend extends Extension
                '7' => 'Juli',
                '8' => 'August',
                '9' => 'September',
-           );
+            );
 
             array_walk( $MonthlyTurnoverData, function( &$Row, $K, $MonthArray ) {
                 $Row['Month'] = str_replace( array_keys( $MonthArray ), $MonthArray, $Row['Month']);
+
+                //AJ
+                 if( $Row['Data_SumSalesGross_AJ'] != 0 ) {
+                     $Row['Data_SumSalesGross_AJ'] = new PullRight( $this->doLocalize($Row['Data_SumSalesGross_AJ'])->getCurrency() );
+                 }
+                 if( $Row['Data_SumSalesNet_AJ'] != 0 ) {
+                     $Row['Data_SumSalesNet_AJ'] = new PullRight( $this->doLocalize($Row['Data_SumSalesNet_AJ'])->getCurrency() );
+                 }
+                 if( $Row['Data_SumQuantity_AJ'] != 0 ) {
+                     $Row['Data_SumQuantity_AJ'] = new PullRight( $Row['Data_SumQuantity_AJ'] );
+                 }
+                 if( $Row['Data_Discount_AJ'] !== 0 ) {
+                     $Row['Data_Discount_AJ'] = new PullRight( number_format($Row['Data_Discount_AJ'],2,',','.').' %' );
+                 }
+
+                //VJ
+                 if( $Row['Data_SumSalesGross_VJ'] != 0 ) {
+                     $Row['Data_SumSalesGross_VJ'] = new PullRight( $this->doLocalize($Row['Data_SumSalesGross_VJ'])->getCurrency() );
+                 }
+                 if( $Row['Data_SumSalesNet_VJ'] != 0 ) {
+                     $Row['Data_SumSalesNet_VJ'] = new PullRight( $this->doLocalize($Row['Data_SumSalesNet_VJ'])->getCurrency() );
+                 }
+                 if( $Row['Data_SumQuantity_VJ'] != 0 ) {
+                     $Row['Data_SumQuantity_VJ'] = new PullRight( $Row['Data_SumQuantity_VJ'] );
+                 }
+                 if( $Row['Data_Discount_VJ'] != 0 ) {
+                     $Row['Data_Discount_VJ'] = new PullRight( number_format($Row['Data_Discount_VJ'],2,',','.').' %' );
+                 }
+
+                //VVJ
+                 if( $Row['Data_SumSalesGross_VVJ'] != 0 ) {
+                     $Row['Data_SumSalesGross_VVJ'] = new PullRight( $this->doLocalize($Row['Data_SumSalesGross_VVJ'])->getCurrency() );
+                 }
+                 if( $Row['Data_SumSalesNet_VVJ'] != 0 ) {
+                     $Row['Data_SumSalesNet_VVJ'] = new PullRight( $this->doLocalize($Row['Data_SumSalesNet_VVJ'])->getCurrency() );
+                 }
+                 if( $Row['Data_SumQuantity_VVJ'] != 0 ) {
+                     $Row['Data_SumQuantity_VVJ'] = new PullRight( $Row['Data_SumQuantity_VVJ'] );
+                 }
+                 if( $Row['Data_Discount_VVJ'] != 0 ) {
+                     $Row['Data_Discount_VVJ'] = new PullRight( number_format($Row['Data_Discount_VVJ'],2,',','.').' %' );
+                 }
             }, $MonthArray);
 
            $Keys = array_keys($MonthlyTurnoverData[0]);

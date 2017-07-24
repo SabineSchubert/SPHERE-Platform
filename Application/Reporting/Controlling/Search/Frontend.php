@@ -13,8 +13,10 @@ use SPHERE\Application\Api\Platform\Gatekeeper\Access;
 use SPHERE\Application\Api\Reporting\Excel\ExcelDefault;
 use SPHERE\Application\Api\Reporting\Utility\ScenarioCalculator\ScenarioCalculator;
 use SPHERE\Application\Api\TestAjax\TestAjax;
+use SPHERE\Application\Platform\Utility\Translation\LocaleTrait;
 use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Data;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part as TablePart;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Field\AutoCompleter;
 use SPHERE\Common\Frontend\Form\Repository\Field\DatePicker;
@@ -26,6 +28,7 @@ use SPHERE\Common\Frontend\Form\Structure\FormGroup;
 use SPHERE\Common\Frontend\Form\Structure\FormRow;
 use SPHERE\Common\Frontend\Icon\Repository\Time;
 use SPHERE\Common\Frontend\Layout\Repository\Panel;
+use SPHERE\Common\Frontend\Layout\Repository\PullRight;
 use SPHERE\Common\Frontend\Layout\Repository\Title;
 use SPHERE\Common\Frontend\Layout\Structure\Layout;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
@@ -43,6 +46,8 @@ use SPHERE\Common\Frontend\Icon\Repository\Search as SearchIcon;
 
 class Frontend extends Extension
 {
+    use LocaleTrait;
+
 	public function frontendSearchPartNumber( $Search = null ) {
 		$Stage = new Stage('Suche');
 		$Stage->setMessage('Teilenummer');
@@ -142,8 +147,6 @@ class Frontend extends Extension
 				)
 			)
 		);
-
-        Debugger::screenDump( $Search );
 
 		return $Stage;
 	}
@@ -341,6 +344,24 @@ class Frontend extends Extension
 
             $Keys = array_keys($SearchData[0]);
             $TableHead = array_combine( $Keys, str_replace( array_keys( $ReplaceArray ) , $ReplaceArray, $Keys) );
+
+            array_walk( $SearchData, function( &$Row ) {
+                if( isset($Row['Data_PriceGross']) ) {
+                    $Row['Data_PriceGross'] = new PullRight( $this->doLocalize($Row['Data_PriceGross'])->getCurrency() );
+                }
+                if( isset($Row['Data_PriceNet']) ) {
+                    $Row['Data_PriceNet'] = new PullRight( $this->doLocalize($Row['Data_PriceNet'])->getCurrency() );
+                }
+                if( isset($Row['Data_SumSalesGross']) ) {
+                    $Row['Data_SumSalesGross'] = new PullRight( $this->doLocalize($Row['Data_SumSalesGross'])->getCurrency() );
+                }
+                if( isset($Row['Data_SumSalesNet']) ) {
+                    $Row['Data_SumSalesNet'] = new PullRight( $this->doLocalize($Row['Data_SumSalesNet'])->getCurrency() );
+                }
+                if( isset($Row['Data_SumQuantity']) ) {
+                    $Row['Data_SumQuantity'] = new PullRight( $Row['Data_SumQuantity'] );
+                }
+            } );
 
             return new Table(
                 $SearchData, null, $TableHead

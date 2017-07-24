@@ -10,6 +10,7 @@ namespace SPHERE\Application\Reporting\Controlling\DirectSearch;
 
 
 use Doctrine\Common\Util\Debug;
+use Nette\DateTime;
 use SPHERE\Application\Platform\Utility\Translation\LocaleTrait;
 use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_MarketingCode;
@@ -81,6 +82,8 @@ class Frontend extends Extension
 	{
 		$Stage = new Stage('Direktsuche', 'Teilenummer');
 		$this->buttonStageDirectSearch($Stage);
+
+
 
 		$LayoutGroupDirectSearch = '';
 		$LayoutGroupCompetition = '';
@@ -461,7 +464,6 @@ class Frontend extends Extension
             }
 
             $EntityAssortmentGroup = $EntityPart->fetchAssortmentGroupCurrent();
-
             //Warengruppe
             $EntityProductGroupList = $EntityMarketingCode->fetchProductGroupListCurrent();
             $ProductGroupText = '';
@@ -779,7 +781,9 @@ class Frontend extends Extension
 
             if($EntityMarketingCode) {
                 $EntityPartsMore = $EntityMarketingCode->fetchPartsMoreCurrent();
-                $PartsMoreDiscount = $EntityPartsMore->getValue();
+                if($EntityPartsMore) {
+                    $PartsMoreDiscount = $EntityPartsMore->getValue();
+                }
             }
         }
 
@@ -816,6 +820,9 @@ class Frontend extends Extension
                 }
             }
 
+            /** @var DateTime $DateValidFrom */
+            $DateValidFrom = $EntityPrice->getValidFrom();
+
             return new Table(
                 array(
                     array(
@@ -836,7 +843,7 @@ class Frontend extends Extension
                     ),
                     array(
                         'Description' => 'Preis gültig ab<br/>TNR-Status',
-                        'Value' => 'Gültig<br/>Status'
+                        'Value' => $DateValidFrom->format('d.m.Y').'<br/>'.(($EntityPart->getStatusActive() == '1')? 'aktiv':'inaktiv')
                     ),
                     array(
                         'Description' => 'Konzern-DB',
@@ -876,20 +883,48 @@ class Frontend extends Extension
         $PriceDevData = DataWareHouse::useService()->getPriceDevelopmentByPartNumber( $EntityPart, 50 );
 
         if($PriceDevData) {
+
+            array_walk( $PriceDevData, function( &$Row ) {
+                 if( isset($Row['Data_PriceGross']) ) {
+                     $Row['Data_PriceGross'] = $this->doLocalize($Row['Data_PriceGross'])->getCurrency();
+                 }
+                 if( isset($Row['Data_PriceNet']) ) {
+                     $Row['Data_PriceNet'] = $this->doLocalize($Row['Data_PriceNet'])->getCurrency();
+                 }
+                 if( isset($Row['Data_BackValue']) && $Row['Data_BackValue'] !== 0.00 ) {
+                     $Row['Data_BackValue'] = $this->doLocalize($Row['Data_BackValue'])->getCurrency();
+                 }
+                 if( isset($Row['Discount'])) {
+                     $Row['Discount'] = $Row['Discount'].' %';
+                 }
+                 if( isset($Row['Data_CostsVariable']) ) {
+                     $Row['Data_CostsVariable'] = $this->doLocalize($Row['Data_CostsVariable'])->getCurrency();
+                 }
+                 if( isset($Row['Data_CoverageContribution']) ) {
+                     $Row['Data_CoverageContribution'] = $this->doLocalize($Row['Data_CoverageContribution'])->getCurrency();
+                 }
+            } );
+
+            $ReplaceArray = array(
+                'Data_' => '',
+                'Group_' => '',
+                'ValidFrom' => 'Gültig ab',
+                'PriceGross' => 'BLP',
+                'PriceNet' => 'NLP',
+                'DiscountGroupNumber' => 'RG',
+                'Discount' => 'RS',
+                'BackValue' => 'RW',
+                'CostsVariable' => 'VK',
+                'CoverageContribution' => 'DB'
+            );
+
+            $Keys = array_keys($PriceDevData[0]);
+            $TableHead = array_combine( $Keys, str_replace( array_keys( $ReplaceArray ) , $ReplaceArray, $Keys) );
+
             return new Table(
                 $PriceDevData,
                 new TableTitle('Preis- und Kostenentwicklung'),
-                array(
-                    'Data_' => '',
-                    'Group_' => '',
-                    'ValidFrom' => 'Gültig ab',
-                    'PriceGross' => 'BLP',
-                    'PriceNet' => 'NLP',
-                    'Discount' => 'RG',
-                    'BackValue' => 'RW',
-                    'CostsVariable' => 'VK',
-                    'CoverageContribution' => 'DB'
-                ),
+                $TableHead,
                 array(
                     "columnDefs" => array(
                         array('width' => '40%', 'targets' => '0' ),
@@ -913,12 +948,21 @@ class Frontend extends Extension
 	    $SalesData = DataWareHouse::useService()->getSalesByPart( $EntityPart );
 
 	    if( $SalesData ) {
+            array_walk( $SalesData, function( &$Row ) {
+                 if( isset($Row['Data_SumSalesGross']) ) {
+                     $Row['Data_SumSalesGross'] = $this->doLocalize($Row['Data_SumSalesGross'])->getCurrency();
+                 }
+                 if( isset($Row['Data_SumSalesNet']) ) {
+                     $Row['Data_SumSalesNet'] = $this->doLocalize($Row['Data_SumSalesNet'])->getCurrency();
+                 }
+            } );
+
             $Table = new Table(
                 $SalesData,
                 new TableTitle('Controlling-Informationen'),
                 array(
                     'Year' => '&nbsp;',
-                    'Data_SumSalesGross' => new Tooltip('Brutto', 'Test2', new Info()),
+                    'Data_SumSalesGross' => /*new Tooltip('Brutto', 'Tooltipp-Info', new Info())*/'Brutto',
                     'Data_SumSalesNet' => 'Netto',
                     'Data_SumQuantity' => 'Anzahl effektiv'
                 ),
@@ -963,11 +1007,12 @@ class Frontend extends Extension
 	private function tableSalesDataMarketingCode( TblReporting_MarketingCode $EntityMarketingCode ) {
         $SalesData = DataWareHouse::useService()->getSalesByMarketingCode( $EntityMarketingCode );
 
+        ///*new Tooltip('Brutto','Test2', new Info())*/
         if($SalesData) {
             $Table = new Table(
                 $SalesData,
                 new TableTitle('Controlling-Informationen'),
-                array( 'Year' => '&nbsp;', 'SumSalesGross' => new Tooltip('Brutto','Test2', new Info()), 'SumSalesNet' => 'Netto', 'SumQuantity' => 'Anzahl effektiv' ),
+                array( 'Year' => '&nbsp;', 'SumSalesGross' => 'Brutto', 'SumSalesNet' => 'Netto', 'SumQuantity' => 'Anzahl effektiv' ),
                 array(
                     "columnDefs" => array(
     //			        array('width' => '40%', 'targets' => '0' ),
@@ -1015,7 +1060,7 @@ class Frontend extends Extension
                 new TableTitle('Controlling-Informationen'),
                 array(
                     'Year' => '&nbsp;',
-                    'SumSalesGross' => new Tooltip('Brutto', 'Test2', new Info()),
+                    'SumSalesGross' => /*new Tooltip('Brutto', 'Test2', new Info())*/'Brutto',
                     'SumSalesNet' => 'Netto',
                     'SumQuantity' => 'Anzahl effektiv'
                 ),

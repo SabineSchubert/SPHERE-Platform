@@ -12,6 +12,7 @@ namespace SPHERE\Application\Api\Reporting\Utility\ScenarioCalculator;
 use SPHERE\Application\Api\ApiTrait;
 use SPHERE\Application\Api\Dispatcher;
 use SPHERE\Application\IApiInterface;
+use SPHERE\Application\Platform\Utility\Translation\LocaleTrait;
 use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part;
 use SPHERE\Common\Frontend\Ajax\Emitter\ServerEmitter;
@@ -43,6 +44,7 @@ use SPHERE\System\Extension\Repository\Debugger;
 class ScenarioCalculator extends Extension implements IApiInterface
 {
 	use ApiTrait;
+	use LocaleTrait;
 
     /**
      * @param $Search
@@ -125,15 +127,15 @@ class ScenarioCalculator extends Extension implements IApiInterface
 	{
 		$Global = $this->getGlobal();
 
-		$Global->POST['PriceData']['BLP'] = $PriceData['BLP'];
-		$Global->POST['PriceData']['NLP'] = $PriceData['NLP'];
+		$Global->POST['PriceData']['BLP'] = number_format($PriceData['BLP'],2,',','.');
+		$Global->POST['PriceData']['NLP'] = number_format($PriceData['NLP'],2,',','.');
 		$Global->POST['PriceData']['DiscountNumber'] = $PriceData['DiscountNumber'];
-		$Global->POST['PriceData']['Discount'] = $PriceData['Discount'];
-		$Global->POST['PriceData']['Costs'] = $PriceData['Costs'];
-		$Global->POST['PriceData']['PartsAndMore'] = $PriceData['PartsAndMore'];
-		$Global->POST['PriceData']['Quantity'] = $PriceData['Quantity'];
-		$Global->POST['PriceData']['SalesGross'] = $PriceData['SalesGross'];
-		$Global->POST['PriceData']['SalesNet'] = $PriceData['SalesNet'];
+		$Global->POST['PriceData']['Discount'] = number_format($PriceData['Discount'],2,',','.');
+		$Global->POST['PriceData']['Costs'] = number_format($PriceData['Costs'],2,',','.');
+		$Global->POST['PriceData']['PartsAndMore'] = number_format($PriceData['PartsAndMore'],2,',','.');
+		$Global->POST['PriceData']['Quantity'] = (int)$PriceData['Quantity'];
+		$Global->POST['PriceData']['SalesGross'] = number_format($PriceData['SalesGross'],2,',','.');
+		$Global->POST['PriceData']['SalesNet'] = number_format($PriceData['SalesNet'],2,',','.');
 
 		$Global->savePost();
 	}
@@ -219,8 +221,8 @@ class ScenarioCalculator extends Extension implements IApiInterface
             'DiscountNumber' => $EntityDiscountGroup->getNumber(),
             'Discount' => $EntityDiscountGroup->getDiscount(),
             'Costs' => $EntityPrice->getCostsVariable(),
-            'PartsAndMore' => $EntityPartsMore->getValue(),
-            'PartsAndMoreType' => $EntityPartsMore->getType(),
+            'PartsAndMore' => (($EntityPartsMore)? $EntityPartsMore->getValue():0),
+            'PartsAndMoreType' => (($EntityPartsMore)? $EntityPartsMore->getType():'%'),
             'Quantity' => 1
         );
 
@@ -233,6 +235,12 @@ class ScenarioCalculator extends Extension implements IApiInterface
 		}
 		elseif($PriceData) {
             ScenarioCalculator::preloadPriceData($PriceDataOld);
+
+            //in berechenbare Zahl wandeln
+            array_walk($PriceData, function(&$Value) {
+                $Value = str_replace( ',', '.', str_replace('.','', $Value) );
+            });
+
 			$PriceData = ScenarioCalculator::setPriceData($PriceData, $LoadElement, $PriceDataOld);
 
 
@@ -297,15 +305,15 @@ class ScenarioCalculator extends Extension implements IApiInterface
             'Receiver' => $ReceiverForm
         ) );
 
-		$FieldGrossPrice = new TextField( 'PriceData[BLP]', null, 'BLP (Alt: '. number_format($PriceDataOld['BLP'],2,',','.').' € )' );
-		$FieldNetPrice = new TextField( 'PriceData[NLP]', null, 'NLP (Alt: '. number_format($PriceDataOld['NLP'],2,',','.').' € )' );
-		$FieldDiscountNumber = new TextField( 'PriceData[DiscountNumber]', null, 'RG (Alt: '. $PriceDataOld['DiscountNumber'].' )' );
-		$FieldDiscount = new TextField( 'PriceData[Discount]', null, 'Rabattsatz (Alt: '. $PriceDataOld['DiscountNumber'].' )' );
-		$FieldCosts = new TextField( 'PriceData[Costs]', null, 'variable Kosten (Alt: '. $PriceDataOld['Costs'].' € )' );
-		$FieldPartsAndMore = new TextField( 'PriceData[PartsAndMore]', null, 'P&M (Alt: '. $PriceDataOld['PartsAndMore'].' % )' );
+		$FieldGrossPrice = new TextField( 'PriceData[BLP]', null, 'BLP (Alt: '. $this->doLocalize( $PriceDataOld['BLP'] )->getCurrency() .' )' );
+		$FieldNetPrice = new TextField( 'PriceData[NLP]', null, 'NLP (Alt: '. $this->doLocalize( $PriceDataOld['NLP'] )->getCurrency().' )' );
+		$FieldDiscountNumber = new TextField( 'PriceData[DiscountNumber]', null, 'RG (Alt: '. $this->doLocalize( $PriceDataOld['DiscountNumber'] )->getCurrency() .' )' );
+		$FieldDiscount = new TextField( 'PriceData[Discount]', null, 'Rabattsatz (Alt: '. $this->doLocalize( $PriceDataOld['DiscountNumber'] )->getCurrency() .' )' );
+		$FieldCosts = new TextField( 'PriceData[Costs]', null, 'variable Kosten (Alt: '. $this->doLocalize( $PriceDataOld['Costs'] )->getCurrency() .' )' );
+		$FieldPartsAndMore = new TextField( 'PriceData[PartsAndMore]', null, 'P&M (Alt: '. number_format( $PriceDataOld['PartsAndMore'], 2, ',', '.' ).' % )' );
 		$FieldQuantity = new TextField( 'PriceData[Quantity]', null, 'Menge (Alt: '. $PriceDataOld['Quantity'].' Stk. )' );
-		$FieldGrossSale = new TextField( 'PriceData[SalesGross]', null, 'Bruttoumsatz (Alt: '. $PriceDataOld['SalesGross'].' € )' );
-		$FieldNetSale = new TextField( 'PriceData[SalesNet]', null, 'Nettoumsatz (Alt: '. $PriceDataOld['SalesNet'].' € )' );
+		$FieldGrossSale = new TextField( 'PriceData[SalesGross]', null, 'Bruttoumsatz (Alt: '. $this->doLocalize( $PriceDataOld['SalesGross'] )->getCurrency() .' )' );
+		$FieldNetSale = new TextField( 'PriceData[SalesNet]', null, 'Nettoumsatz (Alt: '. $this->doLocalize( $PriceDataOld['SalesNet'] )->getCurrency() .' )' );
 
 //		$ReceiverGrossPrice = ScenarioCalculator::FieldValueReceiverScenarioCalculator( $FieldGrossPrice );
 //		$ReceiverNetPrice = ScenarioCalculator::FieldValueReceiverScenarioCalculator( $FieldNetPrice );

@@ -91,7 +91,7 @@ class CalculationRules
 		$KamDiscount = (float)$KamDiscount;
 		//Preis mit Rückwert, aber Preis exkl. Rückwert = Tauschpreis (3. Parameter = null), Preis inkl. Rückwert = Verkaufspreis (3. Parameter != null)
 		//Preis ohne Rückwert = Verkaufspreis
-		return ( $GrossPrice + $Rw ) * ( 1 - ( $Discount / 100 ) - ( $PartsMoreDiscount / 100 ) - ( $PromoDiscount / 100)  - ( $KamDiscount / 100) );
+		return (( $GrossPrice + $Rw ) * ( 1 - ( $Discount / 100 ) - ( $PartsMoreDiscount / 100 ) - ( $PromoDiscount / 100)  - ( $KamDiscount / 100) ));
 	}
 
 //	public function calcNetPriceWithPartsMore( $NetPrice, $PartsMoreDiscount ) {
