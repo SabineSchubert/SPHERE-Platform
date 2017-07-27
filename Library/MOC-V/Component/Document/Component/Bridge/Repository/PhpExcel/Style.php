@@ -10,6 +10,18 @@ use MOC\V\Component\Document\Component\Exception\ComponentException;
  */
 class Style implements IStyleInterface
 {
+    /* Colors */
+    const COLOR_BLACK = 'FF000000';
+    const COLOR_WHITE = 'FFFFFFFF';
+    const COLOR_RED = 'FFFF0000';
+    const COLOR_DARKRED = 'FF800000';
+    const COLOR_BLUE = 'FF0000FF';
+    const COLOR_DARKBLUE = 'FF000080';
+    const COLOR_GREEN = 'FF00FF00';
+    const COLOR_DARKGREEN = 'FF008000';
+    const COLOR_YELLOW = 'FFFFFF00';
+    const COLOR_DARKYELLOW = 'FF808000';
+
 
     /** @var null|\PHPExcel_Worksheet $Worksheet */
     private $Worksheet = null;
@@ -48,6 +60,24 @@ class Style implements IStyleInterface
             } else {
                 $this->Worksheet->getColumnDimension($ColumnName)->setAutoSize(false);
                 $this->Worksheet->getColumnDimension($ColumnName)->setWidth((float)$Value);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @param float|int $Value [-1 = Auto unmerge]
+     *
+     * @return $this
+     */
+    public function setRowHeight($Value = -1)
+    {
+        $RowRange = $this->getRangeRowList();
+        foreach ($RowRange as $RowName) {
+            if (-1 == $Value) {
+                $this->Worksheet->getRowDimension($RowName)->setRowHeight(-1);
+            } else {
+                $this->Worksheet->getRowDimension($RowName)->setRowHeight((float)$Value);
             }
         }
         return $this;
@@ -118,6 +148,16 @@ class Style implements IStyleInterface
     {
 
         $this->Worksheet->getStyle($this->getRangeName())->getFont()->setSize($Size);
+        return $this;
+    }
+
+    /**
+     * @param string $Color
+     * @return $this
+     */
+    public function setFontColor( $Color )
+    {
+        $this->Worksheet->getStyle($this->getRangeName())->getFont()->setColor( new \PHPExcel_Style_Color( $Color ) );
         return $this;
     }
 

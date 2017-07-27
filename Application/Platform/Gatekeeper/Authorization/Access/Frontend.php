@@ -70,11 +70,11 @@ class Frontend
                 $Stage->addButton((new Standard('Privilegien', new Link\Route(__NAMESPACE__ . '/Privilege'), new TileBig(),
                     array(), 'Gruppen von Rechten'))
                 );
-
+*/
                 $Stage->addButton((new Standard('Rechte', new Link\Route(__NAMESPACE__ . '/Right'), new TileList(), array(),
                     'Geschützte Routen'))
                 );
-        */
+
         $Stage->setContent(
             $ReceiverStage.AccessApi::pipelineRoleStage()
         );

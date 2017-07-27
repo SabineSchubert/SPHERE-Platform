@@ -444,6 +444,13 @@ class Service extends AbstractService
     }
 
     /**
+     * @return null|int
+     */
+    public function getMaxMonthCurrentYearFromSales() {
+        return ( new Data( $this->getBinding() ) ) ->getMaxMonthCurrentYearFromSales();
+    }
+
+    /**
      * @param null|string $PartNumber
      * @param null|string $MarketingCodeNumber
      * @param null|int $ProductManagerId

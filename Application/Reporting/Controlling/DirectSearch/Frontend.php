@@ -11,6 +11,7 @@ namespace SPHERE\Application\Reporting\Controlling\DirectSearch;
 
 use Doctrine\Common\Util\Debug;
 use Nette\DateTime;
+use SPHERE\Application\Api\Reporting\Excel\ExcelDirectSearch;
 use SPHERE\Application\Platform\Utility\Translation\LocaleTrait;
 use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_MarketingCode;
@@ -36,11 +37,13 @@ use SPHERE\Common\Frontend\Form\Structure\FormRow;
 use SPHERE\Common\Frontend\Icon\Repository\Info;
 use SPHERE\Common\Frontend\Icon\Repository\Search;
 use SPHERE\Common\Frontend\Layout\Repository\Panel;
+use SPHERE\Common\Frontend\Layout\Repository\PullRight;
 use SPHERE\Common\Frontend\Layout\Repository\Title;
 use SPHERE\Common\Frontend\Layout\Structure\Layout;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
+use SPHERE\Common\Frontend\Link\Repository\External;
 use SPHERE\Common\Frontend\Link\Repository\Standard;
 use SPHERE\Common\Frontend\Message\Repository\Warning;
 use SPHERE\Common\Frontend\Table\Repository\Title as TableTitle;
@@ -83,10 +86,9 @@ class Frontend extends Extension
 		$Stage = new Stage('Direktsuche', 'Teilenummer');
 		$this->buttonStageDirectSearch($Stage);
 
-
-
 		$LayoutGroupDirectSearch = '';
 		$LayoutGroupCompetition = '';
+		$LayoutExcelDownload = '';
         $ErrorPartNumber = '';
         $EntityPart = null;
 		if( $Search ) {
@@ -158,6 +160,19 @@ class Frontend extends Extension
 						),
 						new Title('Angebotsdaten')
 					);
+
+				//Excel-Download
+                $LayoutExcelDownload = new LayoutGroup(
+                    new LayoutRow(
+                        new LayoutColumn(
+                            new External( 'Excel-Download', ExcelDirectSearch::getEndpoint(), null, array(
+                                ExcelDirectSearch::API_TARGET => 'getExcel',
+                                'PartNumber' => $Search['PartNumber']
+                            ) ), 12
+                        )
+                    ),
+                    new Title('')
+                );
 			} else {
 				$ErrorPartNumber = new Warning('Die Teilenummer konnte nicht gefunden werden.');
 			}
@@ -178,7 +193,8 @@ class Frontend extends Extension
                     )
                 ),
 				$LayoutGroupDirectSearch,
-				$LayoutGroupCompetition
+				$LayoutGroupCompetition,
+                $LayoutExcelDownload
 			))
 		);
 
@@ -238,6 +254,7 @@ class Frontend extends Extension
 		$this->buttonStageDirectSearch($Stage);
 
 		$LayoutGroupDirectSearch = '';
+		$LayoutGroupExcel = '';
 		$ErrorProductManager = '';
 		if( $Search ) {
 
@@ -272,6 +289,18 @@ class Frontend extends Extension
 						),
 						new Title('Direktsuche')
 					);
+                $LayoutGroupExcel =
+                    new LayoutGroup(
+                        new LayoutRow(
+                            new LayoutColumn(
+                                new External( 'Excel-Download', ExcelDirectSearch::getEndpoint(), null, array(
+                                    ExcelDirectSearch::API_TARGET => 'getExcel',
+                                    'ProductManagerId' => $Search['ProductManager']
+                                ) ), 12
+                            )
+                        ),
+                        new Title('')
+                    );
 			} else {
 				$ErrorProductManager = new Warning('Es wurde kein gültiger Produktmanager ausgewählt.');
 			}
@@ -294,7 +323,8 @@ class Frontend extends Extension
                         )
                     )
                 ),
-				$LayoutGroupDirectSearch
+				$LayoutGroupDirectSearch,
+                $LayoutGroupExcel
 			))
 		);
 		return $Stage;
@@ -306,6 +336,7 @@ class Frontend extends Extension
 		$this->buttonStageDirectSearch($Stage);
 
 		$LayoutGroupDirectSearch = '';
+        $LayoutGroupExcel = '';
 		$ErrorMarketingCode = '';
 
 		if( $Search ) {
@@ -341,6 +372,18 @@ class Frontend extends Extension
 						),
 						new Title('Direktsuche')
 					);
+				$LayoutGroupExcel =
+                    new LayoutGroup(
+                        new LayoutRow(
+                            new LayoutColumn(
+                                new External( 'Excel-Download', ExcelDirectSearch::getEndpoint(), null, array(
+                                    ExcelDirectSearch::API_TARGET => 'getExcel',
+                                    'MarketingCodeNumber' => $Search['MarketingCode']
+                                ) ), 12
+                            )
+                        ),
+                        new Title('')
+                    );
 			} else {
                 $ErrorMarketingCode = new Warning('Der Marketingcode konnte nicht gefunden werden!');
 			}
@@ -362,7 +405,8 @@ class Frontend extends Extension
                         )
                     )
                 ),
-				$LayoutGroupDirectSearch
+				$LayoutGroupDirectSearch,
+                $LayoutGroupExcel
 			))
 		);
 
@@ -886,22 +930,22 @@ class Frontend extends Extension
 
             array_walk( $PriceDevData, function( &$Row ) {
                  if( isset($Row['Data_PriceGross']) ) {
-                     $Row['Data_PriceGross'] = $this->doLocalize($Row['Data_PriceGross'])->getCurrency();
+                     $Row['Data_PriceGross'] = new PullRight( $this->doLocalize($Row['Data_PriceGross'])->getCurrency() );
                  }
                  if( isset($Row['Data_PriceNet']) ) {
-                     $Row['Data_PriceNet'] = $this->doLocalize($Row['Data_PriceNet'])->getCurrency();
+                     $Row['Data_PriceNet'] = new PullRight( $this->doLocalize($Row['Data_PriceNet'])->getCurrency() );
                  }
                  if( isset($Row['Data_BackValue']) && $Row['Data_BackValue'] !== 0.00 ) {
-                     $Row['Data_BackValue'] = $this->doLocalize($Row['Data_BackValue'])->getCurrency();
+                     $Row['Data_BackValue'] = new PullRight( $this->doLocalize($Row['Data_BackValue'])->getCurrency() );
                  }
                  if( isset($Row['Discount'])) {
-                     $Row['Discount'] = $Row['Discount'].' %';
+                     $Row['Discount'] = new PullRight( $Row['Discount'].' %' );
                  }
                  if( isset($Row['Data_CostsVariable']) ) {
-                     $Row['Data_CostsVariable'] = $this->doLocalize($Row['Data_CostsVariable'])->getCurrency();
+                     $Row['Data_CostsVariable'] = new PullRight( $this->doLocalize($Row['Data_CostsVariable'])->getCurrency() );
                  }
                  if( isset($Row['Data_CoverageContribution']) ) {
-                     $Row['Data_CoverageContribution'] = $this->doLocalize($Row['Data_CoverageContribution'])->getCurrency();
+                     $Row['Data_CoverageContribution'] = new PullRight( $this->doLocalize($Row['Data_CoverageContribution'])->getCurrency() );
                  }
             } );
 
@@ -948,14 +992,39 @@ class Frontend extends Extension
 	    $SalesData = DataWareHouse::useService()->getSalesByPart( $EntityPart );
 
 	    if( $SalesData ) {
-            array_walk( $SalesData, function( &$Row ) {
+
+	        //Hochrechnungsfaktor
+	        $HR = (float)1;
+
+            $WalkSalesData = array();
+            array_walk( $SalesData, function( &$Row, $Key, $HR ) use (&$WalkSalesData) {
+
+                //Hochrechnung hinzufügen
+                if(isset($Row['Year']) == date('Y') && DataWareHouse::useService()->getMaxMonthCurrentYearFromSales() != '12' ) {
+                    array_push(
+                        $WalkSalesData, array(
+                            'Year' => 'HR '.$Row['Year'],
+                            'Data_SumSalesGross' => new PullRight( $this->doLocalize( ($Row['Data_SumSalesGross']*$HR) )->getCurrency() ),
+                            'Data_SumSalesNet' => new PullRight( $this->doLocalize( ($Row['Data_SumSalesNet']*$HR) )->getCurrency() ),
+                            'Data_SumQuantity' => new PullRight( $Row['Data_SumQuantity'] )
+                        )
+                    );
+
+                     $Row['Year'] = 'per '.DataWareHouse::useService()->getMaxMonthCurrentYearFromSales().'/'.$Row['Year'];
+                 }
                  if( isset($Row['Data_SumSalesGross']) ) {
-                     $Row['Data_SumSalesGross'] = $this->doLocalize($Row['Data_SumSalesGross'])->getCurrency();
+                     $Row['Data_SumSalesGross'] = new PullRight( $this->doLocalize($Row['Data_SumSalesGross'])->getCurrency() );
                  }
                  if( isset($Row['Data_SumSalesNet']) ) {
-                     $Row['Data_SumSalesNet'] = $this->doLocalize($Row['Data_SumSalesNet'])->getCurrency();
+                     $Row['Data_SumSalesNet'] = new PullRight( $this->doLocalize($Row['Data_SumSalesNet'])->getCurrency() );
                  }
-            } );
+                 if( isset($Row['Data_SumQuantity']) ) {
+                     $Row['Data_SumQuantity'] = new PullRight( $Row['Data_SumQuantity'] );
+                 }
+
+            }, $HR );
+
+            $SalesData = array_merge($SalesData,$WalkSalesData);
 
             $Table = new Table(
                 $SalesData,
@@ -1009,10 +1078,44 @@ class Frontend extends Extension
 
         ///*new Tooltip('Brutto','Test2', new Info())*/
         if($SalesData) {
+
+            //Hochrechnungsfaktor
+   	        $HR = (float)1;
+
+            $WalkSalesData = array();
+            array_walk( $SalesData, function( &$Row, $Key, $HR ) use (&$WalkSalesData) {
+
+               //Hochrechnung hinzufügen
+               if(isset($Row['Year']) == date('Y') && DataWareHouse::useService()->getMaxMonthCurrentYearFromSales() != '12' ) {
+                   array_push(
+                       $WalkSalesData, array(
+                           'Year' => 'HR '.$Row['Year'],
+                           'Data_SumSalesGross' => new PullRight( $this->doLocalize( ($Row['Data_SumSalesGross']*$HR) )->getCurrency() ),
+                           'Data_SumSalesNet' => new PullRight( $this->doLocalize( ($Row['Data_SumSalesNet']*$HR) )->getCurrency() ),
+                           'Data_SumQuantity' => new PullRight( $Row['Data_SumQuantity'] )
+                       )
+                   );
+
+                    $Row['Year'] = 'per '.DataWareHouse::useService()->getMaxMonthCurrentYearFromSales().'/'.$Row['Year'];
+                }
+                if( isset($Row['Data_SumSalesGross']) ) {
+                    $Row['Data_SumSalesGross'] = new PullRight( $this->doLocalize($Row['Data_SumSalesGross'])->getCurrency() );
+                }
+                if( isset($Row['Data_SumSalesNet']) ) {
+                    $Row['Data_SumSalesNet'] = new PullRight( $this->doLocalize($Row['Data_SumSalesNet'])->getCurrency() );
+                }
+                if( isset($Row['Data_SumQuantity']) ) {
+                    $Row['Data_SumQuantity'] = new PullRight( $Row['Data_SumQuantity'] );
+                }
+
+            }, $HR );
+
+            $SalesData = array_merge($SalesData,$WalkSalesData);
+
             $Table = new Table(
                 $SalesData,
                 new TableTitle('Controlling-Informationen'),
-                array( 'Year' => '&nbsp;', 'SumSalesGross' => 'Brutto', 'SumSalesNet' => 'Netto', 'SumQuantity' => 'Anzahl effektiv' ),
+                array( 'Year' => '&nbsp;', 'Data_SumSalesGross' => 'Brutto', 'Data_SumSalesNet' => 'Netto', 'Data_SumQuantity' => 'Anzahl effektiv' ),
                 array(
                     "columnDefs" => array(
     //			        array('width' => '40%', 'targets' => '0' ),
@@ -1055,14 +1158,48 @@ class Frontend extends Extension
         $SalesData = DataWareHouse::useService()->getSalesByProductManager( $EntityProductManager );
 
         if( $SalesData ) {
+
+            //Hochrechnungsfaktor
+   	        $HR = (float)1;
+
+            $WalkSalesData = array();
+            array_walk( $SalesData, function( &$Row, $Key, $HR ) use (&$WalkSalesData) {
+
+               //Hochrechnung hinzufügen
+               if(isset($Row['Year']) == date('Y') && DataWareHouse::useService()->getMaxMonthCurrentYearFromSales() != '12' ) {
+                   array_push(
+                       $WalkSalesData, array(
+                           'Year' => 'HR '.$Row['Year'],
+                           'Data_SumSalesGross' => new PullRight( $this->doLocalize( ($Row['Data_SumSalesGross']*$HR) )->getCurrency() ),
+                           'Data_SumSalesNet' => new PullRight( $this->doLocalize( ($Row['Data_SumSalesNet']*$HR) )->getCurrency() ),
+                           'Data_SumQuantity' => new PullRight( $Row['Data_SumQuantity'] )
+                       )
+                   );
+
+                    $Row['Year'] = 'per '.DataWareHouse::useService()->getMaxMonthCurrentYearFromSales().'/'.$Row['Year'];
+                }
+                if( isset($Row['Data_SumSalesGross']) ) {
+                    $Row['Data_SumSalesGross'] = new PullRight( $this->doLocalize($Row['Data_SumSalesGross'])->getCurrency() );
+                }
+                if( isset($Row['Data_SumSalesNet']) ) {
+                    $Row['Data_SumSalesNet'] = new PullRight( $this->doLocalize($Row['Data_SumSalesNet'])->getCurrency() );
+                }
+                if( isset($Row['Data_SumQuantity']) ) {
+                    $Row['Data_SumQuantity'] = new PullRight( $Row['Data_SumQuantity'] );
+                }
+
+            }, $HR );
+
+            $SalesData = array_merge($SalesData,$WalkSalesData);
+
             $Table = new Table(
                 $SalesData,
                 new TableTitle('Controlling-Informationen'),
                 array(
                     'Year' => '&nbsp;',
-                    'SumSalesGross' => /*new Tooltip('Brutto', 'Test2', new Info())*/'Brutto',
-                    'SumSalesNet' => 'Netto',
-                    'SumQuantity' => 'Anzahl effektiv'
+                    'Data_SumSalesGross' => /*new Tooltip('Brutto', 'Test2', new Info())*/'Brutto',
+                    'Data_SumSalesNet' => 'Netto',
+                    'Data_SumQuantity' => 'Anzahl effektiv'
                 ),
                 array(
                     "columnDefs" => array(

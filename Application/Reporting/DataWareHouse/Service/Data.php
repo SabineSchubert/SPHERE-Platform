@@ -855,6 +855,35 @@ class Data extends AbstractData
     }
 
     /**
+     * @return int|null
+     */
+    public function getMaxMonthCurrentYearFromSales() {
+        $Manager = $this->getEntityManager();
+        $QueryBuilder = $Manager->getQueryBuilder();
+        $TableSales = new TblReporting_Sales();
+        $TableSalesAlias = $TableSales->getEntityShortName();
+
+        $SqlMaxMonthCurrentYear = $QueryBuilder
+            ->select(
+                $QueryBuilder->expr()->max(
+                    $TableSalesAlias.'.'.$TableSales::ATTR_MONTH
+                )
+            )
+            ->from( $TableSales->getEntityFullName(), $TableSalesAlias )
+            ->where( $TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' = '.$this->getYearCurrentFromSales() )
+            ->getQuery()->setMaxResults(1)->getSingleResult();
+
+        $MaxMonthCurrentYear = current($SqlMaxMonthCurrentYear);
+
+        if($MaxMonthCurrentYear) {
+            return $MaxMonthCurrentYear;
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
      * @param null|string $PartNumber
      * @param null|string $MarketingCodeNumber
      * @param null|int $ProductManagerId

@@ -93,6 +93,7 @@ class MultiplyCalculation extends Extension implements IApiInterface
 		$PriceData['New'] = $PriceData['Old'];
 
 		$CalcRules = $this->getCalculationRules();
+
 		$PriceData['Old']['NetPrice'] = $CalcRules->calcNetPrice( $PriceData['Old']['GrossPrice'], $PriceData['Old']['Discount'] );
 		$PriceData['Old']['GrossSales'] = $CalcRules->calcGrossSales( $PriceData['Old']['GrossPrice'], $PriceData['Old']['Quantity'] );
 		$PriceData['Old']['NetSales'] = $CalcRules->calcNetSales( $PriceData['Old']['NetPrice'], $PriceData['Old']['Quantity'] );
@@ -104,8 +105,14 @@ class MultiplyCalculation extends Extension implements IApiInterface
 			case 'DiscountNumber':
 				if ( $DiscountNumber != $PriceData['Old']['DiscountNumber'] && $DiscountNumber != '' ) {
                     $EntityDiscountGroupNew = DataWareHouse::useService()->getDiscountGroupByNumber( $DiscountNumber );
-					$PriceData['New']['DiscountNumber'] = $DiscountNumber;
-					$PriceData['New']['Discount'] = $EntityDiscountGroupNew->getDiscount();
+                    if($EntityDiscountGroupNew) {
+                        $PriceData['New']['DiscountNumber'] = $DiscountNumber;
+                        $PriceData['New']['Discount'] = $EntityDiscountGroupNew->getDiscount();
+                    }
+                    else {
+                        $PriceData['New']['DiscountNumber'] = $PriceData['Old']['DiscountNumber'];
+                        $PriceData['New']['Discount'] = $PriceData['Old']['Discount'];
+                    }
 				}
 				break;
 			case 'GrossPrice':
@@ -116,8 +123,14 @@ class MultiplyCalculation extends Extension implements IApiInterface
 			case 'NetSale':
 				if ( $DiscountNumber != $PriceData['Old']['DiscountNumber'] && $DiscountNumber != '' ) {
                     $EntityDiscountGroupNew = DataWareHouse::useService()->getDiscountGroupByNumber( $DiscountNumber );
-                    $PriceData['New']['DiscountNumber'] = $DiscountNumber;
-                    $PriceData['New']['Discount'] = $EntityDiscountGroupNew->getDiscount();
+                    if($EntityDiscountGroupNew) {
+                        $PriceData['New']['DiscountNumber'] = $DiscountNumber;
+                        $PriceData['New']['Discount'] = $EntityDiscountGroupNew->getDiscount();
+                    }
+                    else {
+                        $PriceData['New']['DiscountNumber'] = $PriceData['Old']['DiscountNumber'];
+                        $PriceData['New']['Discount'] = $PriceData['Old']['Discount'];
+                    }
 				}
 				break;
 			case 'CoverageContribution':

@@ -165,7 +165,7 @@ class Frontend extends Extension
             $LayoutTable = $this->tableMonthlyTurnover($MonthlyTurnoverResult);
 
             if($MonthlyTurnoverResult) {
-                $LayoutExcel = '<br/>'.(new External('ExcelDownload', ExcelDefault::getEndpoint(), null, array(
+                $LayoutExcel = '<br/>'.(new External('Excel-Download', ExcelDefault::getEndpoint(), null, array(
                     ExcelDefault::API_TARGET => 'getExcelMonthlyTurnover',
                     'FileName' => 'Geschaeftsentwicklung',
                     'FileTyp' => 'xlsx',

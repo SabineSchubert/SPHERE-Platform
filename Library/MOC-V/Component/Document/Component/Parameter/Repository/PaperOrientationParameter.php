@@ -13,6 +13,8 @@ use MOC\V\Component\Document\Component\Parameter\Parameter;
  */
 class PaperOrientationParameter extends Parameter implements IParameterInterface
 {
+    const ORIENTATION_PORTRAIT = 'PORTRAIT';
+    const ORIENTATION_LANDSCAPE = 'LANDSCAPE';
 
     /** @var string $Orientation */
     private $Orientation = null;
