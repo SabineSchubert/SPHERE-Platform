@@ -13,6 +13,7 @@ use MOC\V\Component\Document\Component\Bridge\Repository\PhpExcel;
 use MOC\V\Component\Document\Component\Parameter\Repository\PaperOrientationParameter;
 use MOC\V\Component\Document\Document;
 use MOC\V\Core\FileSystem\FileSystem;
+use Nette\DateTime;
 use SPHERE\Application\Api\ApiTrait;
 use SPHERE\Application\Api\Dispatcher;
 use SPHERE\Application\IApiInterface;
@@ -50,11 +51,6 @@ class ExcelDirectSearch extends Extension implements IApiInterface
 
 
         $Document->setPaperOrientationParameter( new PaperOrientationParameter( PaperOrientationParameter::ORIENTATION_LANDSCAPE ) );
-
-
-        $Document->setValue( $Document->getCell(0,0), $PartNumber );
-        $Document->setValue( $Document->getCell(0,1), $MarketingCodeNumber );
-        $Document->setValue( $Document->getCell(0,2), $ProductManagerId );
 
         if( $MarketingCodeNumber ) {
             $EntityMarketingCode = DataWareHouse::useService()->getMarketingCodeByNumber( $MarketingCodeNumber );
@@ -339,6 +335,84 @@ class ExcelDirectSearch extends Extension implements IApiInterface
                     }
                 }
 
+                $EntityPrice = null;
+                $EntityDiscountGroup = null;
+                $EntityMarketingCode = null;
+                $EntityPartsMore = null;
+                $PartsMoreDiscount = 0;
+                $PartsMoreDescription = 'P+M';
+                $PartsMoreValue = 'nicht vorhanden';
+
+                if( $EntityPart ) {
+                    $EntityPrice = $EntityPart->fetchPriceCurrent();
+                    $EntityDiscountGroup = $EntityPrice->getTblReportingDiscountGroup();
+                    $EntityMarketingCode = $EntityPart->fetchMarketingCodeCurrent();
+
+                    if($EntityMarketingCode) {
+                        $EntityPartsMore = $EntityMarketingCode->fetchPartsMoreCurrent();
+                        if($EntityPartsMore) {
+                            $PartsMoreDiscount = $EntityPartsMore->getValue();
+                        }
+                    }
+                }
+
+                $Rw = $EntityPrice->getBackValue();
+                $GrossPrice = $EntityPrice->getPriceGross();
+                $DiscountNumber = $EntityDiscountGroup->getNumber();
+                $Discount = $EntityDiscountGroup->getDiscount();
+                $Costs = $EntityPrice->getCostsVariable();
+                $CalcRules = $this->getCalculationRules();
+
+                if( $EntityPartsMore ) {
+                    if( $EntityPartsMore->getType() == 'Prozent' ) {
+                        $PartsMoreDescription = 'P+M '.number_format($PartsMoreDiscount, 2, ',', '.').'%<br>NLP / P+M';
+                        $PartsMoreValue = number_format($CalcRules->calcPartsMoreEuro($GrossPrice, $PartsMoreDiscount), 2,',', '.') . ' €<br/>'
+                            . number_format($CalcRules->calcNetPrice($GrossPrice, $Discount, 0, $PartsMoreDiscount, 0, 0), 2, ',', '.') . ' €';
+                    }
+                    elseif( $EntityPartsMore->getType() == 'Euro' ) {
+                        $PartsMoreDescription = 'P+M '.number_format($PartsMoreDiscount, 2, ',', '.').'€<br>NLP / P+M';
+                        $PartsMoreValue = number_format(($GrossPrice + $PartsMoreDiscount), 2,',', '.') . ' €<br/>'
+                            . number_format($CalcRules->calcNetPrice($GrossPrice, $Discount, 0, $PartsMoreDiscount, 0, 0)) . ' €';
+                    }
+                }
+
+                /** @var DateTime $DateValidFrom */
+                $DateValidFrom = $EntityPrice->getValidFrom();
+
+                //Umsätze
+                $SalesData = DataWareHouse::useService()->getSalesByPart( $EntityPart );
+
+                if( $SalesData ) {
+
+                    //Hochrechnungsfaktor
+                    $HR = (float)1;
+
+                    $WalkSalesData = array();
+                    array_walk($SalesData, function (&$Row, $Key, $HR) use (&$WalkSalesData) {
+
+                        //Hochrechnung hinzufügen
+                        if (isset($Row['Year']) == date('Y') && DataWareHouse::useService()->getMaxMonthCurrentYearFromSales() != '12') {
+                            array_push(
+                                $WalkSalesData, array(
+                                    'Year' => 'HR ' . $Row['Year'],
+                                    'Data_SumSalesGross' => ($Row['Data_SumSalesGross'] * $HR),
+                                    'Data_SumSalesNet' => ($Row['Data_SumSalesNet'] * $HR),
+                                    'Data_SumQuantity' => $Row['Data_SumQuantity']
+                                )
+                            );
+
+                            $Row['Year'] = 'per ' . DataWareHouse::useService()->getMaxMonthCurrentYearFromSales() . '/' . $Row['Year'];
+                        }
+
+                    }, $HR);
+
+                    $SalesData = array_merge($SalesData, $WalkSalesData);
+                }
+
+
+
+
+
                 $i = 0;
                 $Document->setValue( $Document->getCell(0,$i), 'Allgemeine Informationen' )->setStyle( $Document->getCell(0,$i) )->setFontBold();
                 $Document->setStyle( $Document->getCell(0,$i),$Document->getCell(3,$i) )->mergeCells()->setBorderAll(1);
@@ -377,6 +451,13 @@ class ExcelDirectSearch extends Extension implements IApiInterface
                 $Document->setValue( $Document->getCell(1,$i), $EntityPart->getSparePartDesign() );
                 $Document->setStyle( $Document->getCell(1,$i),$Document->getCell(3,$i) )->mergeCells();
                 $i++;
+
+                $Document->setValue( $Document->getCell(1,$i), '' );
+                $Document->setStyle( $Document->getCell(1,$i),$Document->getCell(3,$i) )->mergeCells();
+                $i++;
+                $Document->setValue( $Document->getCell(1,$i), '' );
+                $Document->setStyle( $Document->getCell(1,$i),$Document->getCell(3,$i) )->mergeCells();
+                $i++;
                 $Document->setValue( $Document->getCell(1,$i), '' );
                 $Document->setStyle( $Document->getCell(1,$i),$Document->getCell(3,$i) )->mergeCells();
                 $i++;
@@ -398,30 +479,142 @@ class ExcelDirectSearch extends Extension implements IApiInterface
                 $Document->setValue( $Document->getCell(1,$i), $SuppliertText );
                 $Document->setStyle( $Document->getCell(1,$i),$Document->getCell(3,$i) )->mergeCells();
 
-                $i++;
-                $i++;
                 $Document->setStyle( $Document->getCell(0,13), $Document->getCell(3,15) )->setBorderAll(1);
                 $i++;
                 $i++;
 
 
-                $Document->setValue( $Document->getCell(0,$i), 'Umsatz' )->setStyle( $Document->getCell(0,$i) )->setFontBold();;
-                $Document->setStyle( $Document->getCell(0,$i), $Document->getCell(3,$i) )->mergeCells();
-                $i++;
+                //Preisdaten
+                $z = 0;
+                $Document->setValue( $Document->getCell(5,$z), 'Preis- und Kosteninformationen' )->setStyle( $Document->getCell(5,$z) )->setFontBold();
+                $Document->setStyle( $Document->getCell(5,$z),$Document->getCell(6,$z) )->mergeCells()->setBorderAll(1);
+                $z++;
 
-                $Document->setValue( $Document->getCell(0,$i), '' );
-                $Document->setValue( $Document->getCell(1,$i), 'Umsatz' );
-                $Document->setStyle( $Document->getCell( 1, $i ), $Document->getCell( 2, $i ) )->mergeCells();
-                $Document->setValue( $Document->getCell(3,$i), 'Anzahl effektiv' );
+                if( $Rw != 0 ) {
+                    $Document->setStyle( $Document->getCell(5,$z) )->setBorderAll(1)->setColumnWidth(-1);
+                    $Document->setValue( $Document->getCell(5,$z++), 'BLP/VP' );
+                    $Document->setStyle( $Document->getCell(5,$z) )->setBorderAll(1)->setColumnWidth(-1);
+                    $Document->setValue( $Document->getCell(5,$z++), 'BLP / TP' );
+                    $Document->setStyle( $Document->getCell(5,$z) )->setBorderAll(1)->setColumnWidth(-1);
+                    $Document->setValue( $Document->getCell(5,$z++), 'NLP / VP' );
+                    $Document->setStyle( $Document->getCell(5,$z) )->setBorderAll(1)->setColumnWidth(-1);
+                    $Document->setValue( $Document->getCell(5,$z++), 'NLP / TP' );
+                }
+                else {
 
-                $Document->setValue( $Document->getCell(0,$i), '' );
+                    $Document->setStyle( $Document->getCell(5,$z) )->setBorderAll(1)->setColumnWidth(-1);
+                    $Document->setValue( $Document->getCell(5,$z++), 'BLP/VP' );
+                    $Document->setStyle( $Document->getCell(5,$z) )->setBorderAll(1)->setColumnWidth(-1);
+                    $Document->setValue( $Document->getCell(5,$z++), 'NLP / VP' );
+                }
+                $Document->setStyle( $Document->getCell(5,$z) )->setBorderAll(1)->setColumnWidth(-1);
+                $Document->setValue( $Document->getCell(5,$z++), $PartsMoreDescription );
+                $Document->setStyle( $Document->getCell(5,$z) )->setBorderAll(1)->setColumnWidth(-1);
+                $Document->setValue( $Document->getCell(5,$z++), 'Rabattgruppe' );
+                $Document->setStyle( $Document->getCell(5,$z) )->setBorderAll(1)->setColumnWidth(-1);
+                $Document->setValue( $Document->getCell(5,$z++), 'variable Kosten' );
+                $Document->setStyle( $Document->getCell(5,$z) )->setBorderAll(1)->setColumnWidth(-1);
+                $Document->setValue( $Document->getCell(5,$z++), 'Preis gültig ab' );
+                $Document->setStyle( $Document->getCell(5,$z) )->setBorderAll(1)->setColumnWidth(-1);
+                $Document->setValue( $Document->getCell(5,$z++), 'TNR-Status' );
+                $Document->setStyle( $Document->getCell(5,$z) )->setBorderAll(1)->setColumnWidth(-1);
+                $Document->setValue( $Document->getCell(5,$z++), 'Konzern-DB' );
+                $Document->setStyle( $Document->getCell(5,$z) )->setBorderAll(1)->setColumnWidth(-1);
+                $Document->setValue( $Document->getCell(5,$z++), 'FC-Grenze ohne P+M' );
+                // if()
+                $Document->setStyle( $Document->getCell(5,$z) )->setBorderAll(1)->setColumnWidth(-1);
+                $Document->setValue( $Document->getCell(5,$z++), 'FC-Grenze mit P+M' );
 
-                $i++;
-                $Document->setValue( $Document->getCell(0,$i), '' );
-                $Document->setValue( $Document->getCell(1,$i), 'Brutto' );
-                $Document->setValue( $Document->getCell(2,$i), 'Netto' );
-                $Document->setValue( $Document->getCell(3,$i), 'Anzahl effektiv' );
-                $Document->setStyle( $Document->getCell(3,$i) )->setColumnWidth(-1);
+                $z=1;
+                if( $Rw != 0 ) {
+                    $Document->setStyle( $Document->getCell(6,$z) )->setBorderAll(1);
+                    $Document->setValue($Document->getCell(6, $z++), $CalcRules->calcGrossPrice( 0, 0, $Rw, 0, 0, 0, $GrossPrice ), PhpExcel::TYPE_NUMERIC );
+                    $Document->setStyle( $Document->getCell(6,$z) )->setBorderAll(1);
+                    $Document->setValue($Document->getCell(6, $z++), $GrossPrice, PhpExcel::TYPE_NUMERIC );
+                    $Document->setStyle( $Document->getCell(6,$z) )->setBorderAll(1);
+                    $Document->setValue($Document->getCell(6, $z++), $CalcRules->calcNetPrice( $GrossPrice, $Discount, $Rw ), PhpExcel::TYPE_NUMERIC );
+                    $Document->setStyle( $Document->getCell(6,$z) )->setBorderAll(1);
+                    $Document->setValue($Document->getCell(6, $z++), $CalcRules->calcNetPrice( $GrossPrice, $Discount ), PhpExcel::TYPE_NUMERIC );
+                }
+                else {
+                    $Document->setStyle( $Document->getCell(6,$z) )->setBorderAll(1);
+                    $Document->setValue($Document->getCell(6, $z++), $GrossPrice, PhpExcel::TYPE_NUMERIC );
+                    $Document->setStyle( $Document->getCell(6,$z) )->setBorderAll(1);
+                    $Document->setValue($Document->getCell(6, $z++), $CalcRules->calcNetPrice( $GrossPrice, $Discount ), PhpExcel::TYPE_NUMERIC );
+                }
+                $Document->setStyle( $Document->getCell(6,$z) )->setBorderAll(1)->setColumnWidth(-1);
+                $Document->setValue($Document->getCell(6, $z++), $PartsMoreValue, (($PartsMoreValue == 'nicht vorhanden')? PhpExcel::TYPE_STRING:PhpExcel::TYPE_NUMERIC) );
+
+                $Document->setStyle( $Document->getCell(6,$z) )->setBorderAll(1)->setColumnWidth(-1);
+                $Document->setValue($Document->getCell(6, $z++), $DiscountNumber.' - '.$Discount. '%', PhpExcel::TYPE_STRING );
+
+                $Document->setStyle( $Document->getCell(6,$z) )->setBorderAll(1)->setColumnWidth(-1);
+                $Document->setValue($Document->getCell(6, $z++), $Costs, PhpExcel::TYPE_NUMERIC );
+
+                $Document->setStyle( $Document->getCell(6,$z) )->setBorderAll(1)->setColumnWidth(-1);
+                $Document->setValue($Document->getCell(6, $z++), $DateValidFrom->format('d.m.Y'), PhpExcel::TYPE_STRING );
+
+                $Document->setStyle( $Document->getCell(6,$z) )->setBorderAll(1)->setColumnWidth(-1);
+                $Document->setValue($Document->getCell(6, $z++), (($EntityPart->getStatusActive() == '1')? 'aktiv':'inaktiv'), PhpExcel::TYPE_STRING );
+
+                $Document->setStyle( $Document->getCell(6,$z) )->setBorderAll(1)->setColumnWidth(-1);
+                $Document->setValue($Document->getCell(6, $z++), $CalcRules->calcCoverageContribution( $CalcRules->calcNetPrice( $GrossPrice, $Discount, $Rw, $PartsMoreDiscount, 0, 0  ) , $Costs ), PhpExcel::TYPE_NUMERIC );
+
+                $Document->setStyle( $Document->getCell(6,$z) )->setBorderAll(1)->setColumnWidth(-1);
+                $Document->setValue($Document->getCell(6, $z++), $CalcRules->calcFinancialManagementLimit( $CalcRules->calcGrossPrice( 0, 0, 0, $PartsMoreDiscount, 0, 0, $GrossPrice ), $Costs ), PhpExcel::TYPE_NUMERIC );
+
+                $Document->setStyle( $Document->getCell(6,$z) )->setBorderAll(1)->setColumnWidth(-1);
+                $Document->setValue($Document->getCell(6, $z++), $CalcRules->calcFinancialManagementLimit( $GrossPrice, $Costs ), PhpExcel::TYPE_NUMERIC );
+
+
+                //Preisentwi
+
+                //Umsatzdaten
+                if( $SalesData ) {
+
+                    $Document->setValue($Document->getCell(0, $i), 'Umsatz')->setStyle($Document->getCell(0,
+                        $i))->setFontBold();;
+                    $Document->setStyle($Document->getCell(0, $i), $Document->getCell(3, $i))->mergeCells();
+                    $i++;
+
+                    $Document->setValue($Document->getCell(0, $i), '');
+                    $Document->setValue($Document->getCell(1, $i), 'Umsatz');
+                    $Document->setStyle($Document->getCell(1, $i), $Document->getCell(2, $i))->mergeCells();
+                    $Document->setValue($Document->getCell(3, $i), 'Anzahl effektiv');
+
+                    $Document->setValue($Document->getCell(0, $i), '');
+
+                    $i++;
+                    $Document->setValue($Document->getCell(0, $i), '');
+                    $Document->setValue($Document->getCell(1, $i), 'Brutto');
+                    $Document->setValue($Document->getCell(2, $i), 'Netto');
+                    $Document->setValue($Document->getCell(3, $i), 'Anzahl effektiv');
+                    $Document->setStyle($Document->getCell(3, $i))->setColumnWidth(-1);
+
+                    $i++;
+
+                    foreach( (array)$SalesData as $RowIndex => $RowList ) {
+                       $ColIndex = 0;
+                       foreach( (array)$RowList as $ColName => $ColValue ) {
+                            //Zahl
+                            if( is_int( self::ConvertNumeric($ColValue,$ColName) ) == true ) {
+                                $Document->setStyle( $Document->getCell($ColIndex,$i) )->setBorderAll(1);
+                                $Document->setValue( $Document->getCell( $ColIndex++, ( $i ) ), $ColValue, PhpExcel::TYPE_NUMERIC );
+                            }
+                            elseif( is_float( self::ConvertNumeric($ColValue,$ColName) ) == true ) {
+                                $Document->setStyle( $Document->getCell($ColIndex,$i) )->setBorderAll(1);
+                                $Document->setValue( $Document->getCell( ($ColIndex++), ( $i ) ), $ColValue, PhpExcel::TYPE_NUMERIC );
+                            }
+                            else {
+                                $Document->setStyle( $Document->getCell($ColIndex,$i) )->setBorderAll(1);
+                                $Document->setValue( $Document->getCell( $ColIndex++, ( $i ) ), $ColValue, PhpExcel::TYPE_STRING );
+                            }
+                        }
+                        $i++;
+                    }
+
+                }
+
             }
         }
 
@@ -481,4 +674,13 @@ class ExcelDirectSearch extends Extension implements IApiInterface
         print FileSystem::getDownload($FilePointer->getRealPath(), 'Direktsuche.xlsx');
         //Debugger::screenDump($PartNumber, $MarketingCodeNumber, $ProductManagerId);
     }
+
+    private static function ConvertNumeric( $Parameter, $ColName ) {
+               if ( substr($ColName,0,5) == "Data_" or substr($ColName,0,6) == "Group_" ) {
+                   $Parameter = (preg_match('!^[0-9|-]+$!is',$Parameter )?(integer)$Parameter:$Parameter);
+                   $Parameter = (preg_match('!(^[0-9|-]+\.([0-9]+(E-)[0-9]|[0-9]+)+$|^\.[0]{1,})!is',$Parameter )?(float)$Parameter:$Parameter);
+                   // done
+                   return $Parameter;
+               }
+           }
 }

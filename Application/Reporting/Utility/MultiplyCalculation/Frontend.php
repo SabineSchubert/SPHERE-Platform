@@ -250,6 +250,7 @@ class Frontend extends Extension
 
         $EntityPrice = $EntityPart->fetchPriceCurrent();
         $EntityDiscountGroup = $EntityPrice->getTblReportingDiscountGroup();
+
         $PriceData['Old'] = array(
             'GrossPrice' => $EntityPrice->getPriceGross(),
             'DiscountNumber' => $EntityDiscountGroup->getNumber(),

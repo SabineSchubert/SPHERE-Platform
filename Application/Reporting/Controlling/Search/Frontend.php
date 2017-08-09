@@ -50,7 +50,7 @@ class Frontend extends Extension
 
 	public function frontendSearchPartNumber( $Search = null ) {
 		$Stage = new Stage('Suche');
-		$Stage->setMessage('Teilenummer');
+		$Stage->setMessage('Gruppierung nach Teilenummer');
 		$this->buttonStageDirectSearch($Stage);
         $LayoutExcel = '';
 
@@ -104,7 +104,7 @@ class Frontend extends Extension
 
 	public function frontendSearchMarketingCode( $Search = null ) {
 		$Stage = new Stage('Suche');
-		$Stage->setMessage('Marketingcode');
+		$Stage->setMessage('Gruppierung nach Marketingcode');
 		$this->buttonStageDirectSearch($Stage);
         $LayoutExcel = '';
 
@@ -153,7 +153,7 @@ class Frontend extends Extension
 
 	public function frontendSearchProductManager( $Search = null ) {
 		$Stage = new Stage('Suche');
-		$Stage->setMessage('Produktmanager');
+		$Stage->setMessage('Gruppierung nach Produktmanager');
 		$this->buttonStageDirectSearch($Stage);
         $LayoutExcel = '';
 
@@ -202,7 +202,7 @@ class Frontend extends Extension
 
 	public function frontendSearchCompetition( $Search = null ) {
 		$Stage = new Stage('Suche');
-		$Stage->setMessage('Angebotsdaten');
+		$Stage->setMessage('Gruppierung nach Angebotsdaten');
 		$this->buttonStageDirectSearch($Stage);
 		$LayoutExcel = '';
 
@@ -260,14 +260,14 @@ class Frontend extends Extension
                         array(
                             new FormColumn(
                                 new Panel('Teilenummer',
-                                    new TextField( 'Search[PartNumber]', 'Teilenummer', '' )
+                                    (new TextField( 'Search[PartNumber]', 'Teilenummer', '' ))->setAutoFocus()
                                 ), 4
                             ),
                             new FormColumn(
                                 new Panel('Marketingcode',
-                                    new AutoCompleter('Search[MarketingCode]', '', 'Marketingcode eingeben',
+                                    ( new AutoCompleter('Search[MarketingCode]', '', 'Marketingcode eingeben',
                                         array( 'Number' => $EntityMarketingCode )
-                                    )
+                                    ) )
                                 ), 4
                             ),
                             new FormColumn(

@@ -145,10 +145,10 @@ class MultiplyCalculation extends Extension implements IApiInterface
 		}
 
 		$PriceData['New']['NetPrice'] = $CalcRules->calcNetPrice( $PriceData['New']['GrossPrice'], $PriceData['New']['Discount'] );
-		$PriceData['New']['GrossSales'] = $CalcRules->calcGrossSales( $PriceData['New']['GrossPrice'], $PriceData['New']['Quantity'] );
-		$PriceData['New']['NetSales'] = $CalcRules->calcNetSales( $PriceData['New']['NetPrice'], $PriceData['New']['Quantity'] );
+		$PriceData['New']['GrossSales'] = $CalcRules->calcGrossSales( $PriceData['New']['GrossPrice'], $PriceData['Old']['Quantity'] );
+		$PriceData['New']['NetSales'] = $CalcRules->calcNetSales( $PriceData['New']['NetPrice'], $PriceData['Old']['Quantity'] );
 		$PriceData['New']['CoverageContribution'] = $CalcRules->calcCoverageContribution( $PriceData['New']['NetPrice'], $PriceData['New']['Costs'] );
-		$PriceData['New']['TotalCoverageContribution'] = $CalcRules->calcTotalCoverageContribution( $PriceData['New']['CoverageContribution'], $PriceData['New']['Quantity'] );
+		$PriceData['New']['TotalCoverageContribution'] = $CalcRules->calcTotalCoverageContribution( $PriceData['New']['CoverageContribution'], $PriceData['Old']['Quantity'] );
 		$PriceData['New']['TotalCoverageContributionProportionNetSales'] = $CalcRules->calcTotalCoverageContributionProportionNetSales($PriceData['New']['TotalCoverageContribution'], $PriceData['New']['NetSales'] );
 
 		//Delta ...

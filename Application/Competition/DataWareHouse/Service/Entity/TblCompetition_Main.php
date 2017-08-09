@@ -22,19 +22,68 @@ use SPHERE\System\Database\Fitting\Element;
  */
 class TblCompetition_Main extends Element
 {
-    //ToDo: protected $TblRetail;
-
-    //ToDo: protected $TblAnsprechpartner
-
     /**
      * @Column(type="string")
      */
     protected $TransactionNumber;
 
     /**
+     * @Column(type="string")
+     */
+    protected $RetailNumber;
+
+    /**
      * @Column(type="text")
      */
     protected $Comment;
+
+    /**
+     * @return string
+     */
+    public function getTransactionNumber()
+    {
+        return $this->TransactionNumber;
+    }
+
+    /**
+     * @param string $TransactionNumber
+     */
+    public function setTransactionNumber($TransactionNumber)
+    {
+        $this->TransactionNumber = $TransactionNumber;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRetailNumber()
+    {
+        return $this->RetailNumber;
+    }
+
+    /**
+     * @param string $RetailNumber
+     */
+    public function setRetailNumber($RetailNumber)
+    {
+        $this->RetailNumber = $RetailNumber;
+    }
+
+    /**
+     * @return string
+     */
+    public function getComment()
+    {
+        return $this->Comment;
+    }
+
+    /**
+     * @param string $Comment
+     */
+    public function setComment($Comment)
+    {
+        $this->Comment = $Comment;
+    }
 
 
 }

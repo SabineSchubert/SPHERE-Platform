@@ -30,8 +30,8 @@ class Controlling implements IApplicationInterface
         Main::getDispatcher()->registerRoute(
             Main::getDispatcher()->createRoute(__NAMESPACE__, __CLASS__ . '::frontendDashboard')
         );
-		Search::registerModule();
-		DirectSearch::registerModule();
+        DirectSearch::registerModule();
+        Search::registerModule();
 		MonthlyTurnover::registerModule();
 		//Utility::registerApplication();
 		//ScenarioCalculator::registerModule();

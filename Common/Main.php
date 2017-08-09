@@ -395,7 +395,7 @@ class Main extends Extension
 //        Eila::registerCluster();
 //        OtherApplication::registerCluster();
         Competition::registerCluster();
-        Example::registerCluster();
-        Search::registerCluster();
+//        Example::registerCluster();
+//        Search::registerCluster();
     }
 }

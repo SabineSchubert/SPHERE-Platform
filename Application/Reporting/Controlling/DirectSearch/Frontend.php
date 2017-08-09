@@ -866,7 +866,7 @@ class Frontend extends Extension
 
             /** @var DateTime $DateValidFrom */
             $DateValidFrom = $EntityPrice->getValidFrom();
-
+            //ToDo: Preisstand
             return new Table(
                 array(
                     array(
@@ -902,7 +902,7 @@ class Frontend extends Extension
                             .number_format( $CalcRules->calcFinancialManagementLimit( $GrossPrice, $Costs ), 2, ',', '.' ).' €'
                     ),
                 ),
-                new TableTitle('Preis- und Kosteninformationen'),
+                new TableTitle('Preis- und Kosteninformationen (Preisstand: dd.mm.yyyy)'),
                 array( 'Description' => 'Bezeichnung ', 'Value' => '' ),
                 array(
                     "columnDefs" => array(
