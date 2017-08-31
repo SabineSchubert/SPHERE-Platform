@@ -6,7 +6,7 @@
  * Time: 09:48
  */
 
-namespace SPHERE\Application\Competition\DataWareHouse\Competition\Service;
+namespace SPHERE\Application\Competition\DataWareHouse\Service;
 
 
 use SPHERE\System\Database\Binding\AbstractData;

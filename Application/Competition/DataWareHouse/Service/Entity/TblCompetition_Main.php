@@ -22,6 +22,10 @@ use SPHERE\System\Database\Fitting\Element;
  */
 class TblCompetition_Main extends Element
 {
+    const ATTR_TRANSACTION_NUMBER = 'TransactionNumber';
+    const ATTR_RETAIL_NUMBER = 'RetailNumber';
+    const ATTR_COMMENT = 'Comment';
+
     /**
      * @Column(type="string")
      */

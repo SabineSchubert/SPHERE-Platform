@@ -44,6 +44,7 @@ use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
 use SPHERE\Common\Frontend\Link\Repository\External;
+use SPHERE\Common\Frontend\Link\Repository\Link;
 use SPHERE\Common\Frontend\Link\Repository\Standard;
 use SPHERE\Common\Frontend\Message\Repository\Warning;
 use SPHERE\Common\Frontend\Table\Repository\Title as TableTitle;
@@ -508,17 +509,23 @@ class Frontend extends Extension
             }
 
             $EntityAssortmentGroup = $EntityPart->fetchAssortmentGroupCurrent();
+
             //Warengruppe
-            $EntityProductGroupList = $EntityMarketingCode->fetchProductGroupListCurrent();
-            $ProductGroupText = '';
-            if($EntityProductGroupList) {
-                /** @var TblReporting_ProductGroup $ProductGroup */
-                foreach($EntityProductGroupList AS $Index => $ProductGroup) {
-                    if( $Index != 0 ) {
-                        $ProductGroupText .= '<br/>';
+            if($EntityMarketingCode) {
+                $EntityProductGroupList = $EntityMarketingCode->fetchProductGroupListCurrent();
+                $ProductGroupText = '';
+                if($EntityProductGroupList) {
+                    /** @var TblReporting_ProductGroup $ProductGroup */
+                    foreach($EntityProductGroupList AS $Index => $ProductGroup) {
+                        if( $Index != 0 ) {
+                            $ProductGroupText .= '<br/>';
+                        }
+                        $ProductGroupText .= $ProductGroup->getNumber().' - '.$ProductGroup->getName();
                     }
-                    $ProductGroupText .= $ProductGroup->getNumber().' - '.$ProductGroup->getName();
                 }
+            }
+            else {
+                $ProductGroupText = '';
             }
 
             //Sparte
@@ -559,7 +566,8 @@ class Frontend extends Extension
                     ),
                     array(
                         'Description' => 'Vorgänger<br/>Nachfolger<br/>Wahlweise',
-                        'Value' => ''
+                        'Value' => (new Link( $EntityPart->getPredecessor(), __NAMESPACE__.'/PartNumber', null, array( 'Search' => array( 'PartNumber' => $EntityPart->getPredecessor() ) ) ))
+                            .(($EntityPart->getSuccessor() != '')? '<br/>'.(new Link( $EntityPart->getSuccessor(), __NAMESPACE__.'/PartNumber', null, array( 'Search' => array( 'PartNumber' => $EntityPart->getSuccessor() ) ) )):'').(($EntityPart->getOptionalNumber() != '')? '<br/>'.(new Link( $EntityPart->getOptionalNumber(), __NAMESPACE__.'/PartNumber', null, array( 'Search' => array( 'PartNumber' => $EntityPart->getOptionalNumber() ) ) )):'')
                     ),
                     array(
                         'Description' => 'Sortimentsgruppe',
@@ -567,7 +575,7 @@ class Frontend extends Extension
                     ),
                     array(
                         'Description' => 'Marketingcode',
-                        'Value' => (( $EntityMarketingCode )? $EntityMarketingCode->getNumber() . ' - ' . $EntityMarketingCode->getName(): '' )
+                        'Value' => (( $EntityMarketingCode )? (new Link( $EntityMarketingCode->getNumber(), __NAMESPACE__.'/MarketingCode', null, array( 'Search' => array( 'MarketingCode' => $EntityMarketingCode->getNumber() ) ) )) . ' - ' . $EntityMarketingCode->getName(): '' )
                     ),
                     array(
                         'Description' => 'Warengruppe',

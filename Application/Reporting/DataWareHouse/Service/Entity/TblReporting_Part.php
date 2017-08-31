@@ -28,6 +28,9 @@ class TblReporting_Part extends Element
     const ATTR_NAME = 'Name';
     const ATTR_SPARE_PART_DESIGN = 'SparePartDesign';
     const ATTR_STATUS_ACTIVE = 'StatusActive';
+    const ATTR_PREDECESSOR = 'Predecessor';
+    const ATTR_SUCCESSOR = 'Successor';
+    const ATTR_OPTIONAL_NUMBER = 'OptionalNumber';
 
     /**
      * @Column(type="string")
@@ -54,9 +57,20 @@ class TblReporting_Part extends Element
      */
     protected $StatusActive;
 
-    //Vorgänger
-    //Nachfolger
-    //Wahlweise
+    /**
+     * @Column(type="string")
+     */
+    protected $Predecessor;
+
+    /**
+     * @Column(type="string")
+     */
+    protected $Successor;
+
+    /**
+     * @Column(type="string")
+     */
+    protected $OptionalNumber;
 
     /**
      * @return string
@@ -136,6 +150,54 @@ class TblReporting_Part extends Element
     public function setStatusActive($StatusActive)
     {
         $this->StatusActive = $StatusActive;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPredecessor()
+    {
+        return $this->Predecessor;
+    }
+
+    /**
+     * @param mixed $Predecessor
+     */
+    public function setPredecessor($Predecessor)
+    {
+        $this->Predecessor = $Predecessor;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSuccessor()
+    {
+        return $this->Successor;
+    }
+
+    /**
+     * @param mixed $Successor
+     */
+    public function setSuccessor($Successor)
+    {
+        $this->Successor = $Successor;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOptionalNumber()
+    {
+        return $this->OptionalNumber;
+    }
+
+    /**
+     * @param mixed $OptionalNumber
+     */
+    public function setOptionalNumber($OptionalNumber)
+    {
+        $this->OptionalNumber = $OptionalNumber;
     }
 
     /**

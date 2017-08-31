@@ -29,7 +29,7 @@ class Competition implements IClusterInterface
         );
 
 		AppCompetition::registerApplication();
-//		DataWareHouse::registerApplication();
+		DataWareHouse::registerApplication();
 	}
 
 	/**

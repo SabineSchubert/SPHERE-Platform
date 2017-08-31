@@ -1,6 +1,7 @@
 <?php
 namespace SPHERE\Application\Platform\System;
 
+use SPHERE\Application\AppTrait;
 use SPHERE\Application\IApplicationInterface;
 use SPHERE\Application\Platform\System\Cache\Cache;
 use SPHERE\Application\Platform\System\Database\Database;
@@ -9,6 +10,7 @@ use SPHERE\Application\Platform\System\Protocol\Protocol;
 use SPHERE\Application\Platform\System\Session\Session;
 use SPHERE\Application\Platform\System\Test\Test;
 use SPHERE\Common\Frontend\Icon\Repository\Cog;
+use SPHERE\Common\Frontend\Icon\Repository\Shield;
 use SPHERE\Common\Frontend\Layout\Repository\Panel;
 use SPHERE\Common\Frontend\Layout\Repository\ProgressBar;
 use SPHERE\Common\Frontend\Layout\Structure\Layout;
@@ -26,6 +28,7 @@ use SPHERE\Common\Window\Stage;
  */
 class System implements IApplicationInterface
 {
+    use AppTrait;
 
     public static function registerApplication()
     {
@@ -49,6 +52,8 @@ class System implements IApplicationInterface
         Main::getDispatcher()->registerRoute(Main::getDispatcher()->createRoute(
             __NAMESPACE__, __CLASS__ . '::frontendDashboard'
         ));
+
+        //self::createApplication(__NAMESPACE__,__CLASS__,'frontendGatekeeper', 'System', new Shield());
     }
 
     /**

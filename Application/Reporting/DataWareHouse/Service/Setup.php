@@ -145,8 +145,8 @@ class Setup extends AbstractSetup
                         new TblReporting_MarketingCode_PartsMore(), 'TblReporting_MarketingCode',
                         new TblReporting_PartsMore(), 'Id'
                     )//->getView()->getSql()
-                );
-//        );
+//                );
+        );
 
         $this->getConnection()->createView(
             ( new View( $this->getConnection(), 'ViewPrice' ) )
@@ -313,6 +313,10 @@ class Setup extends AbstractSetup
         $this->createColumn( $Table, $TablePart::ATTR_NAME, self::FIELD_TYPE_STRING, false );
         $this->createColumn( $Table, $TablePart::ATTR_SPARE_PART_DESIGN, self::FIELD_TYPE_STRING, false );
         $this->createColumn( $Table, $TablePart::ATTR_STATUS_ACTIVE, self::FIELD_TYPE_BOOLEAN, false );
+
+        $this->createColumn( $Table, $TablePart::ATTR_PREDECESSOR, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePart::ATTR_SUCCESSOR, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePart::ATTR_OPTIONAL_NUMBER, self::FIELD_TYPE_STRING, false );
         return $Table;
     }
 

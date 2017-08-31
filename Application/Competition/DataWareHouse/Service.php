@@ -9,8 +9,9 @@
 namespace SPHERE\Application\Competition\DataWareHouse;
 
 
-use SPHERE\Application\Competition\DataWareHouse\Competition\Service\Data;
-use SPHERE\Application\Competition\DataWareHouse\Competition\Service\Setup;
+
+use SPHERE\Application\Competition\DataWareHouse\Service\Data;
+use SPHERE\Application\Competition\DataWareHouse\Service\Setup;
 use SPHERE\System\Database\Binding\AbstractService;
 
 class Service extends AbstractService

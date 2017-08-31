@@ -22,6 +22,9 @@ use SPHERE\System\Database\Fitting\Element;
  */
 class TblCompetition_Competitor extends Element
 {
+    const ATTR_NAME = 'Name';
+    const ATTR_SORTING = 'Sorting';
+
     /**
      * @Column(type="string")
      */
