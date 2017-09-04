@@ -10,6 +10,7 @@ namespace SPHERE\Application\Reporting\DataWareHouse\Service;
 
 
 use Doctrine\ORM\Query\Expr;
+use SPHERE\Application\Competition\DataWareHouse\Service\Entity\ViewCompetition;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_AssortmentGroup;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Brand;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_DiscountGroup;
@@ -301,6 +302,16 @@ class Data extends AbstractData
     public function getProductGroupById( $Id ) {
         $TableProductGroup = new TblReporting_ProductGroup();
         return $this->getCachedEntityById( __METHOD__, $this->getEntityManager(), $TableProductGroup->getEntityShortName(), (int)$Id );
+    }
+
+    /**
+     * @return null|Element[]|TblReporting_ProductGroup[]
+     */
+    public function getProductGroupAll() {
+        $TableProductGroup = new TblReporting_ProductGroup();
+        return $this->getCachedEntityList( __METHOD__, $this->getEntityManager(), $TableProductGroup->getEntityShortName(), array(
+            $TableProductGroup::ATTR_NUMBER => self::ORDER_ASC
+        ) );
     }
 
     //ToDo: History
@@ -1058,5 +1069,4 @@ class Data extends AbstractData
             return null;
         }
     }
-
 }

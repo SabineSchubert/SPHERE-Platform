@@ -24,7 +24,7 @@ use SPHERE\System\Database\Fitting\Element;
 class TblCompetition_Position extends Element
 {
     const TBL_COMPETITION_MAIN = 'TblCompetition_Main';
-    const TBL_REPORTING_PART = 'TblReportingPart';
+    const TBL_REPORTING_PART = 'TblReporting_Part';
     const TBL_COMPETITION_COMPETITOR = 'TblCompetition_Competitor';
     const ATTR_COMPETITOR = 'Competitor';
     const TBL_COMPETITION_MANUFACTURER = 'TblCompetition_Manufacturer';
@@ -47,7 +47,7 @@ class TblCompetition_Position extends Element
     /**
      * @Column(type="bigint")
      */
-    protected $TblReportingPart;
+    protected $TblReporting_Part;
 
     /**
      * @Column(type="int")
@@ -135,7 +135,7 @@ class TblCompetition_Position extends Element
      */
     public function getTblReportingPart()
     {
-        return $this->TblReportingPart;
+        return $this->TblReporting_Part;
     }
 
     /**

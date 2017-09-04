@@ -15,7 +15,13 @@ use SPHERE\Application\Competition\DataWareHouse\Service\Entity\TblCompetition_M
 use SPHERE\Application\Competition\DataWareHouse\Service\Entity\TblCompetition_Manufacturer;
 use SPHERE\Application\Competition\DataWareHouse\Service\Entity\TblCompetition_Position;
 use SPHERE\Application\Competition\DataWareHouse\Service\Entity\TblCompetition_Ranking;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_MarketingCode;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_MarketingCode_ProductGroup;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part_MarketingCode;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_ProductGroup;
 use SPHERE\System\Database\Binding\AbstractSetup;
+use SPHERE\System\Database\Fitting\View;
 
 class Setup extends AbstractSetup
 {
@@ -35,7 +41,35 @@ class Setup extends AbstractSetup
         $TableManufacturer = $this->setTableManufacturer( $Schema );
 //        $TableRanking = $this->setTableRanking( $Schema );
 
-        return $this->saveSchema($Schema, $Simulate);
+        $this->saveSchema($Schema, $Simulate);
+
+        $this->getConnection()->createView(
+            (new View( $this->getConnection(), 'ViewCompetition' ))
+                ->addLink(
+                    new TblCompetition_Main(), 'Id',
+                    new TblCompetition_Position(), 'TblCompetition_Main'
+                )
+                ->addLink(
+                    new TblCompetition_Position(), 'TblReporting_Part',
+                    new TblReporting_Part(), 'Id'
+                )
+                ->addLink(
+                    new TblReporting_Part(), 'Id',
+                    new TblReporting_Part_MarketingCode(), 'TblReporting_Part'
+                )
+                ->addLink(
+                    new TblReporting_Part_MarketingCode(), 'TblReporting_MarketingCode',
+                    new TblReporting_MarketingCode(), 'Id'
+                )->addLink(
+                    new TblReporting_MarketingCode(), 'Id',
+                    new TblReporting_MarketingCode_ProductGroup(), 'TblReporting_MarketingCode'
+                )->addLink(
+                    new TblReporting_MarketingCode_ProductGroup(), 'TblReporting_ProductGroup',
+                    new TblReporting_ProductGroup(), 'Id'
+                )
+        );
+
+        return null;
     }
 
     /**
@@ -61,6 +95,7 @@ class Setup extends AbstractSetup
         $this->createColumn( $Table, $TableCompetitionMain::ATTR_TRANSACTION_NUMBER, self::FIELD_TYPE_STRING, false );
         $this->createColumn( $Table, $TableCompetitionMain::ATTR_RETAIL_NUMBER, self::FIELD_TYPE_STRING, false );
         $this->createColumn( $Table, $TableCompetitionMain::ATTR_COMMENT, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TableCompetitionMain::ATTR_CREATION_DATE, self::FIELD_TYPE_DATETIME, false );
         return $Table;
     }
 
@@ -73,11 +108,13 @@ class Setup extends AbstractSetup
         $Table = $this->createTable( $Schema, $TableCompetitionPosition->getEntityShortName() );
         $this->createColumn( $Table, $TableCompetitionPosition::TBL_COMPETITION_MAIN, self::FIELD_TYPE_BIGINT, false );
         $this->createColumn( $Table, $TableCompetitionPosition::TBL_REPORTING_PART, self::FIELD_TYPE_BIGINT, false );
-        $this->createColumn( $Table, $TableCompetitionPosition::TBL_COMPETITION_COMPETITOR, self::FIELD_TYPE_INTEGER, false );
+        $this->createColumn( $Table, $TableCompetitionPosition::TBL_COMPETITION_COMPETITOR, self::FIELD_TYPE_INTEGER, true );
         $this->createColumn( $Table, $TableCompetitionPosition::ATTR_COMPETITOR, self::FIELD_TYPE_STRING, false );
-        $this->createColumn( $Table, $TableCompetitionPosition::TBL_COMPETITION_MANUFACTURER, self::FIELD_TYPE_BIGINT, false );
+        $this->createColumn( $Table, $TableCompetitionPosition::TBL_COMPETITION_MANUFACTURER, self::FIELD_TYPE_BIGINT, true );
+        $this->createColumn( $Table, $TableCompetitionPosition::ATTR_MANUFACTURER, self::FIELD_TYPE_STRING, false );
         $this->createColumn( $Table, $TableCompetitionPosition::ATTR_PRICE_NET, self::FIELD_TYPE_FLOAT, false );
         $this->createColumn( $Table, $TableCompetitionPosition::ATTR_PRICE_GROSS, self::FIELD_TYPE_FLOAT, false );
+        $this->createColumn( $Table, $TableCompetitionPosition::ATTR_DISCOUNT, self::FIELD_TYPE_FLOAT, false );
         $this->createColumn( $Table, $TableCompetitionPosition::ATTR_VAT, self::FIELD_TYPE_BOOLEAN, false );
         $this->createColumn( $Table, $TableCompetitionPosition::ATTR_DISTRIBUTOR_OR_CUSTOMER, self::FIELD_TYPE_STRING, false );
         $this->createColumn( $Table, $TableCompetitionPosition::ATTR_COMMENT, self::FIELD_TYPE_STRING, false );

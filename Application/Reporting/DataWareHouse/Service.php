@@ -159,6 +159,13 @@ class Service extends AbstractService
     }
 
     /**
+     * @return null|TblReporting_ProductGroup[]|Element[]
+     */
+    public function getProductGroupAll() {
+        return ( new Data( $this->getBinding() ) )->getProductGroupAll();
+    }
+
+    /**
      * @param TblReporting_MarketingCode $TblReporting_MarketingCode
      * @return null|TblReporting_MarketingCode_ProductGroup[]|Element[]
      */

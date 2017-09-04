@@ -25,6 +25,7 @@ class TblCompetition_Main extends Element
     const ATTR_TRANSACTION_NUMBER = 'TransactionNumber';
     const ATTR_RETAIL_NUMBER = 'RetailNumber';
     const ATTR_COMMENT = 'Comment';
+    const ATTR_CREATION_DATE = 'CreationDate';
 
     /**
      * @Column(type="string")
@@ -40,6 +41,11 @@ class TblCompetition_Main extends Element
      * @Column(type="text")
      */
     protected $Comment;
+
+    /**
+     * @Column(type="datetime")
+     */
+    protected $CreationDate;
 
     /**
      * @return string
@@ -88,6 +94,23 @@ class TblCompetition_Main extends Element
     {
         $this->Comment = $Comment;
     }
+
+    /**
+     * @return string
+     */
+    public function getCreationDate()
+    {
+        return $this->CreationDate;
+    }
+
+    /**
+     * @param string $CreationDate
+     */
+    public function setCreationDate($CreationDate)
+    {
+        $this->CreationDate = $CreationDate;
+    }
+
 
 
 }
