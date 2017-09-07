@@ -9,6 +9,8 @@
 namespace SPHERE\Application\Api\Reporting;
 
 
+use SPHERE\Application\Api\Reporting\Controlling\DirectSearch\CompetitionPositionDelete;
+use SPHERE\Application\Api\Reporting\Controlling\DirectSearch\CompetitionTable;
 use SPHERE\Application\Api\Reporting\Excel\ExcelDefault;
 use SPHERE\Application\Api\Reporting\Excel\ExcelDirectSearch;
 use SPHERE\Application\Api\Reporting\Excel\ExcelMultiplyCalculation;
@@ -28,5 +30,7 @@ class Reporting implements IApplicationInterface
 		ExcelMultiplyCalculation::registerApi();
 		ExcelScenarioCalculator::registerApi();
 		Pipeline::registerApi();
+		CompetitionTable::registerApi();
+		CompetitionPositionDelete::registerApi();
 	}
 }

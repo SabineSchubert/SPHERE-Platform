@@ -234,7 +234,7 @@ class Frontend extends Extension
 					new FormColumn(
 						new Panel('Suche', array(
 							(new TextField('Search[PartNumber]', 'Teilenummer', 'Teilenummer eingeben', new Search()))
-								->setRequired()
+								->setRequired()->setAutoFocus()
 						), Panel::PANEL_TYPE_INFO)
 					)
 				)

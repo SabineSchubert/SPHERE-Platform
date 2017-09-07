@@ -18,7 +18,7 @@ use SPHERE\System\Database\Fitting\Element;
 
 /**
  * @Entity
- * @Table(name="TblReporting_Position")
+ * @Table(name="TblCompetition_Position")
  * @Cache(usage="READ_ONLY")
  */
 class TblCompetition_Position extends Element
@@ -50,7 +50,7 @@ class TblCompetition_Position extends Element
     protected $TblReporting_Part;
 
     /**
-     * @Column(type="int")
+     * @Column(type="integer")
      */
     protected $TblCompetition_Competitor;
 
@@ -60,7 +60,7 @@ class TblCompetition_Position extends Element
     protected $Competitor;
 
     /**
-     * @Column(type="int")
+     * @Column(type="integer")
      */
     protected $TblCompetition_Manufacturer;
 
@@ -100,7 +100,7 @@ class TblCompetition_Position extends Element
     protected $Comment;
 
     /**
-     * @Column(type="int")
+     * @Column(type="integer")
      */
     protected $PackingUnit;
 

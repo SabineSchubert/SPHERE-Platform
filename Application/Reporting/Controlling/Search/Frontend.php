@@ -311,11 +311,11 @@ class Frontend extends Extension
 		$Stage->addButton(
 			new Standard('Teilenummer', new Route(__NAMESPACE__ . '/PartNumber'))
 		);
-		$Stage->addButton(
+        $Stage->addButton(
+            new Standard('Marketingcode', new Route(__NAMESPACE__ . '/MarketingCode'))
+        );
+        $Stage->addButton(
 			new Standard('Produktmanager', new Route(__NAMESPACE__ . '/ProductManager'))
-		);
-		$Stage->addButton(
-			new Standard('Marketingcode', new Route(__NAMESPACE__ . '/MarketingCode'))
 		);
 		$Stage->addButton(
 			new Standard('Angebotsdaten', new Route(__NAMESPACE__ . '/Competition'))
@@ -339,7 +339,7 @@ class Frontend extends Extension
                 'Discount' => 'RG',
                 'SumSalesGross' => 'Bruttoumsatz',
                 'SumSalesNet' => 'Nettoumsatz',
-                'SumQuantity' => 'Menge'
+                'SumQuantity' => 'Anzahl effektiv'
             );
 
             $Keys = array_keys($SearchData[0]);

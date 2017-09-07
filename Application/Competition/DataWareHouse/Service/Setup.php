@@ -13,6 +13,7 @@ use Doctrine\DBAL\Schema\Schema;
 use SPHERE\Application\Competition\DataWareHouse\Service\Entity\TblCompetition_Competitor;
 use SPHERE\Application\Competition\DataWareHouse\Service\Entity\TblCompetition_Main;
 use SPHERE\Application\Competition\DataWareHouse\Service\Entity\TblCompetition_Manufacturer;
+use SPHERE\Application\Competition\DataWareHouse\Service\Entity\TblCompetition_Part;
 use SPHERE\Application\Competition\DataWareHouse\Service\Entity\TblCompetition_Position;
 use SPHERE\Application\Competition\DataWareHouse\Service\Entity\TblCompetition_Ranking;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_MarketingCode;
@@ -39,6 +40,7 @@ class Setup extends AbstractSetup
         $TableCompetitionMain = $this->setTableCompetitionMain( $Schema );
         $TableCompetitionPosition = $this->setTableCompetitionPosition( $Schema );
         $TableManufacturer = $this->setTableManufacturer( $Schema );
+        $TablePart = $this->setTablePart( $Schema );
 //        $TableRanking = $this->setTableRanking( $Schema );
 
         $this->saveSchema($Schema, $Simulate);
@@ -67,6 +69,14 @@ class Setup extends AbstractSetup
                     new TblReporting_MarketingCode_ProductGroup(), 'TblReporting_ProductGroup',
                     new TblReporting_ProductGroup(), 'Id'
                 )
+        );
+
+        $this->getConnection()->createView(
+           (new View( $this->getConnection(), 'ViewCompetitionPart' ))
+               ->addLink(
+                   new TblReporting_Part(), 'Id',
+                   new TblCompetition_Part(), 'TblReporting_Part'
+               )
         );
 
         return null;
@@ -134,6 +144,36 @@ class Setup extends AbstractSetup
         $Table = $this->createTable( $Schema, $TableManufacturer->getEntityShortName() );
         $this->createColumn( $Table, $TableManufacturer::ATTR_NAME, self::FIELD_TYPE_STRING, false );
         $this->createColumn( $Table, $TableManufacturer::ATTR_SORTING, self::FIELD_TYPE_STRING, false );
+        return $Table;
+    }
+
+    /**
+     * @param $Schema
+     * @return \Doctrine\DBAL\Schema\Table
+     */
+    public function setTablePart( $Schema ) {
+        $TablePart = new TblCompetition_Part();
+        $Table = $this->createTable( $Schema, $TablePart->getEntityShortName() );
+        $this->createColumn( $Table, $TablePart::ATTR_SEGMENT, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePart::ATTR_SEASON, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePart::ATTR_ASSORTMENT, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePart::ATTR_SECTION, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePart::TBL_REPORTING_PART, self::FIELD_TYPE_BIGINT, false );
+        $this->createColumn( $Table, $TablePart::ATTR_WIDTH, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePart::ATTR_ASPECT_RATIO, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePart::ATTR_RIM_INCH, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePart::ATTR_LOAD_INDEX, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePart::ATTR_SPEED_INDEX, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePart::ATTR_DIMENSION_TYRE, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePart::ATTR_PROFIL, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePart::ATTR_MANUFACTURER, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePart::ATTR_NUMBER_TYRE, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePart::ATTR_DIRECTION, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePart::ATTR_AXLE, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePart::ATTR_DIMENSION_RIM, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePart::ATTR_DESIGN_RIM, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePart::ATTR_NUMBER_RIM, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePart::ATTR_SERIES, self::FIELD_TYPE_STRING, false );
         return $Table;
     }
 

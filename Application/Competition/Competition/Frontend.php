@@ -27,8 +27,10 @@ use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
 use SPHERE\Common\Frontend\Link\Repository\Link;
+use SPHERE\Common\Frontend\Link\Repository\Standard;
 use SPHERE\Common\Frontend\Message\Repository\Warning;
 use SPHERE\Common\Frontend\Table\Structure\Table;
+use SPHERE\Common\Window\Redirect;
 use SPHERE\Common\Window\Stage;
 use SPHERE\System\Extension\Repository\Debugger;
 
@@ -38,14 +40,13 @@ class Frontend
 		$Stage = new Stage('Angebotsdaten-Suche');
 		$Stage->setMessage('');
 
-        Debugger::screenDump($Search);
 
 		$LayoutTable = '';
 		if( $Search ) {
 			$LayoutTable = new Layout(
 				new LayoutGroup(
 					new LayoutRow(
-						new LayoutColumn( $this->tableSearchData( $Search['Grouping'] ) )
+						new LayoutColumn( $this->tableSearchData( $Search ) )
 					)
 				)
 			);
@@ -116,12 +117,9 @@ class Frontend
 		return $Stage;
 	}
 
-	private function tableSearchData( $SelectionStatistic ) {
+	private function tableSearchData( $Search ) {
 
-        $SearchData = \SPHERE\Application\Competition\DataWareHouse\DataWareHouse::useService()->getCompetitionSearch( 'A028250150180', null, null, '01.08.2016', '30.08.2017', 1 );
-
-		var_dump($SearchData);
-
+        $SearchData = \SPHERE\Application\Competition\DataWareHouse\DataWareHouse::useService()->getCompetitionSearch( $Search['PartNumber'], $Search['MarketingCode'], $Search['ProductGroupNumber'], $Search['PeriodFrom'], $Search['PeriodTo'], $Search['Grouping'] );
 
 		$ReplaceArray = array(
 			'PartNumber' => 'Teilenummer',
@@ -131,18 +129,17 @@ class Frontend
 			'Data_CountQuantity' => 'Anzahl'
 		);
 
-
-        array_walk( $SearchData, function( &$Row ) {
-           if( isset($Row['Data_CountQuantity']) ) {
-               $Row['Data_CountQuantity'] = new PullRight( $Row['Data_CountQuantity']);
-           }
-           if( isset( $Row['PartNumber'] ) ) {
-               $Row['PartNumber'] = new Link( $Row['PartNumber'], '/../Reporting/Controlling/DirectSearch/PartNumber', null, array( /*'Search' => array( 'PartNumber' => $Row['PartNumber'] )*/ ) );
-           }
-        } );
-
 		//Definition Spaltenkopf
 		if( count($SearchData) > 0 ) {
+            array_walk( $SearchData, function( &$Row ) {
+               if( isset($Row['Data_CountQuantity']) ) {
+                   $Row['Data_CountQuantity'] = new PullRight( $Row['Data_CountQuantity']);
+               }
+               if( isset( $Row['PartNumber'] ) ) {
+                   $Row['PartNumber'] = new Link( $Row['PartNumber'], '/Reporting/Controlling/DirectSearch/PartNumber', null, array( 'Search' => array( 'PartNumber' => $Row['PartNumber'] ) ) );
+               }
+            } );
+
 			$Keys = array_keys($SearchData[0]);
 			$TableHead = array_combine( $Keys, str_replace( array_keys( $ReplaceArray ) , $ReplaceArray, $Keys) );
 

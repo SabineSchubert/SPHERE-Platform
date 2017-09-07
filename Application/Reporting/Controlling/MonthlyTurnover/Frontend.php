@@ -52,14 +52,14 @@ class Frontend extends Extension
 
 	private function buttonStageDirectSearch(Stage $Stage)
 	{
-		$Stage->addButton(
+        $Stage->addButton(
+            new Standard('Produktmanager', new Route(__NAMESPACE__ . '/ProductManager'))
+        );
+        $Stage->addButton(
+            new Standard('Marketingcode', new Route(__NAMESPACE__ . '/MarketingCode'))
+        );
+        $Stage->addButton(
 			new Standard('Teilenummer', new Route(__NAMESPACE__ . '/PartNumber'))
-		);
-		$Stage->addButton(
-			new Standard('Produktmanager', new Route(__NAMESPACE__ . '/ProductManager'))
-		);
-		$Stage->addButton(
-			new Standard('Marketingcode', new Route(__NAMESPACE__ . '/MarketingCode'))
 		);
 	}
 
@@ -211,7 +211,7 @@ class Frontend extends Extension
 						new FormColumn(
 							new Panel('Suche', array(
 								(new TextField('Search[PartNumber]', 'Teilenummer', 'Teilenummer eingeben', new Search()))
-								->setRequired()
+								->setRequired()->setAutoFocus()
 							), Panel::PANEL_TYPE_DEFAULT), 4
 						),
 					)
@@ -278,7 +278,7 @@ class Frontend extends Extension
                'Month' => 'Monat',
                'SumSalesGross' => 'Bruttoumsatz',
                'SumSalesNet' => 'Nettoumsatz',
-               'SumQuantity' => 'Menge',
+               'SumQuantity' => 'Anzahl effektiv',
                'Discount' => 'Rabatt',
                '_AJ' => '',
                '_VJ' => '',

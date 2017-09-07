@@ -185,6 +185,11 @@ class MultiplyCalculation extends Extension implements IApiInterface
 
 	public function calcMultiplyCalculation( $Receiver, $DiscountNumber, $GrossPrice, $NetSale, $CoverageContribution, $PartId, $AllPriceData ) {
 
+        //in berechenbare Zahl wandeln
+        $GrossPrice = str_replace( ',', '.', str_replace('.','', $GrossPrice) );
+        $NetSale = str_replace( ',', '.', str_replace('.','', $NetSale) );
+        $CoverageContribution = str_replace( ',', '.', str_replace('.','', $CoverageContribution) );
+
 		$PriceData = $this->calcPriceData( $Receiver, $DiscountNumber, $GrossPrice, $NetSale, $CoverageContribution, $PartId );
 
 		switch ($Receiver) {

@@ -55,10 +55,10 @@ class ViewCompetition extends AbstractView
 
     const TBL_REPORTING_MARKETING_CODE_NUMBER = 'TblReporting_MarketingCode_Number';
     const TBL_REPORTING_MARKETING_CODE_NAME = 'TblReporting_MarketingCode_Name';
-    const TBL_REPORTING_MARKETING_CODE_ID = 'Tbl_Reporting_Marketing_Code_Id';
-    const TBL_REPORTING_PRODUCT_GROUP_NUMBER = 'Tbl_Reporting_Product_Group_Number';
-    const TBL_REPORTING_PRODUCT_GROUP_NAME = 'Tbl_Reporting_Product_Group_Name';
-    const TBL_REPORTING_PRODUCT_GROUP_ID = 'Tbl_Reporting_Product_Group_Id';
+    const TBL_REPORTING_MARKETING_CODE_ID = 'TblReporting_MarketingCode_Id';
+    const TBL_REPORTING_PRODUCT_GROUP_NUMBER = 'TblReporting_ProductGroup_Number';
+    const TBL_REPORTING_PRODUCT_GROUP_NAME = 'TblReporting_ProductGroup_Name';
+    const TBL_REPORTING_PRODUCT_GROUP_ID = 'TblReporting_ProductGroup_Id';
 
     /**
      * @ORM\Column(type="string")
@@ -74,7 +74,7 @@ class ViewCompetition extends AbstractView
     protected $TblCompetition_Main_Comment;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="string")
      */
     protected $TblCompetition_Main_CreationDate;
 

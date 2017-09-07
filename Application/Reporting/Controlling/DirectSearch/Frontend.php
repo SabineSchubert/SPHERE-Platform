@@ -11,6 +11,7 @@ namespace SPHERE\Application\Reporting\Controlling\DirectSearch;
 
 use Doctrine\Common\Util\Debug;
 use Nette\DateTime;
+use SPHERE\Application\Api\Reporting\Controlling\DirectSearch\CompetitionTable;
 use SPHERE\Application\Api\Reporting\Excel\ExcelDirectSearch;
 use SPHERE\Application\Platform\Utility\Translation\LocaleTrait;
 use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
@@ -25,6 +26,7 @@ use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Secti
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Supplier;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\ViewPart;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\ViewPrice;
+use SPHERE\Common\Frontend\Ajax\Receiver\BlockReceiver;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Button\Reset;
 use SPHERE\Common\Frontend\Form\Repository\Field\AutoCompleter;
@@ -70,11 +72,11 @@ class Frontend extends Extension
 		$Stage->addButton(
 			new Standard('Teilenummer', new Route(__NAMESPACE__ . '/PartNumber'))
 		);
+        $Stage->addButton(
+            new Standard('Marketingcode', new Route(__NAMESPACE__ . '/MarketingCode'))
+        );
 		$Stage->addButton(
 			new Standard('Produktmanager', new Route(__NAMESPACE__ . '/ProductManager'))
-		);
-		$Stage->addButton(
-			new Standard('Marketingcode', new Route(__NAMESPACE__ . '/MarketingCode'))
 		);
 	}
 
@@ -141,7 +143,7 @@ class Frontend extends Extension
 					$ExtraPartNumber =
 						new LayoutRow(
 							new LayoutColumn(
-								$this->tableCompetitionExtraPartNumber(), 6
+								$this->tableCompetitionExtraPartNumber( $Search['PartNumber'] ), 6
 							)
 						);
 				} else {
@@ -155,7 +157,7 @@ class Frontend extends Extension
 							$ExtraPartNumber,
 							new LayoutRow(
 								new LayoutColumn(
-									$this->tableCompetitionDataPartNumber(), 12
+									$this->tableCompetitionDataPartNumber( $EntityPart->getNumber() ), 12
 								)
 							)
 						),
@@ -426,7 +428,7 @@ class Frontend extends Extension
 						new FormColumn(
 							new Panel('Suche', array(
 								(new TextField('Search[PartNumber]', 'Teilenummer', 'Teilenummer eingeben', new Search()))
-								->setRequired()
+								->setRequired()->setAutoFocus()
 							), Panel::PANEL_TYPE_INFO)
 						),
 					)
@@ -1247,37 +1249,32 @@ class Frontend extends Extension
         }
 	}
 
-	private function tableCompetitionExtraPartNumber() {
+	private function tableCompetitionExtraPartNumber( $PartNumber ) {
+
+	    $SearchData = \SPHERE\Application\Competition\DataWareHouse\DataWareHouse::useService()->getCompetitionAdditionalInfoDirectSearchByPartNumber( $PartNumber );
+
 		return new Table(
 			array(
 				array(
+					'Description' => new Bold( 'Saison / Sortiment / Sparte' ),
+					'Value' => $SearchData[0]['Season'] . ' / ' . $SearchData[0]['Assortment'] . ' / ' . $SearchData[0]['Section']
+				),
+                array(
 					'Description' => new Bold( 'Dimension' ),
-					'Value' => 'A1234'
+					'Value' => $SearchData[0]['DimensionTyre']
 				),
 				array(
-					'Description' => 'Profil',
-					'Value' => '123'
+					'Description' => new Bold( 'Profil / Hersteller' ),
+					'Value' => $SearchData[0]['Profil'] . ' / '.$SearchData[0]['Manufacturer']
 				),
 				array(
-					'Description' => 'Rad',
-					'Value' => '1P23'
+					'Description' => new Bold( 'Rad' ),
+					'Value' => $SearchData[0]['DesignRim'] .'<br/>'.$SearchData[0]['DimensionRim'] . '(' .$SearchData[0]['NumberRim']. ')'
 				),
 				array(
-					'Description' => 'Warengruppe',
-					'Value' => '1P23'
-				),
-				array(
-					'Description' => 'Sparte',
-					'Value' => 'Pkw'
-				),
-				array(
-					'Description' => 'Produktmanager',
-					'Value' => 'Andreas Schneider'
-				),
-				array(
-					'Description' => 'Hauptlieferant',
-					'Value' => 'unbekannt'
-				),
+					'Description' => new Bold( 'Baureihe' ),
+					'Value' => $SearchData[0]['Series']
+				)
 			),
 			new TableTitle('Zusätzliche Informationen'),
 			array( 'Description ' => 'Bezeichnung', 'Value' => '' ),
@@ -1293,80 +1290,59 @@ class Frontend extends Extension
 				"sort"           => false   //Deaktivierung Sortierung der Spalten
 			)
 		);
+
 	}
 
-	private function tableCompetitionDataPartNumber() {
-		return new Table(
-			array(
-				array(
-					'Description' => 'Wettbewerber',
-					'Manufacturer' => 'Hersteller',
-					'PeriodOfTime' => 'Zeitraum',
-					'NetPrice' => 'NLP',
-					'GrossPrice' => 'BLP',
-					'Discount' => 'Rabatt',
-					'WV' => 'WV',
-					'EA' => 'EA',
-					'VP' => 'VP',
-					'Comments' => 'Kommentar',
-					'RetailNumber' => 'VF',
-					'DeleteButton' => 'Löschen',
-				),
-				array(
-					'Description' => 'Wettbewerber',
-					'Manufacturer' => 'Hersteller',
-					'PeriodOfTime' => 'Zeitraum',
-					'NetPrice' => 'NLP',
-					'GrossPrice' => 'BLP',
-					'Discount' => 'Rabatt',
-					'WV' => 'WV',
-					'EA' => 'EA',
-					'VP' => 'VP',
-					'Comments' => 'Kommentar',
-					'RetailNumber' => 'VF',
-					'DeleteButton' => 'Löschen',
-				),
-				array(
-					'Description' => 'Wettbewerber',
-					'Manufacturer' => 'Hersteller',
-					'PeriodOfTime' => 'Zeitraum',
-					'NetPrice' => 'NLP',
-					'GrossPrice' => 'BLP',
-					'Discount' => 'Rabatt',
-					'WV' => 'WV',
-					'EA' => 'EA',
-					'VP' => 'VP',
-					'Comments' => 'Kommentar',
-					'RetailNumber' => 'VF',
-					'DeleteButton' => 'Löschen',
-				),
-			),
-			new TableTitle('Wettbewerbsdaten'),
-			array(
-				'Description' => 'Wettbewerber',
-				'Manufacturer' => 'Hersteller',
-				'PeriodOfTime' => 'Zeitraum',
-				'NetPrice' => 'NLP',
-				'GrossPrice' => 'BLP',
-				'Discount' => 'Rabatt',
-				'WV' => 'WV',
-				'EA' => 'EA',
-				'VP' => 'VP',
-				'Comments' => 'Kommentar',
-				'RetailNumber' => 'VF',
-				'DeleteButton' => 'Löschen',
-			),
-			array(
-				"columnDefs" => array(
-			        array('width' => '40%', 'targets' => '0' ),
-					array('width' => '60%', 'targets' => '1' )
-				),
-				"paging"         => false, // Deaktivieren Blättern
-			    "iDisplayLength" => -1,    // Alle Einträge zeigen
-			    "searching"      => false, // Deaktivieren Suchen
-			    "info"           => false,  // Deaktivieren Such-Info
-				"sort"           => false   //Deaktivierung Sortierung der Spalten
-			)
-		);
+	private function tableCompetitionDataPartNumber( $PartNumber ) {
+
+//	    $SearchData = \SPHERE\Application\Competition\DataWareHouse\DataWareHouse::useService()->getCompetitionDirectSearchByPartNumber( $PartNumber );
+//
+//        $ReplaceArray = array(
+// 			'Competitor' => 'Wettbewerber',
+// 			'Manufacturer' => 'Hersteller',
+// 			'CreationDate' => 'Zeitraum',
+// 			'Data_PriceNet' => 'NLP',
+// 			'Data_PriceGross' => 'BLP',
+// 			'Data_Discount' => 'Rabatt',
+// 			'DistributorOrCustomer' => 'WV / EA',
+// 			'Comment' => 'Kommentar',
+// 			'RetailNumber' => 'VF'
+// 		);
+//
+// 		//Definition Spaltenkopf
+// 		if( count($SearchData) > 0 ) {
+//             array_walk( $SearchData, function( &$Row ) {
+//                if( isset($Row['Data_PriceNet']) ) {
+//                    $Row['Data_PriceNet'] = new PullRight( $this->doLocalize($Row['Data_PriceNet'])->getCurrency() );
+//                }
+//                if( isset($Row['Data_PriceGross']) ) {
+//                    $Row['Data_PriceGross'] = new PullRight( $this->doLocalize($Row['Data_PriceGross'])->getCurrency() );
+//                }
+//                if( isset($Row['Data_Discount']) ) {
+//                    $Row['Data_Discount'] = new PullRight( $this->doLocalize($Row['Data_Discount'])->getCurrency() );
+//                }
+//                if( isset($Row['Comment']) ) {
+//                    $Row['Comment'] = utf8_decode($Row['Comment']);
+//                }
+//                if( isset($Row['Manufacturer']) ) {
+//                    $Row['Manufacturer'] = utf8_decode($Row['Manufacturer']);
+//                }
+//                $Row['Option'] = new Standard('löschen', __NAMESPACE__, null, array( 'CompetitionId' => $Row['PositionId']) );
+//             } );
+//
+// 			$Keys = array_keys($SearchData[0]);
+// 			$TableHead = array_combine( $Keys, str_replace( array_keys( $ReplaceArray ) , $ReplaceArray, $Keys) );
+//
+// 			$ReceiverTable = new BlockReceiver('');
+//
+// 			return new Table(
+// 				$SearchData, null, $TableHead
+// 			);
+// 		}
+// 		else {
+// 			return new Warning('Es sind keine Datensätze vorhanden.');
+// 		}
+
+        return CompetitionTable::TableBlockReceiver(CompetitionTable::pipelineCompetitionTable( $PartNumber ));
 	}
 }
