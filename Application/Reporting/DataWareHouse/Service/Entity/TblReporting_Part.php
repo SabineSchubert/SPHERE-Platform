@@ -24,6 +24,9 @@ use SPHERE\System\Database\Fitting\Element;
 class TblReporting_Part extends Element
 {
     const ATTR_NUMBER = 'Number';
+    const ATTR_NUMBER_BASIC = 'NumberBasic';
+    const ATTR_ES1 = 'Es1';
+    const ATTR_ES2 = 'Es2';
     const ATTR_NUMBER_DISPLAY = 'NumberDisplay';
     const ATTR_NAME = 'Name';
     const ATTR_SPARE_PART_DESIGN = 'SparePartDesign';
@@ -36,6 +39,21 @@ class TblReporting_Part extends Element
      * @Column(type="string")
      */
     protected $Number;
+
+    /**
+     * @Column(type="string")
+     */
+    protected $NumberBasic;
+
+    /**
+     * @Column(type="string")
+     */
+    protected $Es1;
+
+    /**
+     * @Column(type="string")
+     */
+    protected $Es2;
 
     /**
      * @Column(type="string")
@@ -86,6 +104,54 @@ class TblReporting_Part extends Element
     public function setNumber($Number)
     {
         $this->Number = $Number;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNumberBasic()
+    {
+        return $this->NumberBasic;
+    }
+
+    /**
+     * @param string $NumberBasic
+     */
+    public function setNumberBasic($NumberBasic)
+    {
+        $this->NumberBasic = $NumberBasic;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEs1()
+    {
+        return $this->Es1;
+    }
+
+    /**
+     * @param string $Es1
+     */
+    public function setEs1($Es1)
+    {
+        $this->Es1 = $Es1;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEs2()
+    {
+        return $this->Es2;
+    }
+
+    /**
+     * @param string $Es2
+     */
+    public function setEs2($Es2)
+    {
+        $this->Es2 = $Es2;
     }
 
     /**

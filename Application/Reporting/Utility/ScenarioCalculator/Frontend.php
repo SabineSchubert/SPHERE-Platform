@@ -255,7 +255,12 @@ class Frontend extends Extension
 		$EntityPrice = $EntityPart->fetchPriceCurrent();
 		$EntityDiscountGroup = $EntityPrice->getTblReportingDiscountGroup();
 		$EntityMarketingCode = $EntityPart->fetchMarketingCodeCurrent();
-		$EntityPartsMore = $EntityMarketingCode->fetchPartsMoreCurrent();
+		if($EntityMarketingCode) {
+		    $EntityPartsMore = $EntityMarketingCode->fetchPartsMoreCurrent();
+        }
+        else {
+            $EntityPartsMore = null;
+        }
 
 		$PriceDataOld = array(
 		    'BLP' => $EntityPrice->getPriceGross(),

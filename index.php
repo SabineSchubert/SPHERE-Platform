@@ -1,6 +1,7 @@
 <?php
 namespace SPHERE;
 
+
 use MOC\V\Core\AutoLoader\AutoLoader;
 use SPHERE\Common\Main;
 use SPHERE\System\Cache\CacheFactory;
@@ -14,6 +15,7 @@ use SPHERE\System\Cache\Handler\TwigHandler;
 use SPHERE\System\Config\ConfigFactory;
 use SPHERE\System\Config\Reader\IniReader;
 use SPHERE\System\Extension\Repository\Debugger;
+
 
 /**
  * Setup: Php

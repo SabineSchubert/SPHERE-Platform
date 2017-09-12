@@ -87,15 +87,14 @@ class Setup extends AbstractSetup
 
         $this->setTableSales( $Schema, $TablePart );
 
-//        $this->getConnection()->createView(
-
-
+        if(!$Simulate) {
+        $this->saveSchema($Schema, $Simulate);
 //        Debugger::screenDump(
         $this->getConnection()->createView(
             (new View( $this->getConnection(), 'ViewPart' ))
                     ->addLink(
-                        new TblReporting_Part_MarketingCode(), 'TblReporting_Part',
-                        new TblReporting_Part(), 'Id'
+                        new TblReporting_Part(), 'Id',
+                        new TblReporting_Part_MarketingCode(), 'TblReporting_Part'
                     )
                     ->addLink(
                         new TblReporting_Part_MarketingCode(), 'TblReporting_MarketingCode',
@@ -155,8 +154,9 @@ class Setup extends AbstractSetup
                     new TblReporting_DiscountGroup(), 'Id'
                 )
         );
+        }
 
-        return $this->saveSchema($Schema, $Simulate);
+        return null;
     }
 
     /**
@@ -309,14 +309,17 @@ class Setup extends AbstractSetup
         $TablePart = new TblReporting_Part();
         $Table = $this->createTable( $Schema, $TablePart->getEntityShortName() );
         $this->createColumn( $Table, $TablePart::ATTR_NUMBER, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePart::ATTR_NUMBER_BASIC, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePart::ATTR_ES1, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePart::ATTR_ES2, self::FIELD_TYPE_STRING, false );
         $this->createColumn( $Table, $TablePart::ATTR_NUMBER_DISPLAY, self::FIELD_TYPE_STRING, false );
         $this->createColumn( $Table, $TablePart::ATTR_NAME, self::FIELD_TYPE_STRING, false );
         $this->createColumn( $Table, $TablePart::ATTR_SPARE_PART_DESIGN, self::FIELD_TYPE_STRING, false );
         $this->createColumn( $Table, $TablePart::ATTR_STATUS_ACTIVE, self::FIELD_TYPE_BOOLEAN, false );
 
-        $this->createColumn( $Table, $TablePart::ATTR_PREDECESSOR, self::FIELD_TYPE_STRING, false );
-        $this->createColumn( $Table, $TablePart::ATTR_SUCCESSOR, self::FIELD_TYPE_STRING, false );
-        $this->createColumn( $Table, $TablePart::ATTR_OPTIONAL_NUMBER, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePart::ATTR_PREDECESSOR, self::FIELD_TYPE_STRING, true );
+        $this->createColumn( $Table, $TablePart::ATTR_SUCCESSOR, self::FIELD_TYPE_STRING, true );
+        $this->createColumn( $Table, $TablePart::ATTR_OPTIONAL_NUMBER, self::FIELD_TYPE_STRING, true );
         return $Table;
     }
 
@@ -481,7 +484,7 @@ class Setup extends AbstractSetup
         $this->createColumn( $Table, $TableSales::ATTR_MONTH, self::FIELD_TYPE_INTEGER, false);
         $this->createColumn( $Table, $TableSales::ATTR_YEAR, self::FIELD_TYPE_INTEGER, false);
         $this->createColumn( $Table, $TableSales::ATTR_QUANTITY, self::FIELD_TYPE_INTEGER, false);
-        $this->createColumn( $Table, $TableSales::ATTR_SALES_GROSS, 'decimal', false);
+        $this->createColumn( $Table, $TableSales::ATTR_SALES_GROSS, self::FIELD_TYPE_FLOAT, false);
         $this->createColumn( $Table, $TableSales::ATTR_SALES_NET, self::FIELD_TYPE_FLOAT, false);
         return $Table;
     }

@@ -1020,6 +1020,8 @@ class Data extends AbstractData
                 ->setParameter( 'SecondPrevious'.$TableSales::ATTR_YEAR, ($MaxYear-2) )
                 ->getQuery();
 
+//            Debugger::screenDump($SqlMonthlyTurnoverData = $QueryBuilder->getQuery()->getSQL());
+
             if($SqlMonthlyTurnoverData->getResult()) {
                 return $SqlMonthlyTurnoverData->getResult();
             }

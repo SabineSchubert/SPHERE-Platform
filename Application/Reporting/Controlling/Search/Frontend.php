@@ -67,8 +67,8 @@ class Frontend extends Extension
                     'FileTyp' => 'xlsx',
                     'GroupBy' => 'Part',
                     'PartNumber' => $Search['PartNumber'],
-                    'MarketingCodeNumber' => $Search['PartNumber'],
-                    'ProductManagerId' => $Search['PartNumber'],
+                    'MarketingCodeNumber' => $Search['MarketingCode'],
+                    'ProductManagerId' => $Search['ProductManager'],
                     'ValidFrom' => $Search['PeriodFrom'],
                     'ValidTo' => $Search['PeriodTo']
                 ) ));
@@ -119,8 +119,8 @@ class Frontend extends Extension
                     'FileTyp' => 'xlsx',
                     'GroupBy' => 'MarketingCode',
                     'PartNumber' => $Search['PartNumber'],
-                    'MarketingCodeNumber' => $Search['PartNumber'],
-                    'ProductManagerId' => $Search['PartNumber'],
+                    'MarketingCodeNumber' => $Search['MarketingCode'],
+                    'ProductManagerId' => $Search['ProductManager'],
                     'ValidFrom' => $Search['PeriodFrom'],
                     'ValidTo' => $Search['PeriodTo']
                 ) ));
@@ -168,8 +168,8 @@ class Frontend extends Extension
                     'FileTyp' => 'xlsx',
                     'GroupBy' => 'ProductManager',
                     'PartNumber' => $Search['PartNumber'],
-                    'MarketingCodeNumber' => $Search['PartNumber'],
-                    'ProductManagerId' => $Search['PartNumber'],
+                    'MarketingCodeNumber' => $Search['MarketingCode'],
+                    'ProductManagerId' => $Search['ProductManager'],
                     'ValidFrom' => $Search['PeriodFrom'],
                     'ValidTo' => $Search['PeriodTo']
                 ) ));
@@ -217,8 +217,8 @@ class Frontend extends Extension
                     'FileTyp' => 'xlsx',
                     'GroupBy' => 'Competition',
                     'PartNumber' => $Search['PartNumber'],
-                    'MarketingCodeNumber' => $Search['PartNumber'],
-                    'ProductManagerId' => $Search['PartNumber'],
+                    'MarketingCodeNumber' => $Search['MarketingCode'],
+                    'ProductManagerId' => $Search['ProductManager'],
                     'ValidFrom' => $Search['PeriodFrom'],
                     'ValidTo' => $Search['PeriodTo']
                 ) ));

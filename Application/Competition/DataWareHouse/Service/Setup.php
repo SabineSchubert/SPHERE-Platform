@@ -45,39 +45,41 @@ class Setup extends AbstractSetup
 
         $this->saveSchema($Schema, $Simulate);
 
-        $this->getConnection()->createView(
-            (new View( $this->getConnection(), 'ViewCompetition' ))
-                ->addLink(
-                    new TblCompetition_Main(), 'Id',
-                    new TblCompetition_Position(), 'TblCompetition_Main'
-                )
-                ->addLink(
-                    new TblCompetition_Position(), 'TblReporting_Part',
-                    new TblReporting_Part(), 'Id'
-                )
-                ->addLink(
-                    new TblReporting_Part(), 'Id',
-                    new TblReporting_Part_MarketingCode(), 'TblReporting_Part'
-                )
-                ->addLink(
-                    new TblReporting_Part_MarketingCode(), 'TblReporting_MarketingCode',
-                    new TblReporting_MarketingCode(), 'Id'
-                )->addLink(
-                    new TblReporting_MarketingCode(), 'Id',
-                    new TblReporting_MarketingCode_ProductGroup(), 'TblReporting_MarketingCode'
-                )->addLink(
-                    new TblReporting_MarketingCode_ProductGroup(), 'TblReporting_ProductGroup',
-                    new TblReporting_ProductGroup(), 'Id'
-                )
-        );
+        if(!$Simulate) {
+            $this->getConnection()->createView(
+                (new View( $this->getConnection(), 'ViewCompetition' ))
+                    ->addLink(
+                        new TblCompetition_Main(), 'Id',
+                        new TblCompetition_Position(), 'TblCompetition_Main'
+                    )
+                    ->addLink(
+                        new TblCompetition_Position(), 'TblReporting_Part',
+                        new TblReporting_Part(), 'Id'
+                    )
+                    ->addLink(
+                        new TblReporting_Part(), 'Id',
+                        new TblReporting_Part_MarketingCode(), 'TblReporting_Part'
+                    )
+                    ->addLink(
+                        new TblReporting_Part_MarketingCode(), 'TblReporting_MarketingCode',
+                        new TblReporting_MarketingCode(), 'Id'
+                    )->addLink(
+                        new TblReporting_MarketingCode(), 'Id',
+                        new TblReporting_MarketingCode_ProductGroup(), 'TblReporting_MarketingCode'
+                    )->addLink(
+                        new TblReporting_MarketingCode_ProductGroup(), 'TblReporting_ProductGroup',
+                        new TblReporting_ProductGroup(), 'Id'
+                    )
+            );
 
-        $this->getConnection()->createView(
-           (new View( $this->getConnection(), 'ViewCompetitionPart' ))
-               ->addLink(
-                   new TblReporting_Part(), 'Id',
-                   new TblCompetition_Part(), 'TblReporting_Part'
-               )
-        );
+            $this->getConnection()->createView(
+               (new View( $this->getConnection(), 'ViewCompetitionPart' ))
+                   ->addLink(
+                       new TblReporting_Part(), 'Id',
+                       new TblCompetition_Part(), 'TblReporting_Part'
+                   )
+            );
+        }
 
         return null;
     }
@@ -104,7 +106,7 @@ class Setup extends AbstractSetup
         $Table = $this->createTable( $Schema, $TableCompetitionMain->getEntityShortName() );
         $this->createColumn( $Table, $TableCompetitionMain::ATTR_TRANSACTION_NUMBER, self::FIELD_TYPE_STRING, false );
         $this->createColumn( $Table, $TableCompetitionMain::ATTR_RETAIL_NUMBER, self::FIELD_TYPE_STRING, false );
-        $this->createColumn( $Table, $TableCompetitionMain::ATTR_COMMENT, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TableCompetitionMain::ATTR_COMMENT, self::FIELD_TYPE_STRING, true );
         $this->createColumn( $Table, $TableCompetitionMain::ATTR_CREATION_DATE, self::FIELD_TYPE_DATETIME, false );
         return $Table;
     }
@@ -125,9 +127,9 @@ class Setup extends AbstractSetup
         $this->createColumn( $Table, $TableCompetitionPosition::ATTR_PRICE_NET, self::FIELD_TYPE_FLOAT, false );
         $this->createColumn( $Table, $TableCompetitionPosition::ATTR_PRICE_GROSS, self::FIELD_TYPE_FLOAT, false );
         $this->createColumn( $Table, $TableCompetitionPosition::ATTR_DISCOUNT, self::FIELD_TYPE_FLOAT, false );
-        $this->createColumn( $Table, $TableCompetitionPosition::ATTR_VAT, self::FIELD_TYPE_BOOLEAN, false );
+        $this->createColumn( $Table, $TableCompetitionPosition::ATTR_VAT, self::FIELD_TYPE_BOOLEAN, true );
         $this->createColumn( $Table, $TableCompetitionPosition::ATTR_DISTRIBUTOR_OR_CUSTOMER, self::FIELD_TYPE_STRING, false );
-        $this->createColumn( $Table, $TableCompetitionPosition::ATTR_COMMENT, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TableCompetitionPosition::ATTR_COMMENT, self::FIELD_TYPE_TEXT, false );
         $this->createColumn( $Table, $TableCompetitionPosition::ATTR_PACKING_UNIT, self::FIELD_TYPE_STRING, false );
         $this->createColumn( $Table, $TableCompetitionPosition::ATTR_DOT, self::FIELD_TYPE_STRING, false );
         $this->createColumn( $Table, $TableCompetitionPosition::ATTR_ACTION_PART, self::FIELD_TYPE_BOOLEAN, false );
