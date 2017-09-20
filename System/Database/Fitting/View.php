@@ -63,11 +63,12 @@ class View
      * Include rows containing 'EntityRemoved' !== null in result set for this table
      *
      * @param Element $Entity
+     * @param bool $onlyRemoved false
      * @return $this
      */
-    public function allowRemovedEntities(Element $Entity)
+    public function allowRemovedEntities(Element $Entity, $onlyRemoved = false)
     {
-        array_push($this->AllowRemovedList, $Entity->getEntityShortName());
+        $this->AllowRemovedList[$Entity->getEntityShortName()] = $onlyRemoved;
         return $this;
     }
 
@@ -138,10 +139,17 @@ class View
             /** @var Element $To */
             $To = $Link['To'];
             // Condition
-            if( in_array( $To->getEntityShortName(), $this->AllowRemovedList ) ) {
-                $Condition = $QueryBuilder->expr()->eq($From->getEntityShortName() . '.' . $Link['FromKey'],
+            if( array_key_exists( $To->getEntityShortName(), $this->AllowRemovedList ) ) {
+                if( $this->AllowRemovedList[$To->getEntityShortName()] ) {
+                    $Condition = $QueryBuilder->expr()->eq($From->getEntityShortName() . '.' . $Link['FromKey'],
                         $To->getEntityShortName() . '.' . $Link['ToKey']);
-
+                } else {
+                    $Condition = $QueryBuilder->expr()->andX(
+                    $Condition = $QueryBuilder->expr()->eq($From->getEntityShortName() . '.' . $Link['FromKey'],
+                        $To->getEntityShortName() . '.' . $Link['ToKey']),
+                        $QueryBuilder->expr()->isNotNull($To->getEntityShortName() . '.EntityRemove')
+                    );
+                }
             } else {
                 $Condition = $QueryBuilder->expr()->andX(
                     $QueryBuilder->expr()->eq($From->getEntityShortName() . '.' . $Link['FromKey'],
@@ -161,7 +169,13 @@ class View
             }
         }
 
-        if( !in_array( $FromSource->getEntityShortName(), $this->AllowRemovedList ) ) {
+        if( array_key_exists( $FromSource->getEntityShortName(), $this->AllowRemovedList ) ) {
+            if( $this->AllowRemovedList[$FromSource->getEntityShortName()] ) {
+                $QueryBuilder->where(
+                    $QueryBuilder->expr()->isNotNull($FromSource->getEntityShortName() . '.EntityRemove')
+                );
+            }
+        } else {
             $QueryBuilder->where(
                 $QueryBuilder->expr()->isNull($FromSource->getEntityShortName() . '.EntityRemove')
             );
