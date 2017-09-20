@@ -141,14 +141,14 @@ class View
             // Condition
             if( array_key_exists( $To->getEntityShortName(), $this->AllowRemovedList ) ) {
                 if( $this->AllowRemovedList[$To->getEntityShortName()] ) {
-                    $Condition = $QueryBuilder->expr()->eq($From->getEntityShortName() . '.' . $Link['FromKey'],
-                        $To->getEntityShortName() . '.' . $Link['ToKey']);
-                } else {
                     $Condition = $QueryBuilder->expr()->andX(
-                    $Condition = $QueryBuilder->expr()->eq($From->getEntityShortName() . '.' . $Link['FromKey'],
-                        $To->getEntityShortName() . '.' . $Link['ToKey']),
+                        $Condition = $QueryBuilder->expr()->eq($From->getEntityShortName() . '.' . $Link['FromKey'],
+                            $To->getEntityShortName() . '.' . $Link['ToKey']),
                         $QueryBuilder->expr()->isNotNull($To->getEntityShortName() . '.EntityRemove')
                     );
+                } else {
+                    $Condition = $QueryBuilder->expr()->eq($From->getEntityShortName() . '.' . $Link['FromKey'],
+                        $To->getEntityShortName() . '.' . $Link['ToKey']);
                 }
             } else {
                 $Condition = $QueryBuilder->expr()->andX(
