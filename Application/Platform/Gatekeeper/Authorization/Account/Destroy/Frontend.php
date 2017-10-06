@@ -71,11 +71,11 @@ class Frontend
                         new Panel(new Question().' Dieses Benutzerkonto wirklich löschen?', array(),
                             Panel::PANEL_TYPE_DANGER,
                             new Standard(
-                                'Ja', '/Setting/Authorization/Account/Destroy', new Ok(),
+                                'Ja', '/Platform/Gatekeeper/Authorization/Account/Destroy', new Ok(),
                                 array('Id' => $Id, 'Confirm' => true)
                             )
                             .new Standard(
-                                'Nein', '/Setting/Authorization/Account', new Disable()
+                                'Nein', '/Platform/Gatekeeper/Authorization/Account', new Disable()
                             )
                         )
                     )))))

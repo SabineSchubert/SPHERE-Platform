@@ -9,6 +9,7 @@
 namespace SPHERE\Application\Reporting\Controlling;
 
 
+use MOC\V\Core\FileSystem\FileSystem;
 use SPHERE\Application\IApplicationInterface;
 use SPHERE\Application\Reporting\Controlling\DirectSearch\DirectSearch;
 use SPHERE\Application\Reporting\Controlling\MonthlyTurnover\MonthlyTurnover;
@@ -16,6 +17,11 @@ use SPHERE\Application\Reporting\Controlling\Search\Search;
 use SPHERE\Application\Reporting\Utility\ScenarioCalculator\ScenarioCalculator;
 use SPHERE\Application\Reporting\Utility\Utility;
 use SPHERE\Common\Frontend\Icon\Repository\Search as SearchIcon;
+use SPHERE\Common\Frontend\Layout\Repository\Thumbnail;
+use SPHERE\Common\Frontend\Layout\Structure\Layout;
+use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
+use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
+use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
 use SPHERE\Common\Main;
 use SPHERE\Common\Window\Navigation\Link;
 use SPHERE\Common\Window\Stage;
@@ -44,6 +50,18 @@ class Controlling implements IApplicationInterface
 	 {
 	     $Stage = new Stage('Suchen');
 	     $Stage->setMessage('');
+
+	     $Stage->setContent( new Layout(
+	         new LayoutGroup(
+	             new LayoutRow(
+	                 new LayoutColumn(
+                         (new Thumbnail(
+                                     FileSystem::getFileLoader('/Application/Reporting/Controlling/Startseite.png'), null, '', array(), Thumbnail::THUMBNAIL_TYPE_DEFAULT
+                                  ))
+                     )
+                 )
+             )
+         )  );
 	     return $Stage;
 	 }
 
