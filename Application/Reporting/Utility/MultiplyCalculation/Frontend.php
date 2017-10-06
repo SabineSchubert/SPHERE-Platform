@@ -33,6 +33,7 @@ use SPHERE\Common\Frontend\Link\Repository\External;
 use SPHERE\Common\Frontend\Message\Repository\Warning;
 use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Frontend\Text\Repository\Bold;
+use SPHERE\Common\Frontend\Text\Repository\Danger;
 use SPHERE\Common\Window\Stage;
 use SPHERE\System\Extension\Extension;
 use SPHERE\System\Extension\Repository\Debugger;
@@ -43,6 +44,7 @@ class Frontend extends Extension
 	{
 		$Stage = new Stage('Mehrmengenberechnung');
 		$Stage->setMessage('');
+        $Stage->hasUtilityFavorite(true);
 
 		$Form = '';
 		$LayoutAllocation = '';
@@ -251,12 +253,14 @@ class Frontend extends Extension
         $EntityPrice = $EntityPart->fetchPriceCurrent();
         $EntityDiscountGroup = $EntityPrice->getTblReportingDiscountGroup();
 
+        $DataSales = DataWareHouse::useService()->getSalesByPart( $EntityPart );
+
         $PriceData['Old'] = array(
             'GrossPrice' => $EntityPrice->getPriceGross(),
             'DiscountNumber' => $EntityDiscountGroup->getNumber(),
             'Discount' => $EntityDiscountGroup->getDiscount(),
             'Costs' => $EntityPrice->getCostsVariable(),
-            'Quantity' => 2
+            'Quantity' => $DataSales[0]['Data_SumQuantity']
         );
 
 		$CalcRules = $this->getCalculationRules();

@@ -32,6 +32,8 @@ use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
 use SPHERE\Common\Frontend\Table\Structure\Table;
+use SPHERE\Common\Frontend\Text\Repository\Bold;
+use SPHERE\Common\Frontend\Text\Repository\Danger;
 use SPHERE\Common\Window\Stage;
 use SPHERE\System\Extension\Extension;
 use SPHERE\System\Extension\Repository\Debugger;
@@ -45,6 +47,7 @@ class Frontend extends Extension
 	{
 		$Stage = new Stage('Szenario-Rechner', 'Simulation von RG-, NLP-, BLP-, Netto- und Brutto-Änderungen');
 		$Stage->setMessage('');
+        $Stage->hasUtilityFavorite(true);
 
 		$LayoutGroupPartNumberInformation = '';
 		$LayoutGroupScenarioCalculatorForm = '';
@@ -416,49 +419,65 @@ class Frontend extends Extension
 						'Bezeichnung' => 'BLP in €',
 						'Alt' => new PullRight( number_format($PriceData['Old']['BLP'], 2, ',', '.') ),
 						'Neu' => new PullRight( number_format($PriceData['New']['BLP'], 2, ',', '.') ),
-						'Delta' => new PullRight( number_format($PriceData['Delta']['BLP'], 2, ',', '.') )
+						'Delta' => (($PriceData['Delta']['BLP'] < 0)?
+                            new Bold( new Danger( new PullRight( number_format($PriceData['Delta']['BLP'], 2, ',', '.') ) ) )
+                            : new PullRight( number_format($PriceData['Delta']['BLP'], 2, ',', '.') ) )
 					),
 					array(
 						'Bezeichnung' => 'RG-Satz in %',
 						'Alt' => new PullRight( number_format($PriceData['Old']['Discount'], 2, ',', '.') ),
 						'Neu' => new PullRight( number_format($PriceData['New']['Discount'], 2, ',', '.') ),
-						'Delta' => new PullRight( number_format($PriceData['Delta']['Discount'], 2, ',', '.') )
+						'Delta' => (($PriceData['Delta']['Discount'])?
+                            new Bold( new Danger( new PullRight( number_format($PriceData['Delta']['Discount'], 2, ',', '.') ) ) )
+                            : new PullRight( number_format($PriceData['Delta']['Discount'], 2, ',', '.') ) )
 					),
 					array(
 						'Bezeichnung' => 'RG-Satz in €',
 						'Alt' => new PullRight( number_format($PriceData['Old']['DiscountEuro'], 2, ',', '.') ),
 						'Neu' => new PullRight( number_format($PriceData['New']['DiscountEuro'], 2, ',', '.') ),
-						'Delta' => new PullRight( number_format($PriceData['Delta']['DiscountEuro'], 2, ',', '.') )
+						'Delta' => (($PriceData['Delta']['DiscountEuro'])?
+                            new Bold( new Danger( new PullRight( number_format($PriceData['Delta']['DiscountEuro'], 2, ',', '.') ) ) )
+                            : new PullRight( number_format($PriceData['Delta']['DiscountEuro'], 2, ',', '.') ) )
 					),
 					array(
 						'Bezeichnung' => 'NLP in €',
 						'Alt' => new PullRight( number_format($PriceData['Old']['NLP'], 2, ',', '.') ),
 						'Neu' => new PullRight( number_format($PriceData['New']['NLP'], 2, ',', '.') ),
-						'Delta' => new PullRight( number_format($PriceData['Delta']['NLP'], 2, ',', '.') )
+						'Delta' => (($PriceData['Delta']['NLP'])?
+                            new Bold( new Danger( new PullRight( number_format($PriceData['Delta']['NLP'], 2, ',', '.') ) ) )
+                            : new PullRight( number_format($PriceData['Delta']['NLP'], 2, ',', '.') ) )
 					),
 					array(
 						'Bezeichnung' => 'NLP abzügl. P&M in €',
 						'Alt' => new PullRight( number_format($PriceData['Old']['NetPricePartsMore'], 2, ',', '.') ),
 						'Neu' => new PullRight( number_format($PriceData['New']['NetPricePartsMore'], 2, ',', '.') ),
-						'Delta' => new PullRight( number_format($PriceData['Delta']['NetPricePartsMore'], 2, ',', '.') )
+						'Delta' => (($PriceData['Delta']['NetPricePartsMore'] < 0)?
+                            new Bold( new Danger( new PullRight( number_format($PriceData['Delta']['NetPricePartsMore'], 2, ',', '.') ) ) )
+                            : new PullRight( number_format($PriceData['Delta']['NetPricePartsMore'], 2, ',', '.') ) )
 					),
 					array(
 						'Bezeichnung' => 'Variable Kosten in €',
 						'Alt' => new PullRight( number_format($PriceData['Old']['Costs'], 2, ',', '.') ),
 						'Neu' => new PullRight( number_format($PriceData['New']['Costs'], 2, ',', '.') ),
-						'Delta' => new PullRight( number_format($PriceData['Delta']['Costs'], 2, ',', '.') )
+						'Delta' => (($PriceData['Delta']['Costs'] < 0)?
+                            new Bold( new Danger( new PullRight( number_format($PriceData['Delta']['Costs'], 2, ',', '.') ) ) )
+                            : new PullRight( number_format($PriceData['Delta']['Costs'], 2, ',', '.') ) )
 					),
 					array(
 						'Bezeichnung' => 'Konzern-DB in €',
 						'Alt' => new PullRight( number_format($PriceData['Old']['CoverageContribution'], 2, ',', '.') ),
 						'Neu' => new PullRight( number_format($PriceData['New']['CoverageContribution'], 2, ',', '.') ),
-						'Delta' => new PullRight( number_format($PriceData['Delta']['CoverageContribution'], 2, ',', '.') )
+						'Delta' => (($PriceData['Delta']['CoverageContribution'] < 0)?
+                            new Bold( new Danger( new PullRight( number_format($PriceData['Delta']['CoverageContribution'], 2, ',', '.') ) ) )
+                            : new PullRight( number_format($PriceData['Delta']['CoverageContribution'], 2, ',', '.') ) )
 					),
 					array(
 						'Bezeichnung' => 'Konzern-DB abzügl. P&M in €',
 						'Alt' => new PullRight( number_format($PriceData['Old']['CoverageContributionPartsMore'], 2, ',', '.') ),
 						'Neu' => new PullRight( number_format($PriceData['New']['CoverageContributionPartsMore'], 2, ',', '.') ),
-						'Delta' => new PullRight( number_format($PriceData['Delta']['CoverageContributionPartsMore'], 2, ',', '.') )
+						'Delta' => (($PriceData['Delta']['CoverageContributionPartsMore'] < 0)?
+                            new Bold( new Danger( new PullRight( number_format($PriceData['Delta']['CoverageContributionPartsMore'], 2, ',', '.') ) ) )
+                            : new PullRight( number_format($PriceData['Delta']['CoverageContributionPartsMore'], 2, ',', '.') ) )
 					)
 				),
 				new TableTitle('Stückbetrachtung'),
@@ -489,55 +508,73 @@ class Frontend extends Extension
 						'Bezeichnung' => 'Bruttoumsatz in €',
 						'Alt' => new PullRight( number_format($PriceData['Old']['GrossSales'], 2, ',', '.') ),
 						'Neu' => new PullRight( number_format($PriceData['New']['GrossSales'], 2, ',', '.') ),
-						'Delta' => new PullRight( number_format($PriceData['Delta']['GrossSales'], 2, ',', '.') )
+						'Delta' => (($PriceData['Delta']['GrossSales'] < 0)?
+                            new Bold( new Danger( new PullRight( number_format($PriceData['Delta']['GrossSales'], 2, ',', '.') )) )
+                            : new PullRight( number_format($PriceData['Delta']['GrossSales'], 2, ',', '.') ))
 					),
 					array(
 						'Bezeichnung' => 'Anzeff in Stück',
 						'Alt' => new PullRight( number_format($PriceData['Old']['Quantity'], 0, '', '.') ),
 						'Neu' => new PullRight( number_format($PriceData['New']['Quantity'], 0, '', '.') ),
-						'Delta' => new PullRight( number_format($PriceData['Delta']['Quantity'], 0, '', '.') )
+						'Delta' => (($PriceData['Delta']['Quantity'] < 0)?
+                            new Bold( new Danger( new PullRight( number_format($PriceData['Delta']['Quantity'], 0, '', '.') ) ) )
+                            : new PullRight( number_format($PriceData['Delta']['Quantity'], 0, '', '.') ) )
 					),
 					array(
 						'Bezeichnung' => 'RG-Satz in %',
 						'Alt' => new PullRight( number_format($PriceData['Old']['Discount'], 2, ',', '.') ),
 						'Neu' => new PullRight( number_format($PriceData['New']['Discount'], 2, ',', '.') ),
-						'Delta' => new PullRight( number_format($PriceData['Delta']['Discount'], 2, ',', '.') )
+						'Delta' => (($PriceData['Delta']['Discount']<0)?
+                            new Bold( new Danger( new PullRight( number_format($PriceData['Delta']['Discount'], 2, ',', '.') ) ) )
+                            : new PullRight( number_format($PriceData['Delta']['Discount'], 2, ',', '.') ) )
 					),
 					array(
 						'Bezeichnung' => 'RG-Satz in €',
 						'Alt' => new PullRight( number_format($PriceData['Old']['TotalDiscountEuro'], 2, ',', '.') ),
 						'Neu' => new PullRight( number_format($PriceData['New']['TotalDiscountEuro'], 2, ',', '.') ),
-						'Delta' => new PullRight( number_format($PriceData['Delta']['TotalDiscountEuro'], 2, ',', '.') )
+						'Delta' => (($PriceData['Delta']['TotalDiscountEuro']<0)?
+                            new Bold( new Danger( new PullRight( number_format($PriceData['Delta']['TotalDiscountEuro'], 2, ',', '.') ) ) )
+                            : new PullRight( number_format($PriceData['Delta']['TotalDiscountEuro'], 2, ',', '.') ) )
 					),
 					array(
 						'Bezeichnung' => 'Nettoumsatz in €',
 						'Alt' => new PullRight( number_format($PriceData['Old']['NetSales'], 2, ',', '.') ),
 						'Neu' => new PullRight( number_format($PriceData['New']['NetSales'], 2, ',', '.') ),
-						'Delta' => new PullRight( number_format($PriceData['Delta']['NetSales'], 2, ',', '.') )
+						'Delta' => (($PriceData['Delta']['NetSales']<0)?
+                            new Bold( new Danger( new PullRight( number_format($PriceData['Delta']['NetSales'], 2, ',', '.') ) ) )
+                            : new PullRight( number_format($PriceData['Delta']['NetSales'], 2, ',', '.') ) )
 					),
 					array(
 						'Bezeichnung' => 'Nettoumsatz abzügl. P&M',
 						'Alt' => new PullRight( number_format($PriceData['Old']['NetSalesPartsMore'], 2, ',', '.') ),
 						'Neu' => new PullRight( number_format($PriceData['New']['NetSalesPartsMore'], 2, ',', '.') ),
-						'Delta' => new PullRight( number_format($PriceData['Delta']['NetSalesPartsMore'], 2, ',', '.') )
+						'Delta' => (($PriceData['Delta']['NetSalesPartsMore']<0)?
+                            new Bold( new Danger( new PullRight( number_format($PriceData['Delta']['NetSalesPartsMore'], 2, ',', '.') ) ) )
+                            : new PullRight( number_format($PriceData['Delta']['NetSalesPartsMore'], 2, ',', '.') ) )
 					),
 					array(
 						'Bezeichnung' => 'Variable Kosten',
 						'Alt' => new PullRight( number_format($PriceData['Old']['Costs'], 2, ',', '.') ),
 						'Neu' => new PullRight( number_format($PriceData['New']['Costs'], 2, ',', '.') ),
-						'Delta' => new PullRight( number_format($CalcRules->calcDelta( $PriceData['New']['Costs'], $PriceData['Old']['Costs'] ), 2, ',', '.') )
+						'Delta' => (($CalcRules->calcDelta( $PriceData['New']['Costs'], $PriceData['Old']['Costs'] ))?
+                            new Bold( new Danger( new PullRight( number_format($CalcRules->calcDelta( $PriceData['New']['Costs'], $PriceData['Old']['Costs'] ), 2, ',', '.') ) ) )
+                            : new PullRight( number_format($CalcRules->calcDelta( $PriceData['New']['Costs'], $PriceData['Old']['Costs'] ), 2, ',', '.') ) )
 					),
 					array(
 						'Bezeichnung' => 'Konzern-DB',
 						'Alt' => new PullRight( number_format($PriceData['Old']['TotalCoverageContribution'], 2, ',', '.') ),
 						'Neu' => new PullRight( number_format($PriceData['New']['TotalCoverageContribution'], 2, ',', '.') ),
-						'Delta' => new PullRight( number_format($PriceData['Delta']['TotalCoverageContribution'], 2, ',', '.') )
+						'Delta' => (($PriceData['Delta']['TotalCoverageContribution']<0)?
+                            new Bold( new Danger( new PullRight( number_format($PriceData['Delta']['TotalCoverageContribution'], 2, ',', '.') ) ) )
+                            : new PullRight( number_format($PriceData['Delta']['TotalCoverageContribution'], 2, ',', '.') ) )
 					),
 					array(
 						'Bezeichnung' => 'Konzern-DB abzügl. P&M',
 						'Alt' => new PullRight( number_format($PriceData['Old']['TotalCoverageContributionPartsMore'], 2, ',', '.') ),
 						'Neu' => new PullRight( number_format($PriceData['New']['TotalCoverageContributionPartsMore'], 2, ',', '.') ),
-						'Delta' => new PullRight( number_format($PriceData['Delta']['TotalCoverageContributionPartsMore'], 2, ',', '.') )
+						'Delta' => (($PriceData['Delta']['TotalCoverageContributionPartsMore']<0)?
+                            new Bold( new Danger( new PullRight( number_format($PriceData['Delta']['TotalCoverageContributionPartsMore'], 2, ',', '.') ) ) )
+                            : new PullRight( number_format($PriceData['Delta']['TotalCoverageContributionPartsMore'], 2, ',', '.') ) )
 					)
 				),
 				new TableTitle('Gesamtbetrachtung'),

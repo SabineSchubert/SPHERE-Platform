@@ -10,6 +10,7 @@ namespace SPHERE\Application\Reporting\DataWareHouse\Service;
 
 
 use Doctrine\ORM\Query\Expr;
+use Doctrine\ORM\QueryBuilder;
 use SPHERE\Application\Competition\DataWareHouse\Service\Entity\ViewCompetition;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_AssortmentGroup;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Brand;
@@ -35,9 +36,12 @@ use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Secti
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Supplier;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\ViewPart;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\ViewPrice;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\ViewPriceHistory;
 use SPHERE\System\Database\Binding\AbstractData;
+use SPHERE\System\Database\Fitting\ColumnHydrator;
 use SPHERE\System\Database\Fitting\Element;
 use SPHERE\System\Database\Fitting\View;
+use SPHERE\System\Extension\Repository\CalculationRules;
 use SPHERE\System\Extension\Repository\Debugger;
 
 /**
@@ -632,12 +636,14 @@ class Data extends AbstractData
             $Manager = $this->getEntityManager();
             $QueryBuilder = $Manager->getQueryBuilder();
             $MaxYear = $this->getYearCurrentFromSales();
+            $MaxMonth = $this->getMaxMonthCurrentYearFromSales();
 
+//            Debugger::screenDump('CASE WHEN ' .$MaxYear.' = '.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' THEN \' per '.$MaxMonth.'/\'+convert(varchar,'.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.') ELSE convert(varchar,'.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.') END AS Year');
             $SqlSalesData = $QueryBuilder
                    ->select( $TableSalesAlias.'.'.$TableSales::ATTR_YEAR )
-                    ->addSelect( 'SUM( '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_GROSS.' ) as Data_SumSalesGross' )
-                   ->addSelect( 'SUM( '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_NET.' ) as Data_SumSalesNet' )
-                   ->addSelect( 'SUM( '.$TableSalesAlias.'.'.$TableSales::ATTR_QUANTITY.' ) as Data_SumQuantity' )
+                       ->addSelect( 'SUM( '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_GROSS.' ) as Data_SumSalesGross' )
+                       ->addSelect( 'SUM( '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_NET.' ) as Data_SumSalesNet' )
+                       ->addSelect( 'SUM( '.$TableSalesAlias.'.'.$TableSales::ATTR_QUANTITY.' ) as Data_SumQuantity' )
                    ->from( $TableSales->getEntityFullName(), $TableSales->getEntityShortName(), null );
 
             if($TblReporting_MarketingCode || $TblReporting_ProductManager ) {
@@ -672,14 +678,15 @@ class Data extends AbstractData
             }
 
             $SqlSalesData = $QueryBuilder
-                   ->groupBy( $TableSales->getEntityShortName().'.'.$TableSales::ATTR_YEAR )
+                   ->groupBy( $TableSalesAlias.'.'.$TableSales::ATTR_YEAR )
                    ->orderBy( $QueryBuilder->expr()->desc( $TableSales->getEntityShortName().'.'.$TableSales::ATTR_YEAR ) )
                    ->setParameter( $TableSales::ATTR_YEAR, ($MaxYear-3), \Doctrine\DBAL\Types\Type::INTEGER )
                    ->getQuery();
 
-               //Debugger::screenDump($SqlSalesData->getSQL());
+               Debugger::screenDump($SqlSalesData->getSQL());
 
            if($SqlSalesData->getResult()) {
+               Debugger::screenDump($this->getExtrapolationFactor( $TblReporting_Part->getNumber() ));
                return $SqlSalesData->getResult();
            }
            else {
@@ -853,7 +860,7 @@ class Data extends AbstractData
                 )
             )
             ->from( $TableSales->getEntityFullName(), $TableSalesAlias )
-            ->getQuery()->setMaxResults(1)->getSingleResult();
+            ->getQuery()->setMaxResults(1)->getSingleResult( ColumnHydrator::HYDRATION_MODE );
 
         $MaxYear = current($SqlMaxYear);
 
@@ -1044,7 +1051,7 @@ class Data extends AbstractData
             $Manager = $this->getEntityManager();
             $QueryBuilder = $Manager->getQueryBuilder();
 
-            $ViewPrice = new ViewPrice();
+            $ViewPrice = new ViewPriceHistory();
             $ViewPriceAlias = $ViewPrice->getEntityShortName();
 
             $SqlPriceDevelopment = $QueryBuilder
@@ -1070,5 +1077,72 @@ class Data extends AbstractData
         else {
             return null;
         }
+    }
+
+    //Hochrechnungsfaktor
+
+    /**
+     * @param string $PartNumber
+     * @param string $MarketingCodeNumber
+     * @param integer $ProductManagerId
+     * @return mixed|null
+     */
+    public function getExtrapolationFactor( $PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null ) {
+
+        $MaxYear = $this->getYearCurrentFromSales();
+        $MaxMonth = $this->getMaxMonthCurrentYearFromSales();
+
+
+        $Manager = $this->getEntityManager();
+        $QueryBuilder = $Manager->getQueryBuilder();
+
+        $TableSales = new TblReporting_Sales();
+        $TableSalesAlias = $TableSales->getEntityShortName();
+
+        $ViewPart = new ViewPart();
+        $ViewPartAlias = $ViewPart->getEntityShortName();
+
+        $ExtrapolationFactor = $QueryBuilder->select( 'SUM( '.$TableSalesAlias.'.'.$TableSales::ATTR_QUANTITY.' ) /
+            SUM ( CASE WHEN ' .
+                $QueryBuilder->expr()->andX(
+                    $QueryBuilder->expr()->gte( $TableSalesAlias.'.'.$TableSales::ATTR_MONTH, '1' ),
+                    $QueryBuilder->expr()->lte( $TableSalesAlias.'.'.$TableSales::ATTR_MONTH, $MaxMonth )
+                ). ' THEN ' .$TableSalesAlias.'.'.$TableSales::ATTR_QUANTITY. ' ELSE 0 END ) AS HR' )
+            ->from( $TableSales->getEntityFullName(), $TableSalesAlias )
+                ->innerJoin(
+                    $ViewPart->getEntityFullName(),
+                    $ViewPartAlias,
+                    Expr\Join::WITH,
+                    $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_ID.' = '.$TableSalesAlias.'.'.$TableSales::TBL_REPORTING_PART
+                )
+            ->where( $QueryBuilder->expr()->gte( $TableSalesAlias.'.'.$TableSales::ATTR_YEAR, ':VVYear' ) )
+            ->setParameter( 'VVYear', ($MaxYear-2) )
+            ->andWhere( $QueryBuilder->expr()->lt( $TableSalesAlias.'.'.$TableSales::ATTR_YEAR, ':Year' ) )
+            ->setParameter( 'Year', $MaxYear );
+
+            if($PartNumber) {
+                $ExtrapolationFactor = $QueryBuilder
+                    ->andWhere( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_NUMBER.' = :'.$ViewPart::TBL_REPORTING_PART_NUMBER )
+                    ->setParameter( $ViewPart::TBL_REPORTING_PART_NUMBER, $PartNumber );
+            }
+            elseif($MarketingCodeNumber) {
+                $ExtrapolationFactor = $QueryBuilder
+                    ->andWhere( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER.' = :'.$ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER )
+                    ->setParameter( $ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER, $MarketingCodeNumber );
+            }
+            elseif($ProductManagerId) {
+                $ExtrapolationFactor = $QueryBuilder
+                    ->andWhere( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PRODUCT_MANAGER_ID.' = :'.$ViewPart::TBL_REPORTING_PRODUCT_MANAGER_ID )
+                        ->setParameter( $ViewPart::TBL_REPORTING_PRODUCT_MANAGER_ID, $ProductManagerId );
+            }
+
+            $ExtrapolationFactor = $QueryBuilder->getQuery();
+
+            if($ExtrapolationFactor->getSingleResult()) {
+                return current($ExtrapolationFactor->getSingleResult());
+            }
+            else {
+                return null;
+            }
     }
 }

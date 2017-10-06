@@ -458,6 +458,16 @@ class Service extends AbstractService
     }
 
     /**
+     * @param string $PartNumber
+     * @param string $MarketingCodeNumber
+     * @param integer $ProductManagerId
+     * @return null
+     */
+    public function getExtrapolationFactor( $PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null ) {
+        return ( new Data( $this->getBinding() ) ) ->getExtrapolationFactor( $PartNumber, $MarketingCodeNumber, $ProductManagerId );
+    }
+
+    /**
      * @param null|string $PartNumber
      * @param null|string $MarketingCodeNumber
      * @param null|int $ProductManagerId

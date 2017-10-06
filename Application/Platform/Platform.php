@@ -4,6 +4,7 @@ namespace SPHERE\Application\Platform;
 
 use SPHERE\Application\IClusterInterface;
 use SPHERE\Application\Platform\Assistance\Assistance;
+use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
 use SPHERE\Application\Platform\Gatekeeper\Gatekeeper;
 use SPHERE\Application\Platform\System\System;
 use SPHERE\Application\Platform\Utility\Utility;

@@ -88,6 +88,7 @@ class Frontend extends Extension
 	{
 		$Stage = new Stage('Direktsuche', 'Teilenummer');
 		$this->buttonStageDirectSearch($Stage);
+        $Stage->hasUtilityFavorite(true);
 
 		$LayoutGroupDirectSearch = '';
 		$LayoutGroupCompetition = '';
@@ -118,12 +119,12 @@ class Frontend extends Extension
 									$this->tablePriceDevelopmentPartNumber( $EntityPart ), 12
 								)
 							),
-							new LayoutRow(
-								new LayoutColumn(
-									$this->tableSalesDataPartNumber( $EntityPart )
-									, 12
-								)
-							),
+//							new LayoutRow(
+//								new LayoutColumn(
+//									$this->tableSalesDataPartNumber( $EntityPart )
+//									, 12
+//								)
+//							),
 							new LayoutRow(
 								new LayoutColumn(
 									'&nbsp;'
@@ -255,6 +256,7 @@ class Frontend extends Extension
 	{
 		$Stage = new Stage('Direktsuche', 'Produktmanager');
 		$this->buttonStageDirectSearch($Stage);
+        $Stage->hasUtilityFavorite(true);
 
 		$LayoutGroupDirectSearch = '';
 		$LayoutGroupExcel = '';
@@ -337,6 +339,7 @@ class Frontend extends Extension
 	{
 		$Stage = new Stage('Direktsuche', 'Marketingcode');
 		$this->buttonStageDirectSearch($Stage);
+        $Stage->hasUtilityFavorite(true);
 
 		$LayoutGroupDirectSearch = '';
         $LayoutGroupExcel = '';
@@ -1004,23 +1007,25 @@ class Frontend extends Extension
 	    if( $SalesData ) {
 
 	        //Hochrechnungsfaktor
-	        $HR = (float)1;
+	        $HR = DataWareHouse::useService()->getExtrapolationFactor( $EntityPart->getNumber() );
 
             $WalkSalesData = array();
             array_walk( $SalesData, function( &$Row, $Key, $HR ) use (&$WalkSalesData) {
 
                 //Hochrechnung hinzufügen
-                if(isset($Row['Year']) == date('Y') && DataWareHouse::useService()->getMaxMonthCurrentYearFromSales() != '12' ) {
-                    array_push(
-                        $WalkSalesData, array(
-                            'Year' => 'HR '.$Row['Year'],
-                            'Data_SumSalesGross' => new PullRight( $this->doLocalize( ($Row['Data_SumSalesGross']*$HR) )->getCurrency() ),
-                            'Data_SumSalesNet' => new PullRight( $this->doLocalize( ($Row['Data_SumSalesNet']*$HR) )->getCurrency() ),
-                            'Data_SumQuantity' => new PullRight( $Row['Data_SumQuantity'] )
-                        )
-                    );
+                if($Row['Year'] == date('Y') ) {
+                    if(DataWareHouse::useService()->getMaxMonthCurrentYearFromSales() != '12') {
+                        array_push(
+                            $WalkSalesData, array(
+                                'Year' => 'HR '.$Row['Year'],
+                                'Data_SumSalesGross' => new PullRight( $this->doLocalize( ($Row['Data_SumSalesGross']*$HR) )->getCurrency() ),
+                                'Data_SumSalesNet' => new PullRight( $this->doLocalize( ($Row['Data_SumSalesNet']*$HR) )->getCurrency() ),
+                                'Data_SumQuantity' => new PullRight( $Row['Data_SumQuantity'] )
+                            )
+                        );
+                    }
 
-                     $Row['Year'] = 'per '.DataWareHouse::useService()->getMaxMonthCurrentYearFromSales().'/'.$Row['Year'];
+                    $Row['Year'] = 'per '.DataWareHouse::useService()->getMaxMonthCurrentYearFromSales().'/'.$Row['Year'];
                  }
                  if( isset($Row['Data_SumSalesGross']) ) {
                      $Row['Data_SumSalesGross'] = new PullRight( $this->doLocalize($Row['Data_SumSalesGross'])->getCurrency() );
@@ -1034,7 +1039,7 @@ class Frontend extends Extension
 
             }, $HR );
 
-            $SalesData = array_merge($SalesData,$WalkSalesData);
+            $SalesData = array_merge($WalkSalesData,$SalesData);
 
             $Table = new Table(
                 $SalesData,
@@ -1253,11 +1258,22 @@ class Frontend extends Extension
 
 	    $SearchData = \SPHERE\Application\Competition\DataWareHouse\DataWareHouse::useService()->getCompetitionAdditionalInfoDirectSearchByPartNumber( $PartNumber );
 
+	    switch($SearchData[0]['Season']) {
+            case 'S': $Season = 'Sommer';
+                break;
+            case 'W': $Season = 'Winter';
+                break;
+            case 'G': $Season = 'Ganzjahr';
+                break;
+            default: $Season = '';
+                break;
+        }
+
 		return new Table(
 			array(
 				array(
 					'Description' => new Bold( 'Saison / Sortiment / Sparte' ),
-					'Value' => $SearchData[0]['Season'] . ' / ' . $SearchData[0]['Assortment'] . ' / ' . $SearchData[0]['Section']
+					'Value' => $Season . ' / ' . $SearchData[0]['Assortment'] . ' / ' . $SearchData[0]['Section']
 				),
                 array(
 					'Description' => new Bold( 'Dimension' ),
@@ -1265,11 +1281,11 @@ class Frontend extends Extension
 				),
 				array(
 					'Description' => new Bold( 'Profil / Hersteller' ),
-					'Value' => $SearchData[0]['Profil'] . ' / '.$SearchData[0]['Manufacturer']
+					'Value' => utf8_decode($SearchData[0]['Profil']) . ' / '.utf8_decode($SearchData[0]['Manufacturer'])
 				),
 				array(
 					'Description' => new Bold( 'Rad' ),
-					'Value' => $SearchData[0]['DesignRim'] .'<br/>'.$SearchData[0]['DimensionRim'] . '(' .$SearchData[0]['NumberRim']. ')'
+					'Value' => utf8_decode($SearchData[0]['DesignRim']) .'<br/>'.$SearchData[0]['DimensionRim'] . (($SearchData[0]['NumberRim']!= '')? '(' .$SearchData[0]['NumberRim']. ')':'')
 				),
 				array(
 					'Description' => new Bold( 'Baureihe' ),
@@ -1277,7 +1293,7 @@ class Frontend extends Extension
 				)
 			),
 			new TableTitle('Zusätzliche Informationen'),
-			array( 'Description ' => 'Bezeichnung', 'Value' => '' ),
+			array( 'Description' => 'Bezeichnung', 'Value' => '' ),
 			array(
 				"columnDefs" => array(
 			        array('width' => '40%', 'targets' => '0' ),

@@ -14,6 +14,11 @@ use SPHERE\Application\Competition\DataWareHouse\DataWareHouse;
 use SPHERE\System\Database\Binding\AbstractService;
 use SPHERE\System\Database\Binding\AbstractView;
 
+/**
+* @ORM\Entity()
+* @ORM\Table(name="ViewCompetitionPart")
+* @ORM\Cache(usage="READ_ONLY")
+ */
 class ViewCompetitionPart extends AbstractView
 {
     const TBL_REPORTING_PART_NUMBER = 'TblReporting_Part_Number';

@@ -100,6 +100,12 @@ class CompetitionTable extends Extension implements IApiInterface
                 if( isset($Row['Manufacturer']) ) {
                     $Row['Manufacturer'] = utf8_decode($Row['Manufacturer']);
                 }
+                if( isset($Row['Competitor']) ) {
+                    $Row['Competitor'] = utf8_decode($Row['Competitor']);
+                }
+                if( isset($Row['CreationDate']) ) {
+                    $Row['CreationDate'] = (new \DateTime( $Row['CreationDate'] ))->format('d.m.Y');
+                }
 
                 $Row['PositionId'] = (new Standard('löschen', self::getEndpoint(), null, array( 'CompetitionId' => $Row['PositionId']) ))->ajaxPipelineOnClick( CompetitionPositionDelete::pipelineCompetitionPositionDelete(  $Row['PositionId'], $PartNumber ) );
              }, $PartNumber );

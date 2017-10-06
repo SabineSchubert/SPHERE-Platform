@@ -3,11 +3,13 @@ namespace SPHERE\Application\Platform\Utility;
 
 use SPHERE\Application\AppTrait;
 use SPHERE\Application\IApplicationInterface;
+use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
 use SPHERE\Application\Platform\Utility\Favorite\Favorite;
 use SPHERE\Application\Platform\Utility\Transfer\Transfer;
 use SPHERE\Application\Platform\Utility\Translation\Translation;
 use SPHERE\Common\Frontend\Icon\Repository\Wrench;
 use SPHERE\Common\Window\Stage;
+use SPHERE\System\Extension\Repository\Debugger;
 
 /**
  * Class Utility
@@ -19,11 +21,13 @@ class Utility implements IApplicationInterface
 
     public static function registerApplication()
     {
-        Translation::registerModule();
-        Favorite::registerModule();
-        Transfer::registerModule();
+        if(Account::useService()->getAccountBySession()) {
+            Translation::registerModule();
+            Favorite::registerModule();
+            Transfer::registerModule();
+        }
 
-        self::createApplication( __NAMESPACE__, __CLASS__, 'frontendDashboard', 'Dienstprogramm', new Wrench() );
+        self::createApplication(__NAMESPACE__, __CLASS__, 'frontendDashboard', 'Dienstprogramm', new Wrench());
     }
 
     /**

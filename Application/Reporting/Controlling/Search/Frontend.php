@@ -52,6 +52,7 @@ class Frontend extends Extension
 		$Stage = new Stage('Suche');
 		$Stage->setMessage('Gruppierung nach Teilenummer');
 		$this->buttonStageDirectSearch($Stage);
+        $Stage->hasUtilityFavorite(true);
         $LayoutExcel = '';
 
         //Debugger::screenDump($Search);
@@ -106,6 +107,7 @@ class Frontend extends Extension
 		$Stage = new Stage('Suche');
 		$Stage->setMessage('Gruppierung nach Marketingcode');
 		$this->buttonStageDirectSearch($Stage);
+        $Stage->hasUtilityFavorite(true);
         $LayoutExcel = '';
 
         if( $Search ) {
@@ -155,6 +157,7 @@ class Frontend extends Extension
 		$Stage = new Stage('Suche');
 		$Stage->setMessage('Gruppierung nach Produktmanager');
 		$this->buttonStageDirectSearch($Stage);
+        $Stage->hasUtilityFavorite(true);
         $LayoutExcel = '';
 
         if( $Search ) {
@@ -203,6 +206,7 @@ class Frontend extends Extension
 	public function frontendSearchCompetition( $Search = null ) {
 		$Stage = new Stage('Suche');
 		$Stage->setMessage('Gruppierung nach Angebotsdaten');
+        $Stage->hasUtilityFavorite(true);
 		$this->buttonStageDirectSearch($Stage);
 		$LayoutExcel = '';
 

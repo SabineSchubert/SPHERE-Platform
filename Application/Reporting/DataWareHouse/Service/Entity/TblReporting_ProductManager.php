@@ -24,8 +24,14 @@ use SPHERE\System\Database\Fitting\Element;
  */
 class TblReporting_ProductManager extends Element
 {
+    const ATTR_NUMBER = 'Number';
     const ATTR_NAME = 'Name';
     const ATTR_DEPARTMENT = 'Department';
+
+    /**
+     * @Column(type="string")
+     */
+    protected $Number;
 
     /**
      * @Column(type="string")
@@ -36,6 +42,22 @@ class TblReporting_ProductManager extends Element
      * @Column(type="string")
      */
     protected $Department;
+
+    /**
+     * @return string
+     */
+    public function getNumber()
+    {
+        return $this->Number;
+    }
+
+    /**
+     * @param string $Number
+     */
+    public function setNumber($Number)
+    {
+        $this->Number = $Number;
+    }
 
     /**
      * @return string

@@ -13,9 +13,11 @@ use SPHERE\Application\OtherApplication\OtherApplication;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Access;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Account;
 use SPHERE\Application\Platform\Gatekeeper\Consumer\Consumer;
+use SPHERE\Application\Platform\Gatekeeper\Gatekeeper;
 use SPHERE\Application\Platform\Platform;
 use SPHERE\Application\Platform\System;
 use SPHERE\Application\Product\Product;
+use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\Application\Reporting\Reporting;
 use SPHERE\Application\Search\Search;
 use SPHERE\Application\Statistic\Statistic;
@@ -51,6 +53,7 @@ use SPHERE\System\Cache\Handler\OpCacheHandler;
 use SPHERE\System\Cache\Handler\SmartyHandler;
 use SPHERE\System\Cache\Handler\TwigHandler;
 use SPHERE\System\Extension\Extension;
+use SPHERE\System\Extension\Repository\Debugger;
 
 /**
  * Class Main
@@ -388,14 +391,18 @@ class Main extends Extension
                     , null, array(), false, External::STYLE_LINK)
             );
 
-        Reporting::registerCluster();
-//        Product::registerCluster();
-//        Statistic::registerCluster();
-//        Training::registerCluster();
-//        Eila::registerCluster();
-//        OtherApplication::registerCluster();
-        Competition::registerCluster();
-//        Example::registerCluster();
-//        Search::registerCluster();
+        //Debugger::screenDump(Account::useService()->getAccountBySession());
+        if(Account::useService()->getAccountBySession()) {
+
+            Reporting::registerCluster();
+    //        Product::registerCluster();
+    //        Statistic::registerCluster();
+    //        Training::registerCluster();
+    //        Eila::registerCluster();
+    //        OtherApplication::registerCluster();
+            Competition::registerCluster();
+    //        Example::registerCluster();
+    //        Search::registerCluster();
+        }
     }
 }

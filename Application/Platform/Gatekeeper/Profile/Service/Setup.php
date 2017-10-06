@@ -26,7 +26,7 @@ class Setup extends AbstractSetup
     private function setTableProfileUser(Schema $Schema)
     {
         $Table = $this->createTable($Schema, new TblProfileUser());
-        $this->createServiceKey($Table, new TblAccount());
+        $this->createServiceKey($Table, 'TblAccount');
         return $Table;
     }
 }

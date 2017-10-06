@@ -281,6 +281,9 @@ class ExcelDirectSearch extends Extension implements IApiInterface
             $Document->setStyle( $Document->getCell(3,$i) )->setBorderAll(1);
         }
         elseif($PartNumber) {
+
+            $Document->renameWorksheet('Direktsuche');
+
             $EntityMarketingCode = null;
             $EntityProductManager = null;
             $EntityAssortmentGroup = null;
@@ -297,16 +300,21 @@ class ExcelDirectSearch extends Extension implements IApiInterface
 
                 $EntityAssortmentGroup = $EntityPart->fetchAssortmentGroupCurrent();
                 //Warengruppe
-                $EntityProductGroupList = $EntityMarketingCode->fetchProductGroupListCurrent();
-                $ProductGroupText = '';
-                if ($EntityProductGroupList) {
-                    /** @var TblReporting_ProductGroup $ProductGroup */
-                    foreach ($EntityProductGroupList AS $Index => $ProductGroup) {
-                        if ($Index != 0) {
-                            $ProductGroupText .= "\n";
+                if($EntityMarketingCode) {
+                    $EntityProductGroupList = $EntityMarketingCode->fetchProductGroupListCurrent();
+                    $ProductGroupText = '';
+                    if ($EntityProductGroupList) {
+                        /** @var TblReporting_ProductGroup $ProductGroup */
+                        foreach ($EntityProductGroupList AS $Index => $ProductGroup) {
+                            if ($Index != 0) {
+                                $ProductGroupText .= "\n";
+                            }
+                            $ProductGroupText .= $ProductGroup->getNumber() . ' - ' . $ProductGroup->getName();
                         }
-                        $ProductGroupText .= $ProductGroup->getNumber() . ' - ' . $ProductGroup->getName();
                     }
+                }
+                else {
+                    $ProductGroupText = '';
                 }
 
                 //Sparte
@@ -379,8 +387,17 @@ class ExcelDirectSearch extends Extension implements IApiInterface
                 /** @var DateTime $DateValidFrom */
                 $DateValidFrom = $EntityPrice->getValidFrom();
 
+                //Preisentwicklung
+                $PriceHistory = DataWareHouse::useService()->getPriceDevelopmentByPartNumber( $EntityPart, 500 );
+
+//                Debugger::screenDump($PriceHistory);
+
                 //Umsätze
-                $SalesData = DataWareHouse::useService()->getSalesByPart( $EntityPart );
+                //$SalesData = DataWareHouse::useService()->getSalesByPart( $EntityPart );
+                $SalesData = array();
+
+                $CompetitionData = \SPHERE\Application\Competition\DataWareHouse\DataWareHouse::useService()->getCompetitionDirectSearchByPartNumber( $EntityPart->getNumber() );
+                $CompetitionQ440Data = \SPHERE\Application\Competition\DataWareHouse\DataWareHouse::useService()->getCompetitionAdditionalInfoDirectSearchByPartNumber( $EntityPart->getNumber() );
 
                 if( $SalesData ) {
 
@@ -479,7 +496,7 @@ class ExcelDirectSearch extends Extension implements IApiInterface
                 $Document->setValue( $Document->getCell(1,$i), $SuppliertText );
                 $Document->setStyle( $Document->getCell(1,$i),$Document->getCell(3,$i) )->mergeCells();
 
-                $Document->setStyle( $Document->getCell(0,13), $Document->getCell(3,15) )->setBorderAll(1);
+                //$Document->setStyle( $Document->getCell(0,13), $Document->getCell(3,15) )->setBorderAll(1);
                 $i++;
                 $i++;
 
@@ -567,7 +584,37 @@ class ExcelDirectSearch extends Extension implements IApiInterface
                 $Document->setValue($Document->getCell(6, $z++), $CalcRules->calcFinancialManagementLimit( $GrossPrice, $Costs ), PhpExcel::TYPE_NUMERIC );
 
 
-                //Preisentwi
+                //Preisentwicklung
+                if( $PriceHistory ) {
+                    $i++;
+                    $Document->setValue( $Document->getCell(0,$i), 'Preisentwicklung' )->setStyle( $Document->getCell(0,$i), $Document->getCell(7,$i) )->mergeCells()->setFontBold()->setBorderAll(1);
+                    $i++;
+                    $Document->setValue( $Document->getCell(0,$i), 'Gueltig an' )->setStyle( $Document->getCell(0,$i) )->setFontBold()->setBorderAll(1);
+                    $Document->setValue( $Document->getCell(1,$i), 'BLP' )->setStyle( $Document->getCell(1,$i) )->setFontBold()->setBorderAll(1);
+                    $Document->setValue( $Document->getCell(2,$i), 'NLP' )->setStyle( $Document->getCell(2,$i) )->setFontBold()->setBorderAll(1);
+                    $Document->setValue( $Document->getCell(3,$i), 'RG' )->setStyle( $Document->getCell(3,$i) )->setFontBold()->setBorderAll(1);
+                    $Document->setValue( $Document->getCell(4,$i), 'RS' )->setStyle( $Document->getCell(4,$i) )->setFontBold()->setBorderAll(1);
+                    $Document->setValue( $Document->getCell(5,$i), 'RW' )->setStyle( $Document->getCell(5,$i) )->setFontBold()->setBorderAll(1);
+                    $Document->setValue( $Document->getCell(6,$i), 'VK' )->setStyle( $Document->getCell(6,$i) )->setFontBold()->setBorderAll(1);
+                    $Document->setValue( $Document->getCell(7,$i), 'DB' )->setStyle( $Document->getCell(7,$i++) )->setFontBold()->setBorderAll(1);
+
+                    foreach((array)$PriceHistory AS $KeyInt => $ValueArray) {
+                        $DateValidFrom = new \DateTime( $ValueArray['ValidFrom'] );
+
+                        $PriceNet = $this->getCalculationRules()->calcNetPrice($ValueArray['Data_PriceGross'], $ValueArray['Discount'], $ValueArray['Data_BackValue']);
+
+                        $Document->setValue( $Document->getCell(0,$i), $DateValidFrom->format('d.m.Y'), PHPExcel::TYPE_STRING)->setStyle( $Document->getCell(0,$i) )->setBorderAll(1);
+                        $Document->setValue( $Document->getCell(1,$i), $ValueArray['Data_PriceGross'], PHPExcel::TYPE_NUMERIC )->setStyle( $Document->getCell(1,$i) )->setBorderAll(1);
+                        $Document->setValue( $Document->getCell(2,$i), $PriceNet, PHPExcel::TYPE_NUMERIC )->setStyle( $Document->getCell(2,$i) )->setBorderAll(1);
+                        $Document->setValue( $Document->getCell(3,$i), $ValueArray['DiscountGroupNumber'] )->setStyle( $Document->getCell(3,$i) )->setBorderAll(1);
+                        $Document->setValue( $Document->getCell(4,$i), $ValueArray['Discount'] )->setStyle( $Document->getCell(4,$i) )->setBorderAll(1);
+                        $Document->setValue( $Document->getCell(5,$i), $ValueArray['Data_BackValue'], PHPExcel::TYPE_NUMERIC )->setStyle( $Document->getCell(5,$i) )->setBorderAll(1);
+                        $Document->setValue( $Document->getCell(6,$i), $ValueArray['Data_CostsVariable'], PHPExcel::TYPE_NUMERIC )->setStyle( $Document->getCell(6,$i) )->setBorderAll(1);
+                        $Document->setValue( $Document->getCell(7,$i), $this->getCalculationRules()->calcCoverageContribution($PriceNet, $ValueArray['Data_CostsVariable']), PHPExcel::TYPE_NUMERIC )->setStyle( $Document->getCell(7,$i) )->setBorderAll(1);
+                        $i++;
+                    }
+                    $i++;
+                }
 
                 //Umsatzdaten
                 if( $SalesData ) {
@@ -616,7 +663,144 @@ class ExcelDirectSearch extends Extension implements IApiInterface
                 }
 
             }
+
+            //Wettbewerbsdaten
+
+            $i = 0;
+
+            if($CompetitionData or $CompetitionQ440Data) {
+                $Document->createWorksheet('Angebotsdaten')->setPaperOrientationParameter(new PaperOrientationParameter( PaperOrientationParameter::ORIENTATION_LANDSCAPE ));
+                $Document->setValue( $Document->getCell(0,$i), 'Angebotsdaten' );
+                $Document->setStyle( $Document->getCell(0,$i),$Document->getCell(7,$i) )->mergeCells()->setBorderAll(1)->setFontBold(true);
+                $i++;
+            }
+
+            if($CompetitionQ440Data) {
+
+                switch($CompetitionQ440Data[0]['Season']) {
+                    case 'S': $Season = 'Sommer';
+                        break;
+                    case 'W': $Season = 'Winter';
+                        break;
+                    case 'G': $Season = 'Ganzjahr';
+                        break;
+                    default: $Season = '';
+                        break;
+                }
+
+                $Document->setValue( $Document->getCell(0,$i), 'Saison / Sortiment / Sparte' );
+                $Document->setStyle( $Document->getCell(0,$i),$Document->getCell(1,$i) )->mergeCells()->setBorderAll(1)->setColumnWidth(-1);
+                $i++;
+
+                $Document->setValue( $Document->getCell(0,$i), 'Dimension' );
+                $Document->setStyle( $Document->getCell(0,$i),$Document->getCell(1,$i) )->mergeCells()->setBorderAll(1)->setColumnWidth(-1);
+                $i++;
+
+                $Document->setValue( $Document->getCell(0,$i), 'Profil / Hersteller' );
+                $Document->setStyle( $Document->getCell(0,$i),$Document->getCell(1,$i) )->mergeCells()->setBorderAll(1)->setColumnWidth(-1);
+                $i++;
+
+                if($CompetitionQ440Data[0]['Assortment'] == 'Komplettrad') {
+                    $Document->setValue( $Document->getCell(0,$i++), 'Rad' );
+                    $Document->setStyle( $Document->getCell(0,$i),$Document->getCell(1,$i) )->mergeCells()->setBorderAll(1)->setColumnWidth(-1);
+                }
+
+                if($CompetitionQ440Data[0]['Series'] != '') {
+                    $Document->setValue( $Document->getCell(0,$i++), 'Baureihe' );
+                    $Document->setStyle( $Document->getCell(0,$i),$Document->getCell(1,$i) )->mergeCells()->setBorderAll(1)->setColumnWidth(-1);
+                }
+
+                $i = 1;
+                $Document->setValue( $Document->getCell(2,$i), $Season . ' / ' .$CompetitionQ440Data[0]['Assortment'] . ' / ' . $CompetitionQ440Data[0]['Section'] );
+                $Document->setStyle( $Document->getCell(2,$i),$Document->getCell(7,$i) )->mergeCells()->setBorderAll(1);
+                $i++;
+
+                $Document->setValue( $Document->getCell(2,$i), $CompetitionQ440Data[0]['DimensionTyre'] );
+                $Document->setStyle( $Document->getCell(2,$i),$Document->getCell(7,$i) )->mergeCells()->setBorderAll(1);
+                $i++;
+
+                $Document->setValue( $Document->getCell(2,$i), utf8_decode($CompetitionQ440Data[0]['Profil']) . ' / '.utf8_decode($CompetitionQ440Data[0]['Manufacturer']) );
+                $Document->setStyle( $Document->getCell(2,$i),$Document->getCell(7,$i) )->mergeCells()->setBorderAll(1);
+                $i++;
+
+                if($CompetitionQ440Data[0]['Assortment'] == 'Komplettrad') {
+                    $Document->setValue($Document->getCell(2, $i),
+                        utf8_decode($CompetitionQ440Data[0]['DesignRim']) . '<br/>' . $CompetitionQ440Data[0]['DimensionRim'] .
+                        (($CompetitionQ440Data[0]['NumberRim'] != '') ? '(' . $CompetitionQ440Data[0]['NumberRim'] . ')' : ''));
+                    $Document->setStyle($Document->getCell(2, $i),
+                        $Document->getCell(7, $i))->mergeCells()->setBorderAll(1);
+                    $i++;
+                }
+
+                if($CompetitionQ440Data[0]['Series'] != '') {
+                    $Document->setValue($Document->getCell(2, $i), $CompetitionQ440Data[0]['Series'] );
+                    $Document->setStyle($Document->getCell(2, $i),
+                        $Document->getCell(7, $i))->mergeCells()->setBorderAll(1);
+                    $i++;
+                }
+            }
+
+            if($CompetitionData) {
+
+    	        $i++;
+                $ColIndex = 0;
+
+                $Document->setStyle( $Document->getCell($ColIndex,$i) )->setBorderAll(1)->setColumnWidth(-1);
+                $Document->setValue( $Document->getCell( $ColIndex++, ( $i ) ), 'Wettbewerber', PhpExcel::TYPE_STRING );
+
+                $Document->setStyle( $Document->getCell($ColIndex,$i) )->setBorderAll(1)->setColumnWidth(-1);
+                $Document->setValue( $Document->getCell( $ColIndex++, ( $i ) ), 'Hersteller', PhpExcel::TYPE_STRING );
+
+                $Document->setStyle( $Document->getCell($ColIndex,$i) )->setBorderAll(1)->setColumnWidth(-1);
+                $Document->setValue( $Document->getCell( $ColIndex++, ( $i ) ), 'Zeitraum', PhpExcel::TYPE_STRING );
+
+                $Document->setStyle( $Document->getCell($ColIndex,$i) )->setBorderAll(1)->setColumnWidth(10);
+                $Document->setValue( $Document->getCell( $ColIndex++, ( $i ) ), 'NLP', PhpExcel::TYPE_STRING );
+
+                $Document->setStyle( $Document->getCell($ColIndex,$i) )->setBorderAll(1)->setColumnWidth(10);
+                $Document->setValue( $Document->getCell( $ColIndex++, ( $i ) ), 'BLP', PhpExcel::TYPE_STRING );
+
+                $Document->setStyle( $Document->getCell($ColIndex,$i) )->setBorderAll(1)->setColumnWidth(10);
+                $Document->setValue( $Document->getCell( $ColIndex++, ( $i ) ), 'Rabatt', PhpExcel::TYPE_STRING );
+
+                $Document->setStyle( $Document->getCell($ColIndex,$i) )->setBorderAll(1)->setColumnWidth(10);
+                $Document->setValue( $Document->getCell( $ColIndex++, ( $i ) ), 'WV / EA', PhpExcel::TYPE_STRING );
+
+                $Document->setStyle( $Document->getCell($ColIndex,$i) )->setBorderAll(1)->setColumnWidth(-1);
+                $Document->setValue( $Document->getCell( $ColIndex++, ( $i ) ), 'Kommentar', PhpExcel::TYPE_STRING );
+
+                $Document->setStyle( $Document->getCell($ColIndex,$i) )->setBorderAll(1)->setColumnWidth(-1);
+                $Document->setValue( $Document->getCell( $ColIndex++, ( $i ) ), 'VF', PhpExcel::TYPE_STRING );
+
+
+                $i++;
+                $ColIndex = 0;
+                foreach((array)$CompetitionData AS $RowIndex => $RowList) {
+                    $ColIndex = 0;
+                    foreach( (array)$RowList as $ColName => $ColValue ) {
+                        if($ColName != 'PositionId') {
+                            if( is_float( self::ConvertNumeric($ColValue,$ColName) ) == true ) {
+                                $Document->setStyle( $Document->getCell($ColIndex,$i) )->setBorderAll(1);
+                                $Document->setValue( $Document->getCell( ($ColIndex++), ( $i ) ), $ColValue, PhpExcel::TYPE_NUMERIC );
+                            }
+                            else {
+                                $Document->setStyle( $Document->getCell($ColIndex,$i) )->setBorderAll(1);
+                                if($ColName == 'CreationDate') {
+                                    $Document->setValue( $Document->getCell( $ColIndex++, ( $i ) ), (new \DateTime( $ColValue ))->format('d.m.Y'), PhPExcel::TYPE_STRING );
+                                }
+                                else {
+                                    $Document->setValue( $Document->getCell( $ColIndex++, ( $i ) ), utf8_decode($ColValue), PhpExcel::TYPE_STRING );
+                                }
+                            }
+                        }
+                    }
+                    $i++;
+                }
+
+            }
         }
+
+        $Document->selectWorksheetByName('Direktsuche');
 
 
 //

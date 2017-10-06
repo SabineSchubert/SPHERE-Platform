@@ -35,6 +35,23 @@ class TblReporting_Part extends Element
     const ATTR_SUCCESSOR = 'Successor';
     const ATTR_OPTIONAL_NUMBER = 'OptionalNumber';
 
+    const ATTR_EXCHANGE_NUMBER = 'ExchangeNumber';
+    const ATTR_EXCHANGE_PART = 'ExchangePart';
+    const ATTR_EXHAUSTION = 'Exhaustion';
+    const ATTR_LENGTH = 'Length';
+    const ATTR_WIDTH = 'Width';
+    const ATTR_HEIGHT = 'Height';
+    const ATTR_PACKAGING_UNIT = 'PackagingUnit';
+    const ATTR_MODEL_SERIES = 'ModelSeries';
+    const ATTR_CREATION_DATE = 'CreationDate';
+    const ATTR_REPAIR_KIT = 'RepairKit';
+    const ATTR_WEIGHT = 'Weight';
+    const ATTR_SERIES = 'Series';
+    const ATTR_LIFECYCLE = 'Lifecycle';
+    const ATTR_COUNTER_SHARE = 'CounterShare';
+    const ATTR_PRICE_LEADER = 'PriceLeader';
+    const ATTR_PRICE_EQUAL = 'PriceEqual';
+
     /**
      * @Column(type="string")
      */
@@ -89,6 +106,94 @@ class TblReporting_Part extends Element
      * @Column(type="string")
      */
     protected $OptionalNumber;
+
+    /**
+     * @Column(type="string")
+     */
+    protected $ExchangeNumber;
+
+    /**
+     * Tauschteil
+     * @Column(type="boolean")
+     */
+    protected $ExchangePart;
+
+    /**
+     * Aufbrauch: abverkaufen von Restbeständen
+     * @Column(type="boolean")
+     */
+    protected $Exhaustion;
+
+    /**
+     * @Column(type="float")
+     */
+    protected $Length;
+
+    /**
+     * @Column(type="float")
+     */
+    protected $Width;
+
+    /**
+     * @Column(type="float")
+     */
+    protected $Height;
+
+    /**
+     * @Column(type="integer")
+     */
+    protected $PackagingUnit;
+
+    /**
+     * Baureihe
+     * @Column(type="string")
+     */
+    protected $ModelSeries;
+
+    /**
+     * @Column(type="date")
+     */
+    protected $CreationDate;
+
+    /**
+     * @Column(type="boolean")
+     */
+    protected $RepairKit;
+
+    /**
+     * @Column(type="float")
+     */
+    protected $Weight;
+
+    /**
+     * Serie oder Aftersales, d.h. wird noch produziert oder nicht
+     * @Column(type="boolean")
+     */
+    protected $Series;
+
+    /**
+     * Alterssegment
+     * @Column(type="string")
+     */
+    protected $Lifecycle;
+
+    /**
+     * Thekenanteil: Prozentsatz der Produkte, die im AH direkt verkauft werden ohne Reparatur
+     * @Column(type="float")
+     */
+    protected $CounterShare;
+
+    /**
+     * Preisführer
+     * @Column(type="boolean")
+     */
+    protected $PriceLeader;
+
+    /**
+     * Preisgleich
+     * @Column(type="boolean")
+     */
+    protected $PriceEqual;
 
     /**
      * @return string
@@ -264,6 +369,262 @@ class TblReporting_Part extends Element
     public function setOptionalNumber($OptionalNumber)
     {
         $this->OptionalNumber = $OptionalNumber;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExchangeNumber()
+    {
+        return $this->ExchangeNumber;
+    }
+
+    /**
+     * @param string $ExchangeNumber
+     */
+    public function setExchangeNumber($ExchangeNumber)
+    {
+        $this->ExchangeNumber = $ExchangeNumber;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getExchangePart()
+    {
+        return $this->ExchangePart;
+    }
+
+    /**
+     * @param boolean $ExchangePart
+     */
+    public function setExchangePart($ExchangePart)
+    {
+        $this->ExchangePart = $ExchangePart;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getExhaustion()
+    {
+        return $this->Exhaustion;
+    }
+
+    /**
+     * @param boolean $Exhaustion
+     */
+    public function setExhaustion($Exhaustion)
+    {
+        $this->Exhaustion = $Exhaustion;
+    }
+
+    /**
+     * @return float
+     */
+    public function getLength()
+    {
+        return $this->Length;
+    }
+
+    /**
+     * @param float $Length
+     */
+    public function setLength($Length)
+    {
+        $this->Length = $Length;
+    }
+
+    /**
+     * @return float
+     */
+    public function getWidth()
+    {
+        return $this->Width;
+    }
+
+    /**
+     * @param float $Width
+     */
+    public function setWidth($Width)
+    {
+        $this->Width = $Width;
+    }
+
+    /**
+     * @return float
+     */
+    public function getHeight()
+    {
+        return $this->Height;
+    }
+
+    /**
+     * @param float $Height
+     */
+    public function setHeight($Height)
+    {
+        $this->Height = $Height;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getPackagingUnit()
+    {
+        return $this->PackagingUnit;
+    }
+
+    /**
+     * @param integer $PackagingUnit
+     */
+    public function setPackagingUnit($PackagingUnit)
+    {
+        $this->PackagingUnit = $PackagingUnit;
+    }
+
+    /**
+     * @return string
+     */
+    public function getModelSeries()
+    {
+        return $this->ModelSeries;
+    }
+
+    /**
+     * @param string $ModelSeries
+     */
+    public function setModelSeries($ModelSeries)
+    {
+        $this->ModelSeries = $ModelSeries;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCreationDate()
+    {
+        return $this->CreationDate;
+    }
+
+    /**
+     * @param string $CreationDate
+     */
+    public function setCreationDate($CreationDate)
+    {
+        $this->CreationDate = $CreationDate;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getRepairKit()
+    {
+        return $this->RepairKit;
+    }
+
+    /**
+     * @param boolean $RepairKit
+     */
+    public function setRepairKit($RepairKit)
+    {
+        $this->RepairKit = $RepairKit;
+    }
+
+    /**
+     * @return float
+     */
+    public function getWeight()
+    {
+        return $this->Weight;
+    }
+
+    /**
+     * @param float $Weight
+     */
+    public function setWeight($Weight)
+    {
+        $this->Weight = $Weight;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getSeries()
+    {
+        return $this->Series;
+    }
+
+    /**
+     * @param boolean $Series
+     */
+    public function setSeries($Series)
+    {
+        $this->Series = $Series;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLifecycle()
+    {
+        return $this->Lifecycle;
+    }
+
+    /**
+     * @param string $Lifecycle
+     */
+    public function setLifecycle($Lifecycle)
+    {
+        $this->Lifecycle = $Lifecycle;
+    }
+
+    /**
+     * @return float
+     */
+    public function getCounterShare()
+    {
+        return $this->CounterShare;
+    }
+
+    /**
+     * @param float $CounterShare
+     */
+    public function setCounterShare($CounterShare)
+    {
+        $this->CounterShare = $CounterShare;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getPriceLeader()
+    {
+        return $this->PriceLeader;
+    }
+
+    /**
+     * @param boolean $PriceLeader
+     */
+    public function setPriceLeader($PriceLeader)
+    {
+        $this->PriceLeader = $PriceLeader;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getPriceEqual()
+    {
+        return $this->PriceEqual;
+    }
+
+    /**
+     * @param boolean $PriceEqual
+     */
+    public function setPriceEqual($PriceEqual)
+    {
+        $this->PriceEqual = $PriceEqual;
     }
 
     /**

@@ -75,8 +75,8 @@ class Setup extends AbstractSetup
             $this->getConnection()->createView(
                (new View( $this->getConnection(), 'ViewCompetitionPart' ))
                    ->addLink(
-                       new TblReporting_Part(), 'Id',
-                       new TblCompetition_Part(), 'TblReporting_Part'
+                       new TblCompetition_Part(), 'TblReporting_Part',
+                       new TblReporting_Part(), 'Id'
                    )
             );
         }

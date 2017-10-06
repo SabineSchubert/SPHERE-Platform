@@ -1,6 +1,7 @@
 <?php
 namespace SPHERE\Application\Platform\Gatekeeper\Authorization\Account;
 
+use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Access;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Access\Service\Entity\TblRole;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Data;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\TblAccount;
@@ -10,12 +11,20 @@ use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\TblSession;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\TblSetting;
 use SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Setup;
+use SPHERE\Application\Platform\Gatekeeper\Consumer\Consumer;
 use SPHERE\Application\Platform\Gatekeeper\Consumer\Service\Entity\TblConsumer;
+use SPHERE\Application\Reporting\Reporting;
 use SPHERE\Common\Frontend\Form\IFormInterface;
+use SPHERE\Common\Frontend\Icon\Repository\Cluster;
+use SPHERE\Common\Frontend\Message\Repository\Danger;
+use SPHERE\Common\Frontend\Message\Repository\Success;
 use SPHERE\Common\Frontend\Message\Repository\Warning;
+use SPHERE\Common\Frontend\Text\Repository\Bold;
 use SPHERE\Common\Window\Redirect;
+use SPHERE\Common\Window\RedirectScript;
 use SPHERE\System\Cache\Handler\MemcachedHandler;
 use SPHERE\System\Database\Binding\AbstractService;
+use SPHERE\System\Extension\Repository\Debugger;
 
 /**
  * Class Service
@@ -134,11 +143,10 @@ class Service extends AbstractService
 
     /**
      * @param IFormInterface $Form
-     * @param string $CredentialName
-     * @param string $CredentialLock
+     * @param $CredentialName
+     * @param $CredentialLock
      * @param TblIdentification $TblIdentification
-     *
-     * @return IFormInterface|Redirect
+     * @return IFormInterface|RedirectScript|string
      */
     public function createSessionCredential(
         IFormInterface $Form,
@@ -165,7 +173,7 @@ class Service extends AbstractService
                     break;
                 }
                 case true: {
-                    return new Redirect('/', Redirect::TIMEOUT_SUCCESS);
+                    return new Redirect('/Reporting', Redirect::TIMEOUT_SUCCESS);
                     break;
                 }
             }
@@ -440,5 +448,57 @@ class Service extends AbstractService
     {
 
         return (new Data($this->getBinding()))->countSessionAll();
+    }
+
+    /**
+     * @param IFormInterface $Form
+     * @param $Account
+     * @return IFormInterface|string
+     */
+    public function createAccount( IFormInterface $Form, $Account ) {
+        if( $Account['Name'] && $Account['Password'] == $Account['PasswordSafety'] && $Account['Password'] != ''  && isset($Account['Identification']) && isset($Account['Role']) ) {
+            $TblConsumer = Consumer::useService()->getConsumerBySession();
+            $TblAccount = (new Data($this->getBinding()))->createAccount($Account['Name'], $Account['Password'], $TblConsumer);
+            $TblIdentification = $this->getIdentificationById($Account['Identification']);
+            //var_dump($TblIdentification);
+            $TblAuthentication = $this->addAccountAuthentication($TblAccount, $TblIdentification);
+
+            foreach((array)$Account['Role'] AS $RoleId ) {
+                //var_dump($RoleId);
+                $TblRole = Access::useService()->getRoleById( (int)$RoleId );
+
+
+                //var_dump($TblRole);
+                $this->addAccountAuthorization( $TblAccount, $TblRole );
+            }
+
+            if( $TblAccount && $TblAuthentication ) {
+                $AccountName = $this->getAccountByUsername( $Account['Name'] );
+
+                return (new Success('Die Benutzerkennung '.$AccountName->getUsername().' wurde erfolgreich angelegt!')).$Form;
+            }
+            else {
+                return $Form;
+            }
+        }
+        else {
+//            if( $Account['Name'] == '' ) {
+//                $Form->setError('Account[Name]', 'Bitte geben Sie einen Benutzernamen ein!');
+//            }
+//            if( $Account['Password'] == '' ) {
+//                $Form->setError('Account[Password]', 'Bitte geben Sie ein Passwort ein!');
+//            }
+//            if( $Account['PasswordSafety'] != $Account['Password'] ) {
+//                $Form->setError('Account[PasswordSafety]', 'Das Passwort und die Passwortwiederholung sind nicht identisch!');
+//            }
+            $Warning = '';
+            if( !isset($Account['Identification']) ) {
+                $Warning = new Danger('Bitte wählen Sie einen '.new Bold( 'Authentifizierungstyp' ).' aus!');
+            }
+            if( !isset($Account['Role']) ) {
+                $Warning .= new Danger('Bitte wählen Sie mindestens 1 '.new Bold( 'Berechtigungsstufe' ).' aus!');
+            }
+            return $Warning.$Form;
+        }
     }
 }

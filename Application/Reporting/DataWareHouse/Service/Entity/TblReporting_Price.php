@@ -27,6 +27,7 @@ class TblReporting_Price extends Element
     const TBL_REPORTING_DISCOUNT_GROUP = 'TblReporting_DiscountGroup';
     const ATTR_PRICE_GROSS = 'PriceGross';
     const ATTR_BACK_VALUE = 'BackValue';
+    const ATTR_PRICE_EXCHANGE = 'PriceExchange';
     const ATTR_COSTS_VARIABLE = 'CostsVariable';
     const ATTR_VALID_FROM  = 'ValidFrom';
 
@@ -49,6 +50,11 @@ class TblReporting_Price extends Element
      * @Column(type="float")
      */
     protected $BackValue;
+
+    /**
+     * @Column(type="float")
+     */
+    protected $PriceExchange;
 
     /**
      * @Column(type="float")
@@ -122,6 +128,22 @@ class TblReporting_Price extends Element
     public function setBackValue($BackValue)
     {
         $this->BackValue = (float)$BackValue;
+    }
+
+    /**
+     * @return float
+     */
+    public function getPriceExchange()
+    {
+        return $this->PriceExchange;
+    }
+
+    /**
+     * @param float $PriceExchange
+     */
+    public function setPriceExchange($PriceExchange)
+    {
+        $this->PriceExchange = $PriceExchange;
     }
 
     /**

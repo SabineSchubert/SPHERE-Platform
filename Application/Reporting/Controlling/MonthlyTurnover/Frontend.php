@@ -71,6 +71,7 @@ class Frontend extends Extension
 	{
 		$Stage = new Stage('Geschäftsentwicklung', 'Teilenummer');
 		$this->buttonStageDirectSearch($Stage);
+        $Stage->hasUtilityFavorite(true);
         $LayoutExcel = '';
 
         if( $Search ) {

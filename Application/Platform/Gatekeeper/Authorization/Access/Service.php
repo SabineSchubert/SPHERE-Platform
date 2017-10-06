@@ -16,6 +16,7 @@ use SPHERE\Common\Window\Redirect;
 use SPHERE\System\Cache\Handler\MemcachedHandler;
 use SPHERE\System\Database\Binding\AbstractService;
 use SPHERE\System\Database\Fitting\Element;
+use SPHERE\System\Extension\Repository\Debugger;
 
 /**
  * Class Service
@@ -83,7 +84,7 @@ class Service extends AbstractService
                         /** @var \SPHERE\Application\Platform\Gatekeeper\Authorization\Account\Service\Entity\TblAuthorization $TblAuthorization */
                         foreach ($TblAuthorizationAll as $TblAuthorization) {
                             $TblRole = $TblAuthorization->getServiceTblRole();
-                            if ($TblRole && (false !== ($TblLevelAll = $TblRole->getTblLevelAll()))) {
+                            if ($TblRole && (!empty($TblLevelAll = $TblRole->getTblLevelAll()))) {
                                 /** @var TblLevel $TblLevel */
                                 foreach ($TblLevelAll as $TblLevel) {
                                     $TblPrivilegeAll = $TblLevel->getTblPrivilegeAll();

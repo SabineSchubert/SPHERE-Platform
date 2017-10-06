@@ -154,6 +154,15 @@ class Setup extends AbstractSetup
                     new TblReporting_DiscountGroup(), 'Id'
                 )
         );
+
+        $this->getConnection()->createView(
+            ( new View( $this->getConnection(), 'ViewPriceHistory' ) )
+                ->addLink(
+                    new TblReporting_Price(), 'TblReporting_DiscountGroup',
+                    new TblReporting_DiscountGroup(), 'Id'
+                )->allowRemovedEntities(new TblReporting_Price(),true)->allowRemovedEntities(new TblReporting_DiscountGroup(),false)
+        );
+
         }
 
         return null;
@@ -166,6 +175,7 @@ class Setup extends AbstractSetup
     private function setTableProductManager( Schema &$Schema ) {
         $TableProductManager = new TblReporting_ProductManager();
         $Table = $this->createTable( $Schema, $TableProductManager->getEntityShortName() );
+        $this->createColumn( $Table, $TableProductManager::ATTR_NUMBER, self::FIELD_TYPE_STRING, true );
         $this->createColumn( $Table, $TableProductManager::ATTR_NAME, self::FIELD_TYPE_STRING, false );
         $this->createColumn( $Table, $TableProductManager::ATTR_DEPARTMENT, self::FIELD_TYPE_STRING, false );
         return $Table;
@@ -282,8 +292,8 @@ class Setup extends AbstractSetup
         $this->createColumn( $Table, $TablePartsMore::ATTR_DESCRIPTION, self::FIELD_TYPE_STRING, false );
         $this->createColumn( $Table, $TablePartsMore::ATTR_TYPE, self::FIELD_TYPE_STRING, false );
         $this->createColumn( $Table, $TablePartsMore::ATTR_VALUE, self::FIELD_TYPE_STRING, false );
-        $this->createColumn( $Table, $TablePartsMore::ATTR_VALID_FROM, self::FIELD_TYPE_STRING, false );
-        $this->createColumn( $Table, $TablePartsMore::ATTR_VALID_TO, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TablePartsMore::ATTR_VALID_FROM, self::FIELD_TYPE_STRING, true );
+        $this->createColumn( $Table, $TablePartsMore::ATTR_VALID_TO, self::FIELD_TYPE_STRING, true );
         return $Table;
     }
 
@@ -320,6 +330,24 @@ class Setup extends AbstractSetup
         $this->createColumn( $Table, $TablePart::ATTR_PREDECESSOR, self::FIELD_TYPE_STRING, true );
         $this->createColumn( $Table, $TablePart::ATTR_SUCCESSOR, self::FIELD_TYPE_STRING, true );
         $this->createColumn( $Table, $TablePart::ATTR_OPTIONAL_NUMBER, self::FIELD_TYPE_STRING, true );
+
+        $this->createColumn( $Table, $TablePart::ATTR_EXCHANGE_NUMBER, self::FIELD_TYPE_STRING, true );
+        $this->createColumn( $Table, $TablePart::ATTR_EXCHANGE_PART, self::FIELD_TYPE_BOOLEAN, true );
+        $this->createColumn( $Table, $TablePart::ATTR_EXHAUSTION, self::FIELD_TYPE_BOOLEAN, true );
+        $this->createColumn( $Table, $TablePart::ATTR_LENGTH, self::FIELD_TYPE_FLOAT, true );
+        $this->createColumn( $Table, $TablePart::ATTR_WIDTH, self::FIELD_TYPE_FLOAT, true );
+        $this->createColumn( $Table, $TablePart::ATTR_HEIGHT, self::FIELD_TYPE_FLOAT, true );
+        $this->createColumn( $Table, $TablePart::ATTR_PACKAGING_UNIT, self::FIELD_TYPE_INTEGER, true );
+        $this->createColumn( $Table, $TablePart::ATTR_MODEL_SERIES, self::FIELD_TYPE_STRING, true );
+        $this->createColumn( $Table, $TablePart::ATTR_CREATION_DATE, 'date', true );
+        $this->createColumn( $Table, $TablePart::ATTR_REPAIR_KIT, self::FIELD_TYPE_BOOLEAN, true );
+        $this->createColumn( $Table, $TablePart::ATTR_WEIGHT, self::FIELD_TYPE_FLOAT, true );
+        $this->createColumn( $Table, $TablePart::ATTR_SERIES, self::FIELD_TYPE_BOOLEAN, true );
+        $this->createColumn( $Table, $TablePart::ATTR_LIFECYCLE, self::FIELD_TYPE_STRING, true );
+        $this->createColumn( $Table, $TablePart::ATTR_COUNTER_SHARE, self::FIELD_TYPE_FLOAT, true );
+        $this->createColumn( $Table, $TablePart::ATTR_PRICE_LEADER, self::FIELD_TYPE_BOOLEAN, true );
+        $this->createColumn( $Table, $TablePart::ATTR_PRICE_EQUAL, self::FIELD_TYPE_BOOLEAN, true );
+
         return $Table;
     }
 
@@ -439,9 +467,10 @@ class Setup extends AbstractSetup
         $Table = $this->createTable( $Schema, $TablePrice->getEntityShortName() );
         $this->createForeignKey( $Table, $TablePart ); //To: ausgelagert
         $this->createForeignKey( $Table, $TableDiscountGroup );
-        $this->createColumn( $Table, $TablePrice::ATTR_PRICE_GROSS, 'float', false );
-        $this->createColumn( $Table, $TablePrice::ATTR_BACK_VALUE, 'float', false );
-        $this->createColumn( $Table, $TablePrice::ATTR_COSTS_VARIABLE, 'float', false );
+        $this->createColumn( $Table, $TablePrice::ATTR_PRICE_GROSS, self::FIELD_TYPE_FLOAT, false );
+        $this->createColumn( $Table, $TablePrice::ATTR_BACK_VALUE, self::FIELD_TYPE_FLOAT, false );
+        $this->createColumn( $Table, $TablePrice::ATTR_PRICE_EXCHANGE, self::FIELD_TYPE_FLOAT, false );
+        $this->createColumn( $Table, $TablePrice::ATTR_COSTS_VARIABLE, self::FIELD_TYPE_FLOAT, false );
         $this->createColumn( $Table, $TablePrice::ATTR_VALID_FROM, 'date', true );
         return $Table;
     }

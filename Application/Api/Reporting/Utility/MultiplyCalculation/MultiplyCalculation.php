@@ -87,14 +87,18 @@ class MultiplyCalculation extends Extension implements IApiInterface
             'Costs' => $EntityPrice->getCostsVariable(),
             //         'PartsAndMore' => $EntityPartsMore->getValue(),
             //         'PartsAndMoreType' => $EntityPartsMore->getType(),
-            'Quantity' => 1
+//            'Quantity' => 1
         );
 
 		$PriceData['New'] = $PriceData['Old'];
 
 		$CalcRules = $this->getCalculationRules();
+		$DataSales = DataWareHouse::useService()->getSalesByPart( $EntityPart );
+//		Debugger::screenDump($DataSales[0]['Data_SumQuantity']);
 
 		$PriceData['Old']['NetPrice'] = $CalcRules->calcNetPrice( $PriceData['Old']['GrossPrice'], $PriceData['Old']['Discount'] );
+        $PriceData['Old']['Quantity'] = $DataSales[0]['Data_SumQuantity'];
+        $PriceData['New']['Quantity'] = $DataSales[0]['Data_SumQuantity'];
 		$PriceData['Old']['GrossSales'] = $CalcRules->calcGrossSales( $PriceData['Old']['GrossPrice'], $PriceData['Old']['Quantity'] );
 		$PriceData['Old']['NetSales'] = $CalcRules->calcNetSales( $PriceData['Old']['NetPrice'], $PriceData['Old']['Quantity'] );
 		$PriceData['Old']['CoverageContribution'] = $CalcRules->calcCoverageContribution( $PriceData['Old']['NetPrice'], $PriceData['Old']['Costs'] );
@@ -144,8 +148,12 @@ class MultiplyCalculation extends Extension implements IApiInterface
 				break;
 		}
 
+//		Debugger::screenDump($PriceData['New']['GrossPrice']);
+
 		$PriceData['New']['NetPrice'] = $CalcRules->calcNetPrice( $PriceData['New']['GrossPrice'], $PriceData['New']['Discount'] );
 		$PriceData['New']['GrossSales'] = $CalcRules->calcGrossSales( $PriceData['New']['GrossPrice'], $PriceData['Old']['Quantity'] );
+
+//		Debugger::screenDump($PriceData['New']['GrossSales']);
 		$PriceData['New']['NetSales'] = $CalcRules->calcNetSales( $PriceData['New']['NetPrice'], $PriceData['Old']['Quantity'] );
 		$PriceData['New']['CoverageContribution'] = $CalcRules->calcCoverageContribution( $PriceData['New']['NetPrice'], $PriceData['New']['Costs'] );
 		$PriceData['New']['TotalCoverageContribution'] = $CalcRules->calcTotalCoverageContribution( $PriceData['New']['CoverageContribution'], $PriceData['Old']['Quantity'] );
@@ -256,7 +264,7 @@ class MultiplyCalculation extends Extension implements IApiInterface
 				array(
 					'New1' => new PullRight(number_format($PriceData['New']['NetPrice'], 2, ',', '.') . ' €'),
 					'Delta1' => (($PriceData['Delta']['NetPrice'] < 0)?
-						new PullRight( new DangerMessage( number_format($PriceData['Delta']['NetPrice'], 2, ',', '.') . ' €' ) ):
+						new PullRight( new Bold( new Danger( number_format($PriceData['Delta']['NetPrice'], 2, ',', '.') . ' €' ) ) ):
 						new PullRight( number_format($PriceData['Delta']['NetPrice'], 2, ',', '.') . ' €' )
 					)
 				),
@@ -267,14 +275,14 @@ class MultiplyCalculation extends Extension implements IApiInterface
 				array(
 					'New1' => new PullRight(number_format($PriceData['New']['GrossSales'], 2, ',', '.') . ' €'),
 					'Delta1' => (($PriceData['Delta']['GrossSales'] < 0)?
-						new PullRight( new DangerMessage( number_format($PriceData['Delta']['GrossSales'], 2, ',', '.') . ' €' ) ):
+						new PullRight( new Bold( new Danger( number_format($PriceData['Delta']['GrossSales'], 2, ',', '.') . ' €' ) ) ):
 						new PullRight( number_format($PriceData['Delta']['GrossSales'], 2, ',', '.') . ' €')
 					)
 				),
 				array(
 					'New1' => new PullRight(number_format($PriceData['New']['NetSales'], 2, ',', '.') . ' €'),
 					'Delta1' => (($PriceData['Delta']['NetSales'] < 0)?
-						new PullRight( new DangerMessage( number_format($PriceData['Delta']['NetSales'], 2, ',', '.') . ' €' ) ):
+						new PullRight( new Bold( new Bold( new Danger( number_format($PriceData['Delta']['NetSales'], 2, ',', '.') . ' €' ) ) ) ):
 						new PullRight( number_format($PriceData['Delta']['NetSales'], 2, ',', '.') . ' €')
 					)
 				),
@@ -285,21 +293,21 @@ class MultiplyCalculation extends Extension implements IApiInterface
 				array(
 					'New1' => new PullRight(number_format($PriceData['New']['TotalCoverageContribution'], 2, ',', '.') . ' €'),
 					'Delta1' => (($PriceData['Delta']['TotalCoverageContribution'] < 0)?
-						new PullRight( new DangerMessage( number_format($PriceData['Delta']['TotalCoverageContribution'], 2, ',', '.') . ' €' ) ):
+						new PullRight( new Bold( new Danger( number_format($PriceData['Delta']['TotalCoverageContribution'], 2, ',', '.') . ' €' ) ) ):
 						new PullRight( number_format($PriceData['Delta']['TotalCoverageContribution'], 2, ',', '.') . ' €' )
 					)
 				),
 				array(
 					'New1' => new PullRight(number_format($PriceData['New']['TotalCoverageContributionProportionNetSales'], 2, ',', '.') . ' %'),
 					'Delta1' => (($PriceData['Delta']['TotalCoverageContributionProportionNetSales'] < 0)?
-						new PullRight( new DangerMessage( number_format($PriceData['Delta']['TotalCoverageContributionProportionNetSales'], 2, ',', '.') . ' %' ) ):
+						new PullRight( new Bold( new Danger( number_format($PriceData['Delta']['TotalCoverageContributionProportionNetSales'], 2, ',', '.') . ' %' ) ) ):
 						new PullRight( number_format($PriceData['Delta']['TotalCoverageContributionProportionNetSales'], 2, ',', '.') . ' %' )
 					)
 				),
 				array(
 					'New1' => new PullRight(number_format($PriceData['New']['CoverageContribution'], 2, ',', '.') . ' €'),
 					'Delta1' => (($PriceData['Delta']['CoverageContribution'] < 0)?
-						new PullRight( new DangerMessage( number_format($PriceData['Delta']['CoverageContribution'], 2, ',', '.') . ' €' ) ):
+						new PullRight( new Bold( new Danger( number_format($PriceData['Delta']['CoverageContribution'], 2, ',', '.') . ' €' ) ) ):
 						new PullRight(number_format($PriceData['Delta']['CoverageContribution'], 2, ',', '.') . ' €')
 					)
 				)
@@ -343,7 +351,7 @@ class MultiplyCalculation extends Extension implements IApiInterface
 				array(
 					'New2' => new PullRight(number_format($PriceData['New']['NetPrice'], 2, ',', '.') . ' €'),
 					'Delta2' => (($PriceData['Delta']['NetPrice'] < 0)?
-						new PullRight( new DangerMessage( number_format($PriceData['Delta']['NetPrice'], 2, ',', '.') . ' €' ) ):
+						new PullRight( new Bold( new Danger( number_format($PriceData['Delta']['NetPrice'], 2, ',', '.') . ' €' ) ) ):
 						new PullRight( number_format($PriceData['Delta']['NetPrice'], 2, ',', '.') . ' €' )
 					)
 				),
@@ -354,14 +362,14 @@ class MultiplyCalculation extends Extension implements IApiInterface
 				array(
 					'New2' => new PullRight(number_format($PriceData['New']['GrossSales'], 2, ',', '.') . ' €'),
 					'Delta2' => (($PriceData['Delta']['GrossSales'] < 0)?
-						new PullRight( new DangerMessage( number_format($PriceData['Delta']['GrossSales'], 2, ',', '.') . ' €' ) ):
+						new PullRight( new Bold( new Danger( number_format($PriceData['Delta']['GrossSales'], 2, ',', '.') . ' €' ) ) ):
 						new PullRight( number_format($PriceData['Delta']['GrossSales'], 2, ',', '.') . ' €')
 					)
 				),
 				array(
 					'New2' => new PullRight(number_format($PriceData['New']['NetSales'], 2, ',', '.') . ' €'),
 					'Delta2' => (($PriceData['Delta']['NetSales'] < 0)?
-						new PullRight( new DangerMessage( number_format($PriceData['Delta']['NetSales'], 2, ',', '.') . ' €' ) ):
+						new PullRight( new Bold( new Danger( number_format($PriceData['Delta']['NetSales'], 2, ',', '.') . ' €' ) ) ):
 						new PullRight( number_format($PriceData['Delta']['NetSales'], 2, ',', '.') . ' €')
 					)
 				),
@@ -372,21 +380,21 @@ class MultiplyCalculation extends Extension implements IApiInterface
 				array(
 					'New2' => new PullRight(number_format($PriceData['New']['TotalCoverageContribution'], 2, ',', '.') . ' €'),
 					'Delta2' => (($PriceData['Delta']['TotalCoverageContribution'] < 0)?
-						new PullRight( new DangerMessage( number_format($PriceData['Delta']['TotalCoverageContribution'], 2, ',', '.') . ' €' ) ):
+						new PullRight( new Bold( new Danger( number_format($PriceData['Delta']['TotalCoverageContribution'], 2, ',', '.') . ' €' ) ) ):
 						new PullRight( number_format($PriceData['Delta']['TotalCoverageContribution'], 2, ',', '.') . ' €' )
 					)
 				),
 				array(
 					'New2' => new PullRight(number_format($PriceData['New']['TotalCoverageContributionProportionNetSales'], 2, ',', '.') . ' %'),
 					'Delta2' => (($PriceData['Delta']['TotalCoverageContributionProportionNetSales'] < 0)?
-						new PullRight( new DangerMessage( number_format($PriceData['Delta']['TotalCoverageContributionProportionNetSales'], 2, ',', '.') . ' %' ) ):
+						new PullRight( new Bold( new Danger( number_format($PriceData['Delta']['TotalCoverageContributionProportionNetSales'], 2, ',', '.') . ' %' ) ) ):
 						new PullRight( number_format($PriceData['Delta']['TotalCoverageContributionProportionNetSales'], 2, ',', '.') . ' %' )
 					)
 				),
 				array(
 					'New2' => new PullRight(number_format($PriceData['New']['CoverageContribution'], 2, ',', '.') . ' €'),
 					'Delta2' => (($PriceData['Delta']['CoverageContribution'] < 0)?
-						new PullRight( new DangerMessage( number_format($PriceData['Delta']['CoverageContribution'], 2, ',', '.') . ' €' ) ):
+						new PullRight( new Bold( new Danger( number_format($PriceData['Delta']['CoverageContribution'], 2, ',', '.') . ' €' ) ) ):
 						new PullRight(number_format($PriceData['Delta']['CoverageContribution'], 2, ',', '.') . ' €')
 					)
 				)

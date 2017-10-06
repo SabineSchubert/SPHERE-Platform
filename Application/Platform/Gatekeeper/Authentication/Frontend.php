@@ -346,7 +346,8 @@ class Frontend extends Extension implements IFrontendInterface
 
         $View = new Stage('Abmelden', 'Bitte warten...');
         $View->setContent(Account::useService()->destroySession(
-                new Redirect('/Platform/Gatekeeper/Authentication', Redirect::TIMEOUT_SUCCESS)
+                //new Redirect('/Platform/Gatekeeper/Authentication', Redirect::TIMEOUT_SUCCESS)
+                new Redirect('/', Redirect::TIMEOUT_SUCCESS)
             ) . $this->getCleanLocalStorage());
         return $View;
     }

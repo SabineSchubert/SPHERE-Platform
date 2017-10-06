@@ -27,6 +27,9 @@ class Account implements IModuleInterface
         Main::getDispatcher()->registerRoute(
             Main::getDispatcher()->createRoute(__NAMESPACE__, 'Frontend::frontendAccount')
         );
+        Main::getDispatcher()->registerRoute(
+            Main::getDispatcher()->createRoute(__NAMESPACE__.'/Destroy', 'Frontend::frontendDestroyAccount')
+        );
     }
 
     /**

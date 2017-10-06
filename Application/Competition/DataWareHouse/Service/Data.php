@@ -177,13 +177,13 @@ class Data extends AbstractData
                 case 'Lkw':
                     break;
                 default:
-                    $SqlCompetitionDirectSearch = $QueryBuilder
-                        ->andWhere(
-                            $QueryBuilder->expr()->gte(
-                                $ViewCompetitionAlias . '.' . $ViewCompetition::TBL_COMPETITION_MAIN_CREATION_DATE, ':CREATION_DATE'
-                            )
-                        )
-                        ->setParameter( 'CREATION_DATE', new \DateTime( '01.01.'.(date('Y',time())-1).' 00:00:00' ) );
+//                    $SqlCompetitionDirectSearch = $QueryBuilder
+//                        ->andWhere(
+//                            $QueryBuilder->expr()->gte(
+//                                $ViewCompetitionAlias . '.' . $ViewCompetition::TBL_COMPETITION_MAIN_CREATION_DATE, ':CREATION_DATE'
+//                            )
+//                        )
+//                        ->setParameter( 'CREATION_DATE', new \DateTime( '01.01.'.(date('Y',time())-1).' 00:00:00' ) );
                     break;
             }
 
