@@ -51,6 +51,7 @@ class Frontend extends Extension
 		$LayoutBalancing = '';
 		$LayoutExcel = '';
         $ErrorPart = '';
+        $ReceiverExcel = '';
 		if ($Search) {
 
 		    $EntityPart = DataWareHouse::useService()->getPartByNumber( $Search['PartNumber'] );
@@ -64,6 +65,9 @@ class Frontend extends Extension
 				$GrossPriceField = new TextField('GrossPrice', 'BLP', 'BLP-Änderung');
 				$NetSaleField = new TextField('NetSale', 'Steigerung NU', 'Steigerung NU');
 				$CoverageContributionField = new TextField('CoverageContribution', 'Steigerung DB', 'Steigerung DB');
+
+
+                //$DiscountNumberField->ajaxPipelineOnChange( Pipeline::pipelineExcel(  ) )
 
 				//Receiver
 				$TableAllocationChanceDiscountReceiver = (ApiMultiplyCalculation::Receiver())->setIdentifier( $DiscountNumberField->getName() );
@@ -217,6 +221,13 @@ class Frontend extends Extension
                                 $ErrorPart
                             )
                         )
+                    ),
+                    new LayoutGroup(
+                        new LayoutRow(
+                            new LayoutColumn(
+                                'Excel: '.$ReceiverExcel
+                            )
+                        )
                     )
                 )
 			)
@@ -260,7 +271,7 @@ class Frontend extends Extension
             'DiscountNumber' => $EntityDiscountGroup->getNumber(),
             'Discount' => $EntityDiscountGroup->getDiscount(),
             'Costs' => $EntityPrice->getCostsVariable(),
-            'Quantity' => $DataSales[0]['Data_SumQuantity']
+            'Quantity' => ((count($DataSales) > 0)? $DataSales[0]['Data_SumQuantity']:0)
         );
 
 		$CalcRules = $this->getCalculationRules();

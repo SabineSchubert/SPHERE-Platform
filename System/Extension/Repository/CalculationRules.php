@@ -281,7 +281,12 @@ class CalculationRules
 		$SumQuantityVJ = (float)$SumQuantityVJ;
 		$SumQuantityVVJx = (float)$SumQuantityVVJx;
 		$SumQuantityVJx = (float)$SumQuantityVJx;
-		return ( $SumQuantityVVJ + $SumQuantityVJ ) / ( $SumQuantityVVJx + $SumQuantityVJx );
+		if(( $SumQuantityVVJx + $SumQuantityVJx ) != 0) {
+		    return ( $SumQuantityVVJ + $SumQuantityVJ ) / ( $SumQuantityVVJx + $SumQuantityVJx );
+        }
+        else {
+            return (float)0;
+        }
 	}
 
 	/**
@@ -335,7 +340,12 @@ class CalculationRules
 	public function calcTotalCoverageContributionProportionNetSales($TotalCoverageContribution, $NetSales ) {
 		$TotalCoverageContribution = (float)$TotalCoverageContribution;
 		$NetSales = (float)$NetSales;
-		return ( $TotalCoverageContribution * 100 ) / $NetSales;
+		if($NetSales != 0) {
+		    return ( $TotalCoverageContribution * 100 ) / $NetSales;
+        }
+        else {
+		    return (float)0;
+        }
 	}
 
 	/**
@@ -417,7 +427,12 @@ class CalculationRules
 	 */
 	public function calcIncreaseAdditionalSales($MultiplyQuantity, $Quantity ) {
 		$MultiplyQuantity = (int)$MultiplyQuantity;
-		return ( $MultiplyQuantity / $Quantity ) * 100;
+		if($Quantity != 0) {
+		    return ( $MultiplyQuantity / $Quantity ) * 100;
+        }
+        else {
+		    return (float)0;
+        }
 	}
 
 	/**

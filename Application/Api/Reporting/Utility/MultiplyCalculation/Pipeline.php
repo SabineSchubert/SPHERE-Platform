@@ -11,17 +11,21 @@ namespace SPHERE\Application\Api\Reporting\Utility\MultiplyCalculation;
 
 use MOC\V\Component\Document\Component\Bridge\Repository\PhpExcel;
 use MOC\V\Component\Document\Document;
+use MOC\V\Component\Documentation\Component\Bridge\Repository\ApiGen;
 use MOC\V\Core\FileSystem\FileSystem;
 use SPHERE\Application\Api\ApiTrait;
 use SPHERE\Application\Api\Dispatcher;
+use SPHERE\Application\Api\Reporting\Excel\ExcelMultiplyCalculation;
 use SPHERE\Application\IApiInterface;
 use SPHERE\Application\Platform\Utility\Storage\FilePointer;
 use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\Common\Frontend\Ajax\Emitter\ServerEmitter;
 use SPHERE\Common\Frontend\Ajax\Receiver\AbstractReceiver;
 use SPHERE\Common\Frontend\Ajax\Receiver\BlockReceiver;
+use SPHERE\Common\Frontend\Link\Repository\External;
 use SPHERE\System\Extension\Extension;
 use SPHERE\System\Extension\Repository\Debugger;
+use SPHERE\System\Proxy\Proxy;
 
 class Pipeline extends Extension implements IApiInterface
 {
@@ -31,6 +35,7 @@ class Pipeline extends Extension implements IApiInterface
         $ReceiverForm = self::BlockReceiver()->setIdentifier('FormReceiver');
 
         $Emitter = new ServerEmitter( $ReceiverExcel, self::getEndpoint() );
+        //$Emitter = new ServerEmitter( self::BlockReceiver()->getIdentifier('Excel'), self::getEndpoint() );
 
         $Emitter->setGetPayload(array(
             self::API_TARGET => 'getExcel',
@@ -52,214 +57,220 @@ class Pipeline extends Extension implements IApiInterface
     {
         $PriceData = $this->calcPriceData('DiscountNumber', $DiscountNumber, $GrossPrice, $NetSale, $CoverageContribution, $PartId);
 
-        $FileTyp = 'xlsx';
-        $FileName = 'Mehrmengenberechnung';
-
-        $FilePointer = new FilePointer($FileTyp);
-        $FileLocation = $FilePointer->getFileLocation();
-        /**
-         * @var PhpExcel $Document
-         */
-        $Document = Document::getDocument($FileLocation);
-
-        $x = 0;
-        $y = 0;
-
-        $Document->setValue( $Document->getCell($x++,$y), 'Mehrmengenberechnung bei Vergabe von Zusatzrabatten bzw. Änderung des BLP' );
-
-        $x = 0;
-        $y++;
-        $Document->setValue( $Document->getCell($x++,$y), 'Bezeichnung' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), 'Retaileingang' );
-        $Document->setValue( $Document->getCell($x++,$y), 'Delta' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), 'Delta' );
-
-        $x = 0;
-        $y++;
-        $Document->setValue( $Document->getCell($x++,$y), 'Bezeichnung' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-
-        $x = 0;
-        $y++;
-        $Document->setValue( $Document->getCell($x++,$y), 'BLP/TP' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['GrossPrice'] );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-
-        $x = 0;
-        $y++;
-        $Document->setValue( $Document->getCell($x++,$y), 'RG' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['DiscountNumber'] );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-
-        $x = 0;
-        $y++;
-        $Document->setValue( $Document->getCell($x++,$y), 'Rabattsatz' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['Discount'] );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['RG']['Discount'] );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-
-        $x = 0;
-        $y++;
-        $Document->setValue( $Document->getCell($x++,$y), 'NLP/TP' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['NetPrice'] );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-
-        $x = 0;
-        $y++;
-        $Document->setValue( $Document->getCell($x++,$y), 'Kosten' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['Costs'] );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-
-        $x = 0;
-        $y++;
-        $Document->setValue( $Document->getCell($x++,$y), 'BU' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['GrossSales'] );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-
-        $x = 0;
-        $y++;
-        $Document->setValue( $Document->getCell($x++,$y), 'NU' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['NetSales'] );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-
-        $x = 0;
-        $y++;
-        $Document->setValue( $Document->getCell($x++,$y), 'Menge aktuell' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['Quantity'] );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-
-        $x = 0;
-        $y++;
-        $Document->setValue( $Document->getCell($x++,$y), 'DB Konzern gesamt' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['TotalCoverageContribution'] );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-
-        $x = 0;
-        $y++;
-        $Document->setValue( $Document->getCell($x++,$y), 'DB Konzern in %' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['TotalCoverageContributionProportionNetSales'] );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-
-        $x = 0;
-        $y++;
-        $Document->setValue( $Document->getCell($x++,$y), 'DB Konzern pro Stück' );
-        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['CoverageContribution'] );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-
-        $x = 0;
-        $y++;
-        $Document->setValue( $Document->getCell($x++,$y), 'Mehrmengenberechnung zum Ausgleich des Zusatzrabattes auf Ebene' );
-
-        $x = 0;
-        $y++;
-        $Document->setValue( $Document->getCell($x++,$y), 'Bezeichnung' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), 'Nettoumsatz' );
-        $Document->setValue( $Document->getCell($x++,$y), 'DB-Konzern' );
-        $Document->setValue( $Document->getCell($x++,$y), 'Nettoumsatz' );
-        $Document->setValue( $Document->getCell($x++,$y), 'DB-Konzern' );
-
-        $x = 0;
-        $y++;
-        $Document->setValue( $Document->getCell($x++,$y), 'Mehrmenge absolut' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-
-        $x = 0;
-        $y++;
-        $Document->setValue( $Document->getCell($x++,$y), 'Menge gesamt' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-
-        $x = 0;
-        $y++;
-        $Document->setValue( $Document->getCell($x++,$y), 'Steigerung im Zusatzabsatz' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-
-        $x = 0;
-        $y++;
-        $Document->setValue( $Document->getCell($x++,$y), 'BU neu' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-
-        $x = 0;
-        $y++;
-        $Document->setValue( $Document->getCell($x++,$y), 'NU neu' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-
-        $x = 0;
-        $y++;
-        $Document->setValue( $Document->getCell($x++,$y), 'Mehrmenge absolut' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
-        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $FileTyp = 'xlsx';
+//        $FileName = 'Mehrmengenberechnung';
+//
+//        $FilePointer = new FilePointer($FileTyp);
+//        $FileLocation = $FilePointer->getFileLocation();
+//        /**
+//         * @var PhpExcel $Document
+//         */
+//        $Document = Document::getDocument($FileLocation);
+//
+//        $x = 0;
+//        $y = 0;
+//
+//        $Document->setValue( $Document->getCell($x++,$y), 'Mehrmengenberechnung bei Vergabe von Zusatzrabatten bzw. Änderung des BLP' );
+//
+//        $x = 0;
+//        $y++;
+//        $Document->setValue( $Document->getCell($x++,$y), 'Bezeichnung' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), 'Retaileingang' );
+//        $Document->setValue( $Document->getCell($x++,$y), 'Delta' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), 'Delta' );
+//
+//        $x = 0;
+//        $y++;
+//        $Document->setValue( $Document->getCell($x++,$y), 'Bezeichnung' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//
+//        $x = 0;
+//        $y++;
+//        $Document->setValue( $Document->getCell($x++,$y), 'BLP/TP' );
+//        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['GrossPrice'] );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//
+//        $x = 0;
+//        $y++;
+//        $Document->setValue( $Document->getCell($x++,$y), 'RG' );
+//        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['DiscountNumber'] );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//
+//        $x = 0;
+//        $y++;
+//        $Document->setValue( $Document->getCell($x++,$y), 'Rabattsatz' );
+//        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['Discount'] );
+//        $Document->setValue( $Document->getCell($x++,$y), $PriceData['New']['RG']['Discount'] );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//
+//        $x = 0;
+//        $y++;
+//        $Document->setValue( $Document->getCell($x++,$y), 'NLP/TP' );
+//        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['NetPrice'] );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//
+//        $x = 0;
+//        $y++;
+//        $Document->setValue( $Document->getCell($x++,$y), 'Kosten' );
+//        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['Costs'] );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//
+//        $x = 0;
+//        $y++;
+//        $Document->setValue( $Document->getCell($x++,$y), 'BU' );
+//        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['GrossSales'] );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//
+//        $x = 0;
+//        $y++;
+//        $Document->setValue( $Document->getCell($x++,$y), 'NU' );
+//        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['NetSales'] );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//
+//        $x = 0;
+//        $y++;
+//        $Document->setValue( $Document->getCell($x++,$y), 'Menge aktuell' );
+//        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['Quantity'] );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//
+//        $x = 0;
+//        $y++;
+//        $Document->setValue( $Document->getCell($x++,$y), 'DB Konzern gesamt' );
+//        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['TotalCoverageContribution'] );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//
+//        $x = 0;
+//        $y++;
+//        $Document->setValue( $Document->getCell($x++,$y), 'DB Konzern in %' );
+//        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['TotalCoverageContributionProportionNetSales'] );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//
+//        $x = 0;
+//        $y++;
+//        $Document->setValue( $Document->getCell($x++,$y), 'DB Konzern pro Stück' );
+//        $Document->setValue( $Document->getCell($x++,$y), $PriceData['Old']['CoverageContribution'] );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//
+//        $x = 0;
+//        $y++;
+//        $Document->setValue( $Document->getCell($x++,$y), 'Mehrmengenberechnung zum Ausgleich des Zusatzrabattes auf Ebene' );
+//
+//        $x = 0;
+//        $y++;
+//        $Document->setValue( $Document->getCell($x++,$y), 'Bezeichnung' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), 'Nettoumsatz' );
+//        $Document->setValue( $Document->getCell($x++,$y), 'DB-Konzern' );
+//        $Document->setValue( $Document->getCell($x++,$y), 'Nettoumsatz' );
+//        $Document->setValue( $Document->getCell($x++,$y), 'DB-Konzern' );
+//
+//        $x = 0;
+//        $y++;
+//        $Document->setValue( $Document->getCell($x++,$y), 'Mehrmenge absolut' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//
+//        $x = 0;
+//        $y++;
+//        $Document->setValue( $Document->getCell($x++,$y), 'Menge gesamt' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//
+//        $x = 0;
+//        $y++;
+//        $Document->setValue( $Document->getCell($x++,$y), 'Steigerung im Zusatzabsatz' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//
+//        $x = 0;
+//        $y++;
+//        $Document->setValue( $Document->getCell($x++,$y), 'BU neu' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//
+//        $x = 0;
+//        $y++;
+//        $Document->setValue( $Document->getCell($x++,$y), 'NU neu' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//
+//        $x = 0;
+//        $y++;
+//        $Document->setValue( $Document->getCell($x++,$y), 'Mehrmenge absolut' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
+//        $Document->setValue( $Document->getCell($x++,$y), '' );
 
 
         //$DataList['New']['NetPrice']
 
 
 
-        $Document->saveFile();
-        $FilePointer->loadFile();
+//        $Document->saveFile();
+//        $FilePointer->loadFile();
+
         //exit();
-        print FileSystem::getDownload($FilePointer->getRealPath(), $FileName.'.'.$FileTyp);
+        //Debugger::screenDump($FilePointer->getFileLocation());
+        //return new External('Test', $FilePointer);
+//        print FileSystem::getDownload($FilePointer->getRealPath(), $FileName.'.'.$FileTyp)->__toString();
+        return new External('dfgsj', ExcelMultiplyCalculation::getEndpoint(), null, array(
+            ExcelMultiplyCalculation::API_TARGET => 'getExcel'
+        ) );
     }
 
     public function calcPriceData( $Receiver, $DiscountNumber, $GrossPrice, $NetSale, $CoverageContribution, $PartId ) {

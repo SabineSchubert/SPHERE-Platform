@@ -638,60 +638,66 @@ class Data extends AbstractData
             $MaxYear = $this->getYearCurrentFromSales();
             $MaxMonth = $this->getMaxMonthCurrentYearFromSales();
 
+            if($MaxYear && $MaxMonth) {
 //            Debugger::screenDump('CASE WHEN ' .$MaxYear.' = '.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' THEN \' per '.$MaxMonth.'/\'+convert(varchar,'.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.') ELSE convert(varchar,'.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.') END AS Year');
-            $SqlSalesData = $QueryBuilder
-                   ->select( $TableSalesAlias.'.'.$TableSales::ATTR_YEAR )
-                       ->addSelect( 'SUM( '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_GROSS.' ) as Data_SumSalesGross' )
-                       ->addSelect( 'SUM( '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_NET.' ) as Data_SumSalesNet' )
-                       ->addSelect( 'SUM( '.$TableSalesAlias.'.'.$TableSales::ATTR_QUANTITY.' ) as Data_SumQuantity' )
-                   ->from( $TableSales->getEntityFullName(), $TableSales->getEntityShortName(), null );
-
-            if($TblReporting_MarketingCode || $TblReporting_ProductManager ) {
                 $SqlSalesData = $QueryBuilder
-                       ->innerJoin(
-                           $ViewPart->getEntityFullName(),
-                           $ViewPartAlias,
-                           Expr\Join::WITH,
-                           $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_ID.' = '.$TableSalesAlias.'.'.$TableSales::TBL_REPORTING_PART
-                       );
-            }
+                    ->select($TableSalesAlias . '.' . $TableSales::ATTR_YEAR)
+                    ->addSelect('SUM( ' . $TableSalesAlias . '.' . $TableSales::ATTR_SALES_GROSS . ' ) as Data_SumSalesGross')
+                    ->addSelect('SUM( ' . $TableSalesAlias . '.' . $TableSales::ATTR_SALES_NET . ' ) as Data_SumSalesNet')
+                    ->addSelect('SUM( ' . $TableSalesAlias . '.' . $TableSales::ATTR_QUANTITY . ' ) as Data_SumQuantity')
+                    ->from($TableSales->getEntityFullName(), $TableSales->getEntityShortName(), null);
 
-            $SqlSalesData = $QueryBuilder
-                   ->where(
-                       $QueryBuilder->expr()->gte( $TableSales->getEntityShortName().'.'.$TableSales::ATTR_YEAR, ':'.$TableSales::ATTR_YEAR )
-                   );
+                if ($TblReporting_MarketingCode || $TblReporting_ProductManager) {
+                    $SqlSalesData = $QueryBuilder
+                        ->innerJoin(
+                            $ViewPart->getEntityFullName(),
+                            $ViewPartAlias,
+                            Expr\Join::WITH,
+                            $ViewPartAlias . '.' . $ViewPart::TBL_REPORTING_PART_ID . ' = ' . $TableSalesAlias . '.' . $TableSales::TBL_REPORTING_PART
+                        );
+                }
 
-            if($TblReporting_Part) {
                 $SqlSalesData = $QueryBuilder
-                    ->andWhere( $TableSalesAlias.'.'.$TableSales::TBL_REPORTING_PART.' = :'.$TableSales::TBL_REPORTING_PART )
-                    ->setParameter( $TableSales::TBL_REPORTING_PART, $TblReporting_Part->getId() );
-            }
-            elseif($TblReporting_MarketingCode) {
+                    ->where(
+                        $QueryBuilder->expr()->gte($TableSales->getEntityShortName() . '.' . $TableSales::ATTR_YEAR,
+                            ':' . $TableSales::ATTR_YEAR)
+                    );
+
+                if ($TblReporting_Part) {
+                    $SqlSalesData = $QueryBuilder
+                        ->andWhere($TableSalesAlias . '.' . $TableSales::TBL_REPORTING_PART . ' = :' . $TableSales::TBL_REPORTING_PART)
+                        ->setParameter($TableSales::TBL_REPORTING_PART, $TblReporting_Part->getId());
+                } elseif ($TblReporting_MarketingCode) {
+                    $SqlSalesData = $QueryBuilder
+                        ->andWhere($ViewPartAlias . '.' . $ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER . ' = :' . $ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER)
+                        ->setParameter($ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER,
+                            $TblReporting_MarketingCode->getNumber());
+                } elseif ($TblReporting_ProductManager) {
+                    $SqlSalesData = $QueryBuilder
+                        ->andWhere($ViewPartAlias . '.' . $ViewPart::TBL_REPORTING_PRODUCT_MANAGER_ID . ' = :' . $ViewPart::TBL_REPORTING_PRODUCT_MANAGER_ID)
+                        ->setParameter($ViewPart::TBL_REPORTING_PRODUCT_MANAGER_ID,
+                            $TblReporting_ProductManager->getId());
+                }
+
                 $SqlSalesData = $QueryBuilder
-                    ->andWhere( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER.' = :'.$ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER )
-                    ->setParameter( $ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER, $TblReporting_MarketingCode->getNumber() );
+                    ->groupBy($TableSalesAlias . '.' . $TableSales::ATTR_YEAR)
+                    ->orderBy($QueryBuilder->expr()->desc($TableSales->getEntityShortName() . '.' . $TableSales::ATTR_YEAR))
+                    ->setParameter($TableSales::ATTR_YEAR, ($MaxYear - 3), \Doctrine\DBAL\Types\Type::INTEGER)
+                    ->getQuery();
+
+                //Debugger::screenDump($SqlSalesData->getSQL());
+
+                if ($SqlSalesData->getResult()) {
+                    //Debugger::screenDump($this->getExtrapolationFactor( $TblReporting_Part->getNumber() ));
+                    return $SqlSalesData->getResult();
+                } else {
+                    return null;
+                }
+
             }
-            elseif($TblReporting_ProductManager) {
-                $SqlSalesData = $QueryBuilder
-                    ->andWhere( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PRODUCT_MANAGER_ID.' = :'.$ViewPart::TBL_REPORTING_PRODUCT_MANAGER_ID )
-                    ->setParameter( $ViewPart::TBL_REPORTING_PRODUCT_MANAGER_ID, $TblReporting_ProductManager->getId() );
+            else {
+                return null;
             }
-
-            $SqlSalesData = $QueryBuilder
-                   ->groupBy( $TableSalesAlias.'.'.$TableSales::ATTR_YEAR )
-                   ->orderBy( $QueryBuilder->expr()->desc( $TableSales->getEntityShortName().'.'.$TableSales::ATTR_YEAR ) )
-                   ->setParameter( $TableSales::ATTR_YEAR, ($MaxYear-3), \Doctrine\DBAL\Types\Type::INTEGER )
-                   ->getQuery();
-
-               Debugger::screenDump($SqlSalesData->getSQL());
-
-           if($SqlSalesData->getResult()) {
-               Debugger::screenDump($this->getExtrapolationFactor( $TblReporting_Part->getNumber() ));
-               return $SqlSalesData->getResult();
-           }
-           else {
-               return null;
-           }
        }
        else {
            return null;
@@ -862,10 +868,8 @@ class Data extends AbstractData
             ->from( $TableSales->getEntityFullName(), $TableSalesAlias )
             ->getQuery()->setMaxResults(1)->getSingleResult( ColumnHydrator::HYDRATION_MODE );
 
-        $MaxYear = current($SqlMaxYear);
-
-        if($MaxYear) {
-            return $MaxYear;
+        if($SqlMaxYear) {
+            return current($SqlMaxYear);
         }
         else {
             return null;
@@ -881,20 +885,25 @@ class Data extends AbstractData
         $TableSales = new TblReporting_Sales();
         $TableSalesAlias = $TableSales->getEntityShortName();
 
-        $SqlMaxMonthCurrentYear = $QueryBuilder
-            ->select(
-                $QueryBuilder->expr()->max(
-                    $TableSalesAlias.'.'.$TableSales::ATTR_MONTH
+        if($this->getYearCurrentFromSales()) {
+            $SqlMaxMonthCurrentYear = $QueryBuilder
+                ->select(
+                    $QueryBuilder->expr()->max(
+                        $TableSalesAlias.'.'.$TableSales::ATTR_MONTH
+                    )
                 )
-            )
-            ->from( $TableSales->getEntityFullName(), $TableSalesAlias )
-            ->where( $TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' = '.$this->getYearCurrentFromSales() )
-            ->getQuery()->setMaxResults(1)->getSingleResult();
+                ->from( $TableSales->getEntityFullName(), $TableSalesAlias )
+                ->where( $TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' = '.$this->getYearCurrentFromSales() )
+                ->getQuery()->setMaxResults(1)->getSingleResult( ColumnHydrator::HYDRATION_MODE );
 
-        $MaxMonthCurrentYear = current($SqlMaxMonthCurrentYear);
+            Debugger::screenDump($SqlMaxMonthCurrentYear);
 
-        if($MaxMonthCurrentYear) {
-            return $MaxMonthCurrentYear;
+            if($SqlMaxMonthCurrentYear) {
+                return current($SqlMaxMonthCurrentYear);
+            }
+            else {
+                return null;
+            }
         }
         else {
             return null;

@@ -40,7 +40,7 @@ class ExcelMultiplyCalculation extends Extension implements IApiInterface
 
     public static function getExcel($DiscountNumber, $GrossPrice, $NetSale, $CoverageContribution, $PartId)
     {
-        Debugger::screenDump($_POST);
+        //Debugger::screenDump($_POST);
 //        Debugger::screenDump($DiscountNumber, $GrossPrice, $NetSale, $CoverageContribution);
 
 //        $PriceDataAll = array();
@@ -51,20 +51,20 @@ class ExcelMultiplyCalculation extends Extension implements IApiInterface
 //
 //        Debugger::screenDump($PriceDataAll);
 
-//        $FileTyp = 'xlsx';
-//        $FileName = 'Mehrmengenberechnung';
+        $FileTyp = 'xlsx';
+        $FileName = 'Mehrmengenberechnung';
 //
-//        $FilePointer = new FilePointer($FileTyp);
-//        $FileLocation = $FilePointer->getFileLocation();
-//        /**
-//         * @var PhpExcel $Document
-//         */
-//        $Document = Document::getDocument($FileLocation);
-//
-//        $x = 0;
-//        $y = 0;
-//
-//        $Document->setValue( $Document->getCell($x++,$y), 'Mehrmengenberechnung bei Vergabe von Zusatzrabatten bzw. Änderung des BLP' );
+        $FilePointer = new FilePointer($FileTyp);
+        $FileLocation = $FilePointer->getFileLocation();
+        /**
+         * @var PhpExcel $Document
+         */
+        $Document = Document::getDocument($FileLocation);
+
+        $x = 0;
+        $y = 0;
+
+        $Document->setValue( $Document->getCell($x++,$y), 'Mehrmengenberechnung bei Vergabe von Zusatzrabatten bzw. Änderung des BLP' );
 //
 //        $x = 0;
 //        $y++;
@@ -255,10 +255,10 @@ class ExcelMultiplyCalculation extends Extension implements IApiInterface
 //
 //
 //
-//        $Document->saveFile();
-//        $FilePointer->loadFile();
-//        //exit();
-//        print FileSystem::getDownload($FilePointer->getRealPath(), $FileName.'.'.$FileTyp);
+        $Document->saveFile();
+        $FilePointer->loadFile();
+        //exit();
+        print FileSystem::getDownload($FilePointer->getRealPath(), $FileName.'.'.$FileTyp);
     }
 
     public static function calcPriceData( $Receiver, $DiscountNumber, $GrossPrice, $NetSale, $CoverageContribution, $PartId ) {
