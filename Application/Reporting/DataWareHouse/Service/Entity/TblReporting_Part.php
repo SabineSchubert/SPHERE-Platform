@@ -15,6 +15,7 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\System\Database\Fitting\Element;
+use SPHERE\System\Extension\Repository\Debugger;
 
 /**
  * @Entity
@@ -666,6 +667,7 @@ class TblReporting_Part extends Element
     public function fetchSectionListCurrent() {
         /** @var array $PartSectionList */
         $PartSectionList = DataWareHouse::useService()->getPartSectionByPart( $this );
+
         if($PartSectionList) {
             /** @var TblReporting_Section $EntitySectionList */
             return DataWareHouse::useService()->getSectionListByPartSectionList( $PartSectionList );

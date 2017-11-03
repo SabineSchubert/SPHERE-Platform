@@ -119,12 +119,12 @@ class Frontend extends Extension
 									$this->tablePriceDevelopmentPartNumber( $EntityPart ), 12
 								)
 							),
-//							new LayoutRow(
-//								new LayoutColumn(
-//									$this->tableSalesDataPartNumber( $EntityPart )
-//									, 12
-//								)
-//							),
+							new LayoutRow(
+								new LayoutColumn(
+									$this->tableSalesDataPartNumber( $EntityPart )
+									, 12
+								)
+							),
 							new LayoutRow(
 								new LayoutColumn(
 									'&nbsp;'
@@ -272,7 +272,7 @@ class Frontend extends Extension
 							new LayoutRow(
 								new LayoutColumn(
 									$this->tableMasterDataProductManager( $EntityProductManager )
-									, 6
+									, 12
 								)
 							),
 							new LayoutRow(
@@ -334,6 +334,7 @@ class Frontend extends Extension
 		);
 		return $Stage;
 	}
+
 
 	public function frontendSearchMarketingCode( $Search = null )
 	{
@@ -458,7 +459,7 @@ class Frontend extends Extension
 //                                  array(0 => '-[ Nicht ausgewählt ]-', 'AS' => 'Andreas Schneider', 'SK' => 'Stefan Klinke', 'SH' => 'Stefan Hahn')
                                     array( '{{Name}} {{Department}}' => $EntityProductManager )
 //                                    array( 'Name' => $EntityProductManager )
-                                ))//->configureLibrary( SelectBox::LIBRARY_SELECT2 )
+                                ,null, true, null))//->configureLibrary( SelectBox::LIBRARY_SELECT2 )
 //								->setRequired() //ToDo: das gibt es bei der SelectBox noch nicht
 							), Panel::PANEL_TYPE_INFO)
 						),
@@ -535,8 +536,9 @@ class Frontend extends Extension
 
             //Sparte
             $EntitySectionList = $EntityPart->fetchSectionListCurrent();
+
             $SectionText = '';
-            if( $EntitySectionList ) {
+            if( count($EntitySectionList) > 0 ) {
                 /** @var TblReporting_Section $Section */
                 foreach($EntitySectionList AS $Index => $Section) {
                     if( $Index != 0 ) {
@@ -712,7 +714,8 @@ class Frontend extends Extension
 
                     $EntityPartsMoreList[$MarketingCode->getNumber()] = $MarketingCode->fetchPartsMoreCurrent();
 
-                    $EntityPartList[$MarketingCode->getNumber()] = $MarketingCode->fetchPartListCurrent();
+//                    $EntityPartList[$MarketingCode->getNumber()] = $MarketingCode->fetchPartListCurrent();
+               //     $EntityPartList[$MarketingCode->getNumber()] = DataWareHouse::useService()->getPartByMarketingCode( $MarketingCode );
 
                 }
 
@@ -745,13 +748,14 @@ class Frontend extends Extension
                     /** @var TblReporting_PartsMore $EntityPartsMore */
                     foreach ($EntityPartsMoreList AS $MarketingCode => $EntityPartsMore) {
                         if ($EntityPartsMore) {
-                            if ($Z !== 0) {
-                                $PartsMoreText .= '<br/>';
-                            }
-                            $Z++;
-                            $PartsMoreText .= $MarketingCode . ': ' . (($EntityPartsMore->getType() == 'Prozent') ? number_format($EntityPartsMore->getValue(),
-                                        2, ',', '.') . ' %' : number_format($EntityPartsMore->getValue(), 2, ',',
-                                        '.') . ' €');
+//                            if ($Z !== 0) {
+//                                $PartsMoreText .= '<br/>';
+//                            }
+//                            $Z++;
+                            $PartsMoreText .= $MarketingCode.', ';
+                            // . ': ' . (($EntityPartsMore->getType() == 'Prozent') ? number_format($EntityPartsMore->getValue(),
+//                                        2, ',', '.') . ' %' : number_format($EntityPartsMore->getValue(), 2, ',',
+//                                        '.') . ' €');
                         }
                     }
                 }
@@ -833,7 +837,9 @@ class Frontend extends Extension
 
         if( $EntityPart ) {
             $EntityPrice = $EntityPart->fetchPriceCurrent();
-            $EntityDiscountGroup = $EntityPrice->getTblReportingDiscountGroup();
+            if($EntityPrice) {
+                $EntityDiscountGroup = $EntityPrice->getTblReportingDiscountGroup();
+            }
             $EntityMarketingCode = $EntityPart->fetchMarketingCodeCurrent();
 
             if($EntityMarketingCode) {
@@ -931,7 +937,7 @@ class Frontend extends Extension
             );
         }
         else {
-            return '';
+            return new Warning( 'Kein Preis vorhanden' );
         }
 	}
 
@@ -1095,22 +1101,23 @@ class Frontend extends Extension
         if($SalesData) {
 
             //Hochrechnungsfaktor
-   	        $HR = (float)1;
+   	        $HR = DataWareHouse::useService()->getExtrapolationFactor(null, $EntityMarketingCode->getNumber() );
 
             $WalkSalesData = array();
             array_walk( $SalesData, function( &$Row, $Key, $HR ) use (&$WalkSalesData) {
 
                //Hochrechnung hinzufügen
-               if(isset($Row['Year']) == date('Y') && DataWareHouse::useService()->getMaxMonthCurrentYearFromSales() != '12' ) {
-                   array_push(
-                       $WalkSalesData, array(
-                           'Year' => 'HR '.$Row['Year'],
-                           'Data_SumSalesGross' => new PullRight( $this->doLocalize( ($Row['Data_SumSalesGross']*$HR) )->getCurrency() ),
-                           'Data_SumSalesNet' => new PullRight( $this->doLocalize( ($Row['Data_SumSalesNet']*$HR) )->getCurrency() ),
-                           'Data_SumQuantity' => new PullRight( $Row['Data_SumQuantity'] )
-                       )
-                   );
-
+                if($Row['Year'] == date('Y') ) {
+                    if(DataWareHouse::useService()->getMaxMonthCurrentYearFromSales() != '12') {
+                        array_push(
+                            $WalkSalesData, array(
+                                'Year' => 'HR '.$Row['Year'],
+                                'Data_SumSalesGross' => new PullRight( $this->doLocalize( ($Row['Data_SumSalesGross']*$HR) )->getCurrency() ),
+                                'Data_SumSalesNet' => new PullRight( $this->doLocalize( ($Row['Data_SumSalesNet']*$HR) )->getCurrency() ),
+                                'Data_SumQuantity' => new PullRight( $Row['Data_SumQuantity'] )
+                            )
+                        );
+                    }
                     $Row['Year'] = 'per '.DataWareHouse::useService()->getMaxMonthCurrentYearFromSales().'/'.$Row['Year'];
                 }
                 if( isset($Row['Data_SumSalesGross']) ) {
@@ -1125,7 +1132,7 @@ class Frontend extends Extension
 
             }, $HR );
 
-            $SalesData = array_merge($SalesData,$WalkSalesData);
+            $SalesData = array_merge($WalkSalesData, $SalesData);
 
             $Table = new Table(
                 $SalesData,

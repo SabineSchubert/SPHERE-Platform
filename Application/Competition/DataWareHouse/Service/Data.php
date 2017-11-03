@@ -173,6 +173,10 @@ class Data extends AbstractData
 
 
 
+            if($EntitySection !== null) {
+                $EntitySection['Name'] = '';
+            }
+
             switch($EntitySection['Name']) {
                 case 'Lkw':
                     break;

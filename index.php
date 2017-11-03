@@ -26,6 +26,7 @@ date_default_timezone_set('Europe/Berlin');
 session_start();
 session_write_close();
 set_time_limit(240);
+ini_set('memory_limit', '4G' );
 ob_implicit_flush();
 ini_set('display_errors',1);
 

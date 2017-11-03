@@ -32,9 +32,9 @@ class Pipeline extends Extension implements IApiInterface
     use ApiTrait;
 
     public static function pipelineExcel( AbstractReceiver $ReceiverExcel, $DiscountNumber = null, $GrossPrice = null, $NetSale = null, $CoverageContribution = null, $PartId = null) {
-        $ReceiverForm = self::BlockReceiver()->setIdentifier('FormReceiver');
+        $ReceiverForm = self::BlockReceiver(null,'FormReceiver');
 
-        $Emitter = new ServerEmitter( $ReceiverExcel, self::getEndpoint() );
+        $Emitter = new ServerEmitter( self::BlockReceiver(null, 'Content'), self::getEndpoint() );
         //$Emitter = new ServerEmitter( self::BlockReceiver()->getIdentifier('Excel'), self::getEndpoint() );
 
         $Emitter->setGetPayload(array(
@@ -49,6 +49,7 @@ class Pipeline extends Extension implements IApiInterface
 
         $Pipeline = new \SPHERE\Common\Frontend\Ajax\Pipeline();
         $Pipeline->appendEmitter($Emitter);
+
 
         return $Pipeline;
     }
@@ -268,7 +269,7 @@ class Pipeline extends Extension implements IApiInterface
         //Debugger::screenDump($FilePointer->getFileLocation());
         //return new External('Test', $FilePointer);
 //        print FileSystem::getDownload($FilePointer->getRealPath(), $FileName.'.'.$FileTyp)->__toString();
-        return new External('dfgsj', ExcelMultiplyCalculation::getEndpoint(), null, array(
+        return new External('Excel-Download', ExcelMultiplyCalculation::getEndpoint(), null, array(
             ExcelMultiplyCalculation::API_TARGET => 'getExcel'
         ) );
     }
@@ -366,8 +367,13 @@ class Pipeline extends Extension implements IApiInterface
         return $PriceData;
     }
 
-    public static function BlockReceiver() {
-   		return new BlockReceiver();
+    /**
+     * @param null $Content
+     * @param $Identifier
+     * @return BlockReceiver
+     */
+    public static function BlockReceiver($Content = null,$Identifier) {
+   		return (new BlockReceiver($Content))->setIdentifier($Identifier);
    	}
 
     public function exportApi($Method = '')

@@ -62,7 +62,7 @@ class ExcelDefault implements IApiInterface
 //                    Excel::CellIndex2Name( $HeaderIndex,0 ),
 //                    array('width'=>'auto','text-align'=>'center')
 //                );
-                $Document->setStyle( $Document->getCell( $HeaderIndex, 0 ) )->setWrapText();
+                $Document->setStyle( $Document->getCell( $HeaderIndex, 0 ) )->setWrapText()->setColumnWidth(-1);
                 $Document->setValue( $Document->getCell($HeaderIndex,0), trim(str_replace(array_keys($ReplaceArray),$ReplaceArray,$HeaderText)) );
                 //new PhpExcel\Style()
 //                Excel::CellWrap(

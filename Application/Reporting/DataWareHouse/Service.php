@@ -143,11 +143,11 @@ class Service extends AbstractService
    }
 
    /**
-    * @param array $EntityPartMarketingCodeList
+    * @param TblReporting_MarketingCode $EntityMarketingCode
     * @return array $PartList
     */
-   public function getPartByPartMarketingCode( $EntityPartMarketingCodeList ) {
-       return ( new Data( $this->getBinding() ) )->getPartByPartMarketingCode( $EntityPartMarketingCodeList );
+   public function getPartByMarketingCode( $EntityMarketingCode ) {
+       return ( new Data( $this->getBinding() ) )->getPartByMarketingCode( $EntityMarketingCode );
    }
 
     /**

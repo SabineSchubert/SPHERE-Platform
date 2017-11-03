@@ -29,12 +29,13 @@ use SPHERE\Common\Frontend\Text\Repository\Success;
 use SPHERE\Common\Frontend\Layout\Repository\Label\Danger as DangerMessage;
 use SPHERE\System\Extension\Extension;
 use SPHERE\System\Extension\Repository\Debugger;
+use SPHERE\Application\Api\Reporting\Utility\MultiplyCalculation\Pipeline as ExcelPipeline;
 
 class MultiplyCalculation extends Extension implements IApiInterface
 {
 	use ApiTrait;
 
-	public static function pipelineMultiplyCalculation( AbstractReceiver $Receiver, AbstractField $Field = null, TblReporting_Part $EntityPart, AbstractReceiver $ExcelReceiver ) {
+	public static function pipelineMultiplyCalculation( AbstractReceiver $Receiver, AbstractField $Field = null, TblReporting_Part $EntityPart ) {
 		$Emitter = new ServerEmitter( $Receiver, MultiplyCalculation::getEndpoint() );
 		$Emitter->setGetPayload(array(
 			MultiplyCalculation::API_TARGET => 'calcMultiplyCalculation',
@@ -56,17 +57,24 @@ class MultiplyCalculation extends Extension implements IApiInterface
 			$Pipeline->appendEmitter($Emitter2);
 		}
 
-		$ExcelEmitter = new ServerEmitter( $ExcelReceiver, MultiplyCalculation::getEndpoint() );
-        $ExcelEmitter->setGetPayload(array(
-            MultiplyCalculation::API_TARGET => 'calcMultiplyCalculation',
-            'Receiver'  => $ExcelReceiver->getIdentifier(),
-            'PartId' => $EntityPart->getId(),
-        ));
-        $Pipeline->appendEmitter($ExcelEmitter);
+
+            $ExcelEmitter = new ServerEmitter( ExcelPipeline::BlockReceiver(null, 'Content'), MultiplyCalculation::getEndpoint() );
+            $ExcelEmitter->setGetPayload(array(
+                MultiplyCalculation::API_TARGET => 'LoadExcelButton',
+                'PartId' => $EntityPart->getId()
+            ));
+            $Pipeline->appendEmitter($ExcelEmitter);
 
 
 		return $Pipeline;
 	}
+
+	public function LoadExcelButton($PartId) {
+	    return (new \SPHERE\Common\Frontend\Link\Repository\Standard('Excel erstellen', ExcelPipeline::getEndpoint() , null, array(
+            'Receiver' => ExcelPipeline::BlockReceiver(null,'ReceiverForm'),
+            'PartId' => $PartId
+        ) ))->ajaxPipelineOnClick( ExcelPipeline::pipelineExcel(ExcelPipeline::BlockReceiver(null,'ReceiverExcel')) );
+    }
 
 	public function calcPriceData( $Receiver, $DiscountNumber, $GrossPrice, $NetSale, $CoverageContribution, $PartId ) {
 
@@ -237,6 +245,7 @@ class MultiplyCalculation extends Extension implements IApiInterface
 		$Dispatcher = new Dispatcher(__CLASS__);
 
 		$Dispatcher->registerMethod('calcMultiplyCalculation');
+		$Dispatcher->registerMethod('LoadExcelButton');
 
 		return $Dispatcher->callMethod($Method);
 	}

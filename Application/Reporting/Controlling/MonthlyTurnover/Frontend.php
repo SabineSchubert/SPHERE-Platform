@@ -305,46 +305,46 @@ class Frontend extends Extension
                 $Row['Month'] = str_replace( array_keys( $MonthArray ), $MonthArray, $Row['Month']);
 
                 //AJ
-                 if( $Row['Data_SumSalesGross_AJ'] != 0 ) {
+                 //if( $Row['Data_SumSalesGross_AJ'] != 0 ) {
                      $Row['Data_SumSalesGross_AJ'] = new PullRight( $this->doLocalize($Row['Data_SumSalesGross_AJ'])->getCurrency() );
-                 }
-                 if( $Row['Data_SumSalesNet_AJ'] != 0 ) {
+                 //}
+                 //if( $Row['Data_SumSalesNet_AJ'] != 0 ) {
                      $Row['Data_SumSalesNet_AJ'] = new PullRight( $this->doLocalize($Row['Data_SumSalesNet_AJ'])->getCurrency() );
-                 }
-                 if( $Row['Data_SumQuantity_AJ'] != 0 ) {
+                 //}
+                 //if( $Row['Data_SumQuantity_AJ'] != 0 ) {
                      $Row['Data_SumQuantity_AJ'] = new PullRight( $Row['Data_SumQuantity_AJ'] );
-                 }
-                 if( $Row['Data_Discount_AJ'] !== 0 ) {
+                 //}
+                 //if( $Row['Data_Discount_AJ'] !== 0 ) {
                      $Row['Data_Discount_AJ'] = new PullRight( number_format($Row['Data_Discount_AJ'],2,',','.').' %' );
-                 }
+                 //}
 
                 //VJ
-                 if( $Row['Data_SumSalesGross_VJ'] != 0 ) {
+                 //if( $Row['Data_SumSalesGross_VJ'] != 0 ) {
                      $Row['Data_SumSalesGross_VJ'] = new PullRight( $this->doLocalize($Row['Data_SumSalesGross_VJ'])->getCurrency() );
-                 }
-                 if( $Row['Data_SumSalesNet_VJ'] != 0 ) {
+                 //}
+                 //if( $Row['Data_SumSalesNet_VJ'] != 0 ) {
                      $Row['Data_SumSalesNet_VJ'] = new PullRight( $this->doLocalize($Row['Data_SumSalesNet_VJ'])->getCurrency() );
-                 }
-                 if( $Row['Data_SumQuantity_VJ'] != 0 ) {
+                 //}
+                 //if( $Row['Data_SumQuantity_VJ'] != 0 ) {
                      $Row['Data_SumQuantity_VJ'] = new PullRight( $Row['Data_SumQuantity_VJ'] );
-                 }
-                 if( $Row['Data_Discount_VJ'] != 0 ) {
+                 //}
+                 //if( $Row['Data_Discount_VJ'] != 0 ) {
                      $Row['Data_Discount_VJ'] = new PullRight( number_format($Row['Data_Discount_VJ'],2,',','.').' %' );
-                 }
+                 //}
 
                 //VVJ
-                 if( $Row['Data_SumSalesGross_VVJ'] != 0 ) {
+                 //if( $Row['Data_SumSalesGross_VVJ'] != 0 ) {
                      $Row['Data_SumSalesGross_VVJ'] = new PullRight( $this->doLocalize($Row['Data_SumSalesGross_VVJ'])->getCurrency() );
-                 }
-                 if( $Row['Data_SumSalesNet_VVJ'] != 0 ) {
+                 //}
+                 //if( $Row['Data_SumSalesNet_VVJ'] != 0 ) {
                      $Row['Data_SumSalesNet_VVJ'] = new PullRight( $this->doLocalize($Row['Data_SumSalesNet_VVJ'])->getCurrency() );
-                 }
-                 if( $Row['Data_SumQuantity_VVJ'] != 0 ) {
+                 //}
+                 //if( $Row['Data_SumQuantity_VVJ'] != 0 ) {
                      $Row['Data_SumQuantity_VVJ'] = new PullRight( $Row['Data_SumQuantity_VVJ'] );
-                 }
-                 if( $Row['Data_Discount_VVJ'] != 0 ) {
+                 //}
+                 //if( $Row['Data_Discount_VVJ'] != 0 ) {
                      $Row['Data_Discount_VVJ'] = new PullRight( number_format($Row['Data_Discount_VVJ'],2,',','.').' %' );
-                 }
+                 //}
             }, $MonthArray);
 
            $Keys = array_keys($MonthlyTurnoverData[0]);

@@ -9,6 +9,7 @@
 namespace SPHERE\Application\Reporting\DataWareHouse\Service;
 
 
+use Doctrine\ORM\Cache\Region\DefaultMultiGetRegion;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
 use SPHERE\Application\Competition\DataWareHouse\Service\Entity\ViewCompetition;
@@ -282,21 +283,43 @@ class Data extends AbstractData
    }
 
     /**
-     * @param array $EntityPartMarketingCodeList
-     * @return array $PartList|null
+     * @param TblReporting_MarketingCode $EntityMarketingCode
+     * @return null
      */
-   public function getPartByPartMarketingCode( $EntityPartMarketingCodeList ) {
-       if($EntityPartMarketingCodeList) {
-            $PartList = null;
-            /** @var TblReporting_Part_MarketingCode $PartMarketingCode */
-           foreach( $EntityPartMarketingCodeList AS $PartMarketingCode ) {
-               $PartList[] = $this->getPartById( $PartMarketingCode->getTblReportingPart()->getId() );
-            }
-            return $PartList;
-       }
-       else {
+   public function getPartByMarketingCode( $EntityMarketingCode ) {
+//       if($EntityPartMarketingCodeList) {
+//            $PartList = null;
+//            /** @var TblReporting_Part_MarketingCode $PartMarketingCode */
+//           foreach( $EntityPartMarketingCodeList AS $PartMarketingCode ) {
+//               $PartList[] = $this->getPartById( $PartMarketingCode->getTblReportingPart()->getId() );
+//            }
+//            return $PartList;
+//       }
+//       else {
+//           return null;
+//       }
+       $Manager = $this->getEntityManager();
+       $QueryBuilder = $Manager->getQueryBuilder();
+
+       $ViewPart = new ViewPart();
+       $ViewPartAlias = $ViewPart->getEntityShortName();
+
+       $SqlPartByMarketingCodeData = $QueryBuilder
+           ->select('COUNT('.$ViewPartAlias . '.' . $ViewPart::TBL_REPORTING_PART_NUMBER.')')
+           ->from($ViewPart->getEntityFullName(), $ViewPart->getEntityShortName(), null)
+           ->Where($ViewPartAlias . '.' . $ViewPart::TBL_REPORTING_MARKETING_CODE_ID . ' = :' . $ViewPart::TBL_REPORTING_MARKETING_CODE_ID)
+               ->setParameter($ViewPart::TBL_REPORTING_MARKETING_CODE_ID,
+                   $EntityMarketingCode->getId()
+           )
+           ->getQuery();
+
+       if ($SqlPartByMarketingCodeData->getResult()) {
+//           Debugger::screenDump($SqlPartByMarketingCodeData->getResult());
+           return $SqlPartByMarketingCodeData->getResult();
+       } else {
            return null;
        }
+
    }
 
     /**
@@ -457,9 +480,9 @@ class Data extends AbstractData
     public function getSectionByPartSection( $EntityPartSectionList ) {
         if( $EntityPartSectionList ) {
             $SectionList = null;
-            /** @var TblReporting_Section $Section */
+            /** @var TblReporting_Part_Section $Section */
             foreach($EntityPartSectionList AS $Section) {
-                $SectionList[] = $this->getSectionById( $Section->getId() );
+                $SectionList[] = $this->getSectionById( $Section->getTblReportingSection()->getId() );
             }
             return $SectionList;
         }
@@ -637,6 +660,8 @@ class Data extends AbstractData
             $QueryBuilder = $Manager->getQueryBuilder();
             $MaxYear = $this->getYearCurrentFromSales();
             $MaxMonth = $this->getMaxMonthCurrentYearFromSales();
+
+            //Debugger::screenDump($MaxYear, $MaxMonth);
 
             if($MaxYear && $MaxMonth) {
 //            Debugger::screenDump('CASE WHEN ' .$MaxYear.' = '.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' THEN \' per '.$MaxMonth.'/\'+convert(varchar,'.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.') ELSE convert(varchar,'.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.') END AS Year');
@@ -869,7 +894,7 @@ class Data extends AbstractData
             ->getQuery()->setMaxResults(1)->getSingleResult( ColumnHydrator::HYDRATION_MODE );
 
         if($SqlMaxYear) {
-            return current($SqlMaxYear);
+            return $SqlMaxYear;
         }
         else {
             return null;
@@ -896,10 +921,8 @@ class Data extends AbstractData
                 ->where( $TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' = '.$this->getYearCurrentFromSales() )
                 ->getQuery()->setMaxResults(1)->getSingleResult( ColumnHydrator::HYDRATION_MODE );
 
-            Debugger::screenDump($SqlMaxMonthCurrentYear);
-
             if($SqlMaxMonthCurrentYear) {
-                return current($SqlMaxMonthCurrentYear);
+                return $SqlMaxMonthCurrentYear;
             }
             else {
                 return null;
@@ -1111,12 +1134,12 @@ class Data extends AbstractData
         $ViewPart = new ViewPart();
         $ViewPartAlias = $ViewPart->getEntityShortName();
 
-        $ExtrapolationFactor = $QueryBuilder->select( 'SUM( '.$TableSalesAlias.'.'.$TableSales::ATTR_QUANTITY.' ) /
+        $ExtrapolationFactor = $QueryBuilder->select( 'SUM( '.$TableSalesAlias.'.'.$TableSales::ATTR_QUANTITY.' ) as SumQuantityFullYear,
             SUM ( CASE WHEN ' .
                 $QueryBuilder->expr()->andX(
                     $QueryBuilder->expr()->gte( $TableSalesAlias.'.'.$TableSales::ATTR_MONTH, '1' ),
                     $QueryBuilder->expr()->lte( $TableSalesAlias.'.'.$TableSales::ATTR_MONTH, $MaxMonth )
-                ). ' THEN ' .$TableSalesAlias.'.'.$TableSales::ATTR_QUANTITY. ' ELSE 0 END ) AS HR' )
+                ). ' THEN ' .$TableSalesAlias.'.'.$TableSales::ATTR_QUANTITY. ' ELSE 0 END ) AS SumQuantityPerYear' )
             ->from( $TableSales->getEntityFullName(), $TableSalesAlias )
                 ->innerJoin(
                     $ViewPart->getEntityFullName(),
@@ -1145,10 +1168,11 @@ class Data extends AbstractData
                         ->setParameter( $ViewPart::TBL_REPORTING_PRODUCT_MANAGER_ID, $ProductManagerId );
             }
 
-            $ExtrapolationFactor = $QueryBuilder->getQuery();
+            $ExtrapolationFactor = $QueryBuilder->getQuery()->getSingleResult();
 
-            if($ExtrapolationFactor->getSingleResult()) {
-                return current($ExtrapolationFactor->getSingleResult());
+
+            if($ExtrapolationFactor['SumQuantityFullYear'] > 0 && $ExtrapolationFactor['SumQuantityPerYear'] > 0) {
+                return ((float)$ExtrapolationFactor['SumQuantityFullYear']/(float)$ExtrapolationFactor['SumQuantityPerYear']);
             }
             else {
                 return null;

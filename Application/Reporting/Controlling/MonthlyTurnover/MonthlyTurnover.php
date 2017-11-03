@@ -24,7 +24,7 @@ class MonthlyTurnover implements IModuleInterface
             new Link(new Link\Route(__NAMESPACE__), new Link\Name('Geschäftsentwicklung'), new Link\Icon(new Search()))
         );
         Main::getDispatcher()->registerRoute(
-            Main::getDispatcher()->createRoute(__NAMESPACE__, __NAMESPACE__ . '\Frontend::frontendSearchPartNumber')
+            Main::getDispatcher()->createRoute(__NAMESPACE__, __NAMESPACE__ . '\Frontend::frontendSearchProductManager')
         );
 
 		Main::getDispatcher()->registerRoute(

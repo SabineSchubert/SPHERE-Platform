@@ -321,9 +321,9 @@ class Frontend extends Extension
         $Stage->addButton(
 			new Standard('Produktmanager', new Route(__NAMESPACE__ . '/ProductManager'))
 		);
-		$Stage->addButton(
-			new Standard('Angebotsdaten', new Route(__NAMESPACE__ . '/Competition'))
-		);
+//		$Stage->addButton(
+//			new Standard('Angebotsdaten', new Route(__NAMESPACE__ . '/Competition'))
+//		);
 	}
 
 	private function tableSearchData( $SearchData ) {
@@ -368,7 +368,7 @@ class Frontend extends Extension
             } );
 
             return new Table(
-                $SearchData, null, $TableHead
+                $SearchData, new \SPHERE\Common\Frontend\Table\Repository\Title('&nbsp;'), $TableHead
             );
         }
         else {

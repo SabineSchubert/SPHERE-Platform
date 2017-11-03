@@ -129,6 +129,10 @@ class Setup extends AbstractSetup
                         new TblReporting_Part_Section(), 'TblReporting_Part'
                     )
                     ->addLink(
+                        new TblReporting_Part_Section(), 'TblReporting_Section',
+                        new TblReporting_Section(), 'Id'
+                    )
+                    ->addLink(
                         new TblReporting_Part(), 'Id',
                         new TblReporting_Part_Brand(), 'TblReporting_Part'
                     )
@@ -452,7 +456,7 @@ class Setup extends AbstractSetup
         $TableDiscountGroup = new TblReporting_DiscountGroup();
         $Table = $this->createTable( $Schema, $TableDiscountGroup->getEntityShortName() );
         $this->createColumn( $Table, $TableDiscountGroup::ATTR_NUMBER, self::FIELD_TYPE_STRING, false );
-        $this->createColumn( $Table, $TableDiscountGroup::ATTR_DISCOUNT, self::FIELD_TYPE_STRING, false );
+        $this->createColumn( $Table, $TableDiscountGroup::ATTR_DISCOUNT, self::FIELD_TYPE_FLOAT, false );
         return $Table;
     }
 

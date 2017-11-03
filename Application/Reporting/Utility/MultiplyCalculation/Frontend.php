@@ -13,6 +13,7 @@ use SPHERE\Application\Api\Reporting\Utility\MultiplyCalculation\MultiplyCalcula
 use SPHERE\Application\Api\Reporting\Utility\MultiplyCalculation\Pipeline;
 use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Part;
+use SPHERE\Common\Frontend\Ajax\Receiver\BlockReceiver;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Button\Reset;
 use SPHERE\Common\Frontend\Form\Repository\Button\Standard;
@@ -76,20 +77,20 @@ class Frontend extends Extension
 				$TableBalancingChanceGrossPriceReceiver = (ApiMultiplyCalculation::Receiver())->setIdentifier($CoverageContributionField->getName());
 
 				//Excel
-                $ReceiverExcel = Pipeline::BlockReceiver()->setIdentifier('ExcelDownload');
-                $ReceiverForm = Pipeline::BlockReceiver()->setIdentifier('FormReceiver');
-                $LinkBtn = new \SPHERE\Common\Frontend\Link\Repository\Standard('Excel-Download', Pipeline::getEndpoint() , null, array(
+                $ReceiverExcel = Pipeline::BlockReceiver(null, 'ExcelDownload');
+                $ReceiverForm = Pipeline::BlockReceiver(null, 'FormReceiver');
+                $LinkBtn = (new \SPHERE\Common\Frontend\Link\Repository\Standard('Excel erstellen', Pipeline::getEndpoint() , null, array(
                     'Receiver' => $ReceiverForm,
                     'PartId' => $EntityPart->getId()
-                ) );
+                ) ))->ajaxPipelineOnClick( Pipeline::pipelineExcel($ReceiverExcel) );
 
 
 
 				//Pipeline
-				$DiscountNumberPipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableAllocationChanceDiscountReceiver, $NetSaleField, $EntityPart, $ReceiverExcel);
-				$GrossPricePipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableAllocationChanceGrossPriceReceiver, $CoverageContributionField, $EntityPart, $ReceiverExcel);
-				$NetSalePipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableBalancingChanceDiscountReceiver, $CoverageContributionField, $EntityPart, $ReceiverExcel);
-				$CoverageContributionPipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableBalancingChanceGrossPriceReceiver, $NetSaleField, $EntityPart, $ReceiverExcel);
+				$DiscountNumberPipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableAllocationChanceDiscountReceiver, $NetSaleField, $EntityPart);
+				$GrossPricePipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableAllocationChanceGrossPriceReceiver, $CoverageContributionField, $EntityPart);
+				$NetSalePipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableBalancingChanceDiscountReceiver, $CoverageContributionField, $EntityPart);
+				$CoverageContributionPipeline = ApiMultiplyCalculation::pipelineMultiplyCalculation($TableBalancingChanceGrossPriceReceiver, $NetSaleField, $EntityPart);
 
 				$LayoutContent = new Form(
 					new FormGroup(
@@ -97,7 +98,8 @@ class Frontend extends Extension
 							new FormRow(
 								array(
                                     new FormColumn(
-                                        $LinkBtn->ajaxPipelineOnClick( Pipeline::pipelineExcel($ReceiverExcel) ), 4
+                                        Pipeline::BlockReceiver($LinkBtn, 'Content')
+                                        , 4
                                     ),
 									new FormColumn(
 										new Panel( '', array(
@@ -222,13 +224,13 @@ class Frontend extends Extension
                             )
                         )
                     ),
-                    new LayoutGroup(
-                        new LayoutRow(
-                            new LayoutColumn(
-                                'Excel: '.$ReceiverExcel
-                            )
-                        )
-                    )
+//                    new LayoutGroup(
+//                        new LayoutRow(
+//                            new LayoutColumn(
+//                                'Excel: '.$ReceiverExcel
+//                            )
+//                        )
+//                    )
                 )
 			)
 			.$Form
