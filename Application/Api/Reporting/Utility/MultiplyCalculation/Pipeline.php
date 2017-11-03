@@ -270,7 +270,12 @@ class Pipeline extends Extension implements IApiInterface
         //return new External('Test', $FilePointer);
 //        print FileSystem::getDownload($FilePointer->getRealPath(), $FileName.'.'.$FileTyp)->__toString();
         return new External('Excel-Download', ExcelMultiplyCalculation::getEndpoint(), null, array(
-            ExcelMultiplyCalculation::API_TARGET => 'getExcel'
+            ExcelMultiplyCalculation::API_TARGET => 'getExcel',
+            'DiscountNumber' => $DiscountNumber,
+            'GrossPrice' => $GrossPrice,
+            'NetSale' => $NetSale,
+            'CoverageContribution' => $CoverageContribution,
+            'PartId' => $PartId
         ) );
     }
 
