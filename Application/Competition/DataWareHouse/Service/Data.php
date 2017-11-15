@@ -56,88 +56,93 @@ class Data extends AbstractData
             $ViewCompetition = new ViewCompetition();
             $ViewCompetitionAlias = $ViewCompetition->getEntityShortName();
 
-            switch ($GroupBy) {
-                case '1':
-                    $SqlCompetitionSearch = $QueryBuilder
-                        ->select( $ViewCompetitionAlias.'.'.$ViewCompetition::TBL_REPORTING_PART_NUMBER.' AS PartNumber' )
-                        ->addSelect( $ViewCompetitionAlias.'.'.$ViewCompetition::TBL_REPORTING_MARKETING_CODE_NUMBER.' AS MarketingCode' )
-                        ->addSelect(  'COUNT('.$ViewCompetitionAlias.'.'.$ViewCompetition::TBL_COMPETITION_POSITION_COMPETITOR.') AS Data_CountQuantity' );
-                    break;
-                case '2':
-                    $SqlCompetitionSearch = $QueryBuilder
-                        ->select( $ViewCompetitionAlias.'.'.$ViewCompetition::TBL_REPORTING_MARKETING_CODE_NUMBER.' AS MarketingCode' )
-                        ->addSelect(  'COUNT( distinct'.$ViewCompetitionAlias.'.'.$ViewCompetition::TBL_REPORTING_PART_NUMBER.') AS Data_CountQuantity' );
-                    break;
-                case '3':
-                    $SqlCompetitionSearch = $QueryBuilder
-                        ->select( $ViewCompetitionAlias.'.'.$ViewCompetition::TBL_REPORTING_PRODUCT_GROUP_NUMBER.' AS ProductGroupNumber' )
-                        ->addSelect(  'COUNT( distinct '.$ViewCompetitionAlias.'.'.$ViewCompetition::TBL_REPORTING_PART_NUMBER.') AS Data_CountQuantity' );
-                    break;
-            }
+            if($GroupBy) {
 
-            $SqlCompetitionSearch = $QueryBuilder
-                ->from($ViewCompetition->getEntityFullName(), $ViewCompetitionAlias)
-                ->where( ' 1=1 ' );
+                switch ($GroupBy) {
+                    case '1':
+                        $SqlCompetitionSearch = $QueryBuilder
+                            ->select( $ViewCompetitionAlias.'.'.$ViewCompetition::TBL_REPORTING_PART_NUMBER.' AS PartNumber' )
+                            ->addSelect( $ViewCompetitionAlias.'.'.$ViewCompetition::TBL_REPORTING_MARKETING_CODE_NUMBER.' AS MarketingCode' )
+                            ->addSelect(  'COUNT('.$ViewCompetitionAlias.'.'.$ViewCompetition::TBL_COMPETITION_POSITION_COMPETITOR.') AS Data_CountQuantity' );
+                        break;
+                    case '2':
+                        $SqlCompetitionSearch = $QueryBuilder
+                            ->select( $ViewCompetitionAlias.'.'.$ViewCompetition::TBL_REPORTING_MARKETING_CODE_NUMBER.' AS MarketingCode' )
+                            ->addSelect(  'COUNT( '.$ViewCompetitionAlias.'.'.$ViewCompetition::TBL_REPORTING_PART_NUMBER.') AS Data_CountQuantity' );
+                        break;
+                    case '3':
+                        $SqlCompetitionSearch = $QueryBuilder
+                            ->select( $ViewCompetitionAlias.'.'.$ViewCompetition::TBL_REPORTING_PRODUCT_GROUP_NUMBER.' AS ProductGroupNumber' )
+                            ->addSelect(  'COUNT( '.$ViewCompetitionAlias.'.'.$ViewCompetition::TBL_REPORTING_PART_NUMBER.') AS Data_CountQuantity' );
+                        break;
+                }
 
-            if( $PartNumber ) {
                 $SqlCompetitionSearch = $QueryBuilder
-                    ->andWhere($ViewCompetitionAlias . '.' . $ViewCompetition::TBL_REPORTING_PART_NUMBER . ' = :' . $ViewCompetition::TBL_REPORTING_PART_NUMBER)
-                    ->setParameter($ViewCompetition::TBL_REPORTING_PART_NUMBER, $PartNumber );
-            }
-            if( $MarketingCode ) {
-                $SqlCompetitionSearch = $QueryBuilder
-                    ->andWhere($ViewCompetitionAlias . '.' . $ViewCompetition::TBL_REPORTING_MARKETING_CODE_NUMBER . ' = :' . $ViewCompetition::TBL_REPORTING_MARKETING_CODE_NUMBER)
-                    ->setParameter($ViewCompetition::TBL_REPORTING_MARKETING_CODE_NUMBER, $MarketingCode );
-            }
-            if( $ProductGroupNumber ) {
-                $SqlCompetitionSearch = $QueryBuilder
-                    ->andWhere($ViewCompetitionAlias . '.' . $ViewCompetition::TBL_REPORTING_PRODUCT_GROUP_NUMBER . ' = :' . $ViewCompetition::TBL_REPORTING_PRODUCT_GROUP_NUMBER)
-                    ->setParameter($ViewCompetition::TBL_REPORTING_PRODUCT_GROUP_NUMBER, $ProductGroupNumber );
-            }
-            if($PeriodFrom != '') {
-                $SqlCompetitionSearch = $QueryBuilder
-                    ->andWhere(
-                        $ViewCompetitionAlias.'.'.$ViewCompetition::TBL_COMPETITION_MAIN_CREATION_DATE.' >= :'.$ViewCompetition::TBL_COMPETITION_MAIN_CREATION_DATE.'_FROM'
-                    )
-                    ->setParameter( $ViewCompetition::TBL_COMPETITION_MAIN_CREATION_DATE.'_FROM', date('Y-m-d',strtotime($PeriodFrom)) );
-            }
+                    ->from($ViewCompetition->getEntityFullName(), $ViewCompetitionAlias)
+                    ->where( ' 1=1 ' );
 
-            if($PeriodTo != '') {
-                $SqlCompetitionSearch = $QueryBuilder
-                    ->andWhere(
-                        $ViewCompetitionAlias.'.'.$ViewCompetition::TBL_COMPETITION_MAIN_CREATION_DATE.' <= :'.$ViewCompetition::TBL_COMPETITION_MAIN_CREATION_DATE.'_To'
-                    )
-                    ->setParameter( $ViewCompetition::TBL_COMPETITION_MAIN_CREATION_DATE.'_To', date('Y-m-d',strtotime($PeriodTo)) );
-            }
-
-            switch ($GroupBy) {
-                case '1':
+                if( $PartNumber ) {
                     $SqlCompetitionSearch = $QueryBuilder
-                          ->groupBy( $ViewCompetitionAlias . '.' . $ViewCompetition::TBL_REPORTING_PART_NUMBER )
-                          ->addGroupBy( $ViewCompetitionAlias.'.'.$ViewCompetition::TBL_REPORTING_MARKETING_CODE_NUMBER );
-                    break;
-                case '2':
+                        ->andWhere($ViewCompetitionAlias . '.' . $ViewCompetition::TBL_REPORTING_PART_NUMBER . ' = :' . $ViewCompetition::TBL_REPORTING_PART_NUMBER)
+                        ->setParameter($ViewCompetition::TBL_REPORTING_PART_NUMBER, $PartNumber );
+                }
+                if( $MarketingCode ) {
                     $SqlCompetitionSearch = $QueryBuilder
-                        ->groupBy( $ViewCompetitionAlias.'.'.$ViewCompetition::TBL_REPORTING_MARKETING_CODE_NUMBER );
-                    break;
-                case '3':
+                        ->andWhere($ViewCompetitionAlias . '.' . $ViewCompetition::TBL_REPORTING_MARKETING_CODE_NUMBER . ' = :' . $ViewCompetition::TBL_REPORTING_MARKETING_CODE_NUMBER)
+                        ->setParameter($ViewCompetition::TBL_REPORTING_MARKETING_CODE_NUMBER, $MarketingCode );
+                }
+                if( $ProductGroupNumber ) {
                     $SqlCompetitionSearch = $QueryBuilder
-                        ->groupBy( $ViewCompetitionAlias . '.' . $ViewCompetition::TBL_REPORTING_PRODUCT_GROUP_NUMBER );
-                    break;
-            }
+                        ->andWhere($ViewCompetitionAlias . '.' . $ViewCompetition::TBL_REPORTING_PRODUCT_GROUP_NUMBER . ' = :' . $ViewCompetition::TBL_REPORTING_PRODUCT_GROUP_NUMBER)
+                        ->setParameter($ViewCompetition::TBL_REPORTING_PRODUCT_GROUP_NUMBER, $ProductGroupNumber );
+                }
+                if($PeriodFrom != '') {
+                    $SqlCompetitionSearch = $QueryBuilder
+                        ->andWhere(
+                            $ViewCompetitionAlias.'.'.$ViewCompetition::TBL_COMPETITION_MAIN_CREATION_DATE.' >= :'.$ViewCompetition::TBL_COMPETITION_MAIN_CREATION_DATE.'_FROM'
+                        )
+                        ->setParameter( $ViewCompetition::TBL_COMPETITION_MAIN_CREATION_DATE.'_FROM', date('Y-m-d',strtotime($PeriodFrom)) );
+                }
 
-            $SqlCompetitionSearch = $QueryBuilder->getQuery()/*->getSQL()*/;
+                if($PeriodTo != '') {
+                    $SqlCompetitionSearch = $QueryBuilder
+                        ->andWhere(
+                            $ViewCompetitionAlias.'.'.$ViewCompetition::TBL_COMPETITION_MAIN_CREATION_DATE.' <= :'.$ViewCompetition::TBL_COMPETITION_MAIN_CREATION_DATE.'_To'
+                        )
+                        ->setParameter( $ViewCompetition::TBL_COMPETITION_MAIN_CREATION_DATE.'_To', date('Y-m-d',strtotime($PeriodTo)) );
+                }
 
-            //Debugger::screenDump($SqlCompetitionSearch);
+                switch ($GroupBy) {
+                    case '1':
+                        $SqlCompetitionSearch = $QueryBuilder
+                              ->groupBy( $ViewCompetitionAlias . '.' . $ViewCompetition::TBL_REPORTING_PART_NUMBER )
+                              ->addGroupBy( $ViewCompetitionAlias.'.'.$ViewCompetition::TBL_REPORTING_MARKETING_CODE_NUMBER );
+                        break;
+                    case '2':
+                        $SqlCompetitionSearch = $QueryBuilder
+                            ->groupBy( $ViewCompetitionAlias.'.'.$ViewCompetition::TBL_REPORTING_MARKETING_CODE_NUMBER );
+                        break;
+                    case '3':
+                        $SqlCompetitionSearch = $QueryBuilder
+                            ->groupBy( $ViewCompetitionAlias . '.' . $ViewCompetition::TBL_REPORTING_PRODUCT_GROUP_NUMBER );
+                        break;
+                }
+
+                $SqlCompetitionSearch = $QueryBuilder->getQuery()/*->getSQL()*/;
+
+                //Debugger::screenDump($SqlCompetitionSearch);
 
 
-            if( $SqlCompetitionSearch->getResult() ) {
-                return $SqlCompetitionSearch->getResult();
+                if( $SqlCompetitionSearch->getResult() ) {
+                    return $SqlCompetitionSearch->getResult();
+                }
+                else {
+                    return null;
+                }
             }
             else {
                 return null;
             }
-
         }
 
     /**
@@ -172,15 +177,17 @@ class Data extends AbstractData
                 ->setParameter($ViewCompetition::TBL_REPORTING_PART_NUMBER, $PartNumber );
 
 
-
             if($EntitySection !== null) {
-                $EntitySection['Name'] = '';
+                $EntitySection = '';
             }
 
-            switch($EntitySection['Name']) {
-                case 'Lkw':
-                    break;
-                default:
+            //Debugger::screenDump($EntitySection);
+
+//            switch($EntitySection['Name']) {
+//                case 'Lkw':
+//                    break;
+//                case 'Trapo':
+//                    Debugger::screenDump('Trapo');
 //                    $SqlCompetitionDirectSearch = $QueryBuilder
 //                        ->andWhere(
 //                            $QueryBuilder->expr()->gte(
@@ -188,15 +195,24 @@ class Data extends AbstractData
 //                            )
 //                        )
 //                        ->setParameter( 'CREATION_DATE', new \DateTime( '01.01.'.(date('Y',time())-1).' 00:00:00' ) );
-                    break;
-            }
+//                    break;
+//                default:
+////                    $SqlCompetitionDirectSearch = $QueryBuilder
+////                        ->andWhere(
+////                            $QueryBuilder->expr()->gte(
+////                                $ViewCompetitionAlias . '.' . $ViewCompetition::TBL_COMPETITION_MAIN_CREATION_DATE, ':CREATION_DATE'
+////                            )
+////                        )
+////                        ->setParameter( 'CREATION_DATE', new \DateTime( '01.01.'.(date('Y',time())-1).' 00:00:00' ) );
+//                    break;
+//            }
 
 
             $QueryBuilder->orderBy( $QueryBuilder->expr()->desc( $ViewCompetitionAlias . '.' . $ViewCompetition::TBL_COMPETITION_MAIN_CREATION_DATE ) );
 
 
             $SqlCompetitionDirectSearch = $QueryBuilder
-                ->getQuery()->useQueryCache(true)->useResultCache(true,5184000);
+                ->getQuery()/*->useQueryCache(true)->useResultCache(true,5184000)*/;
 
             //Debugger::screenDump($SqlCompetitionDirectSearch->getSQL());
 

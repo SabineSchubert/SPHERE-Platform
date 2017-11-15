@@ -524,7 +524,11 @@ class ExcelDirectSearch extends Extension implements IApiInterface
                 $SalesData = DataWareHouse::useService()->getSalesByPart( $EntityPart );
 
                 $CompetitionData = \SPHERE\Application\Competition\DataWareHouse\DataWareHouse::useService()->getCompetitionDirectSearchByPartNumber( $EntityPart->getNumber() );
-                $CompetitionQ440Data = \SPHERE\Application\Competition\DataWareHouse\DataWareHouse::useService()->getCompetitionAdditionalInfoDirectSearchByPartNumber( $EntityPart->getNumber() );
+
+                $CompetitionQ440Data = array();
+                if( substr($EntityPart->getNumber(),0,4) == 'Q440' ) {
+                    $CompetitionQ440Data = \SPHERE\Application\Competition\DataWareHouse\DataWareHouse::useService()->getCompetitionAdditionalInfoDirectSearchByPartNumber( $EntityPart->getNumber() );
+                }
 
                 if( $SalesData ) {
 
@@ -805,11 +809,12 @@ class ExcelDirectSearch extends Extension implements IApiInterface
             if($CompetitionData or $CompetitionQ440Data) {
                 $Document->createWorksheet('Angebotsdaten')->setPaperOrientationParameter(new PaperOrientationParameter( PaperOrientationParameter::ORIENTATION_LANDSCAPE ));
                 $Document->setValue( $Document->getCell(0,$i), 'Angebotsdaten' );
-                $Document->setStyle( $Document->getCell(0,$i),$Document->getCell(7,$i) )->mergeCells()->setBorderAll(1)->setFontBold(true);
+                $Document->setStyle( $Document->getCell(0,$i),$Document->getCell(8,$i) )->mergeCells()->setBorderAll(1)->setFontBold(true);
                 $i++;
             }
 
             if($CompetitionQ440Data) {
+                array_walk( $CompetitionQ440Data, array( '\SPHERE\Application\Api\Reporting\Excel\ExcelDirectSearch','WalkE1' ) );
 
                 switch($CompetitionQ440Data[0]['Season']) {
                     case 'S': $Season = 'Sommer';
@@ -880,6 +885,7 @@ class ExcelDirectSearch extends Extension implements IApiInterface
             }
 
             if($CompetitionData) {
+                array_walk( $CompetitionData, array( '\SPHERE\Application\Api\Reporting\Excel\ExcelDirectSearch','WalkE1' ) );
 
     	        $i++;
                 $ColIndex = 0;
@@ -887,7 +893,7 @@ class ExcelDirectSearch extends Extension implements IApiInterface
                 $Document->setStyle( $Document->getCell($ColIndex,$i) )->setBorderAll(1)->setColumnWidth(-1);
                 $Document->setValue( $Document->getCell( $ColIndex++, ( $i ) ), 'Wettbewerber', PhpExcel::TYPE_STRING );
 
-                $Document->setStyle( $Document->getCell($ColIndex,$i) )->setBorderAll(1)->setColumnWidth(-1);
+                $Document->setStyle( $Document->getCell($ColIndex,$i) )->setBorderAll(1)->setColumnWidth(15);
                 $Document->setValue( $Document->getCell( $ColIndex++, ( $i ) ), 'Hersteller', PhpExcel::TYPE_STRING );
 
                 $Document->setStyle( $Document->getCell($ColIndex,$i) )->setBorderAll(1)->setColumnWidth(-1);
@@ -905,7 +911,7 @@ class ExcelDirectSearch extends Extension implements IApiInterface
                 $Document->setStyle( $Document->getCell($ColIndex,$i) )->setBorderAll(1)->setColumnWidth(10);
                 $Document->setValue( $Document->getCell( $ColIndex++, ( $i ) ), 'WV / EA', PhpExcel::TYPE_STRING );
 
-                $Document->setStyle( $Document->getCell($ColIndex,$i) )->setBorderAll(1)->setColumnWidth(-1);
+                $Document->setStyle( $Document->getCell($ColIndex,$i) )->setBorderAll(1)->setColumnWidth(15);
                 $Document->setValue( $Document->getCell( $ColIndex++, ( $i ) ), 'Kommentar', PhpExcel::TYPE_STRING );
 
                 $Document->setStyle( $Document->getCell($ColIndex,$i) )->setBorderAll(1)->setColumnWidth(-1);
@@ -928,7 +934,7 @@ class ExcelDirectSearch extends Extension implements IApiInterface
                                     $Document->setValue( $Document->getCell( $ColIndex++, ( $i ) ), (new \DateTime( $ColValue ))->format('d.m.Y'), PhPExcel::TYPE_STRING );
                                 }
                                 else {
-                                    $Document->setValue( $Document->getCell( $ColIndex++, ( $i ) ), utf8_decode($ColValue), PhpExcel::TYPE_STRING );
+                                    $Document->setValue( $Document->getCell( $ColIndex++, ( $i ) ), $ColValue, PhpExcel::TYPE_STRING );
                                 }
                             }
                         }
@@ -999,11 +1005,31 @@ class ExcelDirectSearch extends Extension implements IApiInterface
     }
 
     private static function ConvertNumeric( $Parameter, $ColName ) {
-               if ( substr($ColName,0,5) == "Data_" or substr($ColName,0,6) == "Group_" ) {
-                   $Parameter = (preg_match('!^[0-9|-]+$!is',$Parameter )?(integer)$Parameter:$Parameter);
-                   $Parameter = (preg_match('!(^[0-9|-]+\.([0-9]+(E-)[0-9]|[0-9]+)+$|^\.[0]{1,})!is',$Parameter )?(float)$Parameter:$Parameter);
-                   // done
-                   return $Parameter;
-               }
-           }
+       if ( substr($ColName,0,5) == "Data_" or substr($ColName,0,6) == "Group_" ) {
+           $Parameter = (preg_match('!^[0-9|-]+$!is',$Parameter )?(integer)$Parameter:$Parameter);
+           $Parameter = (preg_match('!(^[0-9|-]+\.([0-9]+(E-)[0-9]|[0-9]+)+$|^\.[0]{1,})!is',$Parameter )?(float)$Parameter:$Parameter);
+           // done
+           return $Parameter;
+       }
+    }
+
+    private function WalkE1( &$Row ) {
+        if( is_array( $Row ) ) {
+            array_walk( $Row, array( '\SPHERE\Application\Api\Reporting\Excel\ExcelDirectSearch','WalkE1' ) );
+        } else {
+            $Row = (!$this->detectUTF8($Row))?utf8_encode($Row):$Row;
+        }
+    }
+
+    private function detectUTF8( $Value ) {
+   		return preg_match('%(?:
+           [\xC2-\xDF][\x80-\xBF]        # non-overlong 2-byte
+           |\xE0[\xA0-\xBF][\x80-\xBF]               # excluding overlongs
+           |[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}      # straight 3-byte
+           |\xED[\x80-\x9F][\x80-\xBF]               # excluding surrogates
+           |\xF0[\x90-\xBF][\x80-\xBF]{2}    # planes 1-3
+           |[\xF1-\xF3][\x80-\xBF]{3}                  # planes 4-15
+           |\xF4[\x80-\x8F][\x80-\xBF]{2}    # plane 16
+           )+%xs', $Value);
+   	}
 }

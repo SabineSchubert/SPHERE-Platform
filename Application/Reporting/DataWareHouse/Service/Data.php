@@ -314,13 +314,30 @@ class Data extends AbstractData
            ->getQuery();
 
        if ($SqlPartByMarketingCodeData->getResult()) {
-//           Debugger::screenDump($SqlPartByMarketingCodeData->getResult());
            return $SqlPartByMarketingCodeData->getResult();
        } else {
            return null;
        }
 
    }
+
+    /**
+     * @param $EntityPartMarketingCodeList
+     * @return array|null
+     */
+    public function getPartByPartMarketingCode( $EntityPartMarketingCodeList ) {
+        if($EntityPartMarketingCodeList) {
+            $PartList = null;
+            /** @var TblReporting_Part_MarketingCode $PartMarketingCode */
+           foreach( $EntityPartMarketingCodeList AS $PartMarketingCode ) {
+               $PartList[] = $this->getPartById( $PartMarketingCode->getTblReportingPart()->getId() );
+            }
+            return $PartList;
+        }
+        else {
+           return null;
+        }
+    }
 
     /**
      * @param int $Id
@@ -419,8 +436,11 @@ class Data extends AbstractData
      * @return null|TblReporting_PartsMore|Element
      */
     public function getPartsMoreByMarketingCodePartsMore( TblReporting_MarketingCode_PartsMore $TblReporting_MarketingCode_PartsMore ) {
-        if( $TblReporting_MarketingCode_PartsMore->getTblReportingMarketingCode() ) {
-            return $this->getPartsMoreById( $TblReporting_MarketingCode_PartsMore->getTblReportingMarketingCode()->getId() );
+//        if( $TblReporting_MarketingCode_PartsMore->getTblReportingMarketingCode() ) {
+//            return $this->getPartsMoreById( $TblReporting_MarketingCode_PartsMore->getTblReportingMarketingCode()->getId() );
+//        }
+        if( $TblReporting_MarketingCode_PartsMore->getTblReportingPartsMore() ) {
+            return $this->getPartsMoreById( $TblReporting_MarketingCode_PartsMore->getTblReportingPartsMore()->getId() );
         }
         else {
             return null;
@@ -661,10 +681,7 @@ class Data extends AbstractData
             $MaxYear = $this->getYearCurrentFromSales();
             $MaxMonth = $this->getMaxMonthCurrentYearFromSales();
 
-            //Debugger::screenDump($MaxYear, $MaxMonth);
-
             if($MaxYear && $MaxMonth) {
-//            Debugger::screenDump('CASE WHEN ' .$MaxYear.' = '.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' THEN \' per '.$MaxMonth.'/\'+convert(varchar,'.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.') ELSE convert(varchar,'.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.') END AS Year');
                 $SqlSalesData = $QueryBuilder
                     ->select($TableSalesAlias . '.' . $TableSales::ATTR_YEAR)
                     ->addSelect('SUM( ' . $TableSalesAlias . '.' . $TableSales::ATTR_SALES_GROSS . ' ) as Data_SumSalesGross')
@@ -710,10 +727,7 @@ class Data extends AbstractData
                     ->setParameter($TableSales::ATTR_YEAR, ($MaxYear - 3), \Doctrine\DBAL\Types\Type::INTEGER)
                     ->getQuery();
 
-                //Debugger::screenDump($SqlSalesData->getSQL());
-
                 if ($SqlSalesData->getResult()) {
-                    //Debugger::screenDump($this->getExtrapolationFactor( $TblReporting_Part->getNumber() ));
                     return $SqlSalesData->getResult();
                 } else {
                     return null;
@@ -865,8 +879,6 @@ class Data extends AbstractData
         $SqlSalesData = $QueryBuilder
             ->getQuery();
 
-        //Debugger::screenDump($SqlSalesData->getSQL());
-
         if( $SqlSalesData->getResult() ) {
             return $SqlSalesData->getResult();
         }
@@ -891,10 +903,14 @@ class Data extends AbstractData
                 )
             )
             ->from( $TableSales->getEntityFullName(), $TableSalesAlias )
-            ->getQuery()->setMaxResults(1)->getSingleResult( ColumnHydrator::HYDRATION_MODE );
+          ->getQuery()->getResult();
+//->setMaxResults(1)->getSingleResult( ColumnHydrator::HYDRATION_MODE );
+
+//        $SqlMaxYear = 2017;
+
 
         if($SqlMaxYear) {
-            return $SqlMaxYear;
+            return current($SqlMaxYear[0]);
         }
         else {
             return null;
@@ -919,10 +935,13 @@ class Data extends AbstractData
                 )
                 ->from( $TableSales->getEntityFullName(), $TableSalesAlias )
                 ->where( $TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' = '.$this->getYearCurrentFromSales() )
-                ->getQuery()->setMaxResults(1)->getSingleResult( ColumnHydrator::HYDRATION_MODE );
+                ->getQuery()->getResult();
+// ->setMaxResults(1)->getSingleResult( ColumnHydrator::HYDRATION_MODE );
+
+//            $SqlMaxMonthCurrentYear = 8;
 
             if($SqlMaxMonthCurrentYear) {
-                return $SqlMaxMonthCurrentYear;
+                return $SqlMaxMonthCurrentYear[0][1];
             }
             else {
                 return null;
@@ -960,9 +979,9 @@ class Data extends AbstractData
                 )
                 //aktuelle Jahr
                 ->addSelect( 'SUM( CASE WHEN '.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' = :'.$TableSales::ATTR_YEAR.'
-                    THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_NET.' ELSE 0 END) AS Data_SumSalesNet_AJ' )
-                ->addSelect( 'SUM( CASE WHEN '.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' = :'.$TableSales::ATTR_YEAR.'
                     THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_GROSS.' ELSE 0 END) AS Data_SumSalesGross_AJ' )
+                ->addSelect( 'SUM( CASE WHEN '.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' = :'.$TableSales::ATTR_YEAR.'
+                    THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_NET.' ELSE 0 END) AS Data_SumSalesNet_AJ' )
                 ->addSelect( 'SUM( CASE WHEN '.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' = :'.$TableSales::ATTR_YEAR.'
                     THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_QUANTITY.' ELSE 0 END) AS Data_SumQuantity_AJ' )
                 ->addSelect(
@@ -983,9 +1002,9 @@ class Data extends AbstractData
                 )
                 //Vorjahr
                 ->addSelect( 'SUM( CASE WHEN '.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' = :Previous'.$TableSales::ATTR_YEAR.'
-                    THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_NET.' ELSE 0 END) AS Data_SumSalesNet_VJ' )
-                ->addSelect( 'SUM( CASE WHEN '.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' = :Previous'.$TableSales::ATTR_YEAR.'
                     THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_GROSS.' ELSE 0 END) AS Data_SumSalesGross_VJ' )
+                ->addSelect( 'SUM( CASE WHEN '.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' = :Previous'.$TableSales::ATTR_YEAR.'
+                    THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_NET.' ELSE 0 END) AS Data_SumSalesNet_VJ' )
                 ->addSelect( 'SUM( CASE WHEN '.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' = :Previous'.$TableSales::ATTR_YEAR.'
                     THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_QUANTITY.' ELSE 0 END) AS Data_SumQuantity_VJ' )
                 ->addSelect(
@@ -1006,9 +1025,9 @@ class Data extends AbstractData
                 )
                 //Vorvorjahr
                 ->addSelect( 'SUM( CASE WHEN '.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' = :SecondPrevious'.$TableSales::ATTR_YEAR.'
-                    THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_NET.' ELSE 0 END) AS Data_SumSalesNet_VVJ' )
-                ->addSelect( 'SUM( CASE WHEN '.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' = :SecondPrevious'.$TableSales::ATTR_YEAR.'
                     THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_GROSS.' ELSE 0 END) AS Data_SumSalesGross_VVJ' )
+                ->addSelect( 'SUM( CASE WHEN '.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' = :SecondPrevious'.$TableSales::ATTR_YEAR.'
+                    THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_SALES_NET.' ELSE 0 END) AS Data_SumSalesNet_VVJ' )
                 ->addSelect( 'SUM( CASE WHEN '.$TableSalesAlias.'.'.$TableSales::ATTR_YEAR.' = :SecondPrevious'.$TableSales::ATTR_YEAR.'
                     THEN '.$TableSalesAlias.'.'.$TableSales::ATTR_QUANTITY.' ELSE 0 END) AS Data_SumQuantity_VVJ' )
                 ->addSelect(
@@ -1058,8 +1077,6 @@ class Data extends AbstractData
                 ->setParameter( 'Previous'.$TableSales::ATTR_YEAR, ($MaxYear-1) )
                 ->setParameter( 'SecondPrevious'.$TableSales::ATTR_YEAR, ($MaxYear-2) )
                 ->getQuery();
-
-//            Debugger::screenDump($SqlMonthlyTurnoverData = $QueryBuilder->getQuery()->getSQL());
 
             if($SqlMonthlyTurnoverData->getResult()) {
                 return $SqlMonthlyTurnoverData->getResult();

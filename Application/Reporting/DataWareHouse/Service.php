@@ -231,6 +231,14 @@ class Service extends AbstractService
     }
 
     /**
+     * @param $EntityPartMarketingCodeList
+     * @return array|null
+     */
+    public function getPartByPartMarketingCode( $EntityPartMarketingCodeList ) {
+        return ( new Data( $this->getBinding() ) )->getPartByPartMarketingCode( $EntityPartMarketingCodeList );
+    }
+
+    /**
      * @param int $Id
      * @return null|TblReporting_Section|Element
      */
@@ -486,8 +494,6 @@ class Service extends AbstractService
      */
     public function getPriceDevelopmentByPartNumber( TblReporting_Part $TblReporting_Part, $Restriction ) {
         $PriceDevelopmentData = ( new Data( $this->getBinding() ) ) ->getPriceDevelopmentByPartNumber( $TblReporting_Part, $Restriction );
-
-//        Debugger::screenDump($PriceDevelopmentData);
 
         if($PriceDevelopmentData) {
             $CalcPriceDevelopmentData = null;

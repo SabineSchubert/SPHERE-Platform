@@ -128,7 +128,7 @@ class ScenarioCalculator extends Extension implements IApiInterface
 		$Global = $this->getGlobal();
 
 		$Global->POST['PriceData']['BLP'] = number_format($PriceData['BLP'],2,',','.');
-		$Global->POST['PriceData']['NLP'] = number_format($PriceData['NLP'],2,',','.');
+		$Global->POST['PriceData']['NLP'] = number_format($PriceData['NLP'],3,',','.');
 		$Global->POST['PriceData']['DiscountNumber'] = $PriceData['DiscountNumber'];
 		$Global->POST['PriceData']['Discount'] = number_format($PriceData['Discount'],2,',','.');
 		$Global->POST['PriceData']['Costs'] = number_format($PriceData['Costs'],2,',','.');

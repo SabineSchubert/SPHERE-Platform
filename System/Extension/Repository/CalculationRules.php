@@ -356,8 +356,8 @@ class CalculationRules
 	 * @return float|int
 	 */
 	public function calcDelta($ValueNew, $ValueOld ) {
-		$ValueNew = (float)$ValueNew;
-		$ValueOld = (float)$ValueOld;
+		$ValueNew = (float)round($ValueNew,3);
+		$ValueOld = (float)round($ValueOld,3);
 		return $ValueNew - $ValueOld;
 	}
 

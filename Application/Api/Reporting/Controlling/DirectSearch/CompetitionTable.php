@@ -66,7 +66,7 @@ class CompetitionTable extends Extension implements IApiInterface
     public function showCompetitionTable( $PartNumber ) {
 
         $SearchData = DataWareHouse::useService()->getCompetitionDirectSearchByPartNumber( $PartNumber );
-//        Debugger::screenDump($SearchData);
+
 
         $ReplaceArray = array(
             'Competitor' => 'Wettbewerber',
@@ -83,6 +83,7 @@ class CompetitionTable extends Extension implements IApiInterface
 
         //Definition Spaltenkopf
         if( count($SearchData) > 0 ) {
+             array_walk( $SearchData, array( 'SPHERE\Application\Api\Reporting\Controlling\DirectSearch\CompetitionTable','WalkE1' ) );
              array_walk( $SearchData, function( &$Row, $Key, $PartNumber ) {
 
                 if( isset($Row['Data_PriceNet']) ) {
@@ -94,15 +95,15 @@ class CompetitionTable extends Extension implements IApiInterface
                 if( isset($Row['Data_Discount']) ) {
                     $Row['Data_Discount'] = new PullRight( $this->doLocalize($Row['Data_Discount'])->getCurrency() );
                 }
-                if( isset($Row['Comment']) ) {
-                    $Row['Comment'] = utf8_decode($Row['Comment']);
-                }
-                if( isset($Row['Manufacturer']) ) {
-                    $Row['Manufacturer'] = utf8_decode($Row['Manufacturer']);
-                }
-                if( isset($Row['Competitor']) ) {
-                    $Row['Competitor'] = utf8_decode($Row['Competitor']);
-                }
+//                if( isset($Row['Comment']) ) {
+//                    $Row['Comment'] = utf8_decode($Row['Comment']);
+//                }
+//                if( isset($Row['Manufacturer']) ) {
+//                    $Row['Manufacturer'] = utf8_decode($Row['Manufacturer']);
+//                }
+//                if( isset($Row['Competitor']) ) {
+//                    $Row['Competitor'] = utf8_decode($Row['Competitor']);
+//                }
                 if( isset($Row['CreationDate']) ) {
                     $Row['CreationDate'] = (new \DateTime( $Row['CreationDate'] ))->format('d.m.Y');
                 }
@@ -145,4 +146,24 @@ class CompetitionTable extends Extension implements IApiInterface
 
         return $Dispatcher->callMethod($Method);
     }
+
+    private function WalkE1( &$Row ) {
+        if( is_array( $Row ) ) {
+            array_walk( $Row, array( 'SPHERE\Application\Api\Reporting\Controlling\DirectSearch\CompetitionTable', 'WalkE1' ) );
+        } else {
+            $Row = (!$this->detectUTF8($Row))?utf8_encode($Row):$Row;
+        }
+    }
+
+    private function detectUTF8( $Value ) {
+   		return preg_match('%(?:
+           [\xC2-\xDF][\x80-\xBF]        # non-overlong 2-byte
+           |\xE0[\xA0-\xBF][\x80-\xBF]               # excluding overlongs
+           |[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}      # straight 3-byte
+           |\xED[\x80-\x9F][\x80-\xBF]               # excluding surrogates
+           |\xF0[\x90-\xBF][\x80-\xBF]{2}    # planes 1-3
+           |[\xF1-\xF3][\x80-\xBF]{3}                  # planes 4-15
+           |\xF4[\x80-\x8F][\x80-\xBF]{2}    # plane 16
+           )+%xs', $Value);
+   	}
 }

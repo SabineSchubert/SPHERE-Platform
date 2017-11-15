@@ -108,21 +108,21 @@ class Frontend extends Extension
 								array(
 									new LayoutColumn(
 										$this->tableMasterDataPartNumber( $EntityPart )
-										, 6
+										, 4
 									),
 									new LayoutColumn( '&nbsp;', 1 ),
-									new LayoutColumn( $this->tablePriceDataPartNumber($EntityPart), 5)
+									new LayoutColumn( $this->tablePriceDataPartNumber($EntityPart), 3)
 								)
 							),
 							new LayoutRow(
 								new LayoutColumn(
-									$this->tablePriceDevelopmentPartNumber( $EntityPart ), 12
+									$this->tablePriceDevelopmentPartNumber( $EntityPart ), 8
 								)
 							),
 							new LayoutRow(
 								new LayoutColumn(
 									$this->tableSalesDataPartNumber( $EntityPart )
-									, 12
+									, 6
 								)
 							),
 							new LayoutRow(
@@ -573,8 +573,8 @@ class Frontend extends Extension
                     ),
                     array(
                         'Description' => 'Vorgänger<br/>Nachfolger<br/>Wahlweise',
-                        'Value' => (new Link( $EntityPart->getPredecessor(), __NAMESPACE__.'/PartNumber', null, array( 'Search' => array( 'PartNumber' => $EntityPart->getPredecessor() ) ) ))
-                            .(($EntityPart->getSuccessor() != '')? '<br/>'.(new Link( $EntityPart->getSuccessor(), __NAMESPACE__.'/PartNumber', null, array( 'Search' => array( 'PartNumber' => $EntityPart->getSuccessor() ) ) )):'').(($EntityPart->getOptionalNumber() != '')? '<br/>'.(new Link( $EntityPart->getOptionalNumber(), __NAMESPACE__.'/PartNumber', null, array( 'Search' => array( 'PartNumber' => $EntityPart->getOptionalNumber() ) ) )):'')
+                        'Value' => (new Link( $EntityPart->getPredecessor(), __NAMESPACE__.'/PartNumber', null, array( 'Search' => array( 'PartNumber' => str_replace(' ','',$EntityPart->getPredecessor()) ) ) ))
+                            .(($EntityPart->getSuccessor() != '')? '<br/>'.(new Link( $EntityPart->getSuccessor(), __NAMESPACE__.'/PartNumber', null, array( 'Search' => array( 'PartNumber' => str_replace(' ','',$EntityPart->getSuccessor()) ) ) )):'').(($EntityPart->getOptionalNumber() != '')? '<br/>'.(new Link( $EntityPart->getOptionalNumber(), __NAMESPACE__.'/PartNumber', null, array( 'Search' => array( 'PartNumber' => str_replace(' ','',$EntityPart->getOptionalNumber()) ) ) )):'')
                     ),
                     array(
                         'Description' => 'Sortimentsgruppe',
@@ -850,7 +850,7 @@ class Frontend extends Extension
             }
         }
 
-        //Debugger::screenDump($EntityMarketingCode, $EntityPartsMore);
+        //Debugger::screenDump('Test');
 
         if( $EntityPrice ) {
             $Rw = $EntityPrice->getBackValue();
@@ -915,13 +915,21 @@ class Frontend extends Extension
                                 , $Costs
                             ) , 2, ',', '.' ).' €'
                     ),
+//                    array(
+//                        'Description' => 'FC-Grenze mit P+M<br/>FC-Grenze ohne P+M',
+//                        'Value' => number_format( $CalcRules->calcFinancialManagementLimit( $CalcRules->calcGrossPrice( 0, 0, 0, $PartsMoreDiscount, 0, 0, $GrossPrice ), $Costs ), 2, ',', '.' ).' €<br/>'
+//                            .number_format( $CalcRules->calcFinancialManagementLimit( $GrossPrice, $Costs ), 2, ',', '.' ).' €'
+//                    ),
                     array(
-                        'Description' => 'FC-Grenze ohne P+M<br/>FC-Grenze mit P+M',
-                        'Value' => number_format( $CalcRules->calcFinancialManagementLimit( $CalcRules->calcGrossPrice( 0, 0, 0, $PartsMoreDiscount, 0, 0, $GrossPrice ), $Costs ), 2, ',', '.' ).' €<br/>'
-                            .number_format( $CalcRules->calcFinancialManagementLimit( $GrossPrice, $Costs ), 2, ',', '.' ).' €'
-                    ),
+                        'Description' => 'FC-Grenze',
+                        'Value' => number_format( $CalcRules->calcFinancialManagementLimit( $GrossPrice, $Costs ), 2, ',', '.' ).' €'
+                    )
+//                    ,array(
+//                        'Description' => 'Luft',
+//                        'Value' => number_format( $CalcRules->calcFinancialManagementLimit( $GrossPrice, $Costs ), 2, ',', '.' ).' €'
+//                    )
                 ),
-                new TableTitle('Preis- und Kosteninformationen (Preisstand: dd.mm.yyyy)'),
+                new TableTitle('Preis- und Kosteninformationen'),/* (Preisstand: dd.mm.yyyy)*/
                 array( 'Description' => 'Bezeichnung ', 'Value' => '' ),
                 array(
                     "columnDefs" => array(
@@ -1026,7 +1034,7 @@ class Frontend extends Extension
                                 'Year' => 'HR '.$Row['Year'],
                                 'Data_SumSalesGross' => new PullRight( $this->doLocalize( ($Row['Data_SumSalesGross']*$HR) )->getCurrency() ),
                                 'Data_SumSalesNet' => new PullRight( $this->doLocalize( ($Row['Data_SumSalesNet']*$HR) )->getCurrency() ),
-                                'Data_SumQuantity' => new PullRight( $Row['Data_SumQuantity'] )
+                                'Data_SumQuantity' => new PullRight( ceil($Row['Data_SumQuantity']*$HR) )
                             )
                         );
                     }

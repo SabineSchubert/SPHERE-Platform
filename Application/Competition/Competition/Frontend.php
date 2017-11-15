@@ -29,6 +29,7 @@ use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
 use SPHERE\Common\Frontend\Link\Repository\Link;
 use SPHERE\Common\Frontend\Link\Repository\Standard;
 use SPHERE\Common\Frontend\Message\Repository\Warning;
+use SPHERE\Common\Frontend\Table\Repository\Title;
 use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Window\Redirect;
 use SPHERE\Common\Window\Stage;
@@ -112,7 +113,7 @@ class Frontend
 				),
 				new Primary('Suchen')
 			)
-			. $LayoutTable
+			. new Layout( new LayoutGroup( new LayoutRow( new LayoutColumn( $LayoutTable ) ), new \SPHERE\Common\Frontend\Layout\Repository\Title('') ))
 		);
 		return $Stage;
 	}

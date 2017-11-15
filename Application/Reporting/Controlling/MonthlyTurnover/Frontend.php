@@ -16,6 +16,8 @@ use SPHERE\Application\Api\Reporting\Excel\ExcelDefault;
 use SPHERE\Application\Platform\Utility\Storage\FilePointer;
 use SPHERE\Application\Platform\Utility\Translation\LocaleTrait;
 use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Data;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_ProductGroup;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Button\Reset;
 use SPHERE\Common\Frontend\Form\Repository\Field\AutoCompleter;
@@ -160,6 +162,7 @@ class Frontend extends Extension
 		$Stage = new Stage('Geschäftsentwicklung', 'Marketingcode');
 		$this->buttonStageDirectSearch($Stage);
 		$LayoutExcel = '';
+		$TableMasterData = '';
 
         if( $Search ) {
             $MonthlyTurnoverResult = DataWareHouse::useService()->getMonthlyTurnover( null, $Search['MarketingCode'], null );
@@ -173,6 +176,52 @@ class Frontend extends Extension
                     'MarketingCodeNumber' => $Search['MarketingCode'],
                  ) ));
             }
+
+            $EntityMarketingCode = DataWareHouse::useService()->getMarketingCodeByNumber( $Search['MarketingCode'] );
+            if($EntityMarketingCode) {
+                $EntityMarketingCodeProductGroup = DataWareHouse::useService()->getMarketingCodeProductGroupByMarketingCode($EntityMarketingCode);
+                if($EntityMarketingCodeProductGroup) {
+                    $ProductGroupText = '';
+                    $EntityProductGroupList = DataWareHouse::useService()->getProductGroupByMarketingCodeProductGroup($EntityMarketingCodeProductGroup);
+
+                    /** @var TblReporting_ProductGroup $ProductGroup */
+                    foreach($EntityProductGroupList AS $Index => $ProductGroup) {
+                        if( $Index != 0 ) {
+                           $ProductGroupText .= '<br/>';
+                        }
+                        $ProductGroupText .= $ProductGroup->getNumber().' - '.$ProductGroup->getName();
+                    }
+
+                    if($EntityProductGroupList) {
+                        $TableMasterData =
+                            new Table(
+                                array(
+                                    array(
+                                        'Description' => 'MarketingCode',
+                                        'Value' => $EntityMarketingCode->getNumber().' - '.$EntityMarketingCode->getName()
+                                    ),
+                                    array(
+                                        'Description' => 'Warengruppe',
+                                        'Value' => $ProductGroupText
+                                    )
+                                ),
+                                null,
+                                array( 'Description' => 'Bezeichnung ', 'Value' => '' ),
+                                array(
+                                    "columnDefs" => array(
+                                        array('width' => '40%', 'targets' => '0' ),
+                                        array('width' => '60%', 'targets' => '1' )
+                                    ),
+                                    "paging"         => false, // Deaktivieren Blättern
+                                    "iDisplayLength" => -1,    // Alle Einträge zeigen
+                                    "searching"      => false, // Deaktivieren Suchen
+                                    "info"           => false,  // Deaktivieren Such-Info
+                                    "sort"           => false   //Deaktivierung Sortierung der Spalten
+                                )
+                            );
+                    }
+                }
+            }
         }
         else {
             $LayoutTable = '';
@@ -183,7 +232,13 @@ class Frontend extends Extension
                 new LayoutGroup(
                     new LayoutRow(array(
                         new LayoutColumn(
-                            $this->formSearchMarketingCode()
+                            $this->formSearchMarketingCode(), 3
+                        ),
+                        new LayoutColumn(
+                            '&nbsp;',1
+                        ),
+                        new LayoutColumn(
+                            $TableMasterData, 6
                         ),
                         new LayoutColumn(
                             $LayoutTable
@@ -258,7 +313,7 @@ class Frontend extends Extension
 							new Panel('Suche', array(
 								(new AutoCompleter('Search[MarketingCode]', 'Marketingcode', 'Marketingcode eingeben', array( 'Number' => $EntityMarketingCode)))
 								->setRequired()
-							), Panel::PANEL_TYPE_DEFAULT), 3
+							), Panel::PANEL_TYPE_DEFAULT)
 						),
 					)
 				)
@@ -312,7 +367,7 @@ class Frontend extends Extension
                      $Row['Data_SumSalesNet_AJ'] = new PullRight( $this->doLocalize($Row['Data_SumSalesNet_AJ'])->getCurrency() );
                  //}
                  //if( $Row['Data_SumQuantity_AJ'] != 0 ) {
-                     $Row['Data_SumQuantity_AJ'] = new PullRight( $Row['Data_SumQuantity_AJ'] );
+                     $Row['Data_SumQuantity_AJ'] = new PullRight( number_format($Row['Data_SumQuantity_AJ'],0,'','.') );
                  //}
                  //if( $Row['Data_Discount_AJ'] !== 0 ) {
                      $Row['Data_Discount_AJ'] = new PullRight( number_format($Row['Data_Discount_AJ'],2,',','.').' %' );
@@ -326,7 +381,7 @@ class Frontend extends Extension
                      $Row['Data_SumSalesNet_VJ'] = new PullRight( $this->doLocalize($Row['Data_SumSalesNet_VJ'])->getCurrency() );
                  //}
                  //if( $Row['Data_SumQuantity_VJ'] != 0 ) {
-                     $Row['Data_SumQuantity_VJ'] = new PullRight( $Row['Data_SumQuantity_VJ'] );
+                     $Row['Data_SumQuantity_VJ'] = new PullRight( number_format($Row['Data_SumQuantity_VJ'],0,'','.') );
                  //}
                  //if( $Row['Data_Discount_VJ'] != 0 ) {
                      $Row['Data_Discount_VJ'] = new PullRight( number_format($Row['Data_Discount_VJ'],2,',','.').' %' );
@@ -340,7 +395,7 @@ class Frontend extends Extension
                      $Row['Data_SumSalesNet_VVJ'] = new PullRight( $this->doLocalize($Row['Data_SumSalesNet_VVJ'])->getCurrency() );
                  //}
                  //if( $Row['Data_SumQuantity_VVJ'] != 0 ) {
-                     $Row['Data_SumQuantity_VVJ'] = new PullRight( $Row['Data_SumQuantity_VVJ'] );
+                     $Row['Data_SumQuantity_VVJ'] = new PullRight( number_format($Row['Data_SumQuantity_VVJ'],0,'','.') );
                  //}
                  //if( $Row['Data_Discount_VVJ'] != 0 ) {
                      $Row['Data_Discount_VVJ'] = new PullRight( number_format($Row['Data_Discount_VVJ'],2,',','.').' %' );

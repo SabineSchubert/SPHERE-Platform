@@ -443,7 +443,7 @@ class Frontend extends Extension
 						'Bezeichnung' => 'NLP in €',
 						'Alt' => new PullRight( number_format($PriceData['Old']['NLP'], 2, ',', '.') ),
 						'Neu' => new PullRight( number_format($PriceData['New']['NLP'], 2, ',', '.') ),
-						'Delta' => (($PriceData['Delta']['NLP'])?
+						'Delta' => (($PriceData['Delta']['NLP'] < 0)?
                             new Bold( new Danger( new PullRight( number_format($PriceData['Delta']['NLP'], 2, ',', '.') ) ) )
                             : new PullRight( number_format($PriceData['Delta']['NLP'], 2, ',', '.') ) )
 					),

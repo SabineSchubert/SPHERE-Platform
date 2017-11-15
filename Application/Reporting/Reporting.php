@@ -3,6 +3,7 @@ namespace SPHERE\Application\Reporting;
 
 use SPHERE\Application\IClusterInterface;
 use SPHERE\Application\Reporting\Controlling\Controlling;
+use SPHERE\Application\Reporting\Controlling\DirectSearch\DirectSearch;
 use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\Application\Reporting\Utility\Utility;
 use SPHERE\Common\Frontend\Icon\Repository\Calendar;
@@ -34,6 +35,7 @@ class Reporting implements IClusterInterface
 //            new Link(new Link\Route(__NAMESPACE__.'/d'), new Link\Name('Langer Knopf Name'), new Link\Icon(new Globe()))
 //        );
         Main::getDispatcher()->registerRoute(
+            //Main::getDispatcher()->createRoute(__NAMESPACE__.'/Controlling/DirectSearch', '\SPHERE\Application\Reporting\Controlling\DirectSearch\Frontend::frontendSearchPartNumber')
             Main::getDispatcher()->createRoute(__NAMESPACE__, __CLASS__ . '::frontendDashboard')
         );
 
@@ -47,8 +49,10 @@ class Reporting implements IClusterInterface
      */
     public function frontendDashboard()
     {
+        //return DirectSearch::useFrontend()->frontendSearchPartNumber();
         $Stage = new Stage('Berichtswesen');
         $Stage->setMessage('');
         return $Stage;
+
     }
 }
