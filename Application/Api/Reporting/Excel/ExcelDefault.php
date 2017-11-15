@@ -114,9 +114,9 @@ class ExcelDefault implements IApiInterface
         }
     }
 
-    public function getExcelMonthlyTurnover( $FileName, $FileTyp, $PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null ) {
-        if( $PartNumber or $MarketingCodeNumber or $ProductManagerId ) {
-            $DataList = DataWareHouse::useService()->getMonthlyTurnover( $PartNumber, $MarketingCodeNumber, $ProductManagerId );
+    public function getExcelMonthlyTurnover( $FileName, $FileTyp, $PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null, $ProductGroupNumber = null ) {
+        if( $PartNumber or $MarketingCodeNumber or $ProductManagerId or $ProductGroupNumber ) {
+            $DataList = DataWareHouse::useService()->getMonthlyTurnover( $PartNumber, $MarketingCodeNumber, $ProductManagerId, $ProductGroupNumber );
             $YearCurrent = DataWareHouse::useService()->getYearCurrentFromSales();
 
             $ReplaceArray = array(

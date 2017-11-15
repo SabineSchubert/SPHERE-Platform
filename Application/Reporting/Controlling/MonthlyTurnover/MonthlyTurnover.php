@@ -36,6 +36,9 @@ class MonthlyTurnover implements IModuleInterface
 		Main::getDispatcher()->registerRoute(
             Main::getDispatcher()->createRoute(__NAMESPACE__.'/MarketingCode', __NAMESPACE__ . '\Frontend::frontendSearchMarketingCode')
         );
+		Main::getDispatcher()->registerRoute(
+            Main::getDispatcher()->createRoute(__NAMESPACE__.'/ProductGroup', __NAMESPACE__ . '\Frontend::frontendSearchProductGroup')
+        );
 	}
 
 	/**

@@ -349,6 +349,17 @@ class Data extends AbstractData
     }
 
     /**
+     * @param string $Number
+     * @return null|TblReporting_ProductGroup|Element
+     */
+    public function getProductGroupByNumber( $Number ) {
+        $TableProductGroup = new TblReporting_ProductGroup();
+        return $this->getCachedEntityBy( __METHOD__, $this->getEntityManager(), $TableProductGroup->getEntityShortName(), array(
+            $TableProductGroup::ATTR_NUMBER => $Number
+        ) );
+    }
+
+    /**
      * @return null|Element[]|TblReporting_ProductGroup[]
      */
     public function getProductGroupAll() {
@@ -378,6 +389,23 @@ class Data extends AbstractData
     }
 
     /**
+     * @param TblReporting_ProductGroup $TblReporting_ProductGroup
+     * @return null|Element[]|TblReporting_MarketingCode_ProductGroup[]
+     */
+    public function getMarketingCodeProductGroupByProductGroup( TblReporting_ProductGroup $TblReporting_ProductGroup ) {
+        $TableMarketingCodeProductGroup = new TblReporting_MarketingCode_ProductGroup();
+        $EntityMarketingCodeProductGroupList = $this->getCachedEntityListBy(__METHOD__, $this->getEntityManager(), $TableMarketingCodeProductGroup->getEntityShortName(), array(
+            $TableMarketingCodeProductGroup::TBL_REPORTING_PRODUCT_GROUP => $TblReporting_ProductGroup->getId()
+        ) );
+        if( $EntityMarketingCodeProductGroupList ) {
+            return $EntityMarketingCodeProductGroupList;
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
      * @param array $EntityMarketingCodeProductGroupList
      * @return null|array $ProductGroupList
      */
@@ -389,6 +417,24 @@ class Data extends AbstractData
                 $ProductGroupList[] = $this->getProductGroupById( $MarketingCodeProductGroup->getTblReportingProductGroup()->getId() );
             }
             return $ProductGroupList;
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
+     * @param $EntityMarketingCodeProductGroupList
+     * @return array $MarketingCodeList|null
+     */
+    public function getMarketingCodeByMarketingCodeProductGroup( $EntityMarketingCodeProductGroupList ) {
+        if( $EntityMarketingCodeProductGroupList ) {
+            $MarketingCodeList = null;
+            /** @var TblReporting_MarketingCode_ProductGroup $MarketingCodeProductGroup */
+            foreach( $EntityMarketingCodeProductGroupList AS $MarketingCodeProductGroup ) {
+                $MarketingCodeList[] = $this->getMarketingCodeById( $MarketingCodeProductGroup->getTblReportingMarketingCode()->getId() );
+            }
+            return $MarketingCodeList;
         }
         else {
             return null;
@@ -956,9 +1002,10 @@ class Data extends AbstractData
      * @param null|string $PartNumber
      * @param null|string $MarketingCodeNumber
      * @param null|int $ProductManagerId
+     * @param null|string $ProductGroupNumber
      * @return null|array
      */
-    public function getMonthlyTurnoverByGroup( $PartNumber, $MarketingCodeNumber, $ProductManagerId ) {
+    public function getMonthlyTurnoverByGroup( $PartNumber, $MarketingCodeNumber, $ProductManagerId, $ProductGroupNumber ) {
         $Manager = $this->getEntityManager();
         $QueryBuilder = $Manager->getQueryBuilder();
         $TableSales = new TblReporting_Sales();
@@ -1052,21 +1099,31 @@ class Data extends AbstractData
                     $ViewPartAlias,
                     Expr\Join::WITH,
                     $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_ID.' = '.$TableSalesAlias.'.'.$TableSales::TBL_REPORTING_PART
+                )
+                ->where( $QueryBuilder->expr()->gte(
+                        $TableSalesAlias.'.'.$TableSales::ATTR_YEAR, ':SecondPrevious'.$TableSales::ATTR_YEAR
+                    )
                 );
+
 
             if($PartNumber) {
                 $SqlMonthlyTurnoverData = $QueryBuilder
-                    ->where( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_NUMBER.' = :'.$ViewPart::TBL_REPORTING_PART_NUMBER )
+                    ->andWhere( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PART_NUMBER.' = :'.$ViewPart::TBL_REPORTING_PART_NUMBER )
                     ->setParameter( $ViewPart::TBL_REPORTING_PART_NUMBER, $PartNumber );
             }
             elseif($MarketingCodeNumber) {
                 $SqlMonthlyTurnoverData = $QueryBuilder
-                    ->where( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER.' = :'.$ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER )
+                    ->andWhere( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER.' = :'.$ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER )
                     ->setParameter( $ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER, $MarketingCodeNumber );
+            }
+            elseif($ProductGroupNumber) {
+                $SqlMonthlyTurnoverData = $QueryBuilder
+                    ->andWhere( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PRODUCT_GROUP_NUMBER.' = :'.$ViewPart::TBL_REPORTING_PRODUCT_GROUP_NUMBER )
+                    ->setParameter( $ViewPart::TBL_REPORTING_PRODUCT_GROUP_NUMBER, $ProductGroupNumber );
             }
             elseif($ProductManagerId) {
                 $SqlMonthlyTurnoverData = $QueryBuilder
-                    ->where( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PRODUCT_MANAGER_ID.' = :'.$ViewPart::TBL_REPORTING_PRODUCT_MANAGER_ID )
+                    ->andWhere( $ViewPartAlias.'.'.$ViewPart::TBL_REPORTING_PRODUCT_MANAGER_ID.' = :'.$ViewPart::TBL_REPORTING_PRODUCT_MANAGER_ID )
                     ->setParameter( $ViewPart::TBL_REPORTING_PRODUCT_MANAGER_ID, $ProductManagerId );
             }
 
@@ -1077,6 +1134,8 @@ class Data extends AbstractData
                 ->setParameter( 'Previous'.$TableSales::ATTR_YEAR, ($MaxYear-1) )
                 ->setParameter( 'SecondPrevious'.$TableSales::ATTR_YEAR, ($MaxYear-2) )
                 ->getQuery();
+
+            //Debugger::screenDump($SqlMonthlyTurnoverData->getSQL());
 
             if($SqlMonthlyTurnoverData->getResult()) {
                 return $SqlMonthlyTurnoverData->getResult();

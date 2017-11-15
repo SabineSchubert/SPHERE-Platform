@@ -159,6 +159,14 @@ class Service extends AbstractService
     }
 
     /**
+     * @param string $Number
+     * @return null|TblReporting_ProductGroup|Element
+     */
+    public function getProductGroupByNumber( $Number ) {
+        return ( new Data( $this->getBinding() ) )->getProductGroupByNumber( $Number );
+    }
+
+    /**
      * @return null|TblReporting_ProductGroup[]|Element[]
      */
     public function getProductGroupAll() {
@@ -174,10 +182,26 @@ class Service extends AbstractService
     }
 
     /**
+     * @param TblReporting_ProductGroup $TblReporting_ProductGroup
+     * @return null|TblReporting_MarketingCode_ProductGroup[]|Element[]
+     */
+    public function getMarketingCodeProductGroupByProductGroup( TblReporting_ProductGroup $TblReporting_ProductGroup ) {
+        return ( new Data( $this->getBinding() ) )->getMarketingCodeProductGroupByProductGroup( $TblReporting_ProductGroup );
+    }
+
+    /**
      * @param array $EntityMarketingCodeProductGroupList
      */
     public function getProductGroupByMarketingCodeProductGroup( $EntityMarketingCodeProductGroupList ) {
         return ( new Data( $this->getBinding() ) )->getProductGroupByMarketingCodeProductGroup( $EntityMarketingCodeProductGroupList );
+    }
+
+    /**
+     * @param $EntityMarketingCodeProductGroupList
+     * @return array
+     */
+    public function getMarketingCodeByMarketingCodeProductGroup( $EntityMarketingCodeProductGroupList ) {
+        return ( new Data( $this->getBinding() ) )->getMarketingCodeByMarketingCodeProductGroup( $EntityMarketingCodeProductGroupList );
     }
 
     /**
@@ -479,10 +503,11 @@ class Service extends AbstractService
      * @param null|string $PartNumber
      * @param null|string $MarketingCodeNumber
      * @param null|int $ProductManagerId
+     * @param null|string $ProductGroupNumber
      * @return array|null
      */
-    public function getMonthlyTurnover( $PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null ) {
-        return ( new Data( $this->getBinding() ) ) ->getMonthlyTurnoverByGroup( $PartNumber, $MarketingCodeNumber, $ProductManagerId );
+    public function getMonthlyTurnover( $PartNumber = null, $MarketingCodeNumber = null, $ProductManagerId = null, $ProductGroupNumber = null ) {
+        return ( new Data( $this->getBinding() ) ) ->getMonthlyTurnoverByGroup( $PartNumber, $MarketingCodeNumber, $ProductManagerId, $ProductGroupNumber );
     }
 
     /**
@@ -513,7 +538,7 @@ class Service extends AbstractService
                     'Discount' => $Row['Discount'],
                     'Data_BackValue' => $Row['BackValue'],
                     'Data_CostsVariable' => $Row['CostsVariable'],
-                    'Data_CoverageContribution' => $this->getCalculationRules()->calcCoverageContribution($PriceNet, $Row['CostsVariable']),
+//                    'Data_CoverageContribution' => $this->getCalculationRules()->calcCoverageContribution($PriceNet, $Row['CostsVariable']),
                 );
             });
             return $CalcPriceDevelopmentData;

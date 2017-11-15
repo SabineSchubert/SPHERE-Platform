@@ -27,6 +27,10 @@ use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
 use SPHERE\Common\Frontend\Link\Repository\Standard;
 use SPHERE\Common\Frontend\Message\Repository\Warning;
 use SPHERE\Common\Frontend\Table\Structure\Table;
+use SPHERE\Common\Frontend\Table\Structure\TableColumn;
+use SPHERE\Common\Frontend\Table\Structure\TableFoot;
+use SPHERE\Common\Frontend\Table\Structure\TableHead;
+use SPHERE\Common\Frontend\Table\Structure\TableRow;
 use SPHERE\System\Extension\Extension;
 use SPHERE\System\Extension\Repository\Debugger;
 
@@ -84,6 +88,18 @@ class CompetitionTable extends Extension implements IApiInterface
         //Definition Spaltenkopf
         if( count($SearchData) > 0 ) {
              array_walk( $SearchData, array( 'SPHERE\Application\Api\Reporting\Controlling\DirectSearch\CompetitionTable','WalkE1' ) );
+
+            $SumPriceGross = 0;
+            $SumPriceNet = 0;
+            $SumDiscount = 0;
+            $CountCompetition = count($SearchData);
+            foreach((array)$SearchData AS $KeyInt => $ValueArray) {
+                $SumPriceGross += $ValueArray['Data_PriceGross'];
+                $SumPriceNet += $ValueArray['Data_PriceNet'];
+                $SumDiscount += $ValueArray['Data_Discount'];
+            }
+
+
              array_walk( $SearchData, function( &$Row, $Key, $PartNumber ) {
 
                 if( isset($Row['Data_PriceNet']) ) {
@@ -93,7 +109,7 @@ class CompetitionTable extends Extension implements IApiInterface
                     $Row['Data_PriceGross'] = new PullRight( $this->doLocalize($Row['Data_PriceGross'])->getCurrency() );
                 }
                 if( isset($Row['Data_Discount']) ) {
-                    $Row['Data_Discount'] = new PullRight( $this->doLocalize($Row['Data_Discount'])->getCurrency() );
+                    $Row['Data_Discount'] = new PullRight( number_format($Row['Data_Discount'],2,',','.').' %' );
                 }
 //                if( isset($Row['Comment']) ) {
 //                    $Row['Comment'] = utf8_decode($Row['Comment']);
@@ -114,7 +130,7 @@ class CompetitionTable extends Extension implements IApiInterface
             $Keys = array_keys($SearchData[0]);
             $TableHead = array_combine( $Keys, str_replace( array_keys( $ReplaceArray ) , $ReplaceArray, $Keys) );
 
-            return (new Table(
+            $DataTable = (new Table(
                 $SearchData, null, $TableHead, array(
                     "order" => [], //Initial Sortierung
                     "columnDefs" => array( //Definition der Spalten
@@ -128,6 +144,32 @@ class CompetitionTable extends Extension implements IApiInterface
                    "responsive" => false,
                 )
             ));
+            $DataTable->appendFoot(
+                new TableFoot(
+                    new TableRow(
+                        array(
+                            new TableColumn('Mittelwert:'),
+                            new TableColumn(''),
+                            new TableColumn(''),
+                            new TableColumn(
+                                new PullRight( number_format(($SumPriceGross/$CountCompetition),2,',','.').' €' )
+                            ),
+                            new TableColumn(
+                                new PullRight( number_format(($SumPriceNet/$CountCompetition),2,',','.').' €' )
+                            ),
+                            new TableColumn(
+                                new PullRight( number_format(($SumDiscount/$CountCompetition),2,',','.').' €' )
+                            ),
+                            new TableColumn(''),
+                            new TableColumn(''),
+                            new TableColumn(''),
+                            new TableColumn('')
+                        )
+                    )
+                )
+            );
+
+            return $DataTable;
         }
         else {
             return new Warning('Es sind keine Datensätze vorhanden.');

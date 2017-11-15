@@ -17,6 +17,7 @@ use SPHERE\Application\Platform\Utility\Storage\FilePointer;
 use SPHERE\Application\Platform\Utility\Translation\LocaleTrait;
 use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Data;
+use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_MarketingCode;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_ProductGroup;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Button\Reset;
@@ -59,6 +60,9 @@ class Frontend extends Extension
         );
         $Stage->addButton(
             new Standard('Marketingcode', new Route(__NAMESPACE__ . '/MarketingCode'))
+        );
+        $Stage->addButton(
+            new Standard('Warengruppe', new Route(__NAMESPACE__ . '/ProductGroup'))
         );
         $Stage->addButton(
 			new Standard('Teilenummer', new Route(__NAMESPACE__ . '/PartNumber'))
@@ -254,6 +258,102 @@ class Frontend extends Extension
 		return $Stage;
 	}
 
+	public function frontendSearchProductGroup( $Search = null )
+	{
+		$Stage = new Stage('Geschäftsentwicklung', 'Warengruppe');
+		$this->buttonStageDirectSearch($Stage);
+		$LayoutExcel = '';
+		$TableMasterData = '';
+
+        if( $Search ) {
+            $MonthlyTurnoverResult = DataWareHouse::useService()->getMonthlyTurnover( null, null, null, $Search['ProductGroupNumber'] );
+            $LayoutTable = $this->tableMonthlyTurnover($MonthlyTurnoverResult);
+
+            if($MonthlyTurnoverResult) {
+                $LayoutExcel = '<br/>'.(new External('Excel-Download', ExcelDefault::getEndpoint(), null, array(
+                    ExcelDefault::API_TARGET => 'getExcelMonthlyTurnover',
+                    'FileName' => 'Geschaeftsentwicklung',
+                    'FileTyp' => 'xlsx',
+                    'ProductGroupNumber' => $Search['ProductGroupNumber'],
+                 ) ));
+            }
+
+            $EntityProductGroup = DataWareHouse::useService()->getProductGroupByNumber( $Search['ProductGroupNumber'] );
+            if($EntityProductGroup) {
+                $EntityMarketingCodeProductGroup = DataWareHouse::useService()->getMarketingCodeProductGroupByProductGroup($EntityProductGroup);
+                if($EntityMarketingCodeProductGroup) {
+                    $MarketingCodeText = '';
+                    $EntityMarketingCodeList = DataWareHouse::useService()->getMarketingCodeByMarketingCodeProductGroup($EntityMarketingCodeProductGroup);
+
+                    if($EntityMarketingCodeList) {
+                        /** @var TblReporting_MarketingCode $MarketingCode*/
+                        foreach($EntityMarketingCodeList AS $Index => $MarketingCode) {
+                            if( $Index != 0 ) {
+                               $MarketingCodeText .= '<br/>';
+                            }
+                            $MarketingCodeText .= $MarketingCode->getNumber().' - '.$MarketingCode->getName();
+                        }
+                        $TableMasterData =
+                            new Table(
+                                array(
+                                    array(
+                                        'Description' => 'Warengruppe',
+                                        'Value' => $EntityProductGroup->getNumber().' - '.$EntityProductGroup->getName()
+                                    ),
+                                    array(
+                                        'Description' => 'Marketingcode',
+                                        'Value' => $MarketingCodeText
+                                    ),
+                                ),
+                                null,
+                                array( 'Description' => 'Bezeichnung ', 'Value' => '' ),
+                                array(
+                                    "columnDefs" => array(
+                                        array('width' => '40%', 'targets' => '0' ),
+                                        array('width' => '60%', 'targets' => '1' )
+                                    ),
+                                    "paging"         => false, // Deaktivieren Blättern
+                                    "iDisplayLength" => -1,    // Alle Einträge zeigen
+                                    "searching"      => false, // Deaktivieren Suchen
+                                    "info"           => false,  // Deaktivieren Such-Info
+                                    "sort"           => false   //Deaktivierung Sortierung der Spalten
+                                )
+                            );
+                    }
+                }
+            }
+        }
+        else {
+            $LayoutTable = '';
+        }
+
+        $Stage->setContent(
+            new Layout(
+                new LayoutGroup(
+                    new LayoutRow(array(
+                        new LayoutColumn(
+                            $this->formSearchProductGroup(), 3
+                        ),
+                        new LayoutColumn(
+                            '&nbsp;',1
+                        ),
+                        new LayoutColumn(
+                            $TableMasterData, 6
+                        ),
+                        new LayoutColumn(
+                            $LayoutTable
+                        ),
+                        new LayoutColumn(
+                            $LayoutExcel
+                        )
+                    ))
+                )
+            )
+        );
+
+		return $Stage;
+	}
+
 
 	/**
 	 * @return Form
@@ -312,6 +412,30 @@ class Frontend extends Extension
 						new FormColumn(
 							new Panel('Suche', array(
 								(new AutoCompleter('Search[MarketingCode]', 'Marketingcode', 'Marketingcode eingeben', array( 'Number' => $EntityMarketingCode)))
+								->setRequired()
+							), Panel::PANEL_TYPE_DEFAULT)
+						),
+					)
+				)
+			)
+			, array(
+				new Primary('anzeigen', new Search()),
+				new Reset('zurücksetzen')
+			)
+		);
+	}
+
+	private function formSearchProductGroup()
+	{
+	    $EntityProductGroup = DataWareHouse::useService()->getProductGroupAll();
+
+		return new Form(
+			new FormGroup(
+				new FormRow(
+					array(
+						new FormColumn(
+							new Panel('Suche', array(
+								(new AutoCompleter('Search[ProductGroupNumber]', 'Warengruppe', 'Warengruppe eingeben', array( 'Number' => $EntityProductGroup)))
 								->setRequired()
 							), Panel::PANEL_TYPE_DEFAULT)
 						),

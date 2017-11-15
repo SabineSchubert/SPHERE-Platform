@@ -97,6 +97,8 @@ class Frontend extends Extension
         $EntityPart = null;
 		if( $Search ) {
 
+            $Search['PartNumber'] = str_replace(' ','',$Search['PartNumber']);
+
             $EntityPart = DataWareHouse::useService()->getPartByNumber( $Search['PartNumber'] );
 
 			if (!empty($EntityPart)) {
@@ -278,7 +280,7 @@ class Frontend extends Extension
 							new LayoutRow(
 								new LayoutColumn(
 									$this->tableSalesDataProductManager( $EntityProductManager )
-									, 12
+									, 6
 								)
 							),
 							new LayoutRow(
@@ -363,7 +365,7 @@ class Frontend extends Extension
 							new LayoutRow(
 								new LayoutColumn(
 									$this->tableSalesDataMarketingCode( $EntityMarketingCode )
-									, 12
+									, 6
 								)
 							),
 							new LayoutRow(
@@ -565,7 +567,7 @@ class Frontend extends Extension
                 array(
                     array(
                         'Description' => 'Teilenummer',
-                        'Value' => $EntityPart->getNumber() . ' - ' . $EntityPart->getName()
+                        'Value' => (($EntityPart->getNumberDisplay() != '')? $EntityPart->getNumberDisplay():$EntityPart->getNumber()) . ' - ' . $EntityPart->getName()
                     ),
                     array(
                         'Description' => 'ET-Baumuster',
@@ -573,8 +575,8 @@ class Frontend extends Extension
                     ),
                     array(
                         'Description' => 'Vorgänger<br/>Nachfolger<br/>Wahlweise',
-                        'Value' => (new Link( $EntityPart->getPredecessor(), __NAMESPACE__.'/PartNumber', null, array( 'Search' => array( 'PartNumber' => str_replace(' ','',$EntityPart->getPredecessor()) ) ) ))
-                            .(($EntityPart->getSuccessor() != '')? '<br/>'.(new Link( $EntityPart->getSuccessor(), __NAMESPACE__.'/PartNumber', null, array( 'Search' => array( 'PartNumber' => str_replace(' ','',$EntityPart->getSuccessor()) ) ) )):'').(($EntityPart->getOptionalNumber() != '')? '<br/>'.(new Link( $EntityPart->getOptionalNumber(), __NAMESPACE__.'/PartNumber', null, array( 'Search' => array( 'PartNumber' => str_replace(' ','',$EntityPart->getOptionalNumber()) ) ) )):'')
+                        'Value' => (($EntityPart->getPredecessor() != '')? (new Link( $EntityPart->getPredecessor(), __NAMESPACE__.'/PartNumber', null, array( 'Search' => array( 'PartNumber' => str_replace(' ','',$EntityPart->getPredecessor()) ) ) )).'<br/>':'<br/>')
+                            .(($EntityPart->getSuccessor() != '')? (new Link( $EntityPart->getSuccessor(), __NAMESPACE__.'/PartNumber', null, array( 'Search' => array( 'PartNumber' => str_replace(' ','',$EntityPart->getSuccessor()) ) ) )).'<br/>':'<br/>').(($EntityPart->getOptionalNumber() != '')? (new Link( $EntityPart->getOptionalNumber(), __NAMESPACE__.'/PartNumber', null, array( 'Search' => array( 'PartNumber' => str_replace(' ','',$EntityPart->getOptionalNumber()) ) ) )).'<br/>':'<br/>')
                     ),
                     array(
                         'Description' => 'Sortimentsgruppe',
@@ -862,12 +864,18 @@ class Frontend extends Extension
 
             if( $Rw != 0 ) {
                 $PriceDescription = 'BLP / VP<br/>BLP / TP<br/>NLP / VP<br/>NLP / TP';
-                $PriceValue = number_format( $CalcRules->calcGrossPrice( 0, 0, $Rw, 0, 0, 0, $GrossPrice ), 2, ',', '.' ).' €<br/>'.$this->doLocalize($GrossPrice)->getCurrency().' <br/>'
+                $GrossPriceVP = $CalcRules->calcGrossPrice( 0, 0, $Rw, 0, 0, 0, $GrossPrice );
+                $PriceValue = number_format( $GrossPriceVP, 2, ',', '.' ).' €<br/>'.$this->doLocalize($GrossPrice)->getCurrency().' <br/>'
                     .number_format( $CalcRules->calcNetPrice( $GrossPrice, $Discount, $Rw ), 2, ',', '.').' €<br/>'.number_format( $CalcRules->calcNetPrice( $GrossPrice, $Discount ), 2, ',', '.').' €';
+                $FinancialLimit = number_format( $CalcRules->calcFinancialManagementLimit( $GrossPriceVP, $Costs ), 2, ',', '.' ).' €';
+                $FinancialLimitText = 'FC-Grenze NP/TP';
+
             }
             else {
                 $PriceDescription = 'BLP / VP<br/>NLP / VP';
                 $PriceValue = number_format( $GrossPrice, 2, ',', '.').' €<br/>'.number_format( $CalcRules->calcNetPrice( $GrossPrice, $Discount ), 2, ',', '.').' €';
+                $FinancialLimit = number_format( $CalcRules->calcFinancialManagementLimit( $GrossPrice, $Costs ), 2, ',', '.' ).' €';
+                $FinancialLimitText = 'FC-Grenze';
             }
 
             if( $EntityPartsMore ) {
@@ -908,21 +916,21 @@ class Frontend extends Extension
                         'Description' => 'Preis gültig ab<br/>TNR-Status',
                         'Value' => $DateValidFrom->format('d.m.Y').'<br/>'.(($EntityPart->getStatusActive() == '1')? 'aktiv':'inaktiv')
                     ),
-                    array(
-                        'Description' => 'Konzern-DB',
-                        'Value' => number_format( $CalcRules->calcCoverageContribution(
-                                $CalcRules->calcNetPrice( $GrossPrice, $Discount, $Rw, $PartsMoreDiscount, 0, 0  )
-                                , $Costs
-                            ) , 2, ',', '.' ).' €'
-                    ),
+//                    array(
+//                        'Description' => 'Konzern-DB',
+//                        'Value' => number_format( $CalcRules->calcCoverageContribution(
+//                                $CalcRules->calcNetPrice( $GrossPrice, $Discount, $Rw, $PartsMoreDiscount, 0, 0  )
+//                                , $Costs
+//                            ) , 2, ',', '.' ).' €'
+//                    ),
 //                    array(
 //                        'Description' => 'FC-Grenze mit P+M<br/>FC-Grenze ohne P+M',
 //                        'Value' => number_format( $CalcRules->calcFinancialManagementLimit( $CalcRules->calcGrossPrice( 0, 0, 0, $PartsMoreDiscount, 0, 0, $GrossPrice ), $Costs ), 2, ',', '.' ).' €<br/>'
 //                            .number_format( $CalcRules->calcFinancialManagementLimit( $GrossPrice, $Costs ), 2, ',', '.' ).' €'
 //                    ),
                     array(
-                        'Description' => 'FC-Grenze',
-                        'Value' => number_format( $CalcRules->calcFinancialManagementLimit( $GrossPrice, $Costs ), 2, ',', '.' ).' €'
+                        'Description' => $FinancialLimitText,
+                        'Value' => $FinancialLimit
                     )
 //                    ,array(
 //                        'Description' => 'Luft',
@@ -1122,7 +1130,7 @@ class Frontend extends Extension
                                 'Year' => 'HR '.$Row['Year'],
                                 'Data_SumSalesGross' => new PullRight( $this->doLocalize( ($Row['Data_SumSalesGross']*$HR) )->getCurrency() ),
                                 'Data_SumSalesNet' => new PullRight( $this->doLocalize( ($Row['Data_SumSalesNet']*$HR) )->getCurrency() ),
-                                'Data_SumQuantity' => new PullRight( $Row['Data_SumQuantity'] )
+                                'Data_SumQuantity' => new PullRight( ceil($Row['Data_SumQuantity']*$HR) )
                             )
                         );
                     }
@@ -1202,7 +1210,7 @@ class Frontend extends Extension
                            'Year' => 'HR '.$Row['Year'],
                            'Data_SumSalesGross' => new PullRight( $this->doLocalize( ($Row['Data_SumSalesGross']*$HR) )->getCurrency() ),
                            'Data_SumSalesNet' => new PullRight( $this->doLocalize( ($Row['Data_SumSalesNet']*$HR) )->getCurrency() ),
-                           'Data_SumQuantity' => new PullRight( $Row['Data_SumQuantity'] )
+                           'Data_SumQuantity' => new PullRight( ceil($Row['Data_SumQuantity']*$HR) )
                        )
                    );
 
