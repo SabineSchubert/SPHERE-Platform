@@ -19,6 +19,7 @@ use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Data;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_MarketingCode;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_ProductGroup;
+use SPHERE\Common\Frontend\Chart\Repository\LineChart;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Button\Reset;
 use SPHERE\Common\Frontend\Form\Repository\Field\AutoCompleter;
@@ -79,10 +80,52 @@ class Frontend extends Extension
 		$this->buttonStageDirectSearch($Stage);
         $Stage->hasUtilityFavorite(true);
         $LayoutExcel = '';
+        $MonthlyTurnoverLineChart = array();
+        $LayoutLineChart = '';
 
         if( $Search ) {
             $MonthlyTurnoverResult = DataWareHouse::useService()->getMonthlyTurnover( $Search['PartNumber'], null, null );
             $LayoutTable = $this->tableMonthlyTurnover($MonthlyTurnoverResult);
+
+            if($MonthlyTurnoverResult) {
+                array_walk($MonthlyTurnoverResult, function(&$Row) use(&$MonthlyTurnoverLineChart) {
+
+                    $MonthArray = array(
+                        12 => 'Dez.',
+                        11 => 'Nov.',
+                        10 => 'Okt.',
+                        1 => 'Jan.',
+                        2 => 'Feb.',
+                        3 => 'Mrz.',
+                        4 => 'Apr.',
+                        5 => 'Mai',
+                        6 => 'Jun.',
+                        7 => 'Jul.',
+                        8 => 'Aug.',
+                        9 => 'Sep.',
+                    );
+
+                    array_push($MonthlyTurnoverLineChart, array(
+                        'Month' => str_replace(array_keys($MonthArray), $MonthArray, $Row['Month']),
+                        'Data_SumSalesGross_AJ' => $Row['Data_SumSalesGross_AJ'],
+                        'Data_SumSalesGross_VJ' => $Row['Data_SumSalesGross_VJ'],
+                        'Data_SumSalesGross_VVJ' => $Row['Data_SumSalesGross_VVJ'],
+                    ));
+                });
+
+                $LayoutExcel = '<br/>'.(new External('ExcelDownload', ExcelDefault::getEndpoint(), null, array(
+                    ExcelDefault::API_TARGET => 'getExcelMonthlyTurnover',
+                    'FileName' => 'Geschaeftsentwicklung',
+                    'FileTyp' => 'xlsx',
+                    'ProductManagerId' => $Search['PartNumber']
+                ) ));
+
+                $SalesYearCurrent = DataWareHouse::useService()->getYearCurrentFromSales();
+                $LayoutLineChart = new LineChart($MonthlyTurnoverLineChart, array($SalesYearCurrent,($SalesYearCurrent-1),($SalesYearCurrent-2)));
+            }
+            else {
+                $LayoutLineChart = '';
+            }
 
             if($MonthlyTurnoverResult) {
                 $LayoutExcel = '<br/>'.(new External('ExcelDownload', ExcelDefault::getEndpoint(), null, array(
@@ -95,6 +138,7 @@ class Frontend extends Extension
         }
         else {
             $LayoutTable = '';
+            $LayoutLineChart = '';
         }
 
         $Stage->setContent(
@@ -106,6 +150,9 @@ class Frontend extends Extension
                         ),
                         new LayoutColumn(
                             $LayoutTable
+                        ),
+                        new LayoutColumn(
+                            $LayoutLineChart
                         ),
                         new LayoutColumn(
                             $LayoutExcel
@@ -123,6 +170,8 @@ class Frontend extends Extension
 		$Stage = new Stage('Geschäftsentwicklung', 'Produktmanager');
 		$this->buttonStageDirectSearch($Stage);
         $LayoutExcel = '';
+        $MonthlyTurnoverLineChart = array();
+        $LayoutLineChart = '';
 
         if( $Search ) {
             $MonthlyTurnoverResult = DataWareHouse::useService()->getMonthlyTurnover( null, null, $Search['ProductManager'] );
@@ -135,10 +184,45 @@ class Frontend extends Extension
                     'FileTyp' => 'xlsx',
                     'ProductManagerId' => $Search['ProductManager']
                 ) ));
+
+                array_walk($MonthlyTurnoverResult, function(&$Row) use(&$MonthlyTurnoverLineChart) {
+
+                    $MonthArray = array(
+                        12 => 'Dez.',
+                        11 => 'Nov.',
+                        10 => 'Okt.',
+                        1 => 'Jan.',
+                        2 => 'Feb.',
+                        3 => 'Mrz.',
+                        4 => 'Apr.',
+                        5 => 'Mai',
+                        6 => 'Jun.',
+                        7 => 'Jul.',
+                        8 => 'Aug.',
+                        9 => 'Sep.',
+                    );
+
+                    array_push($MonthlyTurnoverLineChart, array(
+                        'Month' => str_replace(array_keys($MonthArray), $MonthArray, $Row['Month']),
+                        'Data_SumSalesGross_AJ' => $Row['Data_SumSalesGross_AJ'],
+                        'Data_SumSalesGross_VJ' => $Row['Data_SumSalesGross_VJ'],
+                        'Data_SumSalesGross_VVJ' => $Row['Data_SumSalesGross_VVJ'],
+                    ));
+                });
+
+                $SalesYearCurrent = DataWareHouse::useService()->getYearCurrentFromSales();
+                $LayoutLineChart = new LineChart($MonthlyTurnoverLineChart, array($SalesYearCurrent,($SalesYearCurrent-1),($SalesYearCurrent-2)));
+
             }
+            else {
+                $LayoutLineChart = '';
+            }
+
+
         }
         else {
             $LayoutTable = '';
+            $LayoutLineChart = '';
         }
 
         $Stage->setContent(
@@ -150,6 +234,9 @@ class Frontend extends Extension
                         ),
                         new LayoutColumn(
                             $LayoutTable
+                        ),
+                        new LayoutColumn(
+                            $LayoutLineChart
                         ),
                         new LayoutColumn(
                             $LayoutExcel
@@ -167,18 +254,52 @@ class Frontend extends Extension
 		$this->buttonStageDirectSearch($Stage);
 		$LayoutExcel = '';
 		$TableMasterData = '';
+        $MonthlyTurnoverLineChart = array();
+        $LayoutLineChart = '';
 
         if( $Search ) {
             $MonthlyTurnoverResult = DataWareHouse::useService()->getMonthlyTurnover( null, $Search['MarketingCode'], null );
             $LayoutTable = $this->tableMonthlyTurnover($MonthlyTurnoverResult);
 
             if($MonthlyTurnoverResult) {
+
+                array_walk($MonthlyTurnoverResult, function(&$Row) use(&$MonthlyTurnoverLineChart) {
+
+                    $MonthArray = array(
+                        12 => 'Dez.',
+                        11 => 'Nov.',
+                        10 => 'Okt.',
+                        1 => 'Jan.',
+                        2 => 'Feb.',
+                        3 => 'Mrz.',
+                        4 => 'Apr.',
+                        5 => 'Mai',
+                        6 => 'Jun.',
+                        7 => 'Jul.',
+                        8 => 'Aug.',
+                        9 => 'Sep.',
+                    );
+
+                    array_push($MonthlyTurnoverLineChart, array(
+                        'Month' => str_replace(array_keys($MonthArray), $MonthArray, $Row['Month']),
+                        'Data_SumSalesGross_AJ' => $Row['Data_SumSalesGross_AJ'],
+                        'Data_SumSalesGross_VJ' => $Row['Data_SumSalesGross_VJ'],
+                        'Data_SumSalesGross_VVJ' => $Row['Data_SumSalesGross_VVJ'],
+                    ));
+                });
+
+                $SalesYearCurrent = DataWareHouse::useService()->getYearCurrentFromSales();
+                $LayoutLineChart = new LineChart($MonthlyTurnoverLineChart, array($SalesYearCurrent,($SalesYearCurrent-1),($SalesYearCurrent-2)));
+
                 $LayoutExcel = '<br/>'.(new External('Excel-Download', ExcelDefault::getEndpoint(), null, array(
                     ExcelDefault::API_TARGET => 'getExcelMonthlyTurnover',
                     'FileName' => 'Geschaeftsentwicklung',
                     'FileTyp' => 'xlsx',
                     'MarketingCodeNumber' => $Search['MarketingCode'],
                  ) ));
+            }
+            else {
+                $LayoutLineChart = '';
             }
 
             $EntityMarketingCode = DataWareHouse::useService()->getMarketingCodeByNumber( $Search['MarketingCode'] );
@@ -248,6 +369,9 @@ class Frontend extends Extension
                             $LayoutTable
                         ),
                         new LayoutColumn(
+                            $LayoutLineChart
+                        ),
+                        new LayoutColumn(
                             $LayoutExcel
                         )
                     ))
@@ -264,18 +388,52 @@ class Frontend extends Extension
 		$this->buttonStageDirectSearch($Stage);
 		$LayoutExcel = '';
 		$TableMasterData = '';
+        $MonthlyTurnoverLineChart = array();
+        $LayoutLineChart = '';
 
         if( $Search ) {
             $MonthlyTurnoverResult = DataWareHouse::useService()->getMonthlyTurnover( null, null, null, $Search['ProductGroupNumber'] );
             $LayoutTable = $this->tableMonthlyTurnover($MonthlyTurnoverResult);
 
             if($MonthlyTurnoverResult) {
+
+                array_walk($MonthlyTurnoverResult, function(&$Row) use(&$MonthlyTurnoverLineChart) {
+
+                    $MonthArray = array(
+                        12 => 'Dez.',
+                        11 => 'Nov.',
+                        10 => 'Okt.',
+                        1 => 'Jan.',
+                        2 => 'Feb.',
+                        3 => 'Mrz.',
+                        4 => 'Apr.',
+                        5 => 'Mai',
+                        6 => 'Jun.',
+                        7 => 'Jul.',
+                        8 => 'Aug.',
+                        9 => 'Sep.',
+                    );
+
+                    array_push($MonthlyTurnoverLineChart, array(
+                        'Month' => str_replace(array_keys($MonthArray), $MonthArray, $Row['Month']),
+                        'Data_SumSalesGross_AJ' => $Row['Data_SumSalesGross_AJ'],
+                        'Data_SumSalesGross_VJ' => $Row['Data_SumSalesGross_VJ'],
+                        'Data_SumSalesGross_VVJ' => $Row['Data_SumSalesGross_VVJ'],
+                    ));
+                });
+
+                $SalesYearCurrent = DataWareHouse::useService()->getYearCurrentFromSales();
+                $LayoutLineChart = new LineChart($MonthlyTurnoverLineChart, array($SalesYearCurrent,($SalesYearCurrent-1),($SalesYearCurrent-2)));
+
                 $LayoutExcel = '<br/>'.(new External('Excel-Download', ExcelDefault::getEndpoint(), null, array(
                     ExcelDefault::API_TARGET => 'getExcelMonthlyTurnover',
                     'FileName' => 'Geschaeftsentwicklung',
                     'FileTyp' => 'xlsx',
                     'ProductGroupNumber' => $Search['ProductGroupNumber'],
                  ) ));
+            }
+            else {
+                $LayoutLineChart = '';
             }
 
             $EntityProductGroup = DataWareHouse::useService()->getProductGroupByNumber( $Search['ProductGroupNumber'] );
@@ -342,6 +500,9 @@ class Frontend extends Extension
                         ),
                         new LayoutColumn(
                             $LayoutTable
+                        ),
+                        new LayoutColumn(
+                            $LayoutLineChart
                         ),
                         new LayoutColumn(
                             $LayoutExcel

@@ -3,6 +3,7 @@
 namespace SPHERE\Application\Api;
 
 use SPHERE\Application\Api\Example\Example;
+use SPHERE\Application\Api\Import\Import;
 use SPHERE\Application\Api\Platform\Platform;
 use SPHERE\Application\Api\Product\Product;
 use SPHERE\Application\Api\Reporting\Reporting;
@@ -20,9 +21,10 @@ class Api implements IClusterInterface
     public static function registerCluster()
     {
         Platform::registerApplication();
-        Product::registerApplication();
+        //Product::registerApplication();
         Reporting::registerApplication();
-        Example::registerApplication();
-        Search::registerApplication();
+        //Example::registerApplication();
+        //Search::registerApplication();
+        Import::registerApplication();
     }
 }

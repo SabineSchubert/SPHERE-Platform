@@ -1,13 +1,28 @@
 (function ($) {
-    'use strict';
+    //'use strict';
+
     $.fn.ModChartJs = function (options) {
+
+        var settings = $.extend({
+            // These are the defaults.
+            labels: [],
+            backgroundColor: [],
+            borderColor: [],
+            borderWidth: 1,
+            data: [],
+            legend: { display: false },
+            LabelName: '',
+            displayKey: 'value'
+        }, options);
+
         var ctx = this;
         var myChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli"],
+                labels: settings.labels,
                 datasets: [
                     {
+                        label: settings.LabelName,
                         backgroundColor: [
                             'rgba(255, 99, 132, 0.2)',
                             'rgba(54, 162, 235, 0.2)',
@@ -16,6 +31,7 @@
                             'rgba(153, 102, 255, 0.2)',
                             'rgba(255, 159, 64, 0.2)'
                         ],
+                        yAxisID: "y-axis-1",
                         borderColor: [
                             'rgba(255,99,132,1)',
                             'rgba(54, 162, 235, 1)',
@@ -25,16 +41,16 @@
                             'rgba(255, 159, 64, 1)'
                         ],
                         borderWidth: 1,
-                        data: [65, 59, 80, 81, 56, 55, 40]
+                        data: settings.data
                     }
                 ]
             },
             options: {
-                legend: {
-                    display: false
-                },
+                legend: { display: settings.legend },
                 scales: {
                     yAxes: [{
+                        id: "y-axis-1",
+                        position: "left",
                         ticks: {
                             beginAtZero: true
                         }

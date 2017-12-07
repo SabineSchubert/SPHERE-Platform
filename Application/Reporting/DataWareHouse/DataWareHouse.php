@@ -12,6 +12,9 @@ use SPHERE\Application\AppTrait;
 use SPHERE\Application\IApplicationInterface;
 use SPHERE\Application\IModuleInterface;
 use SPHERE\Application\Platform\Gatekeeper\Consumer\Consumer;
+use SPHERE\Application\Reporting\DataWareHouse\BasicData\Abcx;
+use SPHERE\Application\Reporting\DataWareHouse\BasicData\BasicData;
+use SPHERE\Application\Reporting\DataWareHouse\MasterData\MasterData;
 use SPHERE\Application\Reporting\DataWareHouse\Presto\Presto;
 use SPHERE\Application\Reporting\DataWareHouse\Sales\Sales;
 use SPHERE\Common\Frontend\Icon\Repository\Blackboard;
@@ -28,7 +31,7 @@ class DataWareHouse implements IApplicationInterface, IModuleInterface
 //        self::registerModule();
         Presto::registerModule();
         Sales::registerModule();
-
+        BasicData::registerModule();
 	}
 
     public static function registerModule()

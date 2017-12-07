@@ -263,6 +263,13 @@ class Service extends AbstractService
     }
 
     /**
+     * @return null|TblReporting_Section[]|Element[]
+     */
+    public function getSectionAll() {
+        return ( new Data( $this->getBinding() ) )->getSectionAll();
+    }
+
+    /**
      * @param int $Id
      * @return null|TblReporting_Section|Element
      */
@@ -548,5 +555,29 @@ class Service extends AbstractService
         }
     }
 
+    /**
+     * @return array|null
+     */
+    public function getProductManagerMarketingCodeCurrent() {
+        return ( new Data( $this->getBinding() ) ) ->getProductManagerMarketingCodeCurrent();
+    }
 
+    //Update bzw. Delete
+
+    /**
+     * @param int $ProductManagerId
+     * @return null|Service\Entity\TblReporting_ProductManager
+     */
+    public function deleteProductManager( $ProductManagerId ) {
+        return ( new Data( $this->getBinding() ) ) ->deleteProductManager( $ProductManagerId );
+    }
+
+    /**
+     * @param string $Name
+     * @param int $SectionId
+     * @param string $Department
+     */
+    public function createProductManager( $Name, $SectionId, $Department ) {
+        return ( new Data( $this->getBinding() ) ) ->createProductManager($Name, $SectionId, $Department);
+    }
 }

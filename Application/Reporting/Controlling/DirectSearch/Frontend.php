@@ -27,6 +27,7 @@ use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Suppl
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\ViewPart;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\ViewPrice;
 use SPHERE\Common\Frontend\Ajax\Receiver\BlockReceiver;
+use SPHERE\Common\Frontend\Chart\Repository\BarChart;
 use SPHERE\Common\Frontend\Form\Repository\Button\Primary;
 use SPHERE\Common\Frontend\Form\Repository\Button\Reset;
 use SPHERE\Common\Frontend\Form\Repository\Field\AutoCompleter;
@@ -37,6 +38,7 @@ use SPHERE\Common\Frontend\Form\Structure\FormColumn;
 use SPHERE\Common\Frontend\Form\Structure\FormGroup;
 use SPHERE\Common\Frontend\Form\Structure\FormRow;
 use SPHERE\Common\Frontend\Icon\Repository\Info;
+use SPHERE\Common\Frontend\Icon\Repository\Quantity;
 use SPHERE\Common\Frontend\Icon\Repository\Search;
 use SPHERE\Common\Frontend\Layout\Repository\Panel;
 use SPHERE\Common\Frontend\Layout\Repository\PullRight;
@@ -122,20 +124,7 @@ class Frontend extends Extension
 								)
 							),
 							new LayoutRow(
-								new LayoutColumn(
-									$this->tableSalesDataPartNumber( $EntityPart )
-									, 6
-								)
-							),
-							new LayoutRow(
-								new LayoutColumn(
-									'&nbsp;'
-								)
-							),
-							new LayoutRow(
-								new LayoutColumn(
-									'Diagramme', 12
-								)
+								$this->tableSalesDataPartNumber( $EntityPart )
 							)
 						),
 						new Title('Direktsuche')
@@ -278,20 +267,7 @@ class Frontend extends Extension
 								)
 							),
 							new LayoutRow(
-								new LayoutColumn(
-									$this->tableSalesDataProductManager( $EntityProductManager )
-									, 6
-								)
-							),
-							new LayoutRow(
-								new LayoutColumn(
-									'&nbsp;'
-								)
-							),
-							new LayoutRow(
-								new LayoutColumn(
-									'Diagramme', 12
-								)
+								$this->tableSalesDataProductManager( $EntityProductManager )
 							)
 						),
 						new Title('Direktsuche')
@@ -363,20 +339,7 @@ class Frontend extends Extension
 								)
 							),
 							new LayoutRow(
-								new LayoutColumn(
-									$this->tableSalesDataMarketingCode( $EntityMarketingCode )
-									, 6
-								)
-							),
-							new LayoutRow(
-								new LayoutColumn(
-									'&nbsp;'
-								)
-							),
-							new LayoutRow(
-								new LayoutColumn(
-									'Diagramme', 12
-								)
+								$this->tableSalesDataMarketingCode( $EntityMarketingCode )
 							)
 						),
 						new Title('Direktsuche')
@@ -1032,11 +995,21 @@ class Frontend extends Extension
 	        $HR = DataWareHouse::useService()->getExtrapolationFactor( $EntityPart->getNumber() );
 
             $WalkSalesData = array();
-            array_walk( $SalesData, function( &$Row, $Key, $HR ) use (&$WalkSalesData) {
+            $ChartLabels = array();
+            $ChartData['Quantity'] = array();
+            $ChartData['SalesGross'] = array();
+            $ChartData['SalesNet'] = array();
+            array_walk( $SalesData, function( &$Row, $Key, $HR ) use (&$WalkSalesData, &$ChartLabels, &$ChartData) {
 
                 //Hochrechnung hinzufügen
                 if($Row['Year'] == date('Y') ) {
                     if(DataWareHouse::useService()->getMaxMonthCurrentYearFromSales() != '12') {
+                        array_push($ChartLabels, 'HR '.$Row['Year']);
+
+                        array_push($ChartData['Quantity'], ceil($Row['Data_SumQuantity']*$HR));
+                        array_push($ChartData['SalesGross'], ceil($Row['Data_SumSalesGross']*$HR));
+                        array_push($ChartData['SalesNet'], ceil($Row['Data_SumSalesNet']*$HR));
+
                         array_push(
                             $WalkSalesData, array(
                                 'Year' => 'HR '.$Row['Year'],
@@ -1049,6 +1022,11 @@ class Frontend extends Extension
 
                     $Row['Year'] = 'per '.DataWareHouse::useService()->getMaxMonthCurrentYearFromSales().'/'.$Row['Year'];
                  }
+
+                 array_push($ChartData['Quantity'], $Row['Data_SumQuantity']);
+                 array_push($ChartData['SalesGross'], $Row['Data_SumSalesGross']);
+                 array_push($ChartData['SalesNet'], $Row['Data_SumSalesNet']);
+
                  if( isset($Row['Data_SumSalesGross']) ) {
                      $Row['Data_SumSalesGross'] = new PullRight( $this->doLocalize($Row['Data_SumSalesGross'])->getCurrency() );
                  }
@@ -1058,6 +1036,8 @@ class Frontend extends Extension
                  if( isset($Row['Data_SumQuantity']) ) {
                      $Row['Data_SumQuantity'] = new PullRight( $Row['Data_SumQuantity'] );
                  }
+
+                 array_push($ChartLabels, $Row['Year']);
 
             }, $HR );
 
@@ -1103,10 +1083,28 @@ class Frontend extends Extension
                     )
                 )
             );
-            return $Table;
+
+
+           // Debugger::screenDump($ChartData);
+
+            $Chart['Quantity'] = new BarChart($ChartLabels, $ChartData['Quantity'], true, 'Anzahl effektiv', 300, 300);
+            $Chart['SalesGross'] = new BarChart($ChartLabels, $ChartData['SalesGross'], true, 'Bruttoumsatz', 300, 300);
+            $Chart['SalesNet'] = new BarChart($ChartLabels, $ChartData['SalesNet'], true, 'Nettoumsatz', 300, 300);
+
+//            $Chart = '';
+
+            return array(
+                new LayoutColumn( $Table, 6 ),
+                new LayoutColumn('&nbsp;', 12),
+                new LayoutColumn($Chart['Quantity'], 3),
+                new LayoutColumn($Chart['SalesGross'], 3),
+                new LayoutColumn($Chart['SalesNet'], 3)
+            );
         }
         else {
-            return new Warning( 'Keine Umsatz-Daten vorhanden' );
+            return new LayoutColumn(
+                new Warning( 'Keine Umsatz-Daten vorhanden' ), 6
+            );
         }
 	}
 
@@ -1120,11 +1118,22 @@ class Frontend extends Extension
    	        $HR = DataWareHouse::useService()->getExtrapolationFactor(null, $EntityMarketingCode->getNumber() );
 
             $WalkSalesData = array();
-            array_walk( $SalesData, function( &$Row, $Key, $HR ) use (&$WalkSalesData) {
+            $ChartLabels = array();
+            $ChartData['Quantity'] = array();
+            $ChartData['SalesGross'] = array();
+            $ChartData['SalesNet'] = array();
+            array_walk( $SalesData, function( &$Row, $Key, $HR ) use (&$WalkSalesData, &$ChartLabels, &$ChartData) {
 
                //Hochrechnung hinzufügen
                 if($Row['Year'] == date('Y') ) {
+
                     if(DataWareHouse::useService()->getMaxMonthCurrentYearFromSales() != '12') {
+                        array_push($ChartLabels, 'HR '.$Row['Year']);
+
+                        array_push($ChartData['Quantity'], ceil($Row['Data_SumQuantity']*$HR));
+                        array_push($ChartData['SalesGross'], ceil($Row['Data_SumSalesGross']*$HR));
+                        array_push($ChartData['SalesNet'], ceil($Row['Data_SumSalesNet']*$HR));
+
                         array_push(
                             $WalkSalesData, array(
                                 'Year' => 'HR '.$Row['Year'],
@@ -1136,6 +1145,11 @@ class Frontend extends Extension
                     }
                     $Row['Year'] = 'per '.DataWareHouse::useService()->getMaxMonthCurrentYearFromSales().'/'.$Row['Year'];
                 }
+
+                array_push($ChartData['Quantity'], $Row['Data_SumQuantity']);
+                array_push($ChartData['SalesGross'], $Row['Data_SumSalesGross']);
+                array_push($ChartData['SalesNet'], $Row['Data_SumSalesNet']);
+
                 if( isset($Row['Data_SumSalesGross']) ) {
                     $Row['Data_SumSalesGross'] = new PullRight( $this->doLocalize($Row['Data_SumSalesGross'])->getCurrency() );
                 }
@@ -1145,6 +1159,8 @@ class Frontend extends Extension
                 if( isset($Row['Data_SumQuantity']) ) {
                     $Row['Data_SumQuantity'] = new PullRight( $Row['Data_SumQuantity'] );
                 }
+
+                array_push($ChartLabels, $Row['Year']);
 
             }, $HR );
 
@@ -1185,10 +1201,24 @@ class Frontend extends Extension
                     )
                 )
             );
-            return $Table;
+
+
+            $Chart['Quantity'] = new BarChart($ChartLabels, $ChartData['Quantity'], true, 'Anzahl effektiv', 300, 300);
+            $Chart['SalesGross'] = new BarChart($ChartLabels, $ChartData['SalesGross'], true, 'Bruttoumsatz', 300, 300);
+            $Chart['SalesNet'] = new BarChart($ChartLabels, $ChartData['SalesNet'], true, 'Nettoumsatz', 300, 300);
+
+            return array(
+               new LayoutColumn( $Table, 6 ),
+               new LayoutColumn('&nbsp;', 12),
+               new LayoutColumn($Chart['Quantity'], 3),
+               new LayoutColumn($Chart['SalesGross'], 3),
+               new LayoutColumn($Chart['SalesNet'], 3)
+            );
         }
         else {
-            return new Warning( 'Keine Umsatz-Daten vorhanden' );
+            return new LayoutColumn(
+                new Warning( 'Keine Umsatz-Daten vorhanden' )
+            );
         }
 	}
 
@@ -1201,21 +1231,37 @@ class Frontend extends Extension
    	        $HR = (float)1;
 
             $WalkSalesData = array();
-            array_walk( $SalesData, function( &$Row, $Key, $HR ) use (&$WalkSalesData) {
+            $ChartLabels = array();
+            $ChartData['Quantity'] = array();
+            $ChartData['SalesGross'] = array();
+            $ChartData['SalesNet'] = array();
+            array_walk( $SalesData, function( &$Row, $Key, $HR ) use (&$WalkSalesData, &$ChartLabels, &$ChartData) {
 
                //Hochrechnung hinzufügen
-               if(isset($Row['Year']) == date('Y') && DataWareHouse::useService()->getMaxMonthCurrentYearFromSales() != '12' ) {
-                   array_push(
-                       $WalkSalesData, array(
-                           'Year' => 'HR '.$Row['Year'],
-                           'Data_SumSalesGross' => new PullRight( $this->doLocalize( ($Row['Data_SumSalesGross']*$HR) )->getCurrency() ),
-                           'Data_SumSalesNet' => new PullRight( $this->doLocalize( ($Row['Data_SumSalesNet']*$HR) )->getCurrency() ),
-                           'Data_SumQuantity' => new PullRight( ceil($Row['Data_SumQuantity']*$HR) )
-                       )
-                   );
+               if($Row['Year'] == date('Y') ) {
+                   if(DataWareHouse::useService()->getMaxMonthCurrentYearFromSales() != '12') {
+                       array_push($ChartLabels, 'HR '.$Row['Year']);
 
-                    $Row['Year'] = 'per '.DataWareHouse::useService()->getMaxMonthCurrentYearFromSales().'/'.$Row['Year'];
+                       array_push($ChartData['Quantity'], ceil($Row['Data_SumQuantity']*$HR));
+                       array_push($ChartData['SalesGross'], ceil($Row['Data_SumSalesGross']*$HR));
+                       array_push($ChartData['SalesNet'], ceil($Row['Data_SumSalesNet']*$HR));
+
+                       array_push(
+                           $WalkSalesData, array(
+                               'Year' => 'HR '.$Row['Year'],
+                               'Data_SumSalesGross' => new PullRight( $this->doLocalize( ($Row['Data_SumSalesGross']*$HR) )->getCurrency() ),
+                               'Data_SumSalesNet' => new PullRight( $this->doLocalize( ($Row['Data_SumSalesNet']*$HR) )->getCurrency() ),
+                               'Data_SumQuantity' => new PullRight( ceil($Row['Data_SumQuantity']*$HR) )
+                           )
+                       );
+                   }
+                   $Row['Year'] = 'per '.DataWareHouse::useService()->getMaxMonthCurrentYearFromSales().'/'.$Row['Year'];
                 }
+
+                array_push($ChartData['Quantity'], $Row['Data_SumQuantity']);
+                array_push($ChartData['SalesGross'], $Row['Data_SumSalesGross']);
+                array_push($ChartData['SalesNet'], $Row['Data_SumSalesNet']);
+
                 if( isset($Row['Data_SumSalesGross']) ) {
                     $Row['Data_SumSalesGross'] = new PullRight( $this->doLocalize($Row['Data_SumSalesGross'])->getCurrency() );
                 }
@@ -1225,6 +1271,8 @@ class Frontend extends Extension
                 if( isset($Row['Data_SumQuantity']) ) {
                     $Row['Data_SumQuantity'] = new PullRight( $Row['Data_SumQuantity'] );
                 }
+
+                array_push($ChartLabels, $Row['Year']);
 
             }, $HR );
 
@@ -1270,10 +1318,23 @@ class Frontend extends Extension
                     )
                 )
             );
-            return $Table;
+            $Chart['Quantity'] = new BarChart($ChartLabels, $ChartData['Quantity'], true, 'Anzahl effektiv', 300, 300);
+            $Chart['SalesGross'] = new BarChart($ChartLabels, $ChartData['SalesGross'], true, 'Bruttoumsatz', 300, 300);
+            $Chart['SalesNet'] = new BarChart($ChartLabels, $ChartData['SalesNet'], true, 'Nettoumsatz', 300, 300);
+
+            return array(
+                new LayoutColumn( $Table, 6 ),
+                new LayoutColumn('&nbsp;', 12),
+                new LayoutColumn($Chart['Quantity'], 3),
+                new LayoutColumn($Chart['SalesGross'], 3),
+                new LayoutColumn($Chart['SalesNet'], 3)
+            );
         }
         else {
-            return new Warning( 'Keine Umsatz-Daten vorhanden' );
+            return
+                new LayoutColumn(
+                    new Warning( 'Keine Umsatz-Daten vorhanden' )
+                );
         }
 	}
 

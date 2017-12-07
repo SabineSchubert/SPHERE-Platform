@@ -58,6 +58,7 @@ class ViewPart extends AbstractView
 
     const TBL_REPORTING_PRODUCT_MANAGER_MARKETING_CODE_ID = "TblReporting_ProductManager_MarketingCode_Id";
     const TBL_REPORTING_PRODUCT_MANAGER_NAME = "TblReporting_ProductManager_Name";
+    const TBL_REPORTING_PRODUCT_MANAGER_NUMBER = "TblReporting_ProductManager_Number";
     const TBL_REPORTING_PRODUCT_MANAGER_DEPARTMENT = "TblReporting_ProductManager_Department";
     const TBL_REPORTING_PRODUCT_MANAGER_ID = "TblReporting_ProductManager_Id";
     const TBL_REPORTING_MARKETING_CODE_PRODUCT_GROUP_ID = "TblReporting_MarketingCode_ProductGroup_Id";
@@ -233,6 +234,11 @@ class ViewPart extends AbstractView
     * @Column(type="string")
     */
     protected $TblReporting_ProductManager_Name;
+
+    /**
+    * @Column(type="string")
+    */
+    protected $TblReporting_ProductManager_Number;
 
     /**
     * @Column(type="string")

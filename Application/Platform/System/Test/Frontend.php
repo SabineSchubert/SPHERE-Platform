@@ -171,9 +171,9 @@ class Frontend extends Extension implements IFrontendInterface
                         new FormColumn(
                             new TextArea('TextArea', 'TextArea', 'TextArea')
                             , 3),
-                        new FormColumn(
-                            new TextCaptcha('TextCaptcha', 'TextCaptcha', 'TextCaptcha')
-                            , 3),
+//                        new FormColumn(
+//                            new TextCaptcha('TextCaptcha', 'TextCaptcha', 'TextCaptcha')
+//                            , 3),
                         new FormColumn(array(
                             new TextField('TextField', 'TextField', 'TextField'),
                             new Slider('Slider', 'Slider', 'Slider')
@@ -218,8 +218,8 @@ class Frontend extends Extension implements IFrontendInterface
                         ), 3),
                         new LayoutColumn(array(
                             new Listing(array('Listing', 'Listing 2')),
-                            new LineChart(),
-                            new BarChart()
+                           // new LineChart(),
+                           // new BarChart()
                         ), 3),
                         new LayoutColumn(array(
                             new Panel('Panel', array('Content 1', 'Content 2', 'Content 3'),

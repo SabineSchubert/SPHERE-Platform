@@ -71,7 +71,7 @@ class UniversalRouter extends Bridge implements IBridgeInterface
         $Class = $Route->getClass();
         if (!class_exists($Class, true)) {
             // @codeCoverageIgnoreStart
-            throw new ComponentException($Class);
+            throw new ComponentException('Klasse existiert nicht: '.$Class);
             // @codeCoverageIgnoreEnd
         }
         $Method = $Route->getMethod();
@@ -79,7 +79,7 @@ class UniversalRouter extends Bridge implements IBridgeInterface
         $Object = new $Class();
         if (!method_exists($Object, $Method)) {
             // @codeCoverageIgnoreStart
-            throw new ComponentException($Method);
+            throw new ComponentException('Methode existiert nicht: '.$Method);
             // @codeCoverageIgnoreEnd
         }
 

@@ -4,6 +4,7 @@ namespace SPHERE\Common\Frontend\Chart\Repository;
 use MOC\V\Component\Template\Component\IBridgeInterface;
 use SPHERE\Common\Frontend\Chart\IChartInterface;
 use SPHERE\System\Extension\Extension;
+use SPHERE\System\Extension\Repository\Debugger;
 
 /**
  * Class LineChart
@@ -18,10 +19,20 @@ class LineChart extends Extension implements IChartInterface
     /** @var IBridgeInterface $Template */
     private $Template = null;
 
-    public function __construct()
+    public function __construct(
+        $Data = array(),
+        $Labels = array()
+    )
     {
+        $Keys = array_keys($Data[0]);
+        $xkey = current($Keys);
+        $ykeys = array_values(array_diff($Keys, (array)$xkey));
 
         $this->Template = $this->getTemplate(__DIR__.'/LineChart.twig');
+        $this->Template->setVariable('ElementData', $Data);
+        $this->Template->setVariable('ElementLabels', $Labels);
+        $this->Template->setVariable('ElementxKey', $xkey);
+        $this->Template->setVariable('ElementyKeys', $ykeys);
     }
 
 
@@ -39,7 +50,6 @@ class LineChart extends Extension implements IChartInterface
      */
     public function getContent()
     {
-
         $this->Template->setVariable('Hash', $this->getHash());
         return $this->Template->getContent();
     }

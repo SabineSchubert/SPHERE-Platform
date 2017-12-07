@@ -1,11 +1,20 @@
 <div {% if( Hash is not empty ) %}id="{{ Hash }}"{% endif %} style="height: 300px;"></div>
+<div id="legend" class="line-legend"></div>
 <script type="text/javascript">
+
     //noinspection JSUnresolvedFunction
     executeScript(function()
     {
         Client.Use('ModMorris', function()
         {
-            jQuery("div#{{ Hash }}").ModMorris();
+            jQuery("div#{{ Hash }}").ModMorris(
+                {
+                    xkey: '{{ ElementxKey }}',
+                    ykeys: {{ ElementyKeys|json_encode }},
+                    data: {{ ElementData|json_encode }},
+                    labels: {{ ElementLabels|json_encode }}
+                }
+            );
         });
     });
 </script>

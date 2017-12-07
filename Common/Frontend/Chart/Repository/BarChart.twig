@@ -1,11 +1,19 @@
-<canvas {% if( Hash is not empty ) %}id="{{ Hash }}"{% endif %} width="300" height="300"></canvas>
+<canvas {% if( Hash is not empty ) %}id="{{ Hash }}"{% endif %} width="{{ ElementWidth }}" height="{{ ElementHeight }}"></canvas>
 <script type="text/javascript">
     //noinspection JSUnresolvedFunction
     executeScript(function()
     {
         Client.Use('ModChartJs', function()
         {
-            jQuery("canvas#{{ Hash }}").ModChartJs();
+            jQuery("canvas#{{ Hash }}").ModChartJs({
+                labels: {{ ElementLabels|json_encode }},
+                backgroundColor: [],
+                borderColor: [],
+                borderWidth: 1,
+                data: {{ ElementData|json_encode }},
+                LabelName: {{ ElementLabelName|json_encode }}
+            });
         });
     });
+
 </script>

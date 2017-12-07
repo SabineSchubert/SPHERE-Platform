@@ -13,6 +13,8 @@ use Doctrine\ORM\Cache\Region\DefaultMultiGetRegion;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
 use SPHERE\Application\Competition\DataWareHouse\Service\Entity\ViewCompetition;
+use SPHERE\Application\Platform\System\Protocol\Protocol;
+use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_AssortmentGroup;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_Brand;
 use SPHERE\Application\Reporting\DataWareHouse\Service\Entity\TblReporting_DiscountGroup;
@@ -523,6 +525,16 @@ class Data extends AbstractData
     }
 
     /**
+     * @return null|Element[]|TblReporting_Section[]
+     */
+    public function getSectionAll() {
+        $TableSection = new TblReporting_Section();
+        return $this->getCachedEntityList( __METHOD__, $this->getEntityManager(), $TableSection->getEntityShortName(), array(
+            $TableSection::ENTITY_ID => self::ORDER_ASC
+        ) );
+    }
+
+    /**
      * @param TblReporting_Part $TblReporting_Part
      * @return null|Element[]|array $EntityPartSectionList
      */
@@ -752,9 +764,15 @@ class Data extends AbstractData
                     );
 
                 if ($TblReporting_Part) {
+                    $TTPartNumber = null;
+                    if($TblReporting_Part->getExchangePart() == true) {
+                        $EntityTTPart = DataWareHouse::useService()->getPartByNumber(str_replace('80','70', $TblReporting_Part->getNumber()));
+                        $TTPartNumber = $EntityTTPart->getId();
+                    }
+
                     $SqlSalesData = $QueryBuilder
-                        ->andWhere($TableSalesAlias . '.' . $TableSales::TBL_REPORTING_PART . ' = :' . $TableSales::TBL_REPORTING_PART)
-                        ->setParameter($TableSales::TBL_REPORTING_PART, $TblReporting_Part->getId());
+                        ->andWhere($TableSalesAlias . '.' . $TableSales::TBL_REPORTING_PART . ' in (:' . $TableSales::TBL_REPORTING_PART.')')
+                        ->setParameter($TableSales::TBL_REPORTING_PART, array($TblReporting_Part->getId(),$TTPartNumber));
                 } elseif ($TblReporting_MarketingCode) {
                     $SqlSalesData = $QueryBuilder
                         ->andWhere($ViewPartAlias . '.' . $ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER . ' = :' . $ViewPart::TBL_REPORTING_MARKETING_CODE_NUMBER)
@@ -1253,5 +1271,101 @@ class Data extends AbstractData
             else {
                 return null;
             }
+    }
+
+    public function getProductManagerMarketingCodeCurrent() {
+        $Manager = $this->getEntityManager();
+        $QueryBuilder = $Manager->getQueryBuilder();
+
+        $TablePm = new TblReporting_ProductManager();
+        $TablePmAlias = $TablePm->getEntityShortName();
+
+        $TableMc = new TblReporting_MarketingCode();
+        $TableMcAlias = $TableMc->getEntityShortName();
+
+        $TablePmMc = new TblReporting_ProductManager_MarketingCode();
+        $TablePmMcAlias = $TablePmMc->getEntityShortName();
+
+        //ToDo: where RemoveEmtity is null
+
+        $SqlProductManagerMarketingCodeCurrent = $QueryBuilder
+                ->select( 'COALESCE('.$TablePmAlias.'.'.$TablePm::ATTR_NUMBER. ',\'\') AS PmNumber' )
+                ->addselect( $TablePmAlias.'.'.$TablePm::ATTR_NAME. ' AS PmName' )
+                ->addselect( $TableMcAlias.'.'.$TableMc::ATTR_NUMBER. ' AS McNumber' )
+                ->addselect( $TableMcAlias.'.'.$TableMc::ATTR_NAME. ' AS McName' )
+                ->from( $TablePmMc->getEntityFullName(), $TablePmMcAlias )
+                ->innerJoin( $TablePm->getEntityFullName(), $TablePmAlias, Expr\Join::WITH, $TablePmAlias.'.'.$TablePm::ENTITY_ID.' = '.$TablePmMcAlias.'.'.$TablePmMc::TBL_REPORTING_PRODUCT_MANAGER )
+                ->innerJoin( $TableMc->getEntityFullName(), $TableMcAlias, Expr\Join::WITH, $TableMcAlias.'.'.$TableMc::ENTITY_ID.' = '.$TablePmMcAlias.'.'.$TablePmMc::TBL_REPORTING_MARKETING_CODE )
+            ->getQuery();
+
+        if( $SqlProductManagerMarketingCodeCurrent->getResult() ) {
+            return $SqlProductManagerMarketingCodeCurrent->getResult();
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
+     * @param $ProductManagerId
+     * @return null|TblReporting_ProductManager
+     */
+    public function deleteProductManager( $ProductManagerId ){
+        if($ProductManagerId) {
+            $Manager = $this->getEntityManager();
+            /** @var TblReporting_ProductManager $Entity */
+            $Entity = $Manager->getEntityById( 'TblReporting_ProductManager', $ProductManagerId );
+            $Protocol = clone $Entity;
+            if (null !== $Entity) {
+                $Entity->setEntityRemove(true);
+                $Manager->saveEntity($Entity);
+                Protocol::useService()->createUpdateEntry($this->getConnection()->getDatabase(), $Protocol, $Entity);
+                return $Entity;
+            }
+            return null;
+        }
+        return null;
+    }
+
+    public function createProductManager($Name, $SectionId, $Department) {
+        $Manager = $this->getConnection()->getEntityManager();
+
+        $Entity = $Manager->getEntity('TblReporting_ProductManager')->findOneBy(array(
+           TblReporting_ProductManager::ATTR_NAME => $Name
+        ));
+
+        $EntitySection = DataWareHouse::useService()->getSectionById( $SectionId );
+
+        $Manager = $this->getEntityManager();
+        $QueryBuilder = $Manager->getQueryBuilder();
+
+        $TablePm = new TblReporting_ProductManager();
+        $TablePmAlias = $TablePm->getEntityShortName();
+
+        $MaxPmNumber = $QueryBuilder
+            ->select( $QueryBuilder->expr()->max( $TablePmAlias.'.'.$TablePm::ATTR_NUMBER ).' as PmNumber' )
+            ->from( $TablePm->getEntityFullName(), $TablePmAlias )
+            ->where( $TablePmAlias.'.'.$TablePm::ATTR_NUMBER.' like :Section' )
+            ->setParameter( 'Section', '%'.$EntitySection->getAlias().'%' )
+            ->andWhere( $TablePmAlias.'.'.$TablePm::ATTR_NUMBER.' not like \'%_R\'' )
+            ->getQuery()->getResult();
+
+        if($MaxPmNumber[0]['PmNumber'] != '') {
+            $NewPmNumber = (string)((int)substr($MaxPmNumber[0]['PmNumber'],-2)+1);
+        }
+        else {
+            $NewPmNumber = 1;
+        }
+        $NewPmNumber = 'PM_'.$EntitySection->getAlias().'_'.str_pad($NewPmNumber, 2 ,'0', STR_PAD_LEFT);
+
+        if (null === $Entity && $NewPmNumber && $Name && $Department) {
+           $Entity = new TblReporting_ProductManager();
+           $Entity->setName($Name);
+           $Entity->setNumber($NewPmNumber);
+           $Entity->setDepartment($Department);
+           $Manager->saveEntity($Entity);
+           Protocol::useService()->createInsertEntry($this->getConnection()->getDatabase(), $Entity);
+        }
+        return $Entity;
     }
 }

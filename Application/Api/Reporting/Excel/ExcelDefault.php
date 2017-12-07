@@ -38,6 +38,7 @@ class ExcelDefault implements IApiInterface
         $Dispatcher->registerMethod('getExcel');
         $Dispatcher->registerMethod('getExcelMonthlyTurnover');
         $Dispatcher->registerMethod('getExcelSearch');
+        $Dispatcher->registerMethod('getExcelProductManagerMarketingCode');
 
         return $Dispatcher->callMethod($Method);
     }
@@ -185,4 +186,35 @@ class ExcelDefault implements IApiInterface
             return new Warning('Es sind keine Daten vorhanden!');
         }
     }
+
+    public function getExcelProductManagerMarketingCode( $FileName, $FileTyp )
+    {
+        $DataList = DataWareHouse::useService()->getProductManagerMarketingCodeCurrent();
+        array_walk( $DataList, array( 'SPHERE\Application\Api\Reporting\Excel\ExcelDefault', 'WalkE1' ) );
+        if (count($DataList) > 0) {
+            return self::getExcel($FileName, $FileTyp, $DataList, array());
+        } else {
+            return new Warning('Es sind keine Daten vorhanden!');
+        }
+    }
+
+    private function WalkE1( &$Row ) {
+        if( is_array( $Row ) ) {
+            array_walk( $Row, array( 'SPHERE\Application\Api\Reporting\Excel\ExcelDefault', 'WalkE1' ) );
+        } else {
+            $Row = (!$this->detectUTF8($Row))?utf8_encode($Row):$Row;
+        }
+    }
+
+    private function detectUTF8( $Value ) {
+   		return preg_match('%(?:
+           [\xC2-\xDF][\x80-\xBF]        # non-overlong 2-byte
+           |\xE0[\xA0-\xBF][\x80-\xBF]               # excluding overlongs
+           |[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}      # straight 3-byte
+           |\xED[\x80-\x9F][\x80-\xBF]               # excluding surrogates
+           |\xF0[\x90-\xBF][\x80-\xBF]{2}    # planes 1-3
+           |[\xF1-\xF3][\x80-\xBF]{3}                  # planes 4-15
+           |\xF4[\x80-\x8F][\x80-\xBF]{2}    # plane 16
+           )+%xs', $Value);
+   	}
 }
