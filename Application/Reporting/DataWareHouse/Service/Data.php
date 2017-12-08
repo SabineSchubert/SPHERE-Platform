@@ -1296,6 +1296,7 @@ class Data extends AbstractData
                 ->from( $TablePmMc->getEntityFullName(), $TablePmMcAlias )
                 ->innerJoin( $TablePm->getEntityFullName(), $TablePmAlias, Expr\Join::WITH, $TablePmAlias.'.'.$TablePm::ENTITY_ID.' = '.$TablePmMcAlias.'.'.$TablePmMc::TBL_REPORTING_PRODUCT_MANAGER )
                 ->innerJoin( $TableMc->getEntityFullName(), $TableMcAlias, Expr\Join::WITH, $TableMcAlias.'.'.$TableMc::ENTITY_ID.' = '.$TablePmMcAlias.'.'.$TablePmMc::TBL_REPORTING_MARKETING_CODE )
+                ->where( $QueryBuilder->expr()->isNull( $TablePmMcAlias.'.'.$TablePmMc::ENTITY_REMOVE ) )
             ->getQuery();
 
         if( $SqlProductManagerMarketingCodeCurrent->getResult() ) {
@@ -1336,7 +1337,6 @@ class Data extends AbstractData
 
         $EntitySection = DataWareHouse::useService()->getSectionById( $SectionId );
 
-        $Manager = $this->getEntityManager();
         $QueryBuilder = $Manager->getQueryBuilder();
 
         $TablePm = new TblReporting_ProductManager();

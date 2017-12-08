@@ -54,4 +54,11 @@ class Service extends AbstractService
     {
         (new Data($this->getBinding()))->flushImportPmMc();
     }
+
+    /**
+     *
+     */
+    public function doublePmMc() {
+        return (new Data($this->getBinding()))->doublePmMc();
+    }
 }

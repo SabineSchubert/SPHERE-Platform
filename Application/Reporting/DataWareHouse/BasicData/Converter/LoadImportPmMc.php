@@ -24,10 +24,8 @@ class LoadImportPmMc extends AbstractConverter
     {
 
         $TableImportPmMc = new TblImport_PmMc();
-
         //alte Daten löschen
         BasicData::useService()->killImportPmMc($TableImportPmMc);
-        BasicData::useService()->flushImportPmMc();
 
        $this->loadFile($File);
 

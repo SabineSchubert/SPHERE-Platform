@@ -80,6 +80,20 @@ class Frontend extends Extension
             'FileTyp' => 'xlsx'
         ) ));
 
+        //DataWareHouse::useService()->getProductManagerMarketingCodeCurrent();
+
+        $DoublePmMc = '';
+
+        $DoublePmMc = BasicData::useService()->doublePmMc();
+        if($DoublePmMc) {
+            $DoublePmMcAccordion = (new Accordion('Test'))->addItem('doppelte Zuordnung Produktmanager zum Marketingcode',
+                new Table($DoublePmMc, null, array('MC' => 'MarketingCode', 'CountPm' => 'Anzahl Produktmanager'))
+            );
+        }
+        else {
+            $DoublePmMcAccordion = '';
+        }
+
         $Stage->setContent(
             new Layout(
                 new LayoutGroup(
@@ -127,6 +141,7 @@ class Frontend extends Extension
                     )
                 )
             ).
+            $DoublePmMcAccordion.
             (new Accordion('Test'))->addItem('neuen Produktmanager anlegen',
                 new Form(
                     new FormGroup(
