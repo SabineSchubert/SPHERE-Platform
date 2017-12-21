@@ -33,12 +33,16 @@ class SelectBox extends AbstractField implements IFieldInterface
      * @param null|string $Label
      * @param array $Data array( value => title )
      * @param IIconInterface $Icon
+     * @param bool $useAutoValue
+     * @param int $useSort SORT_{NATURAL}|null
      */
     public function __construct(
         $Name,
         $Label = '',
         $Data = array(),
-        IIconInterface $Icon = null
+        IIconInterface $Icon = null,
+        $useAutoValue = true,
+        $useSort = SORT_NATURAL
     ) {
 
         $this->Name = $Name;
@@ -50,7 +54,7 @@ class SelectBox extends AbstractField implements IFieldInterface
         if (count($Data) == 1 && is_numeric(key($Data)) === false && current($Data) === false) {
             $Data = array();
         }
-        if (empty($Data)) {
+        if (empty( $Data )) {
             $Data[0] = '-[ Nicht verfügbar ]-';
         } else {
             // Data is Entity-List ?
@@ -59,7 +63,7 @@ class SelectBox extends AbstractField implements IFieldInterface
                 $Sample = current($Data[$Attribute]);
                 // Add Zero-Element -> '-[ Nicht ausgewählt ]-'
                 if (is_object($Sample)) {
-                    if ($Sample instanceof Element && $Sample->getId()) {
+                    if ($Sample instanceof Element && $Sample->getId() ) {
                         /** @var Element $SampleClass */
                         $SampleClass = (new \ReflectionClass($Sample))->newInstanceWithoutConstructor();
                         $SampleClass->setId(0);
@@ -88,10 +92,10 @@ class SelectBox extends AbstractField implements IFieldInterface
                         foreach ((array)$Placeholder[2] as $Variable) {
                             $Chain = explode('.', $Variable);
                             if (count($Chain) > 1) {
-                                $Template->setVariable($Chain[0], $Entity->{'get' . $Chain[0]}());
+                                $Template->setVariable($Chain[0], $Entity->{'get'.$Chain[0]}());
                             } else {
-                                if (method_exists($Entity, 'get' . $Variable)) {
-                                    $Template->setVariable($Variable, $Entity->{'get' . $Variable}());
+                                if (method_exists($Entity, 'get'.$Variable)) {
+                                    $Template->setVariable($Variable, $Entity->{'get'.$Variable}());
                                 } else {
                                     if (property_exists($Entity, $Variable)) {
                                         $Template->setVariable($Variable, $Entity->{$Variable});
@@ -111,39 +115,45 @@ class SelectBox extends AbstractField implements IFieldInterface
                         if ($Entity->getId() === null) {
                             $Entity->setId(0);
                         }
-                        if (method_exists($Entity, 'get' . $Attribute)) {
-                            $Convert[$Entity->getId()] = $Entity->{'get' . $Attribute}();
+                        if (method_exists($Entity, 'get'.$Attribute)) {
+                            $Convert[$Entity->getId()] = $Entity->{'get'.$Attribute}();
                         } else {
                             $Convert[$Entity->getId()] = $Entity->{$Attribute};
                         }
                     }
                 }
             }
-            if (array_key_exists(0, $Convert)) {
-                unset($Convert[0]);
-                asort($Convert, SORT_NATURAL);
-
-                $Keys = array_keys($Convert);
-                $Values = array_values($Convert);
-                array_unshift($Keys, 0);
-                array_unshift($Values, '-[ Nicht ausgewählt ]-');
-                $Convert = array_combine($Keys, $Values);
+            if (array_key_exists(0, $Convert) && $useAutoValue) {
+                unset( $Convert[0] );
+                if( $useSort !== null ) {
+                    asort($Convert, $useSort);
+                }
+                $Keys = array_keys( $Convert );
+                $Values = array_values( $Convert );
+                array_unshift( $Keys, 0 );
+                array_unshift( $Values, '-[ Nicht ausgewählt ]-');
+                $Convert = array_combine( $Keys, $Values );
             } else {
-                asort($Convert, SORT_NATURAL);
+                if( $useSort !== null ) {
+                    asort($Convert, $useSort);
+                }
             }
             $this->Data = $Convert;
         } else {
-            if (array_key_exists(0, $Data) && $Data[0] != '-[ Nicht verfügbar ]-') {
-                unset($Data[0]);
-                asort($Data, SORT_NATURAL);
-
-                $Keys = array_keys($Data);
-                $Values = array_values($Data);
-                array_unshift($Keys, 0);
-                array_unshift($Values, '-[ Nicht ausgewählt ]-');
-                $Data = array_combine($Keys, $Values);
+            if (array_key_exists(0, $Data) && $Data[0] != '-[ Nicht verfügbar ]-' && $useAutoValue) {
+                unset( $Data[0] );
+                if( $useSort !== null ) {
+                    asort($Data, $useSort);
+                }
+                $Keys = array_keys( $Data );
+                $Values = array_values( $Data );
+                array_unshift( $Keys, 0 );
+                array_unshift( $Values, '-[ Nicht ausgewählt ]-');
+                $Data = array_combine( $Keys, $Values );
             } else {
-                asort($Data, SORT_NATURAL);
+                if( $useSort !== null ) {
+                    asort($Data, $useSort);
+                }
             }
             $this->Data = $Data;
         }
@@ -183,6 +193,13 @@ class SelectBox extends AbstractField implements IFieldInterface
                 $this->Template = $this->getTemplate(__DIR__ . '/SelectBox.twig');
                 break;
         }
+
+//        foreach ($this->ErrorMessage as $Key => $Value) {
+//            $this->Template->setVariable($Key, $Value);
+//        }
+//        foreach ($this->SuccessMessage as $Key => $Value) {
+//            $this->Template->setVariable($Key, $Value);
+//        }
 
         $this->Template->setVariable('ElementName', $this->Name);
         $this->Template->setVariable('ElementLabel', $this->Label);

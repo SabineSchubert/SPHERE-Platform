@@ -127,6 +127,15 @@ class Service extends AbstractService
     }
 
     /**
+     * @param TblReporting_ProductManager $TblReporting_ProductManager
+     * @param TblReporting_MarketingCode $TblReporting_MarketingCode
+     * @return null|\SPHERE\System\Database\Binding\AbstractEntity[]|Element[]
+     */
+    public function getProductManagerMarketingCodeByProductManagerMarketingCode( TblReporting_ProductManager $TblReporting_ProductManager, TblReporting_MarketingCode $TblReporting_MarketingCode ) {
+        return ( new Data( $this->getBinding() ) )->getProductManagerMarketingCodeByProductManagerMarketingCode( $TblReporting_ProductManager, $TblReporting_MarketingCode );
+    }
+
+    /**
      * @param array $EntityProductManagerMarketingCodeList
      * @return array $MarketingCodeList
      */
@@ -574,10 +583,45 @@ class Service extends AbstractService
 
     /**
      * @param string $Name
-     * @param int $SectionId
+     * @param string $SectionNumber
      * @param string $Department
      */
-    public function createProductManager( $Name, $SectionId, $Department ) {
-        return ( new Data( $this->getBinding() ) ) ->createProductManager($Name, $SectionId, $Department);
+    public function createProductManager( $Name, $SectionNumber, $Department ) {
+        return ( new Data( $this->getBinding() ) ) ->createProductManager($Name, $SectionNumber, $Department);
+    }
+
+    /**
+     * @param $Number
+     * @param $Name
+     * @return null|TblReporting_MarketingCode
+     */
+    public function createMarketingCode( $Number, $Name) {
+        return ( new Data( $this->getBinding() ) ) ->createMarketingCode( $Number, $Name);
+    }
+
+    /**
+     * @param TblReporting_ProductManager $EntityProductManager
+     * @param TblReporting_MarketingCode $EntityMarketingCode
+     * @return null|TblReporting_MarketingCode
+     */
+    public function createProductManagerMarketingcode(TblReporting_ProductManager $EntityProductManager, TblReporting_MarketingCode $EntityMarketingCode ) {
+        return ( new Data( $this->getBinding() ) ) ->createProductManagerMarketingcode($EntityProductManager, $EntityMarketingCode );
+    }
+
+    /**
+     * @param $Number
+     * @param $Name
+     * @return null|TblReporting_MarketingCode
+     */
+    public function updateMarketingCode( $Number, $Name ) {
+        return ( new Data( $this->getBinding() ) ) ->updateMarketingCode( $Number, $Name );
+    }
+
+    /**
+     * @param $ProductManagerMarketingCodeId
+     * @return null|TblReporting_ProductManager_MarketingCode
+     */
+    public function deleteProductManagerMarketingCode( $ProductManagerMarketingCodeId ) {
+        return (new Data($this->getBinding()))->deleteProductManagerMarketingCode( $ProductManagerMarketingCodeId );
     }
 }

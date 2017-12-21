@@ -11,6 +11,7 @@ namespace SPHERE\Application\Reporting\DataWareHouse\BasicData;
 use SPHERE\Application\Reporting\DataWareHouse\BasicData\Service\Data;
 use SPHERE\Application\Reporting\DataWareHouse\BasicData\Service\Entity\TblImport_PmMc;
 use SPHERE\Application\Reporting\DataWareHouse\BasicData\Service\Setup;
+use SPHERE\Application\Reporting\DataWareHouse\DataWareHouse;
 use SPHERE\System\Database\Binding\AbstractService;
 
 class Service extends AbstractService
@@ -60,5 +61,55 @@ class Service extends AbstractService
      */
     public function doublePmMc() {
         return (new Data($this->getBinding()))->doublePmMc();
+    }
+
+    public function getImportPmMc() {
+        return (new Data($this->getBinding()))->getImportPmMc();
+    }
+
+    /**
+     * @param string $ProductManagerNumber
+     * @return array|null
+     */
+    public function getImportPmMcByProductManager( $ProductManagerNumber ) {
+        return (new Data($this->getBinding()))->getImportPmMcByProductManager( $ProductManagerNumber );
+    }
+
+    /**
+     * @param string $ProductManagerNumber
+     * @param string $MarketincCodeNumber
+     * @return array|null
+     */
+    public function getImportPmMcByProductManagerMarketingCode( $ProductManagerNumber, $MarketincCodeNumber ) {
+        return (new Data($this->getBinding()))->getImportPmMcByProductManagerMarketingCode( $ProductManagerNumber, $MarketincCodeNumber );
+    }
+
+    /**
+    * Prüfen auf neue MarketingCodes (hinzufügen oder Name updaten)
+    */
+    public function getNewMarketingCodeFromImport() {
+        $ImportPmMcList = BasicData::useService()->getImportPmMc();
+
+        if($ImportPmMcList) {
+
+            foreach ($ImportPmMcList AS $EntityPmMc) {
+                //Prüfung, ob es den Marketingcode bereits gibt
+                if (null === DataWareHouse::useService()->getMarketingCodeByNumber($EntityPmMc['McNumber'])) {
+                    //Insert
+                    DataWareHouse::useService()->createMarketingCode($EntityPmMc['McNumber'], $EntityPmMc['McName']);
+                } else {
+                    //Update
+                    DataWareHouse::useService()->updateMarketingCode($EntityPmMc['McNumber'], $EntityPmMc['McName']);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param $EntityList
+     */
+    public function updateProductManagerMarketingCodeByList( $EntityList ) {
+        BasicData::useService()->getNewMarketingCodeFromImport();
+        return (new Data($this->getBinding()))->updateProductManagerMarketingCodeByList( $EntityList );
     }
 }

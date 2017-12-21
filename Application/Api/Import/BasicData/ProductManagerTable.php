@@ -68,7 +68,7 @@ class ProductManagerTable extends Extension implements IApiInterface
                 $Option = (new Standard('löschen', self::getEndpoint(), null, array( 'ProductManagerId' => $Row->getId()) ))->ajaxPipelineOnClick( ProductManagerDelete::pipelineProductManagerDelete(  $Row->getId() ) );
             }
             else {
-                $Option = new Warning('Marketingcode vorhanden, löschen nicht erlaubt!');
+                $Option = new \SPHERE\Common\Frontend\Icon\Repository\Warning().new \SPHERE\Common\Frontend\Text\Repository\Warning('&nbsp;&nbsp;&nbsp;Marketingcode vorhanden, löschen nicht erlaubt!');
             }
 
             $ProductManagerData[] = array(

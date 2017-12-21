@@ -27,7 +27,7 @@ class DataWareHouse implements IApplicationInterface, IModuleInterface
 
 	public static function registerApplication()
 	{
-	    self::createApplication(__NAMESPACE__, __CLASS__, 'frontendImport', 'Import', new Blackboard(), 'Stammdaten<br/>Preisdaten<br/>Umsatzdaten');
+	    self::createApplication(__NAMESPACE__, __CLASS__, 'frontendImport', 'Import', new Blackboard(), 'Stammdaten');
 //        self::registerModule();
         Presto::registerModule();
         Sales::registerModule();

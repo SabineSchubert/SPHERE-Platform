@@ -26,6 +26,7 @@ use SPHERE\Common\Frontend\Layout\Structure\LayoutColumn;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutGroup;
 use SPHERE\Common\Frontend\Layout\Structure\LayoutRow;
 use SPHERE\Common\Frontend\Link\Repository\External;
+use SPHERE\Common\Frontend\Message\Repository\Warning;
 use SPHERE\Common\Frontend\Table\Structure\Table;
 use SPHERE\Common\Frontend\Text\Repository\Center;
 use SPHERE\Common\Window\Stage;
@@ -71,7 +72,12 @@ class Frontend extends Extension
             $EntityProductManager = DataWareHouse::useService()->createProductManager( $Pm['Name'], $Pm['Section'], $Pm['Department'] );
         }
 
-        $EntitySelection = DataWareHouse::useService()->getSectionAll();
+
+//        if(/*Button Import ausführen*/) {
+//            /*BasicData::useService()->updateProductManagerMarketingCodeByList( $EntityList )*/
+//        }
+
+        //$EntitySelection = DataWareHouse::useService()->getSectionAll();
 //        $EntityProductManager = DataWareHouse::useService()->getProductManagerAll();
 
         $LayoutExcel = '<br/>'.(new External('ExcelDownload', ExcelDefault::getEndpoint(), null, array(
@@ -85,14 +91,18 @@ class Frontend extends Extension
         $DoublePmMc = '';
 
         $DoublePmMc = BasicData::useService()->doublePmMc();
+
         if($DoublePmMc) {
             $DoublePmMcAccordion = (new Accordion('Test'))->addItem('doppelte Zuordnung Produktmanager zum Marketingcode',
-                new Table($DoublePmMc, null, array('MC' => 'MarketingCode', 'CountPm' => 'Anzahl Produktmanager'))
+                new Table($DoublePmMc, null,
+                    array('Marketingcode' => 'Marketingcode', 'ProduktmanagerNummer' => 'Produktmanager-Nummer', 'Produktmanager' => 'Produktmanager'))
             );
         }
         else {
             $DoublePmMcAccordion = '';
         }
+
+        $PmSection = array('P' => 'Pkw', 'L' => 'Lkw', 'T' => 'Trapo', 'Z' => 'Zubehör', 'S' => 'smart', 'F' => 'Fuso', 'X' => 'nicht zugeordnet' );
 
         $Stage->setContent(
             new Layout(
@@ -119,7 +129,17 @@ class Frontend extends Extension
                                     ), 4
                                 ),
                                 new LayoutColumn(
-                                    new Panel('neue Zuordnung hochladen',
+                                    new Panel(
+                                        new Layout(
+                                            new LayoutGroup(
+                                                new LayoutRow(
+                                                    array(
+                                                        new LayoutColumn('neue Zuordnung hochladen', 3),
+                                                        new LayoutColumn(new \SPHERE\Common\Frontend\Icon\Repository\Warning().new \SPHERE\Common\Frontend\Text\Repository\Warning('&nbsp;&nbsp;&nbsp;NUR Komplettliste, da sonst Zuordnungen gelöscht werden!!!'), 5),
+                                                    )
+                                                )
+                                            )
+                                        ),
                                         new Form(
                                             new FormGroup(
                                                 new FormRow(
@@ -151,7 +171,7 @@ class Frontend extends Extension
                                     new TextField('Pm[Name]', 'Produktmanager-Name','Produktmanager-Name'), 4
                                 ),
                                 new FormColumn(
-                                    new SelectBox('Pm[Section]', 'Sparte',  array( '{{Number}} - {{Name}}' => $EntitySelection )), 2
+                                    new SelectBox('Pm[Section]', 'Sparte',  $PmSection, null, true, null), 2 /*array( '{{Number}} - {{Name}}' => $EntitySelection )*/
                                 ),
 //                                                new FormColumn(
 //                                                    new SelectBox('Pm[ProductManagerId]', 'Produktmanager-Nummer', array( '{{Number}}' => $EntityProductManager )), 2

@@ -250,6 +250,25 @@ class Data extends AbstractData
    }
 
     /**
+     * @param TblReporting_ProductManager $TblReporting_ProductManager
+     * @param TblReporting_MarketingCode $TblReporting_MarketingCode
+     * @return null|\SPHERE\System\Database\Binding\AbstractEntity[]|Element[]
+     */
+    public function getProductManagerMarketingCodeByProductManagerMarketingCode( TblReporting_ProductManager $TblReporting_ProductManager, TblReporting_MarketingCode $TblReporting_MarketingCode ) {
+       $TableProduktManagerMarketingCode = new TblReporting_ProductManager_MarketingCode();
+       $EntityProductManagerMarketingCodeList = $this->getCachedEntityListBy( __METHOD__, $this->getEntityManager(), $TableProduktManagerMarketingCode->getEntityShortName(), array(
+           $TableProduktManagerMarketingCode::TBL_REPORTING_PRODUCT_MANAGER => $TblReporting_ProductManager->getId(),
+           $TableProduktManagerMarketingCode::TBL_REPORTING_MARKETING_CODE => $TblReporting_MarketingCode->getId()
+       ), array( $TableProduktManagerMarketingCode::ENTITY_CREATE => self::ORDER_DESC ) );
+       if($EntityProductManagerMarketingCodeList) {
+           return $EntityProductManagerMarketingCodeList;
+       }
+       else {
+           return null;
+       }
+    }
+
+    /**
      * @param array $EntityProductManagerMarketingCodeList
      * @return array $MarketingCodeList|null
      */
@@ -1328,14 +1347,16 @@ class Data extends AbstractData
         return null;
     }
 
-    public function createProductManager($Name, $SectionId, $Department) {
+    /**
+     * @param string $Name
+     * @param string $SectionNumber
+     * @param string $Department
+     * @return null|object|TblReporting_ProductManager
+     */
+    public function createProductManager($Name, $SectionNumber, $Department) {
         $Manager = $this->getConnection()->getEntityManager();
 
-        $Entity = $Manager->getEntity('TblReporting_ProductManager')->findOneBy(array(
-           TblReporting_ProductManager::ATTR_NAME => $Name
-        ));
-
-        $EntitySection = DataWareHouse::useService()->getSectionById( $SectionId );
+        //$EntitySection = DataWareHouse::useService()->getSectionById( $SectionId );
 
         $QueryBuilder = $Manager->getQueryBuilder();
 
@@ -1346,7 +1367,7 @@ class Data extends AbstractData
             ->select( $QueryBuilder->expr()->max( $TablePmAlias.'.'.$TablePm::ATTR_NUMBER ).' as PmNumber' )
             ->from( $TablePm->getEntityFullName(), $TablePmAlias )
             ->where( $TablePmAlias.'.'.$TablePm::ATTR_NUMBER.' like :Section' )
-            ->setParameter( 'Section', '%'.$EntitySection->getAlias().'%' )
+            ->setParameter( 'Section', '%_'.$SectionNumber.'_%' )
             ->andWhere( $TablePmAlias.'.'.$TablePm::ATTR_NUMBER.' not like \'%_R\'' )
             ->getQuery()->getResult();
 
@@ -1356,7 +1377,12 @@ class Data extends AbstractData
         else {
             $NewPmNumber = 1;
         }
-        $NewPmNumber = 'PM_'.$EntitySection->getAlias().'_'.str_pad($NewPmNumber, 2 ,'0', STR_PAD_LEFT);
+        $NewPmNumber = 'PM_'.$SectionNumber.'_'.str_pad($NewPmNumber, 2 ,'0', STR_PAD_LEFT);
+
+        $Entity = $Manager->getEntity('TblReporting_ProductManager')->findOneBy(array(
+           TblReporting_ProductManager::ATTR_NAME => $Name,
+           TblReporting_ProductManager::ATTR_NAME => $NewPmNumber
+        ));
 
         if (null === $Entity && $NewPmNumber && $Name && $Department) {
            $Entity = new TblReporting_ProductManager();
@@ -1367,5 +1393,98 @@ class Data extends AbstractData
            Protocol::useService()->createInsertEntry($this->getConnection()->getDatabase(), $Entity);
         }
         return $Entity;
+    }
+
+    /**
+     * @param $Number
+     * @param $Name
+     * @return null|TblReporting_MarketingCode
+     */
+    public function createMarketingCode($Number, $Name) {
+        $Manager = $this->getConnection()->getEntityManager();
+
+        $Entity = $Manager->getEntity('TblReporting_MarketingCode')->findOneBy(array(
+           TblReporting_MarketingCode::ATTR_NUMBER => $Number
+        ));
+
+        if (null === $Entity && $Number && $Name) {
+           $Entity = new TblReporting_MarketingCode();
+            $Entity->setNumber($Number);
+            $Entity->setName($Name);
+            $Manager->saveEntity($Entity);
+            Protocol::useService()->createInsertEntry($this->getConnection()->getDatabase(), $Entity);
+        }
+        return $Entity;
+    }
+
+    /**
+     * @param TblReporting_ProductManager $EntityProductManager
+     * @param TblReporting_MarketingCode $EntityMarketingCode
+     * @return null|object|TblReporting_ProductManager_MarketingCode
+     */
+    public function createProductManagerMarketingcode(TblReporting_ProductManager $EntityProductManager, TblReporting_MarketingCode $EntityMarketingCode ) {
+        $Manager = $this->getConnection()->getEntityManager();
+
+        $Entity = $Manager->getEntity('TblReporting_ProductManager_MarketingCode')->findOneBy(array(
+           TblReporting_ProductManager_MarketingCode::TBL_REPORTING_PRODUCT_MANAGER => $EntityProductManager->getId(),
+           TblReporting_ProductManager_MarketingCode::TBL_REPORTING_MARKETING_CODE => $EntityMarketingCode->getId()
+        ));
+
+        if (null === $Entity && $EntityProductManager->getId() && $EntityMarketingCode->getId()) {
+           $Entity = new TblReporting_ProductManager_MarketingCode();
+           $Entity->setTblReportingProductManager($EntityProductManager);
+           $Entity->setTblReportingMarketingCode($EntityMarketingCode);
+           $Manager->saveEntity($Entity);
+           Protocol::useService()->createInsertEntry($this->getConnection()->getDatabase(), $Entity);
+        }
+        return $Entity;
+    }
+
+    /**
+     * @param $ProductManagerMarketingCodeId
+     * @return null|TblReporting_ProductManager_MarketingCode
+     */
+    public function deleteProductManagerMarketingCode( $ProductManagerMarketingCodeId ) {
+        if($ProductManagerMarketingCodeId) {
+            $Manager = $this->getEntityManager();
+            /** @var TblReporting_ProductManager_MarketingCode $Entity */
+            $Entity = $Manager->getEntityById( 'TblReporting_ProductManager_MarketingCode', $ProductManagerMarketingCodeId );
+            $Protocol = clone $Entity;
+            if (null !== $Entity) {
+                $Entity->setEntityRemove(true);
+                $Manager->saveEntity($Entity);
+                Protocol::useService()->createUpdateEntry($this->getConnection()->getDatabase(), $Protocol, $Entity);
+                return $Entity;
+            }
+            return null;
+        }
+        return null;
+    }
+
+    /**
+     * @param $Number
+     * @param $Name
+     * @return null|TblReporting_MarketingCode
+     */
+    public function updateMarketingCode( $Number, $Name ) {
+
+        $Manager = $this->getEntityManager();
+        /** @var TblReporting_MarketingCode $EntityOldMc */
+        $EntityOldMc = $Manager->getEntity('TblReporting_MarketingCode')->findOneBy(array(
+           TblReporting_MarketingCode::ATTR_NUMBER => $Number
+        ));
+
+        //Nummer gleich und Name unterschiedlich
+        if($Number == $EntityOldMc->getNumber() && $Name != $EntityOldMc->getName() ) {
+            $Protocol = clone $EntityOldMc;
+            if (null !== $EntityOldMc) {
+                $EntityOldMc->setName($Name);
+                $Manager->saveEntity($EntityOldMc);
+                Protocol::useService()->createUpdateEntry($this->getConnection()->getDatabase(), $Protocol, $EntityOldMc);
+                return $EntityOldMc;
+            }
+            return null;
+        }
+        return null;
     }
 }

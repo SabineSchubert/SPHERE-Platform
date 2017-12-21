@@ -145,10 +145,11 @@ class Frontend
 
                 if (
                     ( $TblAccount->getServiceTblIdentification()
-                        && ( $TblAccount->getServiceTblIdentification()->getId() == Account::useService()->getIdentificationByName('Saml')->getId()
-                            or $TblAccount->getUsername() == 'schnand' or $TblAccount->getUsername() == 'Test'
-                        )
+//                        && ( $TblAccount->getServiceTblIdentification()->getId() == Account::useService()->getIdentificationByName('Saml')->getId()
+//                            or $TblAccount->getUsername() == 'schnand' or $TblAccount->getUsername() == 'Test'
+//                        )
                     )
+                    && $TblAccount->getUsername() != 'root'
                     && $TblAccount->getServiceTblConsumer()
                     && $TblAccount->getServiceTblConsumer()->getId() == Consumer::useService()->getConsumerBySession()->getId()
                 ) {
